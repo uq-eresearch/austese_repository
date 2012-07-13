@@ -29,7 +29,7 @@ function createRecord($collection){
       }
     }
     // Insert new object with one revision
-    $newobj = array("_revisions" => array(1 => $obj));
+    $newobj = array("_revisions" => array($obj));
     $m = new Mongo($config["dbhost"].":".$config["dbport"], array("persist" => "restapi"));
     $db = $m->selectDB($config["dbname"]);
     $coll = $db->selectCollection($collection);
@@ -74,22 +74,24 @@ function getRecord($collection,$id,$revision) {
     $coll = $db->selectCollection($collection);
     $query = array("_id"=>new MongoId($id));
     $obj = $coll->findOne($query);
+    if ($obj == NULL){
+      $response->status(404);
+      echo "The requested object does not exist";
+      return;
+    }
     if (array_key_exists("_deleted",$obj)){
       $response->status(410);
       echo "The requested object has been deleted";
       return;
     }
-    if ($obj == NULL){
-      $response->status(404);
-      return;
-    }
     // lookup specified revision, or get latest
-    $numrev = count($obj["_revisions"]);
+    $numrev = count($obj["_revisions"]) - 1;
     if ($revision == NULL || $revision > $numrev){
       $revision = $numrev;
     }
     $id = $obj["_id"];
     $returnobj = $obj["_revisions"][$revision];
+
     // generate uri
     $returnobj["uri"] = $config["uriprefix"] . $collection . "/" . $id->{'$id'};
     $response->header('Content-Type','application/json');
@@ -135,7 +137,7 @@ function updateRecord($collection,$id){
     $id = new MongoId($id);
     $query = array("_id"=>$id);
     $existobj = $coll->findOne($query);
-    $revindex = count($existobj["_revisions"]) + 1;
+    $revindex = count($existobj["_revisions"]);
     // add revision, and if object was flagged as deleted, remove flag (this allows undeletion)
     $inserted = $coll->update(array("_id"=>$id), array('$set' => array('_revisions.'.$revindex => $obj), '$unset'=> array('_deleted'=>1)), array("safe" => true));
     // check whether there were any errors during update
@@ -148,7 +150,6 @@ function updateRecord($collection,$id){
     $response->status(500);    
     echo $e->getMessage();
   }
-
 }
 $app->put('/artefacts/:id', function ($id) use ($config) {
     updateRecord("artefacts",$id);
