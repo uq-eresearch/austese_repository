@@ -2,7 +2,7 @@
 	"require": {
 		   "slim/slim": "1.6.*",
 		   "behat/behat": "2.4.*@stable",
-		   "behat/mink":  ">=1.4"
+		   "guzzle/guzzle":"2.6.*"
 	},
 
 	"config": {

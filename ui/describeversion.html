@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="canonical" href="/about" />
+  <title>Create Version</title>
+<style type="text/css" media="all">@import url("/sites/all/themes/austese/bootstrap/css/bootstrap.css?m5mvkv");
+@import url("/sites/all/themes/austese/bootstrap/css/bootstrap-responsive.css?m5mvkv");
+@import url("/sites/all/themes/austese/css/austese.css?m5mvkv");
+@import url("css/token-input.css");
+@import url("css/token-input-facebook.css");
+ul.token-input-list-facebook {
+color:#555;
+display:inline-block;
+border: 1px solid #CCC;
+-webkit-border-radius: 3px;
+}
+</style>
+  <!-- HTML5 element support for IE6-8 -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+<body class="html front not-logged-in no-sidebars page-node page-node- page-node-1 node-type-page" >
+  <header id="navbar" role="banner" class="navbar navbar-fixed-top">
+  <div class="navbar-inner">
+  	<div class="container">
+  	  <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+  	  <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+  		<span class="icon-bar"></span>
+  		<span class="icon-bar"></span>
+  		<span class="icon-bar"></span>
+  	  </a>
+  	  
+  	      		<a class="brand" href="/" title="Home">
+    		  <img src="/sites/all/themes/austese/logo.png" alt="Home" />
+    		</a>
+  	  
+  	    	  
+  	  <div class="nav-collapse">
+    	  <nav role="navigation">
+      		      		  <ul id="main-menu" class="nav"><li class=""><a href="/about" class="active">About</a></li>
+</ul>      		
+      	        		
+
+    		</nav>
+  	  </div>         
+  	</div>
+  </div>
+</header>
+
+<div class="container">
+
+  <header role="banner" id="page-header">
+    
+      </header> <!-- /#header -->
+	
+	<div class="row">
+	  
+      
+	  
+	  <section class="span12">  
+                  <a id="main-content"></a>
+                    <h1 class="page-header">Describe Version</h1>
+<ul class="breadcrumb">
+   <li><a href="index.html">Content Repository Demonstrator</a> <span class="divider">/</span></li>
+   <li><a href="versions.html">Versions</a> <span class="divider">/</span></li>
+    <li class="active">Describe Version</li>
+</ul>
+<div id="alerts"></div>
+<form id="create-version" class="form-horizontal">
+  <fieldset>
+    <div class="control-group">
+      <label class="control-label" for="versionTitle">Title</label>
+      <div class="controls">
+        <input name="versionTitle" type="text" class="input-xlarge" id="versionTitle">
+
+        <p class="help-block">Title for the version</p>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="date">Date</label>
+      <div class="controls">
+        <input name="date" type="text" class="input-xlarge" id="date">
+        <p class="help-block">e.g. 1875</p>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="firstLine">First Line</label>
+      <div class="controls">
+        <input name="firstLine" type="text" class="input-xlarge" id="firstLine">
+        <p class="help-block">First line of the version (e.g. for poetry)</p>
+      </div>
+    </div>
+<div class="control-group">
+      <label class="control-label" for="name">Name</label>
+      <div class="controls">
+        <input name="name" type="text" class="input-xlarge" id="name">
+        <p class="help-block">Short name for version</p>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <label class="control-label" for="artefacts">Artefacts</label>
+      <div class="controls">
+        <input name="artefacts" type="text" class="input-xlarge" id="artefacts">
+        <p class="help-block">Artefacts associated with this version</p>
+      </div>
+    </div>
+
+    
+
+    <div class="control-group">
+<div class="controls">
+    <input type="button" class="btn" onclick="onSave()" value="Save">
+    <input id="del-btn" style="display:none" type="button" class="btn btn-danger" onclick="onDelete()" value="Delete">
+</div></div>
+  </fieldset>
+</form>
+	  </section>
+
+    
+  </div>
+  <footer class="footer container">
+      </footer>
+</div>
+
+
+	
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+window.jQuery || document.write("<script src='/sites/all/modules/jquery_update/replace/jquery/1.7/jquery.min.js'>\x3C/script>")
+//--><!]]>
+</script>
+<script type="text/javascript" src="/misc/jquery.once.js?v=1.2"></script>
+<script type="text/javascript" src="/misc/drupal.js?m5mvkv"></script>
+<script type="text/javascript" src="/sites/all/themes/austese/bootstrap/js/bootstrap.js?m5mvkv"></script>
+<script type="text/javascript" src="js/js2form.js"></script>
+<script type="text/javascript" src="js/jquery.tokeninput.js"></script>
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":{"theme":"austese","theme_token":"laRvRYGM7Z_Dhoi3JZ2ECfUM22NdawzEN3zDJW5f83g","js":{"https:\/\/ajax.googleapis.com\/ajax\/libs\/jquery\/1.7.1\/jquery.min.js":1,"0":1,"misc\/jquery.once.js":1,"misc\/drupal.js":1,"sites\/all\/themes\/austese\/bootstrap\/js\/bootstrap.js":1},"css":{"modules\/system\/system.base.css":1,"modules\/field\/theme\/field.css":1,"sites\/all\/themes\/austese\/bootstrap\/css\/bootstrap.css":1,"sites\/all\/themes\/austese\/bootstrap\/css\/bootstrap-responsive.css":1,"sites\/all\/themes\/austese\/css\/austese.css":1}}});
+//--><!]]>
+</script>
+  <script type="text/javascript">
+    function getURLParameter(name) {
+        return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null;
+    }
+    jQuery(document).ready(function(){
+       jQuery('.dropdown-toggle').dropdown()
+       var existing = getURLParameter("id");
+       if (existing) {
+        loadObject(existing);
+        jQuery('#del-btn').css('display','inline');
+       }
+       jQuery("#artefacts").tokenInput("/content/artefacts/", {
+                theme: "facebook",
+                tokenValue: "id",
+	        hintText: "Start typing to search artefacts by source",
+                jsonContainer: "results",
+                propertyToSearch: "source",
+                resultsFormatter: function(item){return "<li><b>" + item.source + "</b>, " + item.date + ", " + item.bibDetails;},
+	        tokenFormatter: function(item){return "<li>" + item.source + ", " + item.date + ", " + item.bibDetails + "</li>";}
+       });
+
+    });
+    function loadObject(id){
+       jQuery.ajax({
+          url: '../versions/'+ id,
+          success: function(d){
+             js2form(document.getElementById('create-version'),d);
+             if (d.artefacts){
+               for (var i = 0; i < d.artefacts.length; i++){
+                jQuery.ajax({
+                  type: 'GET',
+                  url: '../artefacts/' + d.artefacts[i],
+                  success: function(v){
+                    jQuery('#artefacts').tokenInput("add",v);
+                  }
+                });
+               }
+             }
+
+          }
+       });
+    }
+    function onDelete(){
+      var existing = getURLParameter("id");
+      jQuery.ajax({
+         type: 'DELETE',
+         url: '../versions/' + existing,
+         success: function(d){
+           jQuery('#alerts').append(jQuery('<div class="alert alert-block"><button type="button" class="close" data-dismiss="alert">x</button><h4>Version deleted</h4><p><a href="#" onClick="onSave()">Undo</a></p><p><a href="versions.html">View versions</a></p></div>').alert());
+         }
+      });
+    }
+    function onSave(){
+     var existing = getURLParameter("id");
+     var type = 'POST';
+     var url = '../versions/';
+     if (existing) {
+        type = 'PUT';
+        url += existing;
+     }
+     var data = jQuery('#create-version').serializeObject();
+     if (data.artefacts){
+       var split = data.artefacts.split(",");
+       data.artefacts = [];
+       for (var i = 0; i < split.length; i++){
+          data.artefacts.push(split[i]);
+       }
+
+     }
+     jQuery.ajax({
+       type: type,
+       data: JSON.stringify(data),
+       url: url,
+       success: function(d){
+         jQuery('#alerts').append(jQuery('<div class="alert alert-block"><button type="button" class="close" data-dismiss="alert">x</button><h4>Version saved</h4><p><a href="versions.html">View versions</a></p></div>').alert());
+       }
+     });
+    };
+jQuery.fn.serializeObject = function() {
+    var o = {};
+    var a = this.serializeArray();
+    jQuery.each(a, function() {
+        if (o[this.name] !== undefined) {
+            if (!o[this.name].push) {
+                o[this.name] = [o[this.name]];
+            }
+            o[this.name].push(this.value || '');
+        } else {
+            o[this.name] = this.value || '';
+        }
+    });
+    return o;
+};
+
+
+
+  </script>
+</body>
+</html>

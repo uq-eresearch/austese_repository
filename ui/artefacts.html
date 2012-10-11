@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="canonical" href="/about" />
+  <title>Artefacts</title>
+<style type="text/css" media="all">@import url("/sites/all/themes/austese/bootstrap/css/bootstrap.css?m5mvkv");
+@import url("/sites/all/themes/austese/bootstrap/css/bootstrap-responsive.css?m5mvkv");
+@import url("/sites/all/themes/austese/css/austese.css?m5mvkv");
+.obj {padding-top:1em;}
+#newobject{padding-bottom:1em}
+#resultsummary{font-style:italic;display:inline-block;}
+#resultcurrent{display:inline-block;font-style:italic;padding-bottom:1em}
+.btn-highlight{color:blue}
+</style>
+  <!-- HTML5 element support for IE6-8 -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+<body class="html front not-logged-in no-sidebars page-node page-node- page-node-1 node-type-page" >
+  <header id="navbar" role="banner" class="navbar navbar-fixed-top">
+  <div class="navbar-inner">
+  	<div class="container">
+  	  <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+  	  <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+  		<span class="icon-bar"></span>
+  		<span class="icon-bar"></span>
+  		<span class="icon-bar"></span>
+  	  </a>
+  	  
+  	      		<a class="brand" href="/" title="Home">
+    		  <img src="/sites/all/themes/austese/logo.png" alt="Home" />
+    		</a>
+  	  
+  	    	  
+  	  <div class="nav-collapse">
+    	  <nav role="navigation">
+      		      		  <ul id="main-menu" class="nav"><li class=""><a href="/about" class="active">About</a></li>
+</ul>      		
+      	        		
+
+    		</nav>
+  	  </div>         
+  	</div>
+  </div>
+</header>
+
+<div class="container">
+
+  <header role="banner" id="page-header">
+    
+      </header> <!-- /#header -->
+	
+	<div class="row">
+	   
+	  <section class="span12">  
+                  <a id="main-content"></a>
+                    <h1 class="page-header">Artefacts</h1>
+<ul class="breadcrumb">
+   <li><a href="index.html">Content Repository Demonstrator</a> <span class="divider">/</span></li>
+    <li class="active">Artefacts</li>
+</ul>
+<div class="row">
+		   <div class="span10" id="newobject"><a href="describeartefact.html">+ New artefact</a></div>
+
+
+                      <input title="Type filter terms and then hit enter" type="text" placeholder="Filter on source" class="span2" id="filter">
+
+</div>
+
+		   <div id="resultsummary"></div>
+                   <div id="resultcurrent"></div>
+		   
+		   <div id="result"></div>
+
+                   <div class="btn-toolbar">
+		     <div class="btn-group" id="pager"></div>
+		   </div>
+	  </section>
+
+    
+  </div>
+  <footer class="footer container">
+      </footer>
+</div>
+
+
+	
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+window.jQuery || document.write("<script src='/sites/all/modules/jquery_update/replace/jquery/1.7/jquery.min.js'>\x3C/script>")
+//--><!]]>
+</script>
+<script type="text/javascript" src="/misc/jquery.once.js?v=1.2"></script>
+<script type="text/javascript" src="/misc/drupal.js?m5mvkv"></script>
+<script type="text/javascript" src="/sites/all/themes/austese/bootstrap/js/bootstrap.js?m5mvkv"></script>
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":{"theme":"austese","theme_token":"laRvRYGM7Z_Dhoi3JZ2ECfUM22NdawzEN3zDJW5f83g","js":{"https:\/\/ajax.googleapis.com\/ajax\/libs\/jquery\/1.7.1\/jquery.min.js":1,"0":1,"misc\/jquery.once.js":1,"misc\/drupal.js":1,"sites\/all\/themes\/austese\/bootstrap\/js\/bootstrap.js":1},"css":{"modules\/system\/system.base.css":1,"modules\/field\/theme\/field.css":1,"sites\/all\/themes\/austese\/bootstrap\/css\/bootstrap.css":1,"sites\/all\/themes\/austese\/bootstrap\/css\/bootstrap-responsive.css":1,"sites\/all\/themes\/austese\/css\/austese.css":1}}});
+//--><!]]>
+</script>
+  <script type="text/javascript">
+    function loadResults(page, filterTerm){
+      page = page || 0;
+      jQuery.ajax({
+       type: 'GET',
+       url: '../artefacts/?pageSize=20&pageIndex=' + page + (filterTerm? ("&q=" + filterTerm) : ""),
+       success: function(d){
+         var result = eval(d);
+         var rescount = parseInt(result.count);
+         var numPages = Math.floor(rescount/20) + 1;
+         jQuery('#resultsummary').html("Found " + result.count + " artefact" + (rescount > 1? "s" : "") + (filterTerm? (" matching '" + filterTerm + "'") : "") + ", ");
+         jQuery('#resultcurrent').html("displaying page " + (page + 1) + " of " + numPages); 
+         //console.log(result);
+         jQuery('#result').empty();
+         for (var i = 0; i < rescount; i++){
+            var obj = result.results[i];
+	    if (obj){		     
+               var id = obj.uri.substr(obj.uri.lastIndexOf("/") + 1);
+               jQuery('#result').append("<div class='obj'><h4>Source: " + obj.source + " <a href='describeartefact.html?id=" + id + "' style='font-size:smaller'>EDIT</a></h4>Date: " + obj.date + "<br/>Bibliographic Details: " + obj.bibDetails + "</div>");
+            }
+        }
+        // create pager
+        
+          var startIndex = Math.max(0,page - 5);
+          var endIndex = Math.min(numPages, page+5);
+          if (page <= 5){
+              endIndex += (5 - page);
+              endIndex = Math.min(endIndex,numPages);
+          }
+          jQuery('#pager').empty();
+          if (startIndex > 0){
+            jQuery('#pager').append(jQuery("<button class='btn'><i class='icon-chevron-left'></i></button>").click(function(){
+              loadResults(page-1, filterTerm);
+            }));
+          }
+          for (i = startIndex; i < endIndex; i++){
+            var cls = "btn pagebtn";
+            if (i == page){
+              cls += " btn-highlight";
+            }
+            jQuery('#pager').append("<button class='" + cls + "'>" + (i + 1) + "</button>");
+			
+          }
+          jQuery('.pagebtn').click(function(){
+	     var pageNum = parseInt(jQuery(this).html() - 1);
+             loadResults(pageNum,filterTerm);
+          });
+          if(numPages > endIndex){
+	    jQuery('#pager').append(jQuery("<button class='btn'><i class='icon-chevron-right'></i></button>").click(function(){
+		loadResults(page+1, filterTerm);
+            }));
+          }
+	}
+     });
+
+    }
+    jQuery(document).ready(function(){
+       jQuery('.dropdown-toggle').dropdown();
+       jQuery('#filter').keyup(function(e) {
+         if (e.keyCode == 13) {
+           loadResults(0,jQuery('#filter').val());
+         }
+       });
+       loadResults(0);
+    });
+
+
+
+
+  </script>
+</body>
+</html>
