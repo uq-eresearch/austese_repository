@@ -1,74 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<link rel="canonical" href="/about" />
-  <title>Create Version</title>
-<style type="text/css" media="all">@import url("/sites/all/themes/austese/bootstrap/css/bootstrap.css?m5mvkv");
-@import url("/sites/all/themes/austese/bootstrap/css/bootstrap-responsive.css?m5mvkv");
-@import url("/sites/all/themes/austese/css/austese.css?m5mvkv");
-@import url("css/token-input.css");
-@import url("css/token-input-facebook.css");
-ul.token-input-list-facebook {
-color:#555;
-display:inline-block;
-border: 1px solid #CCC;
--webkit-border-radius: 3px;
-}
-</style>
-  <!-- HTML5 element support for IE6-8 -->
-  <!--[if lt IE 9]>
-    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-  <![endif]-->
-</head>
-<body class="html front not-logged-in no-sidebars page-node page-node- page-node-1 node-type-page" >
-  <header id="navbar" role="banner" class="navbar navbar-fixed-top">
-  <div class="navbar-inner">
-  	<div class="container">
-  	  <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
-  	  <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-  		<span class="icon-bar"></span>
-  		<span class="icon-bar"></span>
-  		<span class="icon-bar"></span>
-  	  </a>
-  	  
-  	      		<a class="brand" href="/" title="Home">
-    		  <img src="/sites/all/themes/austese/logo.png" alt="Home" />
-    		</a>
-  	  
-  	    	  
-  	  <div class="nav-collapse">
-    	  <nav role="navigation">
-      		      		  <ul id="main-menu" class="nav"><li class=""><a href="/about" class="active">About</a></li>
-</ul>      		
-      	        		
-
-    		</nav>
-  	  </div>         
-  	</div>
-  </div>
-</header>
-
-<div class="container">
-
-  <header role="banner" id="page-header">
-    
-      </header> <!-- /#header -->
-	
-	<div class="row">
-	  
-      
-	  
-	  <section class="span12">  
-                  <a id="main-content"></a>
-                    <h1 class="page-header">Describe Version</h1>
-<ul class="breadcrumb">
-   <li><a href="index.html">Content Repository Demonstrator</a> <span class="divider">/</span></li>
-   <li><a href="versions.html">Versions</a> <span class="divider">/</span></li>
-    <li class="active">Describe Version</li>
-</ul>
 <div id="alerts"></div>
 <form id="create-version" class="form-horizontal">
   <fieldset>
@@ -112,41 +41,15 @@ border: 1px solid #CCC;
 
     
 
-    <div class="control-group">
+<div class="control-group">
 <div class="controls">
     <input type="button" class="btn" onclick="onSave()" value="Save">
     <input id="del-btn" style="display:none" type="button" class="btn btn-danger" onclick="onDelete()" value="Delete">
 </div></div>
   </fieldset>
 </form>
-	  </section>
 
-    
-  </div>
-  <footer class="footer container">
-      </footer>
-</div>
-
-
-	
-
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <script type="text/javascript">
-<!--//--><![CDATA[//><!--
-window.jQuery || document.write("<script src='/sites/all/modules/jquery_update/replace/jquery/1.7/jquery.min.js'>\x3C/script>")
-//--><!]]>
-</script>
-<script type="text/javascript" src="/misc/jquery.once.js?v=1.2"></script>
-<script type="text/javascript" src="/misc/drupal.js?m5mvkv"></script>
-<script type="text/javascript" src="/sites/all/themes/austese/bootstrap/js/bootstrap.js?m5mvkv"></script>
-<script type="text/javascript" src="js/js2form.js"></script>
-<script type="text/javascript" src="js/jquery.tokeninput.js"></script>
-<script type="text/javascript">
-<!--//--><![CDATA[//><!--
-jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":{"theme":"austese","theme_token":"laRvRYGM7Z_Dhoi3JZ2ECfUM22NdawzEN3zDJW5f83g","js":{"https:\/\/ajax.googleapis.com\/ajax\/libs\/jquery\/1.7.1\/jquery.min.js":1,"0":1,"misc\/jquery.once.js":1,"misc\/drupal.js":1,"sites\/all\/themes\/austese\/bootstrap\/js\/bootstrap.js":1},"css":{"modules\/system\/system.base.css":1,"modules\/field\/theme\/field.css":1,"sites\/all\/themes\/austese\/bootstrap\/css\/bootstrap.css":1,"sites\/all\/themes\/austese\/bootstrap\/css\/bootstrap-responsive.css":1,"sites\/all\/themes\/austese\/css\/austese.css":1}}});
-//--><!]]>
-</script>
-  <script type="text/javascript">
     function getURLParameter(name) {
         return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null;
     }
@@ -239,9 +142,4 @@ jQuery.fn.serializeObject = function() {
     });
     return o;
 };
-
-
-
   </script>
-</body>
-</html>

@@ -1,0 +1,27 @@
+.obj {
+    padding-top:1em;
+}
+#newobject{
+    padding-bottom:1em
+}
+#resultsummary{
+    font-style:italic;
+    display:inline-block;
+}
+#resultcurrent{
+    display:inline-block;
+    font-style:italic;
+    padding-bottom:1em
+}
+.btn-highlight{
+    color:blue
+}
+.artefact, .version {
+    margin-right:3px;
+} 
+ul.token-input-list-facebook {
+    color:#555;
+    display:inline-block;
+    border: 1px solid #CCC;
+    -webkit-border-radius: 3px;
+}
