@@ -1,0 +1,13 @@
+name = AustESE content repository
+description = Content repository
+package = AustESE
+core = 7.x
+scripts[]=ui/js/js2form.js
+scripts[]=ui/js/jquery.tokeninput.js
+scripts[]=ui/js/repository.js
+stylesheets[all][]=ui/css/repository.css
+version = "7.x-1.x-dev"
+core = "7.x"
+project = "austese"
+
+
