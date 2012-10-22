@@ -3,6 +3,6 @@ return array(
     "dbhost" => "localhost",
     "dbport" => "27017",
     "dbname" => "test",
-    "uriprefix" => "http://localhost/sites/all/modules/austese_alignment/"
+    "uriprefix" => "/sites/all/modules/austese_repository/api"
 );
 ?>
