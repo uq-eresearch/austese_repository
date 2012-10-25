@@ -1,0 +1,64 @@
+.rotateLeft {
+    background-image:url(curved_arrow_left_16x12.png);
+}
+.rotateRight {
+    background-image:url(curved_arrow_16x12.png);
+}
+.plusIcon {
+    background-image:url(plus_16x16.png);
+}
+.x-toolbar .plusButton {
+    width: 22px !important;
+}
+.x-form-item-label-top, .x-form-item-label {
+    font-weight:bold;
+}
+.x-box-inner .x-tool img {
+    height: 18px;
+}
+.x-window-body {
+    background-color:white;
+}
+#uploaderui .x-form-display-field {
+    padding-top:0px;
+    padding-bottom:5px;
+}
+/* override bootstrap default for Ext checkbox */
+#uploaderui .x-form-checkbox, .x-form-checkbox {
+    width:13px !important; /* FIXME */
+}
+.x-form-item-body label {
+    display: inline;
+}
+#uploaderui .thumb-wrap {
+    float: left;
+    margin: 4px;
+    margin-right: 0;
+    padding: 5px;
+}
+
+#uploaderui .thumb img{
+    max-height: 120px;
+    max-width: 120px;
+}
+#uploaderui .thumb-wrap span {
+    display: block;
+    overflow: hidden;
+    text-align: center;
+}
+#uploaderui .x-view-over {
+    border:1px solid #dddddd;
+    background-color: #efefef;
+    padding: 4px;
+}
+#uploaderui .x-item-selected {
+    border: 1px solid yellow;
+    padding: 4px;
+}
+#uploaderui .x-item-selected .thumb {
+    background:transparent;
+}
+#uploaderui .x-item-selected span {
+    color:#1A4D8F;
+}
+
