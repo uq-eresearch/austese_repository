@@ -74,7 +74,7 @@ function createResource(){
   //return uri
   $query = array('_id'=>new MongoId($id));
   $file = $grid->findOne($query);
-  echo "{\"uri\":\"". $config['uriprefix'] . 'resources/' . $id 
+  echo "{\"uri\":\"". $config['uriprefix'] . '/resources/' . $id 
      ."\",\"filename\":\"".$file->file['filename']
      ."\",\"length\":\"".$file->file['length']."\"}"; 
  } catch (Exception $e){
@@ -97,7 +97,9 @@ $app->post('/agents/', function(){
 $app->post('/resources/', function(){
     createResource();
 });
-
+$app->post('/collections/',function(){
+   createRecord('collections');
+});
 // Read list of records
 $app->get('/artefacts/', function () {
     listRecords('artefacts','source');
@@ -114,7 +116,9 @@ $app->get('/agents/', function(){
 $app->get('/resources/',function(){
     listResources();
 });
-
+$app->get('/collections/',function(){
+    listRecords('collections','collectionTitle');
+});
 function listResources(){
   global $config;
   global $app;
@@ -145,7 +149,7 @@ function listResources(){
       $id = $returnobj['_id'];
       unset($returnobj['_id']);
       // generate uri
-      $returnobj['uri'] = $config['uriprefix']  . 'resources/' . $id->{'$id'};
+      $returnobj['uri'] = $config['uriprefix']  . '/resources/' . $id->{'$id'};
       $returnobj['id'] = $id->{'$id'};
       echo json_encode($returnobj);
       if ($cursor->hasNext()){
@@ -332,6 +336,38 @@ function updateRecord($collection,$id){
     echo $e->getMessage();
   }
 }
+// this does not update the actual file stored, only the metadata for the resource
+function updateResourceMetadata($id){
+ global $config;
+ $m = new Mongo($config['dbhost'].':'.$config['dbport'], array('persist' => 'restapi'));
+ $db = $m->selectDB($config['dbname']);
+ $grid = $db->getGridFS();
+ $env = Slim_Environment::getInstance();
+ $input = $env['slim.input'];
+ $response = Slim::getInstance()->response();
+ try {
+  $obj = parseJson($input);
+  // check supplied data was valid
+  if (count($obj)==0){
+   $response->status(400);
+   echo 'Missing or invalid JSON data';
+   return;
+  }
+  // remove uri field as we generate this
+  if (array_key_exists('uri', $obj)){
+   unset($obj['uri']);
+  }
+  if (array_key_exists('id',$obj)){
+   unset($obj['id']);
+  }
+  // TODO: support revisions, undeletion
+  $grid->update(array('_id'=> new MongoId($id)),
+    array('$set' => array('metadata' => $obj)), array('safe' => true));
+ } catch (Exception $e) {
+    $response->status(500);    
+    echo $e->getMessage();
+  }
+}
 $app->put('/artefacts/:id', function ($id) use ($config) {
     updateRecord('artefacts',$id);
 });
@@ -346,7 +382,10 @@ $app->put('/agents/:id', function ($id) use ($config) {
 });
 $app->put('/resources/:id',function($id) use ($config) {
     // update resource
-    echo 'updating resources is not supported';
+    updateResourceMetadata($id);
+});
+$app->put('/collections/:id',function($id) use ($config) {
+   updateRecord('collections',$id);
 });
 
 // Delete
@@ -395,7 +434,9 @@ $app->delete('/agents/:id', function ($id) {
 $app->delete('/resources/:id', function ($id) {
     deleteResource($id);
 });
-
+$app->delete('/collection/:id',function($id) {
+    deleteRecord('collections',$id);
+});
 function parseJson($s) {
   // make sure keys are quoted
   $s = preg_replace('/(\w+):/i', '"\1":', $s);
