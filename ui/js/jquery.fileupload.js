@@ -24,14 +24,14 @@
         // Browser globals:
         factory(window.jQuery);
     }
-}(function ($) {
+}(function (jQuery) {
     'use strict';
 
     // The FileReader API is not actually used, but works as feature detection,
     // as e.g. Safari supports XHR file uploads via the FormData API,
     // but not non-multipart XHR file uploads:
-    $.support.xhrFileUpload = !!(window.XMLHttpRequestUpload && window.FileReader);
-    $.support.xhrFormDataFileUpload = !!window.FormData;
+    jQuery.support.xhrFileUpload = !!(window.XMLHttpRequestUpload && window.FileReader);
+    jQuery.support.xhrFormDataFileUpload = !!window.FormData;
 
     // The fileupload widget listens for change events on file input fields defined
     // via fileInput setting and paste or drop events of the given dropZone.
@@ -41,7 +41,7 @@
     // By default, files added via file input selection, paste, drag & drop or
     // "add" method are uploaded immediately, but it is possible to override
     // the "add" callback option to queue file uploads.
-    $.widget('blueimp.fileupload', {
+    jQuery.widget('blueimp.fileupload', {
 
         options: {
             // The namespace used for event handler binding on the dropZone and
@@ -50,7 +50,7 @@
             namespace: undefined,
             // The drop target collection, by the default the complete document.
             // Set to null or an empty collection to disable drag & drop support:
-            dropZone: $(document),
+            dropZone: jQuery(document),
             // The file input field collection, that is listened for change events.
             // If undefined, it is set to the file input fields inside
             // of the widget element on plugin initialization.
@@ -201,8 +201,8 @@
 
         _isXHRUpload: function (options) {
             return !options.forceIframeTransport &&
-                ((!options.multipart && $.support.xhrFileUpload) ||
-                $.support.xhrFormDataFileUpload);
+                ((!options.multipart && jQuery.support.xhrFileUpload) ||
+                jQuery.support.xhrFormDataFileUpload);
         },
 
         _getFormData: function (options) {
@@ -210,12 +210,12 @@
             if (typeof options.formData === 'function') {
                 return options.formData(options.form);
             }
-			if ($.isArray(options.formData)) {
+			if (jQuery.isArray(options.formData)) {
                 return options.formData;
             }
 			if (options.formData) {
                 formData = [];
-                $.each(options.formData, function (name, value) {
+                jQuery.each(options.formData, function (name, value) {
                     formData.push({name: name, value: value});
                 });
                 return formData;
@@ -225,7 +225,7 @@
 
         _getTotal: function (files) {
             var total = 0;
-            $.each(files, function (index, file) {
+            jQuery.each(files, function (index, file) {
                 total += file.size || 1;
             });
             return total;
@@ -277,11 +277,11 @@
 
         _initProgressListener: function (options) {
             var that = this,
-                xhr = options.xhr ? options.xhr() : $.ajaxSettings.xhr();
+                xhr = options.xhr ? options.xhr() : jQuery.ajaxSettings.xhr();
             // Accesss to the native XHR object is required to add event listeners
             // for the upload progress event:
             if (xhr.upload) {
-                $(xhr.upload).bind('progress', function (e) {
+                jQuery(xhr.upload).bind('progress', function (e) {
                     var oe = e.originalEvent;
                     // Make sure the progress event properties get copied over:
                     e.lengthComputable = oe.lengthComputable;
@@ -299,7 +299,7 @@
             var formData,
                 file = options.files[0],
                 // Ignore non-multipart setting if not supported:
-                multipart = options.multipart || !$.support.xhrFileUpload,
+                multipart = options.multipart || !jQuery.support.xhrFileUpload,
                 paramName = options.paramName[0];
             if (!multipart || options.blob) {
                 // For non-multipart uploads and chunked uploads,
@@ -308,7 +308,7 @@
                 // For cross domain requests, these headers must be allowed
                 // via Access-Control-Allow-Headers or removed using
                 // the beforeSend callback:
-                options.headers = $.extend(options.headers, {
+                options.headers = jQuery.extend(options.headers, {
                     'X-File-Name': file.name,
                     'X-File-Type': file.type,
                     'X-File-Size': file.size
@@ -323,7 +323,7 @@
                     options.data = options.blob;
                 }
             }
-            if (multipart && $.support.xhrFormDataFileUpload) {
+            if (multipart && jQuery.support.xhrFormDataFileUpload) {
                 if (options.postMessage) {
                     // window.postMessage does not allow sending FormData
                     // objects, so we just add the File/Blob objects to
@@ -336,7 +336,7 @@
                             value: options.blob
                         });
                     } else {
-                        $.each(options.files, function (index, file) {
+                        jQuery.each(options.files, function (index, file) {
                             formData.push({
                                 name: options.paramName[index] || paramName,
                                 value: file
@@ -348,14 +348,14 @@
                         formData = options.formData;
                     } else {
                         formData = new FormData();
-                        $.each(this._getFormData(options), function (index, field) {
+                        jQuery.each(this._getFormData(options), function (index, field) {
                             formData.append(field.name, field.value);
                         });
                     }
                     if (options.blob) {
                         formData.append(paramName, options.blob, file.name);
                     } else {
-                        $.each(options.files, function (index, file) {
+                        jQuery.each(options.files, function (index, file) {
                             // File objects are also Blob instances.
                             // This check allows the tests to run with
                             // dummy objects:
@@ -381,7 +381,7 @@
             // The iframe transport accepts a serialized array as form data:
             options.formData = this._getFormData(options);
             // Add redirect url to form data on cross-domain uploads:
-            if (options.redirect && $('<a></a>').prop('href', options.url)
+            if (options.redirect && jQuery('<a></a>').prop('href', options.url)
                     .prop('host') !== location.host) {
                 options.formData.push({
                     name: options.redirectParamName || 'redirect',
@@ -409,12 +409,12 @@
         },
 
         _getParamName: function (options) {
-            var fileInput = $(options.fileInput),
+            var fileInput = jQuery(options.fileInput),
                 paramName = options.paramName;
             if (!paramName) {
                 paramName = [];
                 fileInput.each(function () {
-                    var input = $(this),
+                    var input = jQuery(this),
                         name = input.prop('name') || 'files[]',
                         i = (input.prop('files') || [1]).length;
                     while (i) {
@@ -425,7 +425,7 @@
                 if (!paramName.length) {
                     paramName = [fileInput.prop('name') || 'files[]'];
                 }
-            } else if (!$.isArray(paramName)) {
+            } else if (!jQuery.isArray(paramName)) {
                 paramName = [paramName];
             }
             return paramName;
@@ -435,7 +435,7 @@
             // Retrieve missing options from the input field and the
             // associated form, if available:
             if (!options.form || !options.form.length) {
-                options.form = $(options.fileInput.prop('form'));
+                options.form = jQuery(options.fileInput.prop('form'));
             }
             options.paramName = this._getParamName(options);
             if (!options.url) {
@@ -450,7 +450,7 @@
         },
 
         _getAJAXSettings: function (data) {
-            var options = $.extend({}, this.options, data);
+            var options = jQuery.extend({}, this.options, data);
             this._initFormSettings(options);
             this._initDataSettings(options);
             return options;
@@ -468,7 +468,7 @@
         // Creates and returns a Promise object enhanced with
         // the jqXHR methods abort, success, error and complete:
         _getXHRPromise: function (resolveOrReject, context, args) {
-            var dfd = $.Deferred(),
+            var dfd = jQuery.Deferred(),
                 promise = dfd.promise();
             context = context || this.options.context || promise;
             if (resolveOrReject === true) {
@@ -524,7 +524,7 @@
                 // Upload the blobs in sequential order:
                 return upload(i -= 1).pipe(function () {
                     // Clone the options object for each chunk upload:
-                    var o = $.extend({}, options);
+                    var o = jQuery.extend({}, options);
                     o.blob = slice.call(
                         file,
                         ub + i * mcs,
@@ -541,12 +541,12 @@
                     that._initXHRData(o);
                     // Add progress listeners for this chunk upload:
                     that._initProgressListener(o);
-                    jqXHR = ($.ajax(o) || that._getXHRPromise(false, o.context))
+                    jqXHR = (jQuery.ajax(o) || that._getXHRPromise(false, o.context))
                         .done(function () {
                             // Create a progress event if upload is done and
                             // no progress event has been invoked for this chunk:
                             if (!o.loaded) {
-                                that._onProgress($.Event('progress', {
+                                that._onProgress(jQuery.Event('progress', {
                                     lengthComputable: true,
                                     loaded: o.chunkSize,
                                     total: o.chunkSize
@@ -586,7 +586,7 @@
         _onDone: function (result, textStatus, jqXHR, options) {
             if (!this._isXHRUpload(options)) {
                 // Create a progress event for each iframe load:
-                this._onProgress($.Event('progress', {
+                this._onProgress(jQuery.Event('progress', {
                     lengthComputable: true,
                     loaded: 1,
                     total: 1
@@ -645,7 +645,7 @@
                     jqXHR = jqXHR || (
                         (resolve !== false &&
                         that._trigger('send', e, options) !== false &&
-                        (that._chunkedUpload(options) || $.ajax(options))) ||
+                        (that._chunkedUpload(options) || jQuery.ajax(options))) ||
                         that._getXHRPromise(false, options.context, args)
                     ).done(function (result, textStatus, jqXHR) {
                         that._onDone(result, textStatus, jqXHR, options);
@@ -680,7 +680,7 @@
                     (this.options.limitConcurrentUploads &&
                     this.options.limitConcurrentUploads <= this._sending)) {
                 if (this.options.limitConcurrentUploads > 1) {
-                    slot = $.Deferred();
+                    slot = jQuery.Deferred();
                     this._slots.push(slot);
                     pipe = slot.pipe(send);
                 } else {
@@ -707,7 +707,7 @@
         _onAdd: function (e, data) {
             var that = this,
                 result = true,
-                options = $.extend({}, this.options, data),
+                options = jQuery.extend({}, this.options, data),
                 limit = options.limitMultiFileUploads,
                 paramName = this._getParamName(options),
                 paramNameSet,
@@ -733,8 +733,8 @@
                 paramNameSet = paramName;
             }
             data.originalFiles = data.files;
-            $.each(fileSet || data.files, function (index, element) {
-                var newData = $.extend({}, data);
+            jQuery.each(fileSet || data.files, function (index, element) {
+                var newData = jQuery.extend({}, data);
                 newData.files = fileSet ? element : [element];
                 newData.paramName = paramNameSet[index];
                 newData.submit = function () {
@@ -758,12 +758,12 @@
 
         _replaceFileInput: function (input) {
             var inputClone = input.clone(true);
-            $('<form></form>').append(inputClone)[0].reset();
+            jQuery('<form></form>').append(inputClone)[0].reset();
             // Detaching allows to insert the fileInput on another form
             // without loosing the file input value:
             input.after(inputClone).detach();
             // Avoid memory leaks with the detached file input:
-            $.cleanData(input.unbind('remove'));
+            jQuery.cleanData(input.unbind('remove'));
             // Replace the original file input element in the fileInput
             // collection with the clone, which has been copied including
             // event handlers:
@@ -781,8 +781,8 @@
         },
 
         _getFileInputFiles: function (fileInput) {
-            fileInput = $(fileInput);
-            var files = $.each($.makeArray(fileInput.prop('files')), this._normalizeFile),
+            fileInput = jQuery(fileInput);
+            var files = jQuery.each(jQuery.makeArray(fileInput.prop('files')), this._normalizeFile),
                 value;
             if (!files.length) {
                 value = fileInput.prop('value');
@@ -800,8 +800,8 @@
         _onChange: function (e) {
             var that = e.data.fileupload,
                 data = {
-                    fileInput: $(e.target),
-                    form: $(e.target.form)
+                    fileInput: jQuery(e.target),
+                    form: jQuery(e.target.form)
                 };
             data.files = that._getFileInputFiles(data.fileInput);
             if (that.options.replaceFileInput) {
@@ -818,7 +818,7 @@
                 cbd = e.originalEvent.clipboardData,
                 items = (cbd && cbd.items) || [],
                 data = {files: []};
-            $.each(items, function (index, item) {
+            jQuery.each(items, function (index, item) {
                 var file = item.getAsFile && item.getAsFile();
                 if (file) {
                     data.files.push(file);
@@ -834,8 +834,8 @@
             var that = e.data.fileupload,
                 dataTransfer = e.dataTransfer = e.originalEvent.dataTransfer,
                 data = {
-                    files: $.each(
-                        $.makeArray(dataTransfer && dataTransfer.files),
+                    files: jQuery.each(
+                        jQuery.makeArray(dataTransfer && dataTransfer.files),
                         that._normalizeFile
                     )
                 };
@@ -881,11 +881,11 @@
         },
 
         _setOption: function (key, value) {
-            var refresh = $.inArray(key, this._refreshOptionsList) !== -1;
+            var refresh = jQuery.inArray(key, this._refreshOptionsList) !== -1;
             if (refresh) {
                 this._destroyEventHandlers();
             }
-            $.Widget.prototype._setOption.call(this, key, value);
+            jQuery.Widget.prototype._setOption.call(this, key, value);
             if (refresh) {
                 this._initSpecialOptions();
                 this._initEventHandlers();
@@ -897,18 +897,18 @@
             if (options.fileInput === undefined) {
                 options.fileInput = this.element.is('input:file') ?
                         this.element : this.element.find('input:file');
-            } else if (!(options.fileInput instanceof $)) {
-                options.fileInput = $(options.fileInput);
+            } else if (!(options.fileInput instanceof jQuery)) {
+                options.fileInput = jQuery(options.fileInput);
             }
-            if (!(options.dropZone instanceof $)) {
-                options.dropZone = $(options.dropZone);
+            if (!(options.dropZone instanceof jQuery)) {
+                options.dropZone = jQuery(options.dropZone);
             }
         },
 
         _create: function () {
             var options = this.options;
             // Initialize options set via HTML5 data-attributes:
-            $.extend(options, $(this.element[0].cloneNode(false)).data());
+            jQuery.extend(options, jQuery(this.element[0].cloneNode(false)).data());
             options.namespace = options.namespace || this.widgetName;
             this._initSpecialOptions();
             this._slots = [];
@@ -919,17 +919,17 @@
 
         destroy: function () {
             this._destroyEventHandlers();
-            $.Widget.prototype.destroy.call(this);
+            jQuery.Widget.prototype.destroy.call(this);
         },
 
         enable: function () {
-            $.Widget.prototype.enable.call(this);
+            jQuery.Widget.prototype.enable.call(this);
             this._initEventHandlers();
         },
 
         disable: function () {
             this._destroyEventHandlers();
-            $.Widget.prototype.disable.call(this);
+            jQuery.Widget.prototype.disable.call(this);
         },
 
         // This method is exposed to the widget API and allows adding files
@@ -943,7 +943,7 @@
             if (data.fileInput && !data.files) {
                 data.files = this._getFileInputFiles(data.fileInput);
             } else {
-                data.files = $.each($.makeArray(data.files), this._normalizeFile);
+                data.files = jQuery.each(jQuery.makeArray(data.files), this._normalizeFile);
             }
             this._onAdd(null, data);
         },
@@ -958,7 +958,7 @@
                 if (data.fileInput && !data.files) {
                     data.files = this._getFileInputFiles(data.fileInput);
                 } else {
-                    data.files = $.each($.makeArray(data.files), this._normalizeFile);
+                    data.files = jQuery.each(jQuery.makeArray(data.files), this._normalizeFile);
                 }
                 if (data.files.length) {
                     return this._onSend(null, data);

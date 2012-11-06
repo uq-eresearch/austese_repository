@@ -30,13 +30,13 @@
             window.loadImage
         );
     }
-}(function ($, tmpl, loadImage) {
+}(function (jQuery, tmpl, loadImage) {
     'use strict';
 
     // The UI version extends the FP (file processing) version or the basic
     // file upload widget and adds complete user interface interaction:
-    var parentWidget = ($.blueimpFP || $.blueimp).fileupload;
-    $.widget('blueimpUI.fileupload', parentWidget, {
+    var parentWidget = (jQuery.blueimpFP || jQuery.blueimp).fileupload;
+    jQuery.widget('blueimpUI.fileupload', parentWidget, {
 
         options: {
             // By default, files added to the widget are uploaded as soon
@@ -52,10 +52,10 @@
             minFileSize: undefined,
             // The regular expression for allowed file types, matches
             // against either file type or file name:
-            acceptFileTypes:  /.+$/i,
+            acceptFileTypes:  /.+jQuery/i,
             // The regular expression to define for which files a preview
             // image is shown, matched against the file type:
-            previewSourceFileTypes: /^image\/(gif|jpeg|png)$/,
+            previewSourceFileTypes: /^image\/(gif|jpeg|png)jQuery/,
             // The maximum file size of images that are to be displayed as preview:
             previewSourceMaxFileSize: 5000000, // 5MB
             // The maximum width of the preview images:
@@ -77,17 +77,17 @@
             // Set the following option to true, to prepend files instead:
             prependFiles: false,
             // The expected data type of the upload response, sets the dataType
-            // option of the $.ajax upload requests:
+            // option of the jQuery.ajax upload requests:
             dataType: 'json',
 
             // The add callback is invoked as soon as files are added to the fileupload
             // widget (via file input selection, drag & drop or add API call).
             // See the basic file upload widget for more information:
             add: function (e, data) {
-                var that = $(this).data('fileupload'),
+                var that = jQuery(this).data('fileupload'),
                     options = that.options,
                     files = data.files;
-                $(this).fileupload('process', data).done(function () {
+                jQuery(this).fileupload('process', data).done(function () {
                     that._adjustMaxNumberOfFiles(-files.length);
                     data.maxNumberOfFilesAdjusted = true;
                     data.files.valid = data.isValidated = that._validate(files);
@@ -110,7 +110,7 @@
             },
             // Callback for the start of each file upload request:
             send: function (e, data) {
-                var that = $(this).data('fileupload');
+                var that = jQuery(this).data('fileupload');
                 if (!data.isValidated) {
                     if (!data.maxNumberOfFilesAdjusted) {
                         that._adjustMaxNumberOfFiles(-data.files.length);
@@ -127,7 +127,7 @@
                     // the progress to 100%, showing the full animated bar:
                     data.context
                         .find('.progress').addClass(
-                            !$.support.transition && 'progress-animated'
+                            !jQuery.support.transition && 'progress-animated'
                         )
                         .attr('aria-valuenow', 100)
                         .find('.bar').css(
@@ -139,24 +139,24 @@
             },
             // Callback for successful uploads:
             done: function (e, data) {
-                var that = $(this).data('fileupload'),
+                var that = jQuery(this).data('fileupload'),
                     template;
                 if (data.context) {
                     data.context.each(function (index) {
-                        var file = ($.isArray(data.result) &&
+                        var file = (jQuery.isArray(data.result) &&
                                 data.result[index]) || {error: 'emptyResult'};
                         if (file.error) {
                             that._adjustMaxNumberOfFiles(1);
                         }
-                        that._transition($(this)).done(
+                        that._transition(jQuery(this)).done(
                             function () {
-                                var node = $(this);
+                                var node = jQuery(this);
                                 template = that._renderDownload([file])
                                     .replaceAll(node);
                                 that._forceReflow(template);
                                 that._transition(template).done(
                                     function () {
-                                        data.context = $(this);
+                                        data.context = jQuery(this);
                                         that._trigger('completed', e, data);
                                     }
                                 );
@@ -164,8 +164,8 @@
                         );
                     });
                 } else {
-                    if ($.isArray(data.result)) {
-                        $.each(data.result, function (index, file) {
+                    if (jQuery.isArray(data.result)) {
+                        jQuery.each(data.result, function (index, file) {
                             if (data.maxNumberOfFilesAdjusted && file.error) {
                                 that._adjustMaxNumberOfFiles(1);
                             } else if (!data.maxNumberOfFilesAdjusted &&
@@ -180,7 +180,7 @@
                     that._forceReflow(template);
                     that._transition(template).done(
                         function () {
-                            data.context = $(this);
+                            data.context = jQuery(this);
                             that._trigger('completed', e, data);
                         }
                     );
@@ -188,7 +188,7 @@
             },
             // Callback for failed (abort or error) uploads:
             fail: function (e, data) {
-                var that = $(this).data('fileupload'),
+                var that = jQuery(this).data('fileupload'),
                     template;
                 if (data.maxNumberOfFilesAdjusted) {
                     that._adjustMaxNumberOfFiles(data.files.length);
@@ -199,24 +199,24 @@
                             var file = data.files[index];
                             file.error = file.error || data.errorThrown ||
                                 true;
-                            that._transition($(this)).done(
+                            that._transition(jQuery(this)).done(
                                 function () {
-                                    var node = $(this);
+                                    var node = jQuery(this);
                                     template = that._renderDownload([file])
                                         .replaceAll(node);
                                     that._forceReflow(template);
                                     that._transition(template).done(
                                         function () {
-                                            data.context = $(this);
+                                            data.context = jQuery(this);
                                             that._trigger('failed', e, data);
                                         }
                                     );
                                 }
                             );
                         } else {
-                            that._transition($(this)).done(
+                            that._transition(jQuery(this)).done(
                                 function () {
-                                    $(this).remove();
+                                    jQuery(this).remove();
                                     that._trigger('failed', e, data);
                                 }
                             );
@@ -229,7 +229,7 @@
                     that._forceReflow(data.context);
                     that._transition(data.context).done(
                         function () {
-                            data.context = $(this);
+                            data.context = jQuery(this);
                             that._trigger('failed', e, data);
                         }
                     );
@@ -251,14 +251,14 @@
             },
             // Callback for global upload progress events:
             progressall: function (e, data) {
-                var $this = $(this),
+                var jQuerythis = jQuery(this),
                     progress = parseInt(data.loaded / data.total * 100, 10),
-                    globalProgressNode = $this.find('.fileupload-progress'),
+                    globalProgressNode = jQuerythis.find('.fileupload-progress'),
                     extendedProgressNode = globalProgressNode
                         .find('.progress-extended');
                 if (extendedProgressNode.length) {
                     extendedProgressNode.html(
-                        $this.data('fileupload')._renderExtendedProgress(data)
+                        jQuerythis.data('fileupload')._renderExtendedProgress(data)
                     );
                 }
                 globalProgressNode
@@ -271,8 +271,8 @@
             },
             // Callback for uploads start, equivalent to the global ajaxStart event:
             start: function (e) {
-                var that = $(this).data('fileupload');
-                that._transition($(this).find('.fileupload-progress')).done(
+                var that = jQuery(this).data('fileupload');
+                that._transition(jQuery(this).find('.fileupload-progress')).done(
                     function () {
                         that._trigger('started', e);
                     }
@@ -280,27 +280,27 @@
             },
             // Callback for uploads stop, equivalent to the global ajaxStop event:
             stop: function (e) {
-                var that = $(this).data('fileupload');
-                that._transition($(this).find('.fileupload-progress')).done(
+                var that = jQuery(this).data('fileupload');
+                that._transition(jQuery(this).find('.fileupload-progress')).done(
                     function () {
-                        $(this).find('.progress')
+                        jQuery(this).find('.progress')
                             .attr('aria-valuenow', '0')
                             .find('.bar').css('width', '0%');
-                        $(this).find('.progress-extended').html('&nbsp;');
+                        jQuery(this).find('.progress-extended').html('&nbsp;');
                         that._trigger('stopped', e);
                     }
                 );
             },
             // Callback for file deletion:
             destroy: function (e, data) {
-                var that = $(this).data('fileupload');
+                var that = jQuery(this).data('fileupload');
                 if (data.url) {
-                    $.ajax(data);
+                    jQuery.ajax(data);
                     that._adjustMaxNumberOfFiles(1);
                 }
                 that._transition(data.context).done(
                     function () {
-                        $(this).remove();
+                        jQuery(this).remove();
                         that._trigger('destroyed', e, data);
                     }
                 );
@@ -310,7 +310,7 @@
         // Link handler, that allows to download files
         // by drag & drop of the links to the desktop:
         _enableDragToDesktop: function () {
-            var link = $(this),
+            var link = jQuery(this),
                 url = link.prop('href'),
                 name = link.prop('download'),
                 type = 'application/octet-stream';
@@ -421,7 +421,7 @@
         _validate: function (files) {
             var that = this,
                 valid = !!files.length;
-            $.each(files, function (index, file) {
+            jQuery.each(files, function (index, file) {
                 file.error = that._hasError(file);
                 if (file.error) {
                     valid = false;
@@ -432,23 +432,23 @@
 
         _renderTemplate: function (func, files) {
             if (!func) {
-                return $();
+                return jQuery();
             }
             var result = func({
                 files: files,
                 formatFileSize: this._formatFileSize,
                 options: this.options
             });
-            if (result instanceof $) {
+            if (result instanceof jQuery) {
                 return result;
             }
-            return $(this.options.templatesContainer).html(result).children();
+            return jQuery(this.options.templatesContainer).html(result).children();
         },
 
         _renderPreview: function (file, node) {
             var that = this,
                 options = this.options,
-                dfd = $.Deferred();
+                dfd = jQuery.Deferred();
             return ((loadImage && loadImage(
                 file,
                 function (img) {
@@ -457,7 +457,7 @@
                     that._transition(node).done(function () {
                         dfd.resolveWith(node);
                     });
-                    if (!$.contains(document.body, node[0])) {
+                    if (!jQuery.contains(document.body, node[0])) {
                         // If the element is not part of the DOM,
                         // transition events are not triggered,
                         // so we have to resolve manually:
@@ -478,11 +478,11 @@
             nodes.find('.preview span').each(function (index, element) {
                 var file = files[index];
                 if (options.previewSourceFileTypes.test(file.type) &&
-                        ($.type(options.previewSourceMaxFileSize) !== 'number' ||
+                        (jQuery.type(options.previewSourceMaxFileSize) !== 'number' ||
                         file.size < options.previewSourceMaxFileSize)) {
                     that._processingQueue = that._processingQueue.pipe(function () {
-                        var dfd = $.Deferred();
-                        that._renderPreview(file, $(element)).done(
+                        var dfd = jQuery.Deferred();
+                        that._renderPreview(file, jQuery(element)).done(
                             function () {
                                 dfd.resolveWith(that);
                             }
@@ -510,7 +510,7 @@
 
         _startHandler: function (e) {
             e.preventDefault();
-            var button = $(this),
+            var button = jQuery(this),
                 template = button.closest('.template-upload'),
                 data = template.data('data');
             if (data && data.submit && !data.jqXHR && data.submit()) {
@@ -520,7 +520,7 @@
 
         _cancelHandler: function (e) {
             e.preventDefault();
-            var template = $(this).closest('.template-upload'),
+            var template = jQuery(this).closest('.template-upload'),
                 data = template.data('data') || {};
             if (!data.jqXHR) {
                 data.errorThrown = 'abort';
@@ -532,7 +532,7 @@
 
         _deleteHandler: function (e) {
             e.preventDefault();
-            var button = $(this);
+            var button = jQuery(this);
             e.data.fileupload._trigger('destroy', e, {
                 context: button.closest('.template-download'),
                 url: button.attr('data-url'),
@@ -542,20 +542,20 @@
         },
 
         _forceReflow: function (node) {
-            return $.support.transition && node.length &&
+            return jQuery.support.transition && node.length &&
                 node[0].offsetWidth;
         },
 
         _transition: function (node) {
-            var dfd = $.Deferred();
-            if ($.support.transition && node.hasClass('fade')) {
+            var dfd = jQuery.Deferred();
+            if (jQuery.support.transition && node.hasClass('fade')) {
                 node.bind(
-                    $.support.transition.end,
+                    jQuery.support.transition.end,
                     function (e) {
                         // Make sure we don't respond to other transitions events
                         // in the container element, e.g. from button elements:
                         if (e.target === node[0]) {
-                            node.unbind($.support.transition.end);
+                            node.unbind(jQuery.support.transition.end);
                             dfd.resolveWith(node);
                         }
                     }
@@ -593,7 +593,7 @@
                 .bind('change.' + ns, function (e) {
                     filesList.find('.delete input').prop(
                         'checked',
-                        $(this).is(':checked')
+                        jQuery(this).is(':checked')
                     );
                 });
         },
@@ -671,8 +671,8 @@
             var options = this.options;
             if (options.filesContainer === undefined) {
                 options.filesContainer = this.element.find('.files');
-            } else if (!(options.filesContainer instanceof $)) {
-                options.filesContainer = $(options.filesContainer);
+            } else if (!(options.filesContainer instanceof jQuery)) {
+                options.filesContainer = jQuery(options.filesContainer);
             }
         },
 
@@ -685,12 +685,12 @@
 
         _initRegExpOptions: function () {
             var options = this.options;
-            if ($.type(options.acceptFileTypes) === 'string') {
+            if (jQuery.type(options.acceptFileTypes) === 'string') {
                 options.acceptFileTypes = this._stringToRegExp(
                     options.acceptFileTypes
                 );
             }
-            if ($.type(options.previewSourceFileTypes) === 'string') {
+            if (jQuery.type(options.previewSourceFileTypes) === 'string') {
                 options.previewSourceFileTypes = this._stringToRegExp(
                     options.previewSourceFileTypes
                 );
@@ -711,8 +711,8 @@
                 'uploadTemplateId',
                 'downloadTemplateId'
             );
-            if (!$.blueimpFP) {
-                this._processingQueue = $.Deferred().resolveWith(this).promise();
+            if (!jQuery.blueimpFP) {
+                this._processingQueue = jQuery.Deferred().resolveWith(this).promise();
                 this.process = function () {
                     return this._processingQueue;
                 };

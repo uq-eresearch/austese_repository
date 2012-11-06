@@ -21,7 +21,7 @@
         // Browser globals:
         factory(window.jQuery);
     }
-}(function ($) {
+}(function (jQuery) {
     'use strict';
 
     // Helper variable to create unique names for the transport iframes:
@@ -35,24 +35,24 @@
     // options.formData: an array of objects with name and value properties,
     //  equivalent to the return data of .serializeArray(), e.g.:
     //  [{name: 'a', value: 1}, {name: 'b', value: 2}]
-    $.ajaxTransport('iframe', function (options) {
+    jQuery.ajaxTransport('iframe', function (options) {
         if (options.async && (options.type === 'POST' || options.type === 'GET')) {
             var form,
                 iframe;
             return {
                 send: function (_, completeCallback) {
-                    form = $('<form style="display:none;"></form>');
+                    form = jQuery('<form style="display:none;"></form>');
                     // javascript:false as initial iframe src
                     // prevents warning popups on HTTPS in IE6.
                     // IE versions below IE8 cannot set the name property of
                     // elements that have already been added to the DOM,
                     // so we set the name along with the iframe HTML markup:
-                    iframe = $(
+                    iframe = jQuery(
                         '<iframe src="javascript:false;" name="iframe-transport-' +
                             (counter += 1) + '"></iframe>'
                     ).bind('load', function () {
                         var fileInputClones,
-                            paramNames = $.isArray(options.paramName) ?
+                            paramNames = jQuery.isArray(options.paramName) ?
                                     options.paramName : [options.paramName];
                         iframe
                             .unbind('load')
@@ -80,7 +80,7 @@
                                 );
                                 // Fix for IE endless progress bar activity bug
                                 // (happens on form submits to iframe targets):
-                                $('<iframe src="javascript:false;"></iframe>')
+                                jQuery('<iframe src="javascript:false;"></iframe>')
                                     .appendTo(form);
                                 form.remove();
                             });
@@ -89,8 +89,8 @@
                             .prop('action', options.url)
                             .prop('method', options.type);
                         if (options.formData) {
-                            $.each(options.formData, function (index, field) {
-                                $('<input type="hidden"/>')
+                            jQuery.each(options.formData, function (index, field) {
+                                jQuery('<input type="hidden"/>')
                                     .prop('name', field.name)
                                     .val(field.value)
                                     .appendTo(form);
@@ -105,7 +105,7 @@
                             });
                             if (options.paramName) {
                                 options.fileInput.each(function (index) {
-                                    $(this).prop(
+                                    jQuery(this).prop(
                                         'name',
                                         paramNames[index] || options.paramName
                                     );
@@ -124,8 +124,8 @@
                         // by replacing the clones with the originals:
                         if (fileInputClones && fileInputClones.length) {
                             options.fileInput.each(function (index, input) {
-                                var clone = $(fileInputClones[index]);
-                                $(input).prop('name', clone.prop('name'));
+                                var clone = jQuery(fileInputClones[index]);
+                                jQuery(input).prop('name', clone.prop('name'));
                                 clone.replaceWith(input);
                             });
                         }
@@ -151,19 +151,19 @@
 
     // The iframe transport returns the iframe content document as response.
     // The following adds converters from iframe to text, json, html, and script:
-    $.ajaxSetup({
+    jQuery.ajaxSetup({
         converters: {
             'iframe text': function (iframe) {
-                return $(iframe[0].body).text();
+                return jQuery(iframe[0].body).text();
             },
             'iframe json': function (iframe) {
-                return $.parseJSON($(iframe[0].body).text());
+                return jQuery.parseJSON(jQuery(iframe[0].body).text());
             },
             'iframe html': function (iframe) {
-                return $(iframe[0].body).html();
+                return jQuery(iframe[0].body).html();
             },
             'iframe script': function (iframe) {
-                return $.globalEval($(iframe[0].body).text());
+                return jQuery.globalEval(jQuery(iframe[0].body).text());
             }
         }
     });

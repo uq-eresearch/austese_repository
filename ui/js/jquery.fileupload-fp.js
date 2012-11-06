@@ -29,12 +29,12 @@
             window.loadImage
         );
     }
-}(function ($, loadImage) {
+}(function (jQuery, loadImage) {
     'use strict';
 
     // The File Upload IP version extends the basic fileupload widget
     // with file processing functionality:
-    $.widget('blueimpFP.fileupload', $.blueimp.fileupload, {
+    jQuery.widget('blueimpFP.fileupload', jQuery.blueimp.fileupload, {
 
         options: {
             // The list of file processing actions:
@@ -42,7 +42,7 @@
             /*
                 {
                     action: 'load',
-                    fileTypes: /^image\/(gif|jpeg|png)$/,
+                    fileTypes: /^image\/(gif|jpeg|png)jQuery/,
                     maxFileSize: 20000000 // 20MB
                 },
                 {
@@ -62,7 +62,7 @@
             // fileupload widget (via file input selection, drag & drop or add
             // API call). See the basic file upload widget for more information:
             add: function (e, data) {
-                $(this).fileupload('process', data).done(function () {
+                jQuery(this).fileupload('process', data).done(function () {
                     data.submit();
                 });
             }
@@ -76,10 +76,10 @@
             load: function (data, options) {
                 var that = this,
                     file = data.files[data.index],
-                    dfd = $.Deferred();
+                    dfd = jQuery.Deferred();
                 if (window.HTMLCanvasElement &&
                         window.HTMLCanvasElement.prototype.toBlob &&
-                        ($.type(options.maxFileSize) !== 'number' ||
+                        (jQuery.type(options.maxFileSize) !== 'number' ||
                             file.size < options.maxFileSize) &&
                         (!options.fileTypes ||
                             options.fileTypes.test(file.type))) {
@@ -121,14 +121,14 @@
                 var that = this,
                     file = data.files[data.index],
                     name = file.name,
-                    dfd = $.Deferred(),
+                    dfd = jQuery.Deferred(),
                     callback = function (blob) {
                         if (!blob.name) {
                             if (file.type === blob.type) {
                                 blob.name = file.name;
                             } else if (file.name) {
                                 blob.name = file.name.replace(
-                                    /\..+$/,
+                                    /\..+jQuery/,
                                     '.' + blob.type.substr(6)
                                 );
                             }
@@ -142,8 +142,8 @@
                 // Gecko doesn't support the filename option for FormData.append:
                 if (data.canvas.mozGetAsFile) {
                     callback(data.canvas.mozGetAsFile(
-                        (/^image\/(jpeg|png)$/.test(file.type) && name) ||
-                            ((name && name.replace(/\..+$/, '')) ||
+                        (/^image\/(jpeg|png)jQuery/.test(file.type) && name) ||
+                            ((name && name.replace(/\..+jQuery/, '')) ||
                                 'blob') + '.png',
                         file.type
                     ));
@@ -158,13 +158,13 @@
         // the original position of the files list, returns a Promise object:
         _processFile: function (files, index, options) {
             var that = this,
-                dfd = $.Deferred().resolveWith(that, [{
+                dfd = jQuery.Deferred().resolveWith(that, [{
                     files: files,
                     index: index
                 }]),
                 chain = dfd.promise();
             that._processing += 1;
-            $.each(options.process, function (i, settings) {
+            jQuery.each(options.process, function (i, settings) {
                 chain = chain.pipe(function (data) {
                     return that.processActions[settings.action]
                         .call(this, data, settings);
@@ -188,13 +188,13 @@
         // will be invoked after processing all files (inplace) is done:
         process: function (data) {
             var that = this,
-                options = $.extend({}, this.options, data);
+                options = jQuery.extend({}, this.options, data);
             if (options.process && options.process.length &&
                     this._isXHRUpload(options)) {
-                $.each(data.files, function (index, file) {
+                jQuery.each(data.files, function (index, file) {
                     that._processingQueue = that._processingQueue.pipe(
                         function () {
-                            var dfd = $.Deferred();
+                            var dfd = jQuery.Deferred();
                             that._processFile(data.files, index, options)
                                 .always(function () {
                                     dfd.resolveWith(that);
@@ -208,9 +208,9 @@
         },
 
         _create: function () {
-            $.blueimp.fileupload.prototype._create.call(this);
+            jQuery.blueimp.fileupload.prototype._create.call(this);
             this._processing = 0;
-            this._processingQueue = $.Deferred().resolveWith(this)
+            this._processingQueue = jQuery.Deferred().resolveWith(this)
                 .promise();
         }
 
