@@ -36,7 +36,8 @@ Ext.define('austese_uploader.view.ThumbnailView', {
         if (data.type.match("image")){
             return data.uri;
         } else {
-            return "/sites/all/modules/austese_repository/ui/uploaderold/texticon.png";
+            // FIXME: don't hardcode this URI
+            return "/sites/all/modules/austese_repository/ui/img/texticon.png";
         }
     },
     prepareData: function(data) {
