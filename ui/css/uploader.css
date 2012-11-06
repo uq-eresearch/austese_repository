@@ -1,14 +1,11 @@
 .rotateLeft {
-    background-image:url(curved_arrow_left_16x12.png);
+    background-image:url(../img/curved_arrow_left_16x12.png);
 }
 .rotateRight {
-    background-image:url(curved_arrow_16x12.png);
+    background-image:url(../img/curved_arrow_16x12.png);
 }
-.plusIcon {
-    background-image:url(plus_16x16.png);
-}
-.x-toolbar .plusButton {
-    width: 22px !important;
+.configureIcon {
+    background-image:url(../img/plus_16x16.png);
 }
 .x-form-item-label-top, .x-form-item-label {
     font-weight:bold;
