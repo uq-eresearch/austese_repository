@@ -66,6 +66,7 @@ function repository_menu() {
     'access arguments' => array('view metadata'),
     'type' => MENU_CALLBACK
   );
+
   // View objects by type
   $items['repository/%'] = array(
     'title arguments' => array('title'=>1),
@@ -107,11 +108,21 @@ function repository_display($template){
     //linkable version of current page: $breadcrumb[] = l(drupal_get_title(), base_path() . request_uri());
     $breadcrumb[] = t(drupal_get_title()); 
     drupal_set_breadcrumb($breadcrumb);
-    //return theme($template, array());
-    return theme("display",array());
+    
+    $modulePath = drupal_get_path('module', 'repository');
+    drupal_add_js($modulePath . '/ui/js/repository.js');
+    drupal_add_css($modulePath . '/ui/css/repository.css'); 
+    if ($template == 'resources'){
+        drupal_add_css($modulePath . '/ui/css/uploader.css');
+        drupal_add_js('/ext-4.1.1a/ext-all.js');
+        drupal_add_js($modulePath . '/ui/js/uploader.js');
+        return theme("resources", array());
+    } else {
+        return theme("display",array());
+    }
 }
 function repository_edit($template, $id=null){
-    if (!in_array($template,array("agents","artefacts","versions","works","resources"))) {
+    if (!in_array($template,array("agents","artefacts","versions","works"))) {
         drupal_access_denied();
         return;
       }
@@ -122,12 +133,18 @@ function repository_edit($template, $id=null){
     $breadcrumb[] = t(drupal_get_title()); 
     drupal_set_breadcrumb($breadcrumb);
     
-    // Add stylesheets that are only used by the edit pages (other stylesheets are specified in the .info file)
-    drupal_add_css(drupal_get_path('module', 'repository') . '/ui/css/token-input.css', 
+    // Add scripts
+    $modulePath = drupal_get_path('module', 'repository');
+    drupal_add_js($modulePath . '/ui/js/jquery.tokeninput.js');
+    drupal_add_js($modulePath . '/ui/js/js2form.js');
+    drupal_add_js($modulePath . '/ui/js/repository.js');
+    
+    // Add stylesheets
+    drupal_add_css($modulePath . '/ui/css/repository.css'); 
+    drupal_add_css($modulePath . '/ui/css/token-input.css', 
         array('group' => CSS_DEFAULT, 'every_page' => FALSE));
-    drupal_add_css(drupal_get_path('module', 'repository') . '/ui/css/token-input-facebook.css', 
+    drupal_add_css($modulePath . '/ui/css/token-input-facebook.css', 
         array('group' => CSS_DEFAULT, 'every_page' => FALSE));
-        
     return theme($template.'_edit',array());
 }
 function repository_toc() {
@@ -148,29 +165,29 @@ function repository_theme(){
         'template' => 'ui/listobjects',
         'variables' => array()
     ),
-     'resources' => array(
-       'template' => 'ui/resources',
-       'variables' => array()
-     ),
-     'agents_edit' => array(
+    'agents_edit' => array(
         'template' => 'ui/agents_edit',
         'variables' => array()
-     ),
-     'artefacts_edit' => array(
+    ),
+    'artefacts_edit' => array(
        'template' => 'ui/artefacts_edit',
        'variables' => array()
-     ),
+    ),
     'versions_edit' => array(
        'template' => 'ui/versions_edit',
        'variables' => array()
-     ),
-     'works_edit' => array(
+    ),
+    'works_edit' => array(
        'template' => 'ui/works_edit',
        'variables' => array()
-     ),
+    ),
+    'resources' => array(
+       'template' => 'ui/uploader',
+       'variables' => array()
+    ),
  );
 }
 
 /**
- * @} End of "defgroup alignment".
+ * @} End of "defgroup repository".
  */
