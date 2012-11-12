@@ -1,5 +1,5 @@
 <div id="alerts"></div>
-<form id="fileupload" enctype="multipart/form-data" method="POST" action="../resources/" class="form-horizontal">
+<form id="fileupload" enctype="multipart/form-data" method="POST" action="/<?php print drupal_get_path('module', 'repository'); ?>/api/resources/" class="form-horizontal">
         <div class="row fileupload-buttonbar">
             <div class="span7">
                 <!-- The fileinput-button span is used to style the file input field as button -->
@@ -149,58 +149,5 @@
     </tr>
 {% } %}
 </script>
-
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-<script src="js/vendor/jquery.ui.widget.js"></script>
-<!-- The Templates plugin is included to render the upload/download listings -->
-<script src="http://blueimp.github.com/JavaScript-Templates/tmpl.min.js"></script>
-<!-- The Load Image plugin is included for the preview images and image resizing functionality -->
-<script src="http://blueimp.github.com/JavaScript-Load-Image/load-image.min.js"></script>
-<!-- The Canvas to Blob plugin is included for image resizing functionality -->
-<script src="http://blueimp.github.com/JavaScript-Canvas-to-Blob/canvas-to-blob.min.js"></script>
-<script src="js/jquery.iframe-transport.js"></script>
-<!-- The basic File Upload plugin -->
-<script src="js/jquery.fileupload.js"></script>
-<!-- The File Upload file processing plugin -->
-<script src="js/jquery.fileupload-fp.js"></script>
-<!-- The File Upload user interface plugin -->
-<script src="js/jquery.fileupload-ui.js"></script>
-<!-- The localization script -->
-<script src="js/locale.js"></script>
-<!-- The main application script -->
-<script src="js/uploadmain.js"></script>
-
-<script type="text/javascript">
-<!--//--><![CDATA[//><!--
-window.jQuery || document.write("<script src='/sites/all/modules/jquery_update/replace/jquery/1.7/jquery.min.js'>\x3C/script>")
-//--><!]]>
-</script>
-<script type="text/javascript" src="/misc/jquery.once.js?v=1.2"></script>
-<script type="text/javascript" src="/misc/drupal.js?m5mvkv"></script>
-<script type="text/javascript" src="/sites/all/themes/austese/bootstrap/js/bootstrap.js?m5mvkv"></script>
-<script type="text/javascript" src="js/js2form.js"></script>
-<script type="text/javascript">
-<!--//--><![CDATA[//><!--
-jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":{"theme":"austese","theme_token":"laRvRYGM7Z_Dhoi3JZ2ECfUM22NdawzEN3zDJW5f83g","js":{"https:\/\/ajax.googleapis.com\/ajax\/libs\/jquery\/1.7.1\/jquery.min.js":1,"0":1,"misc\/jquery.once.js":1,"misc\/drupal.js":1,"sites\/all\/themes\/austese\/bootstrap\/js\/bootstrap.js":1},"css":{"modules\/system\/system.base.css":1,"modules\/field\/theme\/field.css":1,"sites\/all\/themes\/austese\/bootstrap\/css\/bootstrap.css":1,"sites\/all\/themes\/austese\/bootstrap\/css\/bootstrap-responsive.css":1,"sites\/all\/themes\/austese\/css\/austese.css":1}}});
-//--><!]]>
-</script>
-  <script type="text/javascript">
-    jQuery(document).ready(function(){
-       jQuery('.dropdown-toggle').dropdown()
-    });
-    function onSave(){ 
-     var formData = new FormData(jQuery('#create-resource')[0]);
-     jQuery.ajax({
-       type: 'POST',
-       enctype: 'multipart/form-data',
-       data: formData,
-       url: '../resources/',
-       success: function(d){
-         jQuery('#alerts').append(jQuery('<div class="alert alert-block"><button type="button" class="close" data-dismiss="alert">x</button><h4>Resource uploaded</h4><p><a href="digitalresources.html">View resources</a></p></div>').alert());
-       }
-     });
-    };
-
-  </script>
 </body>
 </html>

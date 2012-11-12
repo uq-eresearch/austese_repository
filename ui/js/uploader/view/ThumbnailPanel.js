@@ -66,10 +66,17 @@ Ext.define('austese_uploader.view.ThumbnailPanel', {
         store.clearFilter();
         dataview.getSelectionModel().clearSelections();
         store.resumeEvents();
-        store.filter({
-            property: 'filename',
-            anyMatch: true,
-            value   : newValue
-        });
+        store.filter([new Ext.util.Filter(
+            {
+                property: 'filename',
+                anyMatch: true,
+                value   : newValue
+            }),
+            new Ext.util.Filter({
+                property: 'title',
+                anyMatch: true,
+                value: newValue
+            })]
+        );
     }
 });

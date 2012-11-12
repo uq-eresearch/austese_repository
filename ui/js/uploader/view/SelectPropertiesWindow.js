@@ -4,7 +4,7 @@ Ext.define('austese_uploader.view.SelectPropertiesWindow', {
 
     width: 350,
     title: 'Select property fields to show in editor',
-
+    id: 'selectpropertieswindow',
     initComponent: function() {
         var me = this;
 
@@ -16,37 +16,31 @@ Ext.define('austese_uploader.view.SelectPropertiesWindow', {
                     bodyPadding: 10,
                     items: [
                         {
-                            xtype: 'checkboxfield',
                             anchor: '100%',
                             name: 'coverage',
                             boxLabel: 'Coverage',
                         },
                         {
-                            xtype: 'checkboxfield',
                             anchor: '100%',
                             name: 'format',
                             boxLabel: 'Format'
                         },
                         {
-                            xtype: 'checkboxfield',
                             anchor: '100%',
                             name: 'language',
                             boxLabel: 'Language'
                         },
                         {
-                            xtype: 'checkboxfield',
                             anchor: '100%',
                             name: 'publisher',
                             boxLabel: 'Publisher'
                         },
                         {
-                            xtype: 'checkboxfield',
                             anchor: '100%',
                             name: 'rights',
                             boxLabel: 'Rights'
                         },
                         {
-                            xtype: 'checkboxfield',
                             anchor: '100%',
                             name: 'source',
                             boxLabel: 'Source'
@@ -80,6 +74,15 @@ Ext.define('austese_uploader.view.SelectPropertiesWindow', {
         });
 
         me.callParent(arguments);
+        
+        // use existingFields config to set up initial checkbox values
+        if (me.existingFields) {
+            me.down('form').items.each(function(f){
+                if (Ext.Array.contains(me.existingFields,f.name)){
+                    f.setValue("on");
+                }
+            });
+        }
     }
 
 });

@@ -16,13 +16,16 @@
 .x-window-body {
     background-color:white;
 }
+#uploaderui input[type="text"] {
+    margin-bottom:0px;
+}
 #uploaderui .x-form-display-field {
     padding-top:0px;
     padding-bottom:5px;
 }
 /* override bootstrap default for Ext checkbox */
-#uploaderui .x-form-checkbox, .x-form-checkbox {
-    width:13px !important; /* FIXME */
+#uploaderui .x-form-checkbox, #selectpropertieswindow .x-form-checkbox {
+    width:13px;
 }
 .x-form-item-body label {
     display: inline;

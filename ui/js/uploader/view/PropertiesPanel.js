@@ -127,11 +127,7 @@ Ext.define('austese_uploader.view.PropertiesPanel', {
                                 {
                                     xtype: 'button',
                                     text: 'Save',
-                                    tooltip: 'Update stored information for this resource',
-                                    listeners: {
-                                        scope: this,
-                                        click: this.updateRecords
-                                    }
+                                    tooltip: 'Update stored information for this resource'
                                 }
                             ]
                         }
@@ -155,6 +151,7 @@ Ext.define('austese_uploader.view.PropertiesPanel', {
                                 {
                                     xtype: 'fieldcontainer',
                                     hideLabel: true,
+                                    itemId: 'titlefc',
                                     items: [
                                         {
                                             xtype: 'checkboxfield',
@@ -177,6 +174,7 @@ Ext.define('austese_uploader.view.PropertiesPanel', {
                                 {
                                     xtype: 'fieldcontainer',
                                     hideLabel: true,
+                                    itemId: 'descriptionfc',
                                     items: [
                                         {
                                             xtype: 'checkboxfield',
@@ -249,11 +247,7 @@ Ext.define('austese_uploader.view.PropertiesPanel', {
                                 {
                                     xtype: 'button',
                                     text: 'Save',
-                                    tooltip: 'Update stored information for all selected resources',
-                                    listeners: {
-                                        scope: this,
-                                        click:this.updateRecords
-                                    }
+                                    tooltip: 'Update stored information for all selected resources'
                                 }
                             ]
                         }
@@ -334,19 +328,5 @@ Ext.define('austese_uploader.view.PropertiesPanel', {
     },
     cancel: function(){
         this.getLayout().getActiveItem().getForm().reset();
-    },
-    updateRecords: function(){
-        var l = this.loadedRecords.length;
-        if (l == 1) {
-            // update all values from form
-            this.getLayout().getActiveItem().getForm().updateRecord();
-        } else {
-            // get new values from form (only where checkbox is checked)
-            for (var i = 0 ; i < l; i++){
-                // update each record with new values
-                var rec = this.loadedRecords[i];
-                
-            }
-        }
-    },
+    }
 });

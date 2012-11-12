@@ -1,15 +1,36 @@
+<?php 
+/* customise template based on page arguments : 
+ * arg(0) == 'repository'
+ * arg(1) == apiType (e.g. 'artfacts', 'versions', 'works', 'agents' etc.)
+ * arg(2) == apiOperation (optional e.g. 'add' or 'edit')
+ */
+$modulePrefix = arg(0);
+$apiType = substr(arg(1),0,-1); // remove the trailing 's'
+$apiOperation = arg(2);
+$existingId=arg(3);
+?>
 <div id="alerts"></div>
+<div id="metadata"
+ <?php if (user_access('edit metadata')): ?>
+  data-editable="true"
+ <?php endif; ?>
+ <?php if ($existingId):?>
+ data-existingid="<?php print $existingId; ?>"
+ <?php endif; ?>
+ data-moduleprefix="<?php print $modulePrefix; ?>"
+ data-modulepath="<?php print drupal_get_path('module', 'repository'); ?>"
+ data-apioperation="<?php print $apiOperation;?>"
+ data-apitype="<?php print $apiType;?>">
+</div>
 <form id="create-work" class="form-horizontal">
   <fieldset>
     <div class="control-group">
       <label class="control-label" for="workTitle">Title</label>
       <div class="controls">
         <input name="workTitle" type="text" class="input-xlarge" id="workTitle">
-
         <p class="help-block">Full title of the work</p>
       </div>
     </div>
-
     <div class="control-group">
       <label class="control-label" for="name">Name</label>
       <div class="controls">
@@ -17,7 +38,6 @@
         <p class="help-block">Short name for the work</p>
       </div>
     </div>
-
   <div class="control-group">
       <label class="control-label" for="versions">Versions</label>
       <div class="controls">
@@ -25,11 +45,10 @@
         <p class="help-block">Versions of this work</p>
       </div>
     </div>
-
     <div class="control-group">
 <div class="controls">
-    <input type="button" class="btn" onclick="onSave()" value="Save">
-    <input id="del-btn" style="display:none" type="button" class="btn btn-danger" onclick="onDelete()" value="Delete">
+    <input id="save-btn" type="button" class="btn" value="Save">
+    <input id="del-btn" style="display:none" type="button" class="btn btn-danger" value="Delete">
 </div></div>
   </fieldset>
 </form>
@@ -37,25 +56,8 @@
 <script type="text/javascript" src="js/jquery.tokeninput.js"></script>
 
   <script type="text/javascript">
-    function getURLParameter(name) {
-        return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null;
-    }
-    jQuery(document).ready(function(){
-       jQuery('.dropdown-toggle').dropdown()
-       var existing = getURLParameter("id");
-       if (existing) {
-        loadObject(existing);
-        jQuery('#del-btn').css('display','inline');
-       }
-       jQuery("#versions").tokenInput("/content/versions/", {
-                theme: "facebook",
-                tokenValue: "id",
-	        hintText: "Start typing to search versions by title",
-                jsonContainer: "results",
-                propertyToSearch: "versionTitle",
-                resultsFormatter: function(item){return "<li><b>"+item.versionTitle + "</b>, " + item.name + ", " + item.date + "<br/>"+item.firstLine;},
-	        tokenFormatter: function(item){return "<li>" + item.versionTitle + ", " + item.name + ", " + item.date + "</li>";}
-       });
+    
+       
     });
     function loadObject(id){
        jQuery.ajax({
@@ -76,16 +78,7 @@
           }
        });
     }
-    function onDelete(){
-      var existing = getURLParameter("id");
-      jQuery.ajax({
-         type: 'DELETE',
-         url: '../works/' + existing,
-         success: function(d){
-           jQuery('#alerts').append(jQuery('<div class="alert alert-block"><button type="button" class="close" data-dismiss="alert">x</button><h4>Work deleted</h4><p><a href="#" onClick="onSave()">Undo</a></p><p><a href="works.html">View works</a></p></div>').alert());
-         }
-      });
-    }
+
     function onSave(){
      var existing = getURLParameter("id");
      var type = 'POST';
@@ -111,20 +104,6 @@
        }
      });
     };
-jQuery.fn.serializeObject = function() {
-    var o = {};
-    var a = this.serializeArray();
-    jQuery.each(a, function() {
-        if (o[this.name] !== undefined) {
-            if (!o[this.name].push) {
-                o[this.name] = [o[this.name]];
-            }
-            o[this.name].push(this.value || '');
-        } else {
-            o[this.name] = this.value || '';
-        }
-    });
-    return o;
-};
+
   </script>
 
