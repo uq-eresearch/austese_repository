@@ -17,3 +17,7 @@ License: GPL 3.0
 `php composer.phar install`
 
 * We are using [Behat](http://behat.org/) for testing. Run `bin/behat` from the project directory to run tests
+
+## About
+
+This module was developed as part of the [AustESE project](http://itee.uq.edu.au/~eresearch/projects/austese).
