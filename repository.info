@@ -1,4 +1,4 @@
-name = AustESE content repository
+name = AustESE Content Repository
 description = Content repository
 package = AustESE
 core = 7.x
