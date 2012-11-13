@@ -122,7 +122,11 @@ Ext.define('austese_uploader.controller.Controller', {
         // check whether they are images
         // if image: use jquery to rotate preview in thumbnail view
         //           flag for rotation on server in properties editor
-        console.log('rotate ' + (clockwise? 'right' : 'left'));
+        Ext.Msg.show({
+            title:"Watch this space",
+            msg: "Image rotation feature is still being developed",
+            buttons: Ext.Msg.OK
+        });
     },
     launchConfigureEditorWindow: function(single){
         var metadataFieldSet = Ext.ComponentQuery.query('propertiespanel')[0] // the propertiespanel
@@ -258,11 +262,11 @@ Ext.define('austese_uploader.controller.Controller', {
             method: 'PUT',
             jsonData: data,
             success: function(response, options){
-                console.log("success");
+                //console.log("success");
             },
             failure: function(response, options){
-                console.log("failure",response);
-                Ext.Msg.alert("Unable to update resource",response);
+                //console.log("failure",response);
+                Ext.Msg.alert("Error","Unable to update resource: " + response.responseText);
             }
         });
     }
