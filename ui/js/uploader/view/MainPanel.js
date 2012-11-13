@@ -3,15 +3,20 @@
  * @extends Ext.panel.Panel
  */
 Ext.define('austese_uploader.view.MainPanel', {
-    extend: 'Ext.panel.Panel',
+    extend: 'Ext.window.Window',
     alias: 'widget.mainpanel',
-
+    closable: false,
+    height: 500,
+    header:false,
+    border:false,
+    resizeHandles: '',
+    shadow:false,
+    width: 600,
+    cls:'uploaderui',
     requires: [
         'austese_uploader.view.PropertiesPanel',
         'austese_uploader.view.ThumbnailPanel'
     ],
-    autoWidth: true,
-    height: 550,
     layout: {
         type: 'border'
     },
@@ -25,6 +30,8 @@ Ext.define('austese_uploader.view.MainPanel', {
                     region: 'west',
                     width: 250,
                     layout: 'anchor',
+                    resizable: true,
+                    resizeHandles: 'e',
                     items: [
                         {
                             xtype: 'propertiespanel',

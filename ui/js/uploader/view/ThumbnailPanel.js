@@ -48,6 +48,18 @@ Ext.define('austese_uploader.view.ThumbnailPanel', {
                                 scope: this,
                                 select: this.sort
                             }
+                        },
+                        {
+                            xtype: 'button',
+                            iconCls: 'helpIcon',
+                            itemId: 'helpButton',
+                            tooltip: 'Help'
+                        },
+                        {
+                            xtype: 'button',
+                            iconCls: 'fullscreenIcon',
+                            itemId: 'toggleFullscreenButton',
+                            tooltip: 'Toggle fullscreen mode'
                         }
                     ]
                 }

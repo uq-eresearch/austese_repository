@@ -1,12 +1,20 @@
 Ext.define('austese_uploader.controller.Controller', {
     extend: 'Ext.app.Controller',
     init: function(application) {
-        Ext.EventManager.onWindowResize(function(){
-            // force resize of main panel when window resizes
-            Ext.ComponentQuery.query("mainpanel")[0].doLayout();
-        }, this);
+        Ext.EventManager.onWindowResize(this.resizeUI, this);
         this.control({
-            'thumbnailpanel button[text="Help"]': {
+            "mainpanel": {
+                restore: function(){
+                    this.resizeUI(Ext.Element.getViewportWidth(),Ext.Element.getViewportHeight());
+                },
+                afterrender: function(){
+                    this.resizeUI(Ext.Element.getViewportWidth(),Ext.Element.getViewportHeight());
+                }
+            },
+            "#toggleFullscreenButton": {
+                click: this.toggleFullscreen
+            },
+            'thumbnailpanel #helpButton': {
                 click: this.displayHelp
             },
             // thumbnailpanel filter and sort handler are implemented in ThumbnailPanel 
@@ -50,11 +58,39 @@ Ext.define('austese_uploader.controller.Controller', {
             }
         });
     },
+    resizeUI: function(w, h){
+        // force resize and repositioning of app when window resizes
+        var uiPanel = Ext.ComponentQuery.query("mainpanel")[0];
+        var placeholder = Ext.get('uploaderui');
+        var newHeight = h - (placeholder.getY());
+        var newWidth = w - placeholder.getX()*2;
+        placeholder.setHeight(newHeight);
+        uiPanel.setHeight(newHeight);
+        placeholder.setWidth(newWidth);
+        uiPanel.setWidth(newWidth);
+        uiPanel.showAt(placeholder.getX(), placeholder.getY());
+    },
+    toggleFullscreen: function(button, e, options){
+        
+        button.up('mainpanel').toggleMaximize();
+        if (button.iconCls=='exitFullscreenIcon') {
+            button.setIconCls('fullscreenIcon');
+        } else {
+            button.setIconCls('exitFullscreenIcon');
+            // prevent overflow
+            var placeholder = Ext.get('uploaderui');
+            placeholder.setHeight(0);
+            Ext.getBody().scrollTo('top',0);
+        }
+    },
     displayHelp: function() {
         Ext.create('Ext.window.Window',{
             title: 'Help',
-            width: 300,
+            width: 400,
+            cls: 'helpWindow',
+            bodyPadding: 5,
             height: 300,
+            resizable: true,
             autoScroll: true,
             autoLoad: {
                 url: '/sites/all/modules/austese_repository/ui/uploaderhelp.html',

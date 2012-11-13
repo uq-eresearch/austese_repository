@@ -19,7 +19,6 @@ Ext.define('austese_uploader.view.PropertiesPanel', {
                     items: [
                         {
                             xtype: 'button',
-                            text: 'Rotate',
                             itemId: 'rotateleft',
                             iconCls: 'rotateLeft',
                             tooltip: 'Rotate selected images 90 degrees counter-clockwise'
@@ -29,7 +28,6 @@ Ext.define('austese_uploader.view.PropertiesPanel', {
                         },
                         {
                             xtype: 'button',
-                            text: 'Rotate',
                             itemId: 'rotateright',
                             iconCls: 'rotateRight',
                             tooltip: 'Rotate selected images 90 degrees clockwise'
@@ -47,7 +45,7 @@ Ext.define('austese_uploader.view.PropertiesPanel', {
                     autoScroll: true,
                     trackResetOnLoad: true,
                     defaults: {
-                    	anchor:'100%'
+                        anchor:'100%'
                     },
                     items: [
                         {
