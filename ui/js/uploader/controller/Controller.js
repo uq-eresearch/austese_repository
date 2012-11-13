@@ -242,19 +242,35 @@ Ext.define('austese_uploader.controller.Controller', {
                     newValues[valueField.name] = valueField.getValue();
                 }
             });
-            for (var i = 0 ; i < l; i++){
-                // update each record with new values
-                var rec = propertiespanel.loadedRecords[i];
-                rec.set(newValues);
-                // TODO get metadata fields from record only and apply new values
-                var vals = Ext.apply(rec.data, newValues);
-                
-                // add filetype to values as it needs to be stored with metadata
-                vals.filetype = rec.get('type');
-                // save values to database
-                this.updateData(rec.get('uri'),newValues);
+            if (!this.isEmptyObject(newValues)){
+                for (var i = 0 ; i < l; i++){
+                    // update each record with new values
+                    var rec = propertiespanel.loadedRecords[i];
+                    rec.set(newValues);
+                    // copy metadata fields only into newValues to send to database
+                    var nonMetadataFields = {'filename':1,'dateString':1,
+                            'filelength':1,'id':1,'sizeString':1,
+                            'thumbnailUri':1,'uploaddate':1,'uri':1, 
+                            'shortName':1};
+                    Ext.Object.each(rec.data,function(key, val, obj){
+                        if (!nonMetadataFields[key]){
+                            newValues[key]=val;
+                        }
+                    });
+                    // save values to database
+                    this.updateData(rec.get('uri'),newValues);
+                    //console.log("newvals",newValues);
+                }
             }
         }
+    },
+    isEmptyObject: function(obj){
+        for (p in obj) {
+            if (obj.hasOwnProperty(p)) {
+                return false;
+            }
+        }
+        return true;
     },
     updateData: function(uri, data){
         Ext.Ajax.request({
