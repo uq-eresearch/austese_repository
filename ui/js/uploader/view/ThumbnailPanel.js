@@ -18,8 +18,16 @@ Ext.define('austese_uploader.view.ThumbnailPanel', {
                     dock: 'top',
                     items: [
                         {
-                            xtype: 'button',
-                            text: 'Help'
+                            xtype:'button',
+                            iconCls: 'addIcon',
+                            itemId: 'addButton',
+                            tooltip: 'Upload additional resources'
+                        },
+                        {
+                            xtype:'button',
+                            iconCls: 'deleteIcon',
+                            itemId: 'deleteButton',
+                            tooltip: 'Delete selected resource(s)'
                         },
                         {
                             xtype: 'tbfill'
@@ -78,17 +86,13 @@ Ext.define('austese_uploader.view.ThumbnailPanel', {
         store.clearFilter();
         dataview.getSelectionModel().clearSelections();
         store.resumeEvents();
-        store.filter([new Ext.util.Filter(
-            {
-                property: 'filename',
-                anyMatch: true,
-                value   : newValue
-            }),
-            new Ext.util.Filter({
-                property: 'title',
-                anyMatch: true,
-                value: newValue
-            })]
-        );
+        // FILTER function matches on title or filename
+        store.filter({
+            filterFn: function(item) {
+                var re = newValue? new RegExp(newValue,'i'): '';
+                return item.get('title').match(re) 
+                    || item.get('filename').match(re);
+            }
+        });
     }
 });
