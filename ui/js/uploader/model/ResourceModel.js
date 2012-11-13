@@ -52,7 +52,7 @@ Ext.define('austese_uploader.model.ResourceModel', {
             mapping: 'metadata.title'
         },
         {
-            name: 'type',
+            name: 'filetype',
             mapping: 'metadata.filetype'
         }
     ]

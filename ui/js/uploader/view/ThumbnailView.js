@@ -33,7 +33,7 @@ Ext.define('austese_uploader.view.ThumbnailView', {
         me.store.sort();
     },
     prepareThumbnail: function(data) {
-        if (data.type.match("image")){
+        if (data.filetype.match("image")){
             return data.uri;
         } else {
             // FIXME: don't hardcode this URI

@@ -95,7 +95,7 @@ Ext.define('austese_uploader.view.PropertiesPanel', {
                                     fieldLabel: 'Size'
                                 },
                                 {
-                                    name: 'type',
+                                    name: 'filetype',
                                     fieldLabel: 'Type'
                                 }
                             ]
@@ -215,7 +215,7 @@ Ext.define('austese_uploader.view.PropertiesPanel', {
                                     fieldLabel: 'Size'
                                 },
                                 {
-                                    name: 'type',
+                                    name: 'filetype',
                                     fieldLabel: 'Type'
                                 }
                             ]
@@ -283,7 +283,7 @@ Ext.define('austese_uploader.view.PropertiesPanel', {
                     type: ''
             };
             var aggregatedTypes = {};
-            aggregatedTypes[records[0].get('type')] = 1;
+            aggregatedTypes[records[0].get('filetype')] = 1;
             var minDate = records[0].get('uploaddate'), 
                 maxDate = minDate;
             var totalFileLength = records[0].get('filelength');
@@ -295,7 +295,7 @@ Ext.define('austese_uploader.view.PropertiesPanel', {
                 // aggregate file length and calculate min and max dates
                 totalFileLength += currentRecord.get('filelength');
                 var date = currentRecord.get('uploaddate');
-                var type = currentRecord.get('type');
+                var type = currentRecord.get('filetype');
                 if (minDate > date) {
                     minDate = date;
                 }

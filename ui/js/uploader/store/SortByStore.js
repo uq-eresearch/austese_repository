@@ -9,7 +9,7 @@ Ext.define('austese_uploader.store.SortByStore', {
             storeId: 'SortByStore',
             data  : [{label: 'Name', field: 'filename'}, 
                      {label: 'Date Uploaded', field: 'uploadDate'}, 
-                     {label: 'Type', field: 'type'}, 
+                     {label: 'Type', field: 'filetype'}, 
                      {label: 'Description', field: 'description'}
             ],
             fields: ['field', 'label'],

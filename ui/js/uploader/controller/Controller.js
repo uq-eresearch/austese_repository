@@ -68,7 +68,7 @@ Ext.define('austese_uploader.controller.Controller', {
         // TODO: allow preview display of multiple resources?
         var uri = record.get('uri');
         var msg = '';
-        if (record.get('type').match('image')){
+        if (record.get('filetype').match('image')){
             msg = '<img style="min-height:480px;margin:auto" src="' + uri + '">';
         } else {
             msg = 'No preview available';
@@ -190,7 +190,7 @@ Ext.define('austese_uploader.controller.Controller', {
             activeForm.getForm().updateRecord();
             var rec = activeForm.getForm().getRecord();
             var vals = activeForm.getValues();
-            vals.filetype = rec.get('type');
+            vals.filetype = rec.get('filetype');
             this.updateData(rec.get('uri'), vals);
         } else {
             // get new values from form (only where checkbox is checked)
