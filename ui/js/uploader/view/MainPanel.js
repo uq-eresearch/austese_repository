@@ -15,7 +15,8 @@ Ext.define('austese_uploader.view.MainPanel', {
     cls:'uploaderui',
     requires: [
         'austese_uploader.view.PropertiesPanel',
-        'austese_uploader.view.ThumbnailPanel'
+        'austese_uploader.view.ThumbnailPanel',
+        'Ext.ux.statusbar.StatusBar'
     ],
     layout: {
         type: 'border'
@@ -43,9 +44,25 @@ Ext.define('austese_uploader.view.MainPanel', {
                     xtype: 'thumbnailpanel',
                     region: 'center'
                 }
-            ]
+            ],
+            dockedItems: [{
+                xtype:'statusbar',
+                dock: 'bottom',
+                id: 'statusbar',
+                busyText: 'Updating...',
+                defaultText: 'AustESE uploader',
+                items: [
+                      // item count status
+                     //"0 resources"
+                      {
+                          xtype: 'button',
+                          iconCls: 'helpIcon',
+                          itemId: 'helpButton',
+                          tooltip: 'Help'
+                      }
+                ]
+            }]
         });
-
         me.callParent(arguments);
     }
 

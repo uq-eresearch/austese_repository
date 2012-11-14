@@ -22,6 +22,12 @@
 .exitFullscreenIcon {
     background-image:url(../img/fullscreen_exit_16x16.png);
 }
+.gridIcon {
+    background-image:url(../img/justify.png);
+}
+.thumbnailsIcon {
+    background-image:url(../img/show_thumbnails.png);
+}
 .x-form-item-label-top, .x-form-item-label {
     font-weight:bold;
 }
@@ -30,6 +36,9 @@
 }
 .helpWindow .x-window-body {
     background-color:white;
+}
+.helpWindow li {
+    list-style: disc inside;
 }
 .uploaderui input[type="text"] {
     margin-bottom:0px;
@@ -100,6 +109,9 @@
     border: 2px solid orange; /*#F26722;*/
     background-color: orange;
     padding: 3px;
+}
+.uploaderui .x-grid-row-selected .x-grid-cell {
+    background-color: orange !important;
 }
 .uploaderui .x-item-selected .thumb {
     background:transparent;

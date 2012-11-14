@@ -45,7 +45,7 @@ Ext.define('austese_uploader.view.ThumbnailView', {
             thumbnailUri: this.prepareThumbnail(data),
             shortName: (data.title? Ext.util.Format.ellipsis(data.title, 15) : Ext.util.Format.ellipsis(data.filename,15)),
             sizeString: Ext.util.Format.fileSize(data.filelength),
-            dateString: Ext.util.Format.date(data.uploadDate, "d/m/Y g:i a")
+            dateString: Ext.util.Format.date(data.uploaddate, "d/m/Y g:i a")
         });
         return data;
     }

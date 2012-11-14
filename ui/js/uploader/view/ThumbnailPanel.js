@@ -2,14 +2,20 @@ Ext.define('austese_uploader.view.ThumbnailPanel', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.thumbnailpanel',
     requires: [
-        'austese_uploader.view.ThumbnailView'
+        'austese_uploader.view.ThumbnailView',
+        'austese_uploader.view.ResourceGrid'
     ],
+    layout: 'card',
     initComponent: function() {
         var me = this;
         Ext.applyIf(me, {
             items: [
                 {
-                    xtype: 'thumbnailview',
+                    xtype: 'thumbnailview'
+                },
+                {
+                    xtype: 'resourcegrid'
+                    //html: 'grid'
                 }
             ],
             dockedItems: [
@@ -18,16 +24,46 @@ Ext.define('austese_uploader.view.ThumbnailPanel', {
                     dock: 'top',
                     items: [
                         {
-                            xtype:'button',
-                            iconCls: 'addIcon',
-                            itemId: 'addButton',
-                            tooltip: 'Upload additional resources'
+                            xtype:'buttongroup',
+                            columns: 2,
+                            items: [
+                                {
+                                    xtype:'button',
+                                    iconCls: 'addIcon',
+                                    itemId: 'addButton',
+                                    tooltip: 'Upload additional resources'
+                                },
+                                {
+                                    xtype:'button',
+                                    iconCls: 'deleteIcon',
+                                    itemId: 'deleteButton',
+                                    tooltip: 'Delete selected resource(s)'
+                                }
+                            ]
                         },
                         {
-                            xtype:'button',
-                            iconCls: 'deleteIcon',
-                            itemId: 'deleteButton',
-                            tooltip: 'Delete selected resource(s)'
+                            xtype: 'tbfill'
+                        },
+                        {
+                            xtype:'buttongroup',
+                            columns: 2,
+                            items: [
+                                {
+                                    xtype: 'button',
+                                    itemId: 'thumbnailsButton',
+                                    iconCls: 'thumbnailsIcon',
+                                    toggleGroup: 'resourceViewType',
+                                    pressed: true,
+                                    tooltip: 'View as thumbnails'
+                                },
+                                {
+                                    xtype: 'button',
+                                    itemId: 'gridButton',
+                                    iconCls: 'gridIcon',
+                                    toggleGroup: 'resourceViewType',
+                                    tooltip: 'View as list'
+                                }
+                            ]
                         },
                         {
                             xtype: 'tbfill'
@@ -59,12 +95,6 @@ Ext.define('austese_uploader.view.ThumbnailPanel', {
                         },
                         {
                             xtype: 'button',
-                            iconCls: 'helpIcon',
-                            itemId: 'helpButton',
-                            tooltip: 'Help'
-                        },
-                        {
-                            xtype: 'button',
                             iconCls: 'fullscreenIcon',
                             itemId: 'toggleFullscreenButton',
                             tooltip: 'Toggle fullscreen mode'
@@ -77,7 +107,8 @@ Ext.define('austese_uploader.view.ThumbnailPanel', {
     },
     sort: function() {
         var field = this.down('combobox').getValue();
-        this.down('thumbnailview').store.sort(field);
+        Ext.getStore('ResourceStore').sort(field);
+        //this.down('thumbnailview').store.sort(field);
     },
     filter: function(field, newValue) {
         var dataview = this.down('thumbnailview'),

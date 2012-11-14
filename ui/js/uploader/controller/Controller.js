@@ -11,10 +11,16 @@ Ext.define('austese_uploader.controller.Controller', {
                     this.resizeUI(Ext.Element.getViewportWidth(),Ext.Element.getViewportHeight());
                 }
             },
+            '#addButton': {
+                click: this.addResources
+            },
+            '#deleteButton': {
+                click: this.promptDeleteResources
+            },
             "#toggleFullscreenButton": {
                 click: this.toggleFullscreen
             },
-            'thumbnailpanel #helpButton': {
+            '#helpButton': {
                 click: this.displayHelp
             },
             // thumbnailpanel filter and sort handler are implemented in ThumbnailPanel 
@@ -22,12 +28,15 @@ Ext.define('austese_uploader.controller.Controller', {
                 selectionchange: this.editResourceMetadata,
                 itemdblclick: this.displayResource
             },
-            'propertiespanel #rotateleft': {
+            'resourcegrid':{
+                selectionchange: this.editResourceMetadata
+            },
+            '#rotateleft': {
                 click: function(button, e, options){
                     this.rotateImages(false);
                 }
             },
-            'propertiespanel #rotateright': {
+            '#rotateright': {
                 click: function(button, e, options) {
                     this.rotateImages(true);
                 }
@@ -46,7 +55,12 @@ Ext.define('austese_uploader.controller.Controller', {
                     this.launchConfigureEditorWindow(false);
                 }
             },
-
+            '#thumbnailsButton': {
+                click: this.toggleResourceView
+            },
+            '#gridButton':{
+                click: this.toggleResourceView
+            },
             'selectpropertieswindow button[text="Update"]': {
                 click: this.updateEditorFields
             },
@@ -70,8 +84,49 @@ Ext.define('austese_uploader.controller.Controller', {
         uiPanel.setWidth(newWidth);
         uiPanel.showAt(placeholder.getX(), placeholder.getY());
     },
-    toggleFullscreen: function(button, e, options){
+    toggleResourceView: function(button, e, options){
+        var resourcePanel = button.up('thumbnailpanel');
+        var grid = resourcePanel.down('grid');
+        var thumbs = resourcePanel.down('thumbnailview');
+        if (button.itemId == 'gridButton'){
+            resourcePanel.getLayout().setActiveItem(1);
+            // make sure selections are the same (and suppress firing events while doing so)
+            grid.getSelectionModel().select(thumbs.getSelectionModel().getSelection(),false,true);
+        } else {
+            resourcePanel.getLayout().setActiveItem(0);
+            thumbs.getSelectionModel().select(grid.getSelectionModel().getSelection(),false,true);
+        }
+    },
+    addResources: function(button, e, options){
         
+    },
+    deleteResources: function(records) {
+        //console.log("delete")
+    },
+    promptDeleteResources: function(button, e, options){
+        var selections = button.up('thumbnailpanel').getLayout().getActiveItem().getSelectionModel().getSelection();
+        var numResources = selections.length;
+        var controller = this;
+        if (numResources > 0){
+            Ext.Msg.show({
+                title: 'Confirm deletion',
+                msg: 'Are you sure you wish to delete ' 
+                    + numResources + ' selected resource' + (numResources != 1? 's': '') + '?',
+                buttons: Ext.Msg.YESNO,
+                fn: function(buttonId){
+                    if(buttonId=='yes'){
+                        controller.deleteResources(selections);
+                    }
+                }
+            });
+        } else {
+            button.up('mainpanel').down('statusbar').setStatus({
+                text: 'No resources selected to delete',
+                clear: true 
+            });
+        }
+    },
+    toggleFullscreen: function(button, e, options){
         button.up('mainpanel').toggleMaximize();
         if (button.iconCls=='exitFullscreenIcon') {
             button.setIconCls('fullscreenIcon');
@@ -85,7 +140,7 @@ Ext.define('austese_uploader.controller.Controller', {
     },
     displayHelp: function() {
         Ext.create('Ext.window.Window',{
-            title: 'Help',
+            title: 'AustESE Uploader Help',
             width: 400,
             cls: 'helpWindow',
             bodyPadding: 5,
@@ -97,8 +152,12 @@ Ext.define('austese_uploader.controller.Controller', {
             }
         }).show();
     },
-    editResourceMetadata: function(dataview, selections) {
-        Ext.ComponentQuery.query('propertiespanel')[0].loadRecords(selections);
+    editResourceMetadata: function(view, selections) {
+       // if (/* form is dirty */) {
+            // prompt to save data
+       // } else {
+            Ext.ComponentQuery.query('propertiespanel')[0].loadRecords(selections);
+       // }
     },
     displayResource: function(dataview, record, item, index, e, eOpts){
         // TODO: allow preview display of multiple resources?
@@ -222,6 +281,7 @@ Ext.define('austese_uploader.controller.Controller', {
         button.up('window').close();
     },
     updateRecords: function(button){
+        Ext.ComponentQuery.query('statusbar')[0].showBusy();
         var propertiespanel = button.up('propertiespanel');
         var l = propertiespanel.loadedRecords.length;
         var activeForm = propertiespanel.getLayout().getActiveItem();
@@ -229,6 +289,7 @@ Ext.define('austese_uploader.controller.Controller', {
             // update all values from form into record
             activeForm.getForm().updateRecord();
             var rec = activeForm.getForm().getRecord();
+            rec.commit();
             var vals = activeForm.getValues();
             vals.filetype = rec.get('filetype');
             this.updateData(rec.get('uri'), vals);
@@ -247,6 +308,7 @@ Ext.define('austese_uploader.controller.Controller', {
                     // update each record with new values
                     var rec = propertiespanel.loadedRecords[i];
                     rec.set(newValues);
+                    rec.commit();
                     // copy metadata fields only into newValues to send to database
                     var nonMetadataFields = {'filename':1,'dateString':1,
                             'filelength':1,'id':1,'sizeString':1,
@@ -279,10 +341,18 @@ Ext.define('austese_uploader.controller.Controller', {
             jsonData: data,
             success: function(response, options){
                 //console.log("success");
+                Ext.ComponentQuery.query('statusbar')[0].setStatus({
+                    text: 'Metadata saved',
+                    clear: true 
+                });
             },
             failure: function(response, options){
                 //console.log("failure",response);
-                Ext.Msg.alert("Error","Unable to update resource: " + response.responseText);
+                Ext.ComponentQuery.query('statusbar')[0].setStatus({
+                    iconCls: 'x-status-error',
+                    text: "Unable to update resource: " + response.responseText,
+                    clear: true
+                });
             }
         });
     }

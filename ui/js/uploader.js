@@ -24,6 +24,7 @@ Ext.application({
         'PropertiesPanel',
         'ThumbnailPanel',
         'ThumbnailView',
+        'ResourceGrid',
         'SelectPropertiesWindow'
     ],
     autoCreateViewport: false,

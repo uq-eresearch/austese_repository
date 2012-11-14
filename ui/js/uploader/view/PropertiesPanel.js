@@ -278,7 +278,7 @@ Ext.define('austese_uploader.view.PropertiesPanel', {
             var aggregatedValues = {
                     description: records[0].get('description'), 
                     title: records[0].get('title'),
-                    type: ''
+                    filetype: ''
             };
             var aggregatedTypes = {};
             aggregatedTypes[records[0].get('filetype')] = 1;
@@ -316,7 +316,7 @@ Ext.define('austese_uploader.view.PropertiesPanel', {
                 aggregatedValues.dateString = formattedMinDate;
             }
             for (t in aggregatedTypes) {
-                aggregatedValues.type += t + " (" + aggregatedTypes[t] + ")<br/>";
+                aggregatedValues.filetype += t + " (" + aggregatedTypes[t] + ")<br/>";
             }
             layout.getActiveItem().getForm().setValues(aggregatedValues);
         } else {
