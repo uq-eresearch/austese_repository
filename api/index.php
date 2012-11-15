@@ -53,6 +53,24 @@ function createRecord($collection){
     echo $e->getMessage();
   }
 }
+function makeThumbnail($srcpath,$destpath,$filetype) {
+ $newWidth = 100;
+ if($filetype=='image/jpeg'){
+    $image = imagecreatefromjpeg($srcpath);
+ } else {
+    $image = imagecreatefrompng($srcpath);
+ }
+ $width = imagesx($image);
+ $height = imagesy($image);
+ $newHeight = floor($height * ($newWidth / $width));
+ $virtImage = imagecreatetruecolor($newWidth, $newHeight);
+ imagecopyresampled($virtImage, $image, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+ if($filetype=='image/jpeg'){
+  imagejpeg($virtImage,$destpath);
+ } else {
+  imagepng($virtImage,$destpath);
+ }
+}
 function createResource(){
   global $config;
   try{
@@ -68,20 +86,38 @@ function createResource(){
     $response->status(500);    
     echo "Error uploading file";
   }
+  
+  // return metadata
   $storedfile = $grid->storeUpload('data',array('metadata' => array('filetype' => $filetype)));
   $id = $storedfile->{'$id'};
+  $url = $config['uriprefix'] . '/resources/' . $id;
+  $grid->update(array('_id'=> new MongoId($id)),
+    array('$set' => array('thumb' => "/sites/default/files/thumbs/".$id)), array('safe' => true));
+  $_ENV['id'] = $id;
+  $_ENV['filetype'] = $filetype;
   //var_dump($storedfile);
   //return uri
   $query = array('_id'=>new MongoId($id));
   $file = $grid->findOne($query);
-  echo "{\"uri\":\"". $config['uriprefix'] . '/resources/' . $id 
+  echo "{\"uri\":\"". $url 
+     ."\",\"thumb\":\"/sites/default/files/thumbs/".$id
      ."\",\"filename\":\"".$file->file['filename']
-     ."\",\"length\":\"".$file->file['length']."\"}"; 
+     ."\",\"length\":\"".$file->file['length']."\"}";
+  
  } catch (Exception $e){
     $response->status(500);    
     echo $e->getMessage();
   }
 }
+$app->hook("slim.after",function() use ($app, $config){
+ if (strpos($app->request()->getPathInfo(), "/resources") === 0 && $app->request()->isPost()) {
+  // make thumbnail
+  $id=$_ENV['id'];
+  $filetype=$_ENV['filetype'];
+  $url = $config['uriprefix'] . '/resources/' . $id;
+  makeThumbnail('http://localhost'. $url,'../../../../default/files/thumbs/'.$id,$filetype);
+ }
+});
 $app->post('/artefacts/', function () {
     createRecord('artefacts');
 });
@@ -95,7 +131,7 @@ $app->post('/agents/', function(){
     createRecord('agents');
 });
 $app->post('/resources/', function(){
-    createResource();
+    createRecord('resources');
 });
 $app->post('/collections/',function(){
    createRecord('collections');
@@ -114,7 +150,7 @@ $app->get('/agents/', function(){
     listRecords('agents','name');
 });
 $app->get('/resources/',function(){
-    listResources();
+    listRecords('resources','filename');
 });
 $app->get('/collections/',function(){
     listRecords('collections','collectionTitle');
@@ -288,7 +324,7 @@ $app->get('/agents/:id(/:revision)', function ($id,$revision=NULL) use ($config)
     getRecord('agents',$id,$revision);
 });
 $app->get('/resources/:id(/:revision)', function ($id,$revision=NULL) use ($config) {
-    getResource($id,$revision);
+    getRecord('resources',$id,$revision);
 });
 
 // Update
@@ -416,7 +452,7 @@ function deleteResource($id){
   $m = new Mongo($config['dbhost'].':'.$config['dbport'], array('persist' => 'restapi'));
   $db = $m->selectDB($config['dbname']);
   $grid = $db->getGridFS();
-
+  
   $grid->update(array('_id'=> new MongoId($id)), array('$set' => array('_deleted' => true)), array('safe' => true));
 }
 $app->delete('/artefacts/:id', function ($id) {
