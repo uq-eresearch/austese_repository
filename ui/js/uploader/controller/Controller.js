@@ -100,9 +100,7 @@ Ext.define('austese_uploader.controller.Controller', {
     addResources: function(button, e, options){
         
     },
-    deleteResources: function(records) {
-        //console.log("delete")
-    },
+
     promptDeleteResources: function(button, e, options){
         var selections = button.up('thumbnailpanel').getLayout().getActiveItem().getSelectionModel().getSelection();
         var numResources = selections.length;
@@ -340,14 +338,12 @@ Ext.define('austese_uploader.controller.Controller', {
             method: 'PUT',
             jsonData: data,
             success: function(response, options){
-                //console.log("success");
                 Ext.ComponentQuery.query('statusbar')[0].setStatus({
                     text: 'Metadata saved',
                     clear: true 
                 });
             },
             failure: function(response, options){
-                //console.log("failure",response);
                 Ext.ComponentQuery.query('statusbar')[0].setStatus({
                     iconCls: 'x-status-error',
                     text: "Unable to update resource: " + response.responseText,
@@ -355,5 +351,36 @@ Ext.define('austese_uploader.controller.Controller', {
                 });
             }
         });
+    },
+    deleteResources: function(records) {
+        var continueDeleting = true;
+        var deletedCount = 0;
+        for (var i = 0; i < records.length && continueDeleting; i++){
+            var rec = records[i];
+            Ext.Ajax.request({
+                url: rec.get('uri'),
+                method: 'DELETE',
+                success: function(response, options){
+                    deletedCount++;
+                    if (deletedCount = records.length){
+                        Ext.ComponentQuery.query('statusbar')[0].setStatus({
+                            iconCls: 'x-status-error',
+                            text: "Deleted " + deletedCount + " resources. ",
+                            clear: true
+                        });
+                        Ext.getStore('ResourceStore').remove(records);
+                    }
+                },
+                failure: function(response, options){
+                    continueDeleting = false;
+                    Ext.ComponentQuery.query('statusbar')[0].setStatus({
+                        iconCls: 'x-status-error',
+                        text: (deletedCount > 0? "Deleted " + deletedCount + " resources. ":"") 
+                            + "Unable to delete resource: " + response.responseText,
+                        clear: true
+                    });
+                }
+            });
+        }
     }
 });
