@@ -114,7 +114,10 @@ function repository_display($template){
     drupal_add_css($modulePath . '/ui/css/repository.css'); 
     if ($template == 'resources'){
         drupal_add_css($modulePath . '/ui/css/uploader.css');
-        drupal_add_js('/ext-4.1.1a/ext-all.js');
+        drupal_add_css('/sites/all/libraries/plupload/js/jquery.plupload.queue/css/jquery.plupload.queue.css');
+        drupal_add_js('/sites/all/libraries/ext-4.1.1a/ext-all.js');
+        drupal_add_js('/sites/all/libraries/plupload/js/plupload.full.js');
+        drupal_add_js('/sites/all/libraries/plupload/js/jquery.plupload.queue/jquery.plupload.queue.js');
         drupal_add_js($modulePath . '/ui/js/uploader.js');
         return theme("resources", array());
     } else {
