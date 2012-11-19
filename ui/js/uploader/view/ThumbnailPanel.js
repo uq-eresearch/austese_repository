@@ -3,7 +3,8 @@ Ext.define('austese_uploader.view.ThumbnailPanel', {
     alias: 'widget.thumbnailpanel',
     requires: [
         'austese_uploader.view.ThumbnailView',
-        'austese_uploader.view.ResourceGrid'
+        'austese_uploader.view.ResourceGrid',
+        'austese_uploader.form.MultiFileFieldButton'
     ],
     layout: 'card',
     initComponent: function() {
@@ -28,7 +29,7 @@ Ext.define('austese_uploader.view.ThumbnailPanel', {
                             columns: 2,
                             items: [
                                 {
-                                    xtype:'button',
+                                    xtype:'multifilefieldbutton',
                                     iconCls: 'addIcon',
                                     itemId: 'addButton',
                                     tooltip: 'Upload additional resources'
