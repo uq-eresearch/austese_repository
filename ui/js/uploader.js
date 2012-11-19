@@ -8,6 +8,7 @@ Ext.Loader.setPath('austese_uploader.store', modulePath + '/ui/js/uploader/store
 Ext.Loader.setPath('austese_uploader.model', modulePath + '/ui/js/uploader/model');
 Ext.Loader.setPath('austese_uploader.controller', modulePath + '/ui/js/uploader/controller');
 Ext.Loader.setPath('austese_uploader.view', modulePath + '/ui/js/uploader/view');
+Ext.Loader.setPath('austese_uploader.form', modulePath + '/ui/js/uploader/form');
 Ext.Loader.setPath('Ext.ux', '/sites/all/libraries/ext-4.1.1a/examples/ux');
 //keep z-index seed low to avoid interfering with drupal admin overlay
 Ext.WindowMgr.zseed = 1040;
