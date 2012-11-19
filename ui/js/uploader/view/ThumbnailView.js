@@ -34,7 +34,11 @@ Ext.define('austese_uploader.view.ThumbnailView', {
     },
     prepareThumbnail: function(data) {
         if (data.filetype.match("image")){
-            return data.uri;
+            if (data.thumb) {
+                return data.thumb;
+            } else {
+                return data.uri;
+            }
         } else {
             // FIXME: don't hardcode this URI
             return "/sites/all/modules/austese_repository/ui/img/texticon.png";
