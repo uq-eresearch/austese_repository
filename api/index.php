@@ -91,8 +91,8 @@ function createResource(){
   $storedfile = $grid->storeUpload('data',array('metadata' => array('filetype' => $filetype)));
   $id = $storedfile->{'$id'};
   $url = $config['uriprefix'] . '/resources/' . $id;
-  $grid->update(array('_id'=> new MongoId($id)),
-    array('$set' => array('thumb' => "/sites/default/files/thumbs/".$id)), array('safe' => true));
+  // $grid->update(array('_id'=> new MongoId($id)),
+  //  array('$set' => array('thumb' => "/sites/default/files/thumbs/".$id)), array('safe' => true));
   $_ENV['id'] = $id;
   $_ENV['filetype'] = $filetype;
   //var_dump($storedfile);
@@ -100,16 +100,16 @@ function createResource(){
   $query = array('_id'=>new MongoId($id));
   $file = $grid->findOne($query);
   echo "{\"uri\":\"". $url 
-     ."\",\"thumb\":\"/sites/default/files/thumbs/".$id
+     //."\",\"thumb\":\"/sites/default/files/thumbs/".$id
      ."\",\"filename\":\"".$file->file['filename']
      ."\",\"length\":\"".$file->file['length']."\"}";
   
  } catch (Exception $e){
-    $response->status(500);    
+    $response->status(500);
     echo $e->getMessage();
   }
 }
-$app->hook("slim.after",function() use ($app, $config){
+/*$app->hook("slim.after",function() use ($app, $config){
  if (strpos($app->request()->getPathInfo(), "/resources") === 0 && $app->request()->isPost()) {
   // make thumbnail
   $id=$_ENV['id'];
@@ -118,6 +118,7 @@ $app->hook("slim.after",function() use ($app, $config){
   makeThumbnail('http://localhost'. $url,'../../../../default/files/thumbs/'.$id,$filetype);
  }
 });
+*/
 $app->post('/artefacts/', function () {
     createRecord('artefacts');
 });
@@ -131,7 +132,8 @@ $app->post('/agents/', function(){
     createRecord('agents');
 });
 $app->post('/resources/', function(){
-    createRecord('resources');
+    //createRecord('resources');
+    createResource();
 });
 $app->post('/collections/',function(){
    createRecord('collections');
@@ -150,7 +152,8 @@ $app->get('/agents/', function(){
     listRecords('agents','name');
 });
 $app->get('/resources/',function(){
-    listRecords('resources','filename');
+    //listRecords('resources','fileUri');
+    listResources();
 });
 $app->get('/collections/',function(){
     listRecords('collections','collectionTitle');
@@ -324,7 +327,8 @@ $app->get('/agents/:id(/:revision)', function ($id,$revision=NULL) use ($config)
     getRecord('agents',$id,$revision);
 });
 $app->get('/resources/:id(/:revision)', function ($id,$revision=NULL) use ($config) {
-    getRecord('resources',$id,$revision);
+    //getRecord('resources',$id,$revision);
+    getResource($id,$revision);
 });
 
 // Update
