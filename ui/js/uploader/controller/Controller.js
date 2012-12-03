@@ -12,7 +12,7 @@ Ext.define('austese_uploader.controller.Controller', {
                 }
             },
             '#addButton': {
-                click: this.addResources
+                fileselected: this.addResources
             },
             '#deleteButton': {
                 click: this.promptDeleteResources
@@ -97,8 +97,45 @@ Ext.define('austese_uploader.controller.Controller', {
             thumbs.getSelectionModel().select(grid.getSelectionModel().getSelection(),false,true);
         }
     },
-    addResources: function(button, e, options){
+    addResources: function(button, filelist){
+       /* var dialog = Ext.create('Ext.ux.upload.Dialog', {
+            dialogTitle: 'Upload files',
+            uploadUrl: '/sites/all/modules/austese_repository/api/resources/'
+        }).show();
+        */
+        button.up('mainpanel').down('statusbar').showBusy();
+        console.log(arguments);
+        var form = button.up('form').getForm();
         
+            form.submit({
+                url: '/sites/all/modules/austese_repository/api/resources/',
+                //waitMsg: 'Uploading files...',
+                success: function(fp, o) {
+                    //msg('Success', 'Processed file "' + o.result.file + '" on the server');
+                    //console.log("success",arguments)
+                    Ext.getStore("ResourceStore").load();
+                },
+                failure: function(){
+                    //console.log("fail",arguments)
+                    Ext.getStore("ResourceStore").load();
+                }
+            });
+        
+        /*
+            //var formData = new FormData(button);
+            jQuery.ajax({
+              type: 'POST',
+              enctype: 'multipart/form-data',
+              data: filelist,
+              url: '/sites/all/modules/austese_repository/api/resources/',
+              success: function(d){
+                  button.up('mainpanel').down('statusbar').setStatus({
+                      text: 'Resources uploaded',
+                      clear: true 
+                  });
+              }
+            });
+            */
     },
 
     promptDeleteResources: function(button, e, options){

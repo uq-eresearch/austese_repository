@@ -28,12 +28,16 @@ Ext.define('austese_uploader.view.ThumbnailPanel', {
                             xtype:'buttongroup',
                             columns: 2,
                             items: [
-                                {
-                                    xtype:'multifilefieldbutton',
-                                    iconCls: 'addIcon',
-                                    itemId: 'addButton',
-                                    tooltip: 'Upload additional resources'
-                                },
+                                {xtype:'form',
+                                    items:[
+                                        {
+                                            xtype:'multifilefieldbutton',
+                                            iconCls: 'addIcon',
+                                            itemId: 'addButton',
+                                            tooltip: 'Upload additional resources'
+                                        }
+                                 ]},
+                                
                                 {
                                     xtype:'button',
                                     iconCls: 'deleteIcon',

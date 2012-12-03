@@ -1,29 +1,34 @@
+/* Some code borrowed from https://github.com/ivan-novakov/extjs-upload-widget */
 Ext.define('austese_repository.form.MultiFileFieldButton', {
-    extend: 'Ext.button.Button',
+    extend: 'Ext.form.field.File',
+    buttonOnly: true,
     alias: 'widget.multifilefieldbutton',
-    renderTpl: [
-                '<em id="{id}-btnWrap"<tpl if="splitCls"> class="{splitCls}"</tpl>>',
-                    '<tpl if="href">',
-                        '<a id="{id}-btnEl" href="{href}" class="{btnCls}" target="{hrefTarget}"',
-                            '<tpl if="tabIndex"> tabIndex="{tabIndex}"</tpl>',
-                            '<tpl if="disabled"> disabled="disabled"</tpl>',
-                            ' role="link">',
-                            '<span id="{id}-btnInnerEl" class="{baseCls}-inner">',
-                                '{text}',
-                            '</span>',
-                            '<span id="{id}-btnIconEl" class="{baseCls}-icon {iconCls}"<tpl if="iconUrl"> style="background-image:url({iconUrl})"</tpl>><input type="file" name="data" multiple="multiple"></span>',
-                        '</a>',
-                    '<tpl else>',
-                        '<button id="{id}-btnEl" type="{type}" class="{btnCls}" hidefocus="true"',
-                            '<tpl if="tabIndex"> tabIndex="{tabIndex}"</tpl>',
-                            '<tpl if="disabled"> disabled="disabled"</tpl>',
-                            ' role="button" autocomplete="off">',
-                            '<span id="{id}-btnInnerEl" class="{baseCls}-inner" style="{innerSpanStyle}">',
-                                '{text}',
-                            '</span>',
-                            '<span id="{id}-btnIconEl" class="{baseCls}-icon {iconCls}"<tpl if="iconUrl"> style="background-image:url({iconUrl})"</tpl>><input type="file" name="data" multiple="multiple"></span>',
-                        '</button>',
-                    '</tpl>',
-                '</em>'
-            ],
+
+    initComponent : function() {
+        this.addEvents({
+            'fileselected' : true
+        });
+        Ext.apply(this, {
+            buttonConfig : {
+                iconCls : this.iconCls,
+                style: 'border:none', // disable separate border
+                text : '' // disable text
+            }
+        });
+
+        this.on('afterrender', function() {
+            this.fileInputEl.dom.setAttribute('multiple', '1');
+            this.fileInputEl.dom.setAttribute('name','data');
+        }, this);
+
+        this.on('change', function(field, value, options) {
+            var files = this.fileInputEl.dom.files;
+            if (files) {
+                this.fireEvent('fileselected', this, files);
+            }
+        }, this);
+
+        this.callParent(arguments);
+    },
+
 });

@@ -105,6 +105,30 @@ jQuery.fn.serializeObject = function() {
            url: '/' + modulePath + '/api/' + apiType + 's/'+ id,
            success: function(d){
               js2form(document.getElementById('create-object'), d);
+              if (d.versions){
+                  for (var i = 0; i < d.versions.length; i++){
+                      console.log(d.versions[i]);
+                   jQuery.ajax({
+                     type: 'GET',
+                     url: '/' + modulePath + '/api/versions/' + d.versions[i],
+                     success: function(v){
+                       console.log("version",v);
+                       jQuery('#versions').tokenInput("add",v);
+                     }
+                   });
+                  }
+              }
+              if (d.artefacts){
+                  for (var i = 0; i < d.artefacts.length; i++){
+                   jQuery.ajax({
+                     type: 'GET',
+                     url: '/' + modulePath + '/api/artefacts/' + d.artefacts[i],
+                     success: function(v){
+                       jQuery('#artefacts').tokenInput("add",v);
+                     }
+                   });
+                  }
+              }
            }
         });
     };
@@ -128,10 +152,24 @@ jQuery.fn.serializeObject = function() {
            type = 'PUT';
            url += existingId;
         }
-        var data = JSON.stringify(jQuery('#create-object').serializeObject());
+        var data = jQuery('#create-object').serializeObject();
+        if (data.artefacts){
+            var split = data.artefacts.split(",");
+            data.artefacts = [];
+            for (var i = 0; i < split.length; i++){
+               data.artefacts.push(split[i]);
+            }
+        }
+        if (data.versions){
+            var split = data.versions.split(",");
+            data.versions = [];
+            for (var i = 0; i < split.length; i++){
+               data.versions.push(split[i]);
+            }
+        }
         jQuery.ajax({
           type: type,
-          data: data,
+          data: JSON.stringify(data),
           url: url,
           success: function(d){
             jQuery('#alerts').append(
