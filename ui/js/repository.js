@@ -247,6 +247,7 @@ jQuery.fn.serializeObject = function() {
        
     };
     function displayPlaces(rescount, result){
+        jQuery('#result').append('<p class="muted" style="clear:both">Data, imagery and map information provided by <a href="http://open.mapquest.co.uk" target="_blank">MapQuest</a>, <a href="http://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> and contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.</p>');
         for (var i = 0; i < rescount; i++){
             var obj = result.results[i];
             if (obj){
@@ -260,7 +261,7 @@ jQuery.fn.serializeObject = function() {
                 jQuery('#result').append(markup);
             }
          }
-         jQuery('#result').append('<p class="muted" style="clear:both">Data, imagery and map information provided by <a href="http://open.mapquest.co.uk" target="_blank">MapQuest</a>, <a href="http://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> and contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.</p>');
+         
          jQuery('.minimap').each(function(i, el){
             var lat = jQuery(el).data('lat');
             var long = jQuery(el).data('long');
