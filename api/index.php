@@ -209,7 +209,7 @@ function getFeatureCodes() {
  echo "}}";
  $response->header('Content-Type','application/json');
 }
-function listResources($collection, $labelField){
+function listResources(){
   global $config;
   global $app;
   $response = Slim::getInstance()->response();
