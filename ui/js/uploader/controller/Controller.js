@@ -98,17 +98,13 @@ Ext.define('austese_uploader.controller.Controller', {
         }
     },
     addResources: function(button, filelist){
-       /* var dialog = Ext.create('Ext.ux.upload.Dialog', {
-            dialogTitle: 'Upload files',
-            uploadUrl: '/sites/all/modules/austese_repository/api/resources/'
-        }).show();
-        */
         button.up('mainpanel').down('statusbar').showBusy();
         console.log(arguments);
+        var modulePath = this.application.modulePath;
         var form = button.up('form').getForm();
         
             form.submit({
-                url: '/sites/all/modules/austese_repository/api/resources/',
+                url: modulePath + '/api/resources/',
                 //waitMsg: 'Uploading files...',
                 success: function(fp, o) {
                     //msg('Success', 'Processed file "' + o.result.file + '" on the server');
@@ -120,22 +116,6 @@ Ext.define('austese_uploader.controller.Controller', {
                     Ext.getStore("ResourceStore").load();
                 }
             });
-        
-        /*
-            //var formData = new FormData(button);
-            jQuery.ajax({
-              type: 'POST',
-              enctype: 'multipart/form-data',
-              data: filelist,
-              url: '/sites/all/modules/austese_repository/api/resources/',
-              success: function(d){
-                  button.up('mainpanel').down('statusbar').setStatus({
-                      text: 'Resources uploaded',
-                      clear: true 
-                  });
-              }
-            });
-            */
     },
 
     promptDeleteResources: function(button, e, options){
@@ -183,7 +163,7 @@ Ext.define('austese_uploader.controller.Controller', {
             resizable: true,
             autoScroll: true,
             autoLoad: {
-                url: '/sites/all/modules/austese_repository/ui/uploaderhelp.html',
+                url: this.application.modulePath + '/ui/uploaderhelp.html',
             }
         }).show();
     },

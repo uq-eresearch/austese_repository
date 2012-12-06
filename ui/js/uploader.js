@@ -2,7 +2,8 @@
 Ext.Loader.setConfig({
     enabled: true
 });
-var modulePath = '/sites/all/modules/austese_repository';
+
+var modulePath = '/' + jQuery('#metadata').data('modulepath');
 // necessary to map paths because we are running in a drupal module
 Ext.Loader.setPath('austese_uploader.store', modulePath + '/ui/js/uploader/store');
 Ext.Loader.setPath('austese_uploader.model', modulePath + '/ui/js/uploader/model');
@@ -13,6 +14,7 @@ Ext.Loader.setPath('Ext.ux', '/sites/all/libraries/ext-4.1.1a/examples/ux');
 //keep z-index seed low to avoid interfering with drupal admin overlay
 Ext.WindowMgr.zseed = 1040;
 Ext.application({
+    modulePath: modulePath,
     models: [
         'ResourceModel'
     ],
@@ -36,7 +38,7 @@ Ext.application({
     launch: function(){
         var placeholder = Ext.get('uploaderui');
         var mainWindow = Ext.create('austese_uploader.view.MainPanel',{
-            renderTo: Ext.getBody(),
+                renderTo: Ext.getBody(),
         }).showAt(placeholder.getX(),placeholder.getY());
     }
 });

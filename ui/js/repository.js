@@ -271,7 +271,6 @@ jQuery.fn.serializeObject = function() {
                 subDomains = ['otile1','otile2','otile3','otile4']; 
             var mapquest = L.tileLayer(mapquestUrl, {maxZoom: 18, subdomains: subDomains}).addTo(map);
          });
-         //http://localhost/sites/all/modules/austese_repository/api/featurecodes/?pageSize=20
          jQuery.ajax({
              type: 'GET',
              url: '/' + modulePath + '/api/featurecodes/',
