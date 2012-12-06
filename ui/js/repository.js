@@ -251,12 +251,12 @@ jQuery.fn.serializeObject = function() {
             var obj = result.results[i];
             if (obj){
                 var id = obj.uri.substr(obj.uri.lastIndexOf("/") + 1);
-                var markup = "<div class='span3 obj placeobj'><h4>" + obj.name + ", " + obj.state;
+                var markup = "<div class='span3 obj'><div class='placedesc'><h4>" + obj.name + ", " + obj.state;
                 /*if (hasEditPermission) {
                   markup += " <a href='/" + modulePrefix + "/places/edit/" + id + "' style='font-size:smaller'>EDIT</a>";
                 }*/
                 markup += "</h4><p>Feature Type: <span class='featureCode'>" + obj.featureCode + "</span>" 
-                    + "</p><div class='minimap' data-lat='" + obj.latitude + "' data-long='" + obj.longitude + "'></div></div>";
+                    + "</p></div><div class='minimap' data-lat='" + obj.latitude + "' data-long='" + obj.longitude + "'></div></div>";
                 jQuery('#result').append(markup);
             }
          }
