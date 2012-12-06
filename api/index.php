@@ -131,6 +131,9 @@ $app->post('/works/', function(){
 $app->post('/agents/', function(){
     createRecord('agents');
 });
+$app->post('/places/', function(){
+  createRecord('places');
+ });
 $app->post('/resources/', function(){
     //createRecord('resources');
     createResource();
@@ -151,14 +154,62 @@ $app->get('/works/', function(){
 $app->get('/agents/', function(){
     listRecords('agents','name');
 });
+$app->get('/places/', function(){
+  listRecords('places','name');
+});
 $app->get('/resources/',function(){
     //listRecords('resources','fileUri');
     listResources();
 });
+$app->get('/featurecodes/',function(){
+    getFeatureCodes();
+});
 $app->get('/collections/',function(){
     listRecords('collections','collectionTitle');
 });
-function listResources(){
+// Get featureCodes for places
+function getFeatureCodes() {
+ global $config;
+ global $app;
+ $collection = 'featureCodes';
+ $labelField = 'description';
+ $response = Slim::getInstance()->response();
+ $request = Slim::getInstance()->request();
+ $m = new Mongo($config['dbhost'].':'.$config['dbport'], array('persist' => 'restapi'));
+ $db = $m->selectDB($config['dbname']);
+ $coll = $db->selectCollection($collection);
+ 
+ $pagesize = $request->get('pageSize');
+ $pagenum = $request->get('pageIndex');
+ // provide a default for page Index. Default for pagesize is null (all results will be returned)
+ $pagenum = $pagenum? $pagenum : 0;
+ // TODO: allow param to sort results by custom fields?
+ // allow param to filter results
+ $filterTerm = $request->get('q');
+ $findopts = array();
+ if ($filterTerm != null){
+  $regex = new MongoRegex("/".$filterTerm."/i");
+  $findopts = array($labelField=>$regex);
+ }
+ // sort by id
+ $cursor = $coll->find($findopts)->sort(array('_id'=>1))->limit($pagesize)->skip($pagenum * $pagesize);
+ 
+ // return metadata for results
+ echo "{\"count\":\"" . $cursor->count(0) . "\", \"pageSize\": \"". $pagesize . "\", \"pageIndex\": \"" . $pagenum . "\", \"results\": {";
+ 
+ foreach ($cursor as $obj){
+  try{
+   echo '"'. $obj['_id'] . '":"' . $obj['description'] . '"';
+   if ($cursor->hasNext()){
+    echo ",\n";
+   }
+  } catch (Exception $e){
+  }
+ }
+ echo "}}";
+ $response->header('Content-Type','application/json');
+}
+function listResources($collection, $labelField){
   global $config;
   global $app;
   $response = Slim::getInstance()->response();
@@ -238,7 +289,7 @@ function listRecords($collection, $labelField){
       $id = $obj['_id'];
       $returnobj = $obj['_revisions'][$numrev];
       // generate uri
-      $returnobj['uri'] = $config['uriprefix'] . $collection . '/' . $id->{'$id'};
+      $returnobj['uri'] = $config['uriprefix'] . '/'. $collection . '/' . $id->{'$id'};
       $returnobj['id'] = $id->{'$id'};
       echo json_encode($returnobj);
       if ($cursor->hasNext()){
@@ -279,7 +330,7 @@ function getRecord($collection,$id,$revision) {
     $returnobj = $obj['_revisions'][$revision];
 
     // generate uri
-    $returnobj['uri'] = $config['uriprefix'] . $collection . '/' . $id->{'$id'};
+    $returnobj['uri'] = $config['uriprefix'] . '/'. $collection . '/' . $id->{'$id'};
     $returnobj['id'] = $id->{'$id'};
     $response->header('Content-Type','application/json');
     echo json_encode($returnobj);
@@ -325,6 +376,9 @@ $app->get('/works/:id(/:revision)', function ($id,$revision=NULL) use ($config) 
 });
 $app->get('/agents/:id(/:revision)', function ($id,$revision=NULL) use ($config) {
     getRecord('agents',$id,$revision);
+});
+$app->get('/places/:id(/:revision)', function ($id,$revision=NULL) use ($config) {
+  getRecord('places',$id,$revision);
 });
 $app->get('/resources/:id(/:revision)', function ($id,$revision=NULL) use ($config) {
     //getRecord('resources',$id,$revision);
@@ -420,6 +474,9 @@ $app->put('/works/:id', function ($id) use ($config) {
 $app->put('/agents/:id', function ($id) use ($config) {
     updateRecord('agents',$id);
 });
+$app->put('/places/:id', function ($id) use ($config) {
+  updateRecord('places',$id);
+});
 $app->put('/resources/:id',function($id) use ($config) {
     // update resource
     updateResourceMetadata($id);
@@ -470,6 +527,9 @@ $app->delete('/works/:id', function ($id) {
 });
 $app->delete('/agents/:id', function ($id) {
     deleteRecord('agents',$id);
+});
+$app->delete('/places/:id', function ($id) {
+  deleteRecord('places',$id);
 });
 $app->delete('/resources/:id', function ($id) {
     deleteResource($id);

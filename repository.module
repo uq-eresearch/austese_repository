@@ -29,6 +29,8 @@ function repository_help($path, $arg) {
         return t('Content Repository: Works');
     case 'repository/resources':
         return t('Content Repository: Digital Resources');
+    case 'repository/places':
+        return t('Content Repository: Places');
     case 'admin/help#repository':
         return t('AustESE Content Repository');
   }
@@ -98,7 +100,7 @@ function repository_description() {
 }
 
 function repository_display($template){
-    if (!in_array($template,array("agents","artefacts","versions","works","resources"))) {
+    if (!in_array($template,array("agents","artefacts","versions","works","resources", "places"))) {
         drupal_access_denied();
         return;
     }
@@ -120,6 +122,10 @@ function repository_display($template){
         //drupal_add_js('/sites/all/libraries/plupload/js/jquery.plupload.queue/jquery.plupload.queue.js');
         drupal_add_js($modulePath . '/ui/js/uploader.js');
         return theme("resources", array());
+    } else if ($template == 'places'){
+        drupal_add_css('http://cdn.leafletjs.com/leaflet-0.4/leaflet.css',array('type' => 'external'));
+        drupal_add_js('http://cdn.leafletjs.com/leaflet-0.4/leaflet.js',array('type' => 'external'));
+        return theme("display",array());
     } else {
         return theme("display",array());
     }
@@ -156,6 +162,7 @@ function repository_toc() {
   $list[] = l("Works","repository/works");
   $list[] = l("Digital Resources","repository/resources");
   $list[] = l("Agents","repository/agents");
+  $list[] = l("Places", "repository/places");
   $render_array['repository_list'] = array(
     '#theme' => 'item_list',  
     '#items' => $list

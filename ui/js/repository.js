@@ -76,25 +76,35 @@ jQuery.fn.serializeObject = function() {
     
     function loadObjects(page, filterTerm){
         page = page || 0;
-        
+        var pageSize = 20;
+        if (apiType == 'place'){
+            pageSize = 15;
+        }
         jQuery.ajax({
            type: 'GET',
-           url: '/' + modulePath + '/api/' + apiType + 's?pageSize=20&pageIndex=' + page + (filterTerm? ("&q=" + filterTerm) : ""),
+           url: '/' + modulePath + '/api/' + apiType + 's/',
+           dataType: "json",
+           data: {
+               pageSize: pageSize,
+               pageIndex: page,
+               q: (filterTerm?  filterTerm : "")
+           },
            success: function(result){
              var rescount = parseInt(result.count);
-             var numPages = Math.floor(rescount/20) + 1;
+             var numPages = Math.floor(rescount/pageSize) + 1;
              jQuery('#resultsummary').html("Found " + result.count + " " + apiType + (rescount != 1? "s" : "") + (filterTerm? (" matching '" + filterTerm + "'") : "") + ", ");
              jQuery('#resultcurrent').html("displaying page " + (page + 1) + " of " + numPages); 
-             //console.log(result);
              jQuery('#result').empty();
              if (apiType == "artefact"){
-                 displayArtefacts(rescount, result);
+                 displayArtefacts(pageSize, result);
              } else if (apiType == "version"){
-                 displayVersions(rescount, result);
+                 displayVersions(pageSize, result);
              } else if (apiType == "work"){
-                 displayWorks(rescount, result);
+                 displayWorks(pageSize, result);
              } else if (apiType == "agent"){
-                 displayAgents(rescount, result);
+                 displayAgents(pageSize, result);
+             } else if (apiType == "place"){
+                 displayPlaces(pageSize, result);
              }
              updatePager(page, numPages, filterTerm);
            } // end success function
@@ -107,12 +117,10 @@ jQuery.fn.serializeObject = function() {
               js2form(document.getElementById('create-object'), d);
               if (d.versions){
                   for (var i = 0; i < d.versions.length; i++){
-                      console.log(d.versions[i]);
                    jQuery.ajax({
                      type: 'GET',
                      url: '/' + modulePath + '/api/versions/' + d.versions[i],
                      success: function(v){
-                       console.log("version",v);
                        jQuery('#versions').tokenInput("add",v);
                      }
                    });
@@ -237,6 +245,51 @@ jQuery.fn.serializeObject = function() {
            }
         }
        
+    };
+    function displayPlaces(rescount, result){
+        for (var i = 0; i < rescount; i++){
+            var obj = result.results[i];
+            if (obj){
+                var id = obj.uri.substr(obj.uri.lastIndexOf("/") + 1);
+                var markup = "<div class='span3 obj placeobj'><h4>" + obj.name + ", " + obj.state;
+                /*if (hasEditPermission) {
+                  markup += " <a href='/" + modulePrefix + "/places/edit/" + id + "' style='font-size:smaller'>EDIT</a>";
+                }*/
+                markup += "</h4><p>Feature Type: <span class='featureCode'>" + obj.featureCode + "</span>" 
+                    + "</p><div class='minimap' data-lat='" + obj.latitude + "' data-long='" + obj.longitude + "'></div></div>";
+                jQuery('#result').append(markup);
+            }
+         }
+         jQuery('#result').append('<p class="muted" style="clear:both">Data, imagery and map information provided by <a href="http://open.mapquest.co.uk" target="_blank">MapQuest</a>, <a href="http://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> and contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.</p>');
+         jQuery('.minimap').each(function(i, el){
+            var lat = jQuery(el).data('lat');
+            var long = jQuery(el).data('long');
+            var map = L.map(el).setView([lat, long], 6);
+            var marker = L.marker([lat, long]).addTo(map);
+            var mapquestUrl = 'http://{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png',
+                subDomains = ['otile1','otile2','otile3','otile4']; 
+            var mapquest = L.tileLayer(mapquestUrl, {maxZoom: 18, subdomains: subDomains}).addTo(map);
+         });
+         //http://localhost/sites/all/modules/austese_repository/api/featurecodes/?pageSize=20
+         jQuery.ajax({
+             type: 'GET',
+             url: '/' + modulePath + '/api/featurecodes/',
+             success: function(d){
+                 console.log("got feature codes",d);
+                 var codes = d.results;
+                 if (codes){
+                     jQuery('.featureCode').each(function(i,el){
+                         var featureCode = jQuery(el).html();
+                         var featureCodeDesc = codes[featureCode],
+                             featureCodeShort = featureCodeDesc;
+                         if (featureCodeDesc.length > 50){
+                             featureCodeShort = jQuery.trim(featureCodeShort).substring(0, 50).trim(this) + "...";
+                         }
+                         jQuery(el).html(featureCodeShort).attr('title',featureCode + ": " + featureCodeDesc);
+                     });
+                 }
+             }
+           });
     };
     function displayArtefacts(rescount, result){
         for (var i = 0; i < rescount; i++){

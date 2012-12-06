@@ -25,3 +25,13 @@ ul.token-input-list-facebook {
     border: 1px solid #CCC;
     -webkit-border-radius: 3px;
 }
+.btn-toolbar {
+    clear:both;
+}
+.minimap {
+    height:300px;
+    margin-bottom:1em;
+}
+.placeobj {
+    height:400px;
+}
