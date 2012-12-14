@@ -93,7 +93,11 @@ function repository_display_title($title){
     return ucwords($title);
 }
 function repository_display_edit_title($title){
-    return 'Describe ' . ucwords(substr($title,0,-1));
+    if ($title == "resources"){
+        return "Edit Resource";
+    } else {
+        return 'Describe ' . ucwords(substr($title,0,-1));
+    }
 }
 function repository_description() {
   return array('#markup' => t('The austese content repository module'));
@@ -135,7 +139,7 @@ function repository_display($template){
     }
 }
 function repository_edit($template, $id=null){
-    if (!in_array($template,array("agents","artefacts","versions","works"))) {
+    if (!in_array($template,array("agents","artefacts","versions","works", "resources"))) {
         drupal_access_denied();
         return;
       }
@@ -151,7 +155,13 @@ function repository_edit($template, $id=null){
     drupal_add_js($modulePath . '/ui/js/jquery.tokeninput.js');
     drupal_add_js($modulePath . '/ui/js/js2form.js');
     drupal_add_js($modulePath . '/ui/js/repository.js');
-    
+    if ($template == "resources"){
+        drupal_add_js($modulePath . '/ui/js/codemirror.js');
+        drupal_add_js($modulePath . '/ui/js/xml.js');
+        drupal_add_js($modulePath . '/ui/js/resourceedit.js');
+        drupal_add_css($modulePath . '/ui/css/codemirror.css'); 
+        drupal_add_css($modulePath . '/ui/css/xml.css'); 
+    }
     // Add stylesheets
     drupal_add_css($modulePath . '/ui/css/repository.css'); 
     drupal_add_css($modulePath . '/ui/css/token-input.css', 
@@ -194,6 +204,10 @@ function repository_theme(){
     'works_edit' => array(
        'template' => 'ui/works_edit',
        'variables' => array()
+    ),
+    'resources_edit' => array(
+        'template' => 'ui/resources_edit',
+        'variables' => array()
     ),
     'resources' => array(
        'template' => 'ui/uploader',

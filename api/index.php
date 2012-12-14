@@ -86,19 +86,23 @@ function createResource(){
     $response->status(500);    
     echo "Error uploading file";
   }
-  
+  // generate an id for the resource (the mongo generated id is for the specific version of the resource only)
+  $resid = gen_uuid();
   // return metadata
-  $storedfile = $grid->storeUpload('data',array('metadata' => array('filetype' => $filetype)));
+  $storedfile = $grid->storeUpload('data', array('metadata' => array('filetype' => $filetype)));
+  //, '_resourceid'=>$resid
   $id = $storedfile->{'$id'};
-  $url = $config['uriprefix'] . '/resources/' . $id;
+  $url = $config['uriprefix'] . '/resources/' . $resid;
   // $grid->update(array('_id'=> new MongoId($id)),
   //  array('$set' => array('thumb' => "/sites/default/files/thumbs/".$id)), array('safe' => true));
-  $_ENV['id'] = $id;
-  $_ENV['filetype'] = $filetype;
+  //$_ENV['id'] = $id;
+  //$_ENV['filetype'] = $filetype;
   //var_dump($storedfile);
   //return uri
   $query = array('_id'=>new MongoId($id));
   $file = $grid->findOne($query);
+  // store generated id
+  $grid->update(array('_id'=>new MongoId($id)), array('$set' => array('_resourceid' => $resid)), array('safe' => true));
   echo "{\"uri\":\"". $url 
      //."\",\"thumb\":\"/sites/default/files/thumbs/".$id
      ."\",\"filename\":\"".$file->file['filename']
@@ -178,7 +182,6 @@ function getFeatureCodes() {
  $m = new Mongo($config['dbhost'].':'.$config['dbport'], array('persist' => 'restapi'));
  $db = $m->selectDB($config['dbname']);
  $coll = $db->selectCollection($collection);
- 
  $pagesize = $request->get('pageSize');
  $pagenum = $request->get('pageIndex');
  // provide a default for page Index. Default for pagesize is null (all results will be returned)
@@ -222,11 +225,13 @@ function listResources(){
   // provide a default for page Index. Default for pagesize is null (all results will be returned)
   $pagenum = $pagenum? $pagenum : 0;
   $filterTerm = $request->get('q');
-  $findopts = array('_deleted'=>array('$exists'=>false));
+  $findopts = array('_superseded'=>array('$exists'=>false));
+  $findopts = array('$and'=>array($findopts,
+      array('_deleted'=>array('$exists'=>false))));
   if ($filterTerm != null){
       $regex = new MongoRegex("/".$filterTerm."/i");
       $findopts = array('$and'=>array($findopts,
-				      array('metadata.filename'=>$regex)));
+          array('metadata.filename'=>$regex)));
   }
   // sort by reverse id (newest objects should be listed first)
   $cursor = $grid->find($findopts)->sort(array('_id'=>-1))->limit($pagesize)->skip($pagenum * $pagesize);
@@ -236,14 +241,16 @@ function listResources(){
   foreach ($cursor as $obj){
      try{
       $returnobj = $obj->file;
-      $id = $returnobj['_id'];
+      $id = $returnobj['_resourceid'];
       unset($returnobj['_id']);
+      unset($returnobj['_resourceid']);
+      unset($returnobj['_revisions']);
       // generate uri
-      $returnobj['uri'] = $config['uriprefix']  . '/resources/' . $id->{'$id'};
-      $returnobj['id'] = $id->{'$id'};
+      $returnobj['uri'] = $config['uriprefix']  . '/resources/' . $id;
+      $returnobj['id'] = $id;
       echo json_encode($returnobj);
       if ($cursor->hasNext()){
-	echo ",\n";
+         echo ",\n";
       }
      } catch (Exception $e){
      }
@@ -338,32 +345,54 @@ function getRecord($collection,$id,$revision) {
 function getResource($id, $revision){
   global $config;
   $response = Slim::getInstance()->response();
+  $request = Slim::getInstance()->request();
+  $requesttype = $request->headers('Accept');
   $m = new Mongo($config['dbhost'].':'.$config['dbport'], array('persist' => 'restapi'));
   $db = $m->selectDB($config['dbname']);
   $grid = $db->getGridFS();
-  $query = array('_id'=>new MongoId($id));
+  // todo and superseded is false
+  $query = array('$and'=>
+    array(
+      array('_resourceid'=>$id),
+      array('_superseded'=>array('$exists'=>false))
+    )
+  );
   $file = $grid->findOne($query);
   if ($file == null){
-      $response->status(404);
-      echo 'The requested resource does not exist';
-      return;
+   $response->status(404);
+   echo 'The requested resource does not exist';
+   return;
   }
   if (array_key_exists('_deleted',$file->file)){
-      $response->status(410);
-      echo 'The requested resource has been deleted';
-      return;
+   $response->status(410);
+   echo 'The requested resource has been deleted';
+   return;
   }
-  $filename = $file->file['filename'];
-  try {
-  $filetype = $file->file['metadata']['filetype'];
-  $response->header('Content-type',$filetype);
-  } catch (Exception $e){
+  if ($requesttype=='application/json'){
+      // return json metadata
+      $returnobj = $file->file;
+      $id = $returnobj['_resourceid'];
+      // unset revision
+      unset($returnobj['_revisions']);
+      unset($returnobj['_id']);
+      unset($returnobj['_resourceid']);
+      // generate uri
+      $returnobj['uri'] = $config['uriprefix']  . '/resources/' . $id;
+      $returnobj['id'] = $id;
+      $response->header('Content-Type','application/json');
+      echo json_encode($returnobj);
+  } else {
+      // return file content
+      $filename = $file->file['filename'];
+      try {
+       $filetype = $file->file['metadata']['filetype'];
+       $response->header('Content-type',$filetype);
+      } catch (Exception $e){
+      }
+      $response->header('Content-Description','File Transfer');
+      $response->header('Content-Disposition','attachment; filename='.$filename);
+      echo $file->getBytes();
   }
-  $response->header('Content-Description','File Transfer');
-  $response->header('Content-Disposition','attachment; filename='.$filename);
-
-  echo $file->getBytes();
-
 }
 $app->get('/artefacts/:id(/:revision)', function ($id,$revision=NULL) use ($config) {
     getRecord('artefacts',$id,$revision);
@@ -381,7 +410,6 @@ $app->get('/places/:id(/:revision)', function ($id,$revision=NULL) use ($config)
   getRecord('places',$id,$revision);
 });
 $app->get('/resources/:id(/:revision)', function ($id,$revision=NULL) use ($config) {
-    //getRecord('resources',$id,$revision);
     getResource($id,$revision);
 });
 
@@ -394,10 +422,10 @@ function updateRecord($collection,$id){
   $response = Slim::getInstance()->response();
   try {
     $obj = parseJson($input);
-    // check supplied data was valid
+    // check supplied data was valid - either json or file must have been supplied
     if (count($obj)==0){
       $response->status(400);
-      echo 'Missing or invalid JSON data';
+      echo 'Missing or invalid JSON data or file data input';
       return;
     }
     // remove uri field as we generate this
@@ -407,6 +435,7 @@ function updateRecord($collection,$id){
     if (array_key_exists('id',$obj)){
       unset($obj['id']);
     }
+    $obj['updated'] = date("Y-m-d H:i:s");
     // TOD0 check for provenance fields, add date if required
     $m = new Mongo($config['dbhost'].':'.$config['dbport'], array('persist' => 'restapi'));
     $db = $m->selectDB($config['dbname']);
@@ -415,6 +444,11 @@ function updateRecord($collection,$id){
     $id = new MongoId($id);
     $query = array('_id'=>$id);
     $existobj = $coll->findOne($query);
+    if ($existobj == null){
+     $response->status(404);
+     echo 'The requested object does not exist';
+     return;
+    }
     $revindex = count($existobj['_revisions']);
     // add revision, and if object was flagged as deleted, remove flag (this allows undeletion)
     $inserted = $coll->update(array('_id'=>$id), array('$set' => array('_revisions.'.$revindex => $obj, 'metadata'=>$obj), '$unset'=> array('_deleted'=>1)), array('safe' => true));
@@ -426,12 +460,11 @@ function updateRecord($collection,$id){
     }
     $response->status(204);
   } catch (Exception $e) {
-    $response->status(500);    
+    $response->status(500);
     echo $e->getMessage();
   }
 }
-// this does not update the actual file stored, only the metadata for the resource
-function updateResourceMetadata($id){
+function updateResource($id){
  global $config;
  $m = new Mongo($config['dbhost'].':'.$config['dbport'], array('persist' => 'restapi'));
  $db = $m->selectDB($config['dbname']);
@@ -439,24 +472,74 @@ function updateResourceMetadata($id){
  $env = Slim_Environment::getInstance();
  $input = $env['slim.input'];
  $response = Slim::getInstance()->response();
+ $request = Slim::getInstance()->request();
+ $contenttype = $request->headers('Content-Type');
  try {
-  $obj = parseJson($input);
-  // check supplied data was valid
-  if (count($obj)==0){
-   $response->status(400);
-   echo 'Missing or invalid JSON data';
+  // only update the most recent version of this resource (i.e. superseded not true)
+  $query = array('$and'=>
+    array(
+      array('_resourceid'=>$id),
+      array('_superseded'=>array('$exists'=>false))
+    )
+  );
+  $file = $grid->findOne($query);
+  if ($file == null){
+   $response->status(404);
+   echo 'The requested resource does not exist';
    return;
   }
-  // remove uri field as we generate this
-  if (array_key_exists('uri', $obj)){
-   unset($obj['uri']);
+  $existobj = $file->file;
+  $existid = $existobj['_id'];
+  // if content type is json update metadata, if something else, create new resource version
+  if ($contenttype == 'application/json'){
+    $obj = parseJson($input);
+    // check supplied data was valid
+    if (count($obj)==0){
+     $response->status(400);
+     echo 'Missing or invalid JSON data';
+     return;
+    }
+    // remove uri field as we generate this
+    if (array_key_exists('uri', $obj)){
+     unset($obj['uri']);
+    }
+    if (array_key_exists('id',$obj)){
+     unset($obj['id']);
+    }
+    if (array_key_exists('_revisions',$existobj)){
+     $revindex = count($existobj['_revisions']);
+    } else {
+     $revindex = 0;
+    }
+    $obj['updated'] = date("Y-m-d H:i:s");
+    $inserted = $grid->update($query,
+      array('$set' => array('_revisions.'.$revindex => $obj, 'metadata'=>$obj), 
+      '$unset'=> array('_deleted'=>1)), array('safe' => true));
+    if ($inserted['ok'] != 1 || $inserted['err'] != NULL) {
+     $response->status(500);
+     echo $inserted['err'];
+     return;
+    }
+  } else {
+   // create a new resource using the uploaded body, copying the filename, metadata etc from the existing resource
+   // TODO add existing resource id to list of previous versions for the new resource?
+   
+   $metadata = $existobj['metadata'];
+   if (array_key_exists('_previousversions',$existobj)){
+    $revindex = count($existobj['_previousversions']);
+   } else {
+    $revindex = 0;
+   }
+   $storedfile = $grid->storeBytes($input, array(//'_revisions.'.$revindex => $existobj['_id'], 
+     'metadata' => $metadata));
+   // set superseded to be true on the existing resource
+   $grid->update(array('_id'=>new MongoId($existid)),
+     array('$set' => array('_superseded' => true)), array('safe' => true));
+   // set filename and resource id on new resource
+   $grid->update(array('_id'=>new MongoId($storedfile->{'$id'})), array('$set' => array('filename' => $existobj['filename'], '_resourceid'=>$id)), array('safe' => true));
+
   }
-  if (array_key_exists('id',$obj)){
-   unset($obj['id']);
-  }
-  // TODO: support revisions, undeletion
-  $grid->update(array('_id'=> new MongoId($id)),
-    array('$set' => array('metadata' => $obj)), array('safe' => true));
+  $response->status(204);
  } catch (Exception $e) {
     $response->status(500);    
     echo $e->getMessage();
@@ -478,8 +561,7 @@ $app->put('/places/:id', function ($id) use ($config) {
   updateRecord('places',$id);
 });
 $app->put('/resources/:id',function($id) use ($config) {
-    // update resource
-    updateResourceMetadata($id);
+    updateResource($id);
 });
 $app->put('/collections/:id',function($id) use ($config) {
    updateRecord('collections',$id);
@@ -513,8 +595,7 @@ function deleteResource($id){
   $m = new Mongo($config['dbhost'].':'.$config['dbport'], array('persist' => 'restapi'));
   $db = $m->selectDB($config['dbname']);
   $grid = $db->getGridFS();
-  
-  $grid->update(array('_id'=> new MongoId($id)), array('$set' => array('_deleted' => true)), array('safe' => true));
+  $grid->update(array('_resourceid'=> $id), array('$set' => array('_deleted' => true)), array('safe' => true));
 }
 $app->delete('/artefacts/:id', function ($id) {
     deleteRecord('artefacts',$id);
@@ -541,6 +622,28 @@ function parseJson($s) {
   // make sure keys are quoted
   $s = preg_replace('/(\w+):/i', '"\1":', $s);
   return json_decode($s, true);
+}
+
+function gen_uuid() {
+ return sprintf( '%04x%04x%04x%04x%04x%04x%04x%04x',
+   // 32 bits for "time_low"
+   mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ),
+
+   // 16 bits for "time_mid"
+   mt_rand( 0, 0xffff ),
+
+   // 16 bits for "time_hi_and_version",
+   // four most significant bits holds version number 4
+   mt_rand( 0, 0x0fff ) | 0x4000,
+
+   // 16 bits, 8 bits for "clk_seq_hi_res",
+   // 8 bits for "clk_seq_low",
+   // two most significant bits holds zero and one for variant DCE1.1
+   mt_rand( 0, 0x3fff ) | 0x8000,
+
+   // 48 bits for "node"
+   mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff )
+ );
 }
 
 $app->run();

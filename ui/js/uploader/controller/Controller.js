@@ -180,16 +180,19 @@ Ext.define('austese_uploader.controller.Controller', {
         var msg = '';
         if (record.get('filetype').match('image')){
             msg = '<img style="min-height:480px;margin:auto" src="' + uri + '">';
+            Ext.Msg.show({
+                title: record.get('filename'),
+                // FIXME: use image dimensions to resize box
+                msg: msg,
+                minWidth:380,
+                modal: true,
+            });
         } else {
-            msg = 'No preview available';
+            // FIXME: check for text, xml etc otherwise we may be trying to edit a non-text resource
+            window.open('resources/edit/' + record.get('id'),'_blank');
+            window.focus();
         }
-        Ext.Msg.show({
-            title: record.get('filename'),
-            // FIXME: use image dimensions to resize box
-            msg: msg,
-            minWidth:380,
-            modal: true,
-        });
+        
     },
     rotateImages: function(clockwise) {
         // for all selected records
