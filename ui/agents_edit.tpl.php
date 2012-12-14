@@ -37,6 +37,12 @@ $existingId=arg(3);
       </div>
     </div>
     <div class="control-group">
+      <label class="control-label" for="biography">Biography</label>
+      <div class="controls">
+        <textarea rows="10" class="input-xlarge" name="biography" id="biography"></textarea>
+      </div>
+    </div>
+    <div class="control-group">
       <div class="controls">
          <input id="save-btn" type="button" class="btn" value="Save">
          <input id="del-btn" style="display:none" type="button" class="btn btn-danger" value="Delete">
