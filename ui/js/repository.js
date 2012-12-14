@@ -270,7 +270,7 @@ jQuery.fn.serializeObject = function() {
                }
               
                markup += "</h4>";
-               markup += "Biography: " + obj.biography || "";
+               markup += "Biography: " + (obj.biography || "");
                markup += "</div>";
                jQuery('#result').append(markup);
            }
