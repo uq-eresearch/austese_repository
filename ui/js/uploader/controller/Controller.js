@@ -189,7 +189,7 @@ Ext.define('austese_uploader.controller.Controller', {
             });
         } else {
             // FIXME: check for text, xml etc otherwise we may be trying to edit a non-text resource
-            window.open('resources/edit/' + record.get('id'),'_blank');
+            window.open('resources/edit/' + record.get('id'));
             window.focus();
         }
         
