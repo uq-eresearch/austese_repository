@@ -52,7 +52,7 @@ jQuery.fn.serializeObject = function() {
         // set up search fields
         // artefacts field only present on versions edit page
         if (typeof (jQuery().tokenInput) == 'function'){
-            jQuery("#artefacts").tokenInput("/content/artefacts/", {
+            jQuery("#artefacts").tokenInput("/" + modulePath + "/api/artefacts/", {
                 theme: "facebook",
                 tokenValue: "id",
                 hintText: "Start typing to search artefacts by source",
@@ -61,8 +61,17 @@ jQuery.fn.serializeObject = function() {
                 resultsFormatter: function(item){return "<li><b>" + item.source + "</b>, " + item.date + ", " + item.bibDetails;},
                 tokenFormatter: function(item){return "<li>" + item.source + ", " + item.date + ", " + item.bibDetails + "</li>";}
             });
+            jQuery('#places').tokenInput("/" + modulePath + "/api/places/", {
+                theme: "facebook",
+                tokenValue: "id",
+                hintText: "Start typing to search places by name",
+                jsonContainer: "results",
+                propertyToSearch: "name",
+                resultsFormatter: function(item){return "<li><b>" + item.name + "</b>, " + item.state;},
+                tokenFormatter: function(item){return "<li>" + item.name + ", " + item.state + "</li>";}
+            });
             // versions field only present on works edit page
-            jQuery("#versions").tokenInput("/content/versions/", {
+            jQuery("#versions").tokenInput("/" + modulePath + "/api/versions/", {
                 theme: "facebook",
                 tokenValue: "id",
                 hintText: "Start typing to search versions by title",
@@ -137,6 +146,17 @@ jQuery.fn.serializeObject = function() {
                    });
                   }
               }
+              if (d.places){
+                  for (var i = 0; i < d.places.length; i++){
+                   jQuery.ajax({
+                     type: 'GET',
+                     url: '/' + modulePath + '/api/places/' + d.places[i],
+                     success: function(v){
+                       jQuery('#places').tokenInput("add",v);
+                     }
+                   });
+                  }
+              }
            }
         });
     };
@@ -173,6 +193,13 @@ jQuery.fn.serializeObject = function() {
             data.versions = [];
             for (var i = 0; i < split.length; i++){
                data.versions.push(split[i]);
+            }
+        }
+        if (data.places){
+            var split = data.places.split(",");
+            data.places = [];
+            for (var i = 0; i < split.length; i++){
+               data.places.push(split[i]);
             }
         }
         jQuery.ajax({
@@ -237,10 +264,14 @@ jQuery.fn.serializeObject = function() {
            if (obj){
                var id = obj.uri.substr(obj.uri.lastIndexOf("/") + 1);
                var markup = "<div class='obj'><h4>Name: " + obj.lastName + ", " + obj.firstName;
+               
                if (hasEditPermission) {
                  markup += " <a href='/" + modulePrefix + "/agents/edit/" + id + "' style='font-size:smaller'>EDIT</a>";
                }
-               markup += "</h4></div>";
+              
+               markup += "</h4>";
+               markup += "Biography: " + obj.biography || "";
+               markup += "</div>";
                jQuery('#result').append(markup);
            }
         }
@@ -314,7 +345,14 @@ jQuery.fn.serializeObject = function() {
                 if (obj.artefacts && obj.artefacts.length > 0){
                   artefacts += "<br/>Artefacts: ";
                   for (var j = 0; j < obj.artefacts.length; j++){
-                        artefacts += "<span class='label artefact' data-artefactid='" + obj.artefacts[j] + "'></span><br/>";
+                        artefacts += "<br/><span class='label artefact' data-artefactid='" + obj.artefacts[j] + "'></span>";
+                  }
+                }
+                var places = "";
+                if (obj.places && obj.places.length > 0){
+                  places += "<br/>Places: ";
+                  for (var j = 0; j < obj.places.length; j++){
+                        places += "<br/><span class='label place' data-placeid='" + obj.places[j] + "'></span>";
                   }
                 }
                 var markup = "<div class='obj'><h4>Title: " + obj.versionTitle;
@@ -322,8 +360,11 @@ jQuery.fn.serializeObject = function() {
                   markup += " <a href='versions/edit/" + id + "' style='font-size:smaller'>EDIT</a>"
                 }
                 markup += "</h4>Date: " + obj.date 
-                + "<br/>Name: " + obj.name 
-                + "<br/>First line: " + (obj.firstLine || "") + artefacts + "</div>";
+                + "<br/>Name: " + (obj.name || "") 
+                + "<br/>Publisher: " + (obj.publisher || "")
+                + "<br/>Description: " + (obj.description || "")
+                + "<br/>Illustrations: " + (obj.illust || "")
+                + "<br/>First line: " + (obj.firstLine || "") + artefacts + places + "</div>";
                 jQuery('#result').append(markup);
              }
         }
@@ -341,6 +382,17 @@ jQuery.fn.serializeObject = function() {
               }
             });
         });
+        jQuery(".place").each(function(){
+            var elem = jQuery(this);
+            jQuery.ajax({
+              type: 'GET',
+              url: '/' + modulePath + '/api/places/' + elem.data('placeid'),
+              success: function(d){
+                  var markup = d.name + ", " + d.state;
+                  elem.html(markup);
+              }
+            });
+        });
     };
     function displayWorks(rescount, result) {
         for (var i = 0; i < rescount; i++){
@@ -351,7 +403,7 @@ jQuery.fn.serializeObject = function() {
                 if (obj.versions && obj.versions.length > 0){
                     versions += "<br/>Versions: ";
                     for (var j = 0; j < obj.versions.length; j++){
-                        versions += "<span class='label version' data-versionid='" + obj.versions[j] + "'></span><br/>";
+                        versions += "<br/><span class='label version' data-versionid='" + obj.versions[j] + "'></span>";
                     }
                 }
                 var markup = "<div class='obj'><h4>Title: " + obj.workTitle;

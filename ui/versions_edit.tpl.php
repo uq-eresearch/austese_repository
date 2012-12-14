@@ -28,7 +28,7 @@ $existingId = arg(3);
       <label class="control-label" for="versionTitle">Title</label>
       <div class="controls">
         <textarea rows="1" name="versionTitle" type="text" class="input-xlarge" id="versionTitle"></textarea>
-        <p class="help-block">Title for the version</p>
+        <p class="help-block">Title of this version</p>
       </div>
     </div>
     <div class="control-group">
@@ -39,20 +39,40 @@ $existingId = arg(3);
       </div>
     </div>
     <div class="control-group">
+      <label class="control-label" for="description">Description</label>
+      <div class="controls">
+        <textarea rows="2" name="description" type="text" class="input-xlarge" id="description"></textarea>
+        <p class="help-block">Description of this version</p>
+      </div>
+    </div>
+    <div class="control-group">
       <label class="control-label" for="firstLine">First Line</label>
       <div class="controls">
         <textarea rows="1" name="firstLine" type="text" class="input-xlarge" id="firstLine"></textarea>
-        <p class="help-block">First line of the version (e.g. for poetry)</p>
+        <p class="help-block">First line of this version (e.g. for poetry)</p>
       </div>
     </div>
-<div class="control-group">
+    <div class="control-group">
+      <label class="control-label" for="publisher">Publisher</label>
+      <div class="controls">
+        <textarea rows="1" name="publisher" type="text" class="input-xlarge" id="publisher"></textarea>
+        <p class="help-block">Publisher of this version</p>
+      </div>
+    </div>
+    <div class="control-group">
       <label class="control-label" for="name">Name</label>
       <div class="controls">
         <textarea rows="1" name="name" type="text" class="input-xlarge" id="name"></textarea>
-        <p class="help-block">Short name for version</p>
+        <p class="help-block">Short name of this version</p>
       </div>
     </div>
-
+    <div class="control-group">
+      <label class="control-label" for="illust">Illustrations</label>
+      <div class="controls">
+        <textarea rows="2" name="illust" type="text" class="input-xlarge" id="illust"></textarea>
+        <p class="help-block">Describe illustrations associated with this version</p>
+      </div>
+    </div>
     <div class="control-group">
       <label class="control-label" for="artefacts">Artefacts</label>
       <div class="controls">
@@ -60,7 +80,13 @@ $existingId = arg(3);
         <p class="help-block">Artefacts associated with this version</p>
       </div>
     </div>
-
+    <div class="control-group">
+      <label class="control-label" for="places">Places</label>
+      <div class="controls">
+        <textarea rows="2" name="places" type="text" class="input-xlarge" id="places"></textarea>
+        <p class="help-block">Places associated with this version e.g. place of publication</p>
+      </div>
+    </div>
     
 
 <div class="control-group">
