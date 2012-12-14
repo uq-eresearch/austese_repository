@@ -314,7 +314,7 @@ jQuery.fn.serializeObject = function() {
                 if (obj.artefacts && obj.artefacts.length > 0){
                   artefacts += "<br/>Artefacts: ";
                   for (var j = 0; j < obj.artefacts.length; j++){
-                        artefacts += "<span class='label artefact' data-artefactid='" + obj.artefacts[j] + "'></span>";
+                        artefacts += "<span class='label artefact' data-artefactid='" + obj.artefacts[j] + "'></span><br/>";
                   }
                 }
                 var markup = "<div class='obj'><h4>Title: " + obj.versionTitle;
@@ -351,7 +351,7 @@ jQuery.fn.serializeObject = function() {
                 if (obj.versions && obj.versions.length > 0){
                     versions += "<br/>Versions: ";
                     for (var j = 0; j < obj.versions.length; j++){
-                        versions += "<span class='label version' data-versionid='" + obj.versions[j] + "'></span>";
+                        versions += "<span class='label version' data-versionid='" + obj.versions[j] + "'></span><br/>";
                     }
                 }
                 var markup = "<div class='obj'><h4>Title: " + obj.workTitle;

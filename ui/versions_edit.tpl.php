@@ -27,7 +27,7 @@ $existingId = arg(3);
     <div class="control-group">
       <label class="control-label" for="versionTitle">Title</label>
       <div class="controls">
-        <input name="versionTitle" type="text" class="input-xlarge" id="versionTitle">
+        <textarea rows="1" name="versionTitle" type="text" class="input-xlarge" id="versionTitle"></textarea>
         <p class="help-block">Title for the version</p>
       </div>
     </div>
@@ -41,14 +41,14 @@ $existingId = arg(3);
     <div class="control-group">
       <label class="control-label" for="firstLine">First Line</label>
       <div class="controls">
-        <input name="firstLine" type="text" class="input-xlarge" id="firstLine">
+        <textarea rows="1" name="firstLine" type="text" class="input-xlarge" id="firstLine"></textarea>
         <p class="help-block">First line of the version (e.g. for poetry)</p>
       </div>
     </div>
 <div class="control-group">
       <label class="control-label" for="name">Name</label>
       <div class="controls">
-        <input name="name" type="text" class="input-xlarge" id="name">
+        <textarea rows="1" name="name" type="text" class="input-xlarge" id="name"></textarea>
         <p class="help-block">Short name for version</p>
       </div>
     </div>
@@ -56,7 +56,7 @@ $existingId = arg(3);
     <div class="control-group">
       <label class="control-label" for="artefacts">Artefacts</label>
       <div class="controls">
-        <input name="artefacts" type="text" class="input-xlarge" id="artefacts">
+        <textarea rows="2" name="artefacts" type="text" class="input-xlarge" id="artefacts"></textarea>
         <p class="help-block">Artefacts associated with this version</p>
       </div>
     </div>

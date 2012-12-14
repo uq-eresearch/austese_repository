@@ -27,21 +27,21 @@ $existingId=arg(3);
     <div class="control-group">
       <label class="control-label" for="workTitle">Title</label>
       <div class="controls">
-        <input name="workTitle" type="text" class="input-xlarge" id="workTitle">
+        <textarea rows="1" name="workTitle" type="text" class="input-xlarge" id="workTitle"></textarea>
         <p class="help-block">Full title of the work</p>
       </div>
     </div>
     <div class="control-group">
       <label class="control-label" for="name">Name</label>
       <div class="controls">
-        <input name="name" type="text" class="input-xlarge" id="name">
+        <textarea rows="1" name="name" type="text" class="input-xlarge" id="name"></textarea>
         <p class="help-block">Short name for the work</p>
       </div>
     </div>
   <div class="control-group">
       <label class="control-label" for="versions">Versions</label>
       <div class="controls">
-        <input name="versions" type="text" class="input-xlarge" id="versions">
+        <textarea rows="2" name="versions" type="text" class="input-xlarge" id="versions"></textarea>
         <p class="help-block">Versions of this work</p>
       </div>
     </div>

@@ -27,7 +27,7 @@ $existingId=arg(3);
     <div class="control-group">
       <label class="control-label" for="source">Source</label>
       <div class="controls">
-        <input name="source" type="text" class="input-xlarge" id="source">
+        <textarea rows="1" name="source" type="text" class="input-xlarge" id="source"></textarea>
         <p class="help-block">Short title to identify artefact/source e.g. MS378</p>
       </div>
     </div>
@@ -41,7 +41,7 @@ $existingId=arg(3);
     <div class="control-group">
       <label class="control-label" for="bibDetails">Bibliographic Details</label>
       <div class="controls">
-        <input name="bibDetails" type="text" class="input-xlarge" id="bibDetails">
+        <textarea rows="1" name="bibDetails" type="text" class="input-xlarge" id="bibDetails"></textarea>
         <p class="help-block">Additional bibliographic details e.g. '26 Apr., p. 5e'</p>
       </div>
     </div
