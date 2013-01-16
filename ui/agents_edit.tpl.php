@@ -45,6 +45,8 @@ $existingId=arg(3);
     <div class="control-group">
       <div class="controls">
          <input id="save-btn" type="button" class="btn" value="Save">
+         <a href="/<?php print $modulePrefix; ?>/agents/<?php if ($existingId): print $existingId; endif; ?>">
+         <input type="button" class="btn" value="Cancel"></a>
          <input id="del-btn" style="display:none" type="button" class="btn btn-danger" value="Delete">
       </div>
     </div>

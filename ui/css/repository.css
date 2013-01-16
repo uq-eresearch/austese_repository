@@ -13,6 +13,24 @@
     font-style:italic;
     padding-bottom:1em
 }
+.fill { 
+    min-height: 100%;
+    position:relative;
+}
+.filler::after {
+    background-color: inherit;
+    bottom: 0;
+    content: "";
+    right: 10px;
+    position: absolute;
+    top: 0;
+    width: inherit;
+    z-index: -1;  
+}
+.actionsidebar {
+    background-color:#f5f5f5;
+    padding:1em;
+}
 .btn-highlight{
     color:blue
 }
@@ -32,6 +50,12 @@ ul.token-input-list-facebook {
     height:300px;
     margin-bottom:1em;
 }
+.place {
+    clear:both;
+}
 .placedesc {
-    height:60px;
+    height:6em;
+}
+.metadatalabel {
+    width:8em;
 }

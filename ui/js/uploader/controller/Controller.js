@@ -178,21 +178,8 @@ Ext.define('austese_uploader.controller.Controller', {
         // TODO: allow preview display of multiple resources?
         var uri = record.get('uri');
         var msg = '';
-        if (record.get('filetype').match('image')){
-            msg = '<img style="min-height:480px;margin:auto" src="' + uri + '">';
-            Ext.Msg.show({
-                title: record.get('filename'),
-                // FIXME: use image dimensions to resize box
-                msg: msg,
-                minWidth:380,
-                modal: true,
-            });
-        } else {
-            // FIXME: check for text, xml etc otherwise we may be trying to edit a non-text resource
-            window.open('resources/edit/' + record.get('id'));
-            window.focus();
-        }
-        
+        window.open('resources/' + record.get('id'));
+        window.focus();
     },
     rotateImages: function(clockwise) {
         // for all selected records
