@@ -52,8 +52,6 @@ Ext.define('austese_uploader.view.MainPanel', {
                 busyText: 'Updating...',
                 defaultText: 'AustESE uploader',
                 items: [
-                      // item count status
-                     //"0 resources"
                       {
                           xtype: 'button',
                           iconCls: 'helpIcon',
