@@ -115,12 +115,7 @@ Ext.define('austese_uploader.view.PropertiesPanel', {
                                 },
                                 {
                                     xtype: 'button',
-                                    text: 'Cancel',
-                                    tooltip: 'Reset to most recently stored information',
-                                    listeners: {
-                                        scope: this,
-                                        click: this.cancel
-                                    }
+                                    text: 'Cancel'
                                 },
                                 {
                                     xtype: 'button',
@@ -235,12 +230,7 @@ Ext.define('austese_uploader.view.PropertiesPanel', {
                                 },
                                 {
                                     xtype: 'button',
-                                    text: 'Cancel',
-                                    tooltip: 'Reset to most recently stored information',
-                                    listeners: {
-                                        scope: this,
-                                        click: this.cancel
-                                    }
+                                    text: 'Cancel'
                                 },
                                 {
                                     xtype: 'button',
@@ -255,76 +245,5 @@ Ext.define('austese_uploader.view.PropertiesPanel', {
         });
 
         me.callParent(arguments);
-    },
-    loadRecords: function(records) {
-        this.loadedRecords = records;
-        var l = records.length;
-        var s = l !== 1 ? 's' : '';
-        if (l > 0){
-            this.setTitle('Editing ' + l + ' resource' + s);
-            this.down('toolbar').show();
-        } else {
-            this.setTitle('No resources selected');
-            this.down('toolbar').hide();
-        }
-        var layout = this.getLayout();
-        if (l == 1){
-            // show single record editing UI
-            layout.setActiveItem(1);
-            layout.getActiveItem().getForm().loadRecord(records[0]);
-        } else if (l > 0) {
-            // show multi record editing UI - display values for upload date, size and type are aggregated
-            layout.setActiveItem(2);
-            var aggregatedValues = {
-                    description: records[0].get('description'), 
-                    title: records[0].get('title'),
-                    filetype: ''
-            };
-            var aggregatedTypes = {};
-            aggregatedTypes[records[0].get('filetype')] = 1;
-            var minDate = records[0].get('uploaddate'), 
-                maxDate = minDate;
-            var totalFileLength = records[0].get('filelength');
-            for (var i = 1; i < l; i++){
-                var currentRecord = records[i];
-                // display first non null title and description from any record 
-                aggregatedValues.title = aggregatedValues.title || currentRecord.get('title');
-                aggregatedValues.description = aggregatedValues.description || currentRecord.get('description');
-                // aggregate file length and calculate min and max dates
-                totalFileLength += currentRecord.get('filelength');
-                var date = currentRecord.get('uploaddate');
-                var type = currentRecord.get('filetype');
-                if (minDate > date) {
-                    minDate = date;
-                }
-                if (maxDate < date) {
-                    maxDate = date;
-                }
-                // keep tally of number of resources for each type
-                if (aggregatedTypes[type]) {
-                    aggregatedTypes[type]++;
-                } else {
-                    aggregatedTypes[type] = 1;
-                }
-            }
-            aggregatedValues.sizeString = Ext.util.Format.fileSize(totalFileLength) + " in total";
-            var formattedMinDate = Ext.util.Format.date(minDate, "d/m/Y g:i a"),
-                formattedMaxDate = Ext.util.Format.date(maxDate, "d/m/Y g:i a");
-            if (formattedMinDate != formattedMaxDate){
-                aggregatedValues.dateString = "Between " + formattedMinDate + " and " + formattedMaxDate;
-            } else {
-                aggregatedValues.dateString = formattedMinDate;
-            }
-            for (t in aggregatedTypes) {
-                aggregatedValues.filetype += t + " (" + aggregatedTypes[t] + ")<br/>";
-            }
-            layout.getActiveItem().getForm().setValues(aggregatedValues);
-        } else {
-            // show no resources card
-            layout.setActiveItem(0);
-        }
-    },
-    cancel: function(){
-        this.getLayout().getActiveItem().getForm().reset();
     }
 });

@@ -44,7 +44,9 @@ Ext.define('austese_uploader.controller.Controller', {
             'propertiespanel button[text="Save"]': {
                 click: this.updateRecords
             },
-            // propertiespanel cancel is implemented in PropertiesPanel
+            'propertiespanel button[text="Cancel"]': {
+                click: this.cancelEdit
+            },
             'propertiespanel #configuresingle': {
                 click: function(){
                     this.launchConfigureEditorWindow(true);
@@ -167,12 +169,80 @@ Ext.define('austese_uploader.controller.Controller', {
             }
         }).show();
     },
-    editResourceMetadata: function(view, selections) {
+    editResourceMetadata: function(view, records) {
        // if (/* form is dirty */) {
             // prompt to save data
        // } else {
-            Ext.ComponentQuery.query('propertiespanel')[0].loadRecords(selections);
+            //Ext.ComponentQuery.query('propertiespanel')[0].loadRecords(selections);
        // }
+        var pp = Ext.ComponentQuery.query('propertiespanel')[0];
+        pp.loadedRecords = records;
+        var l = records.length;
+        var s = l !== 1 ? 's' : '';
+        if (l > 0){
+            pp.setTitle('Editing ' + l + ' resource' + s);
+            pp.down('toolbar').show();
+        } else {
+            pp.setTitle('No resources selected');
+            pp.down('toolbar').hide();
+        }
+        var layout = pp.getLayout();
+        if (l == 1){
+            // show single record editing UI
+            layout.setActiveItem(1);
+            layout.getActiveItem().getForm().loadRecord(records[0]);
+        } else if (l > 0) {
+            // show multi record editing UI - display values for upload date, size and type are aggregated
+            layout.setActiveItem(2);
+            var aggregatedValues = {
+                    description: records[0].get('description'), 
+                    title: records[0].get('title'),
+                    filetype: ''
+            };
+            var aggregatedTypes = {};
+            aggregatedTypes[records[0].get('filetype')] = 1;
+            var minDate = records[0].get('uploaddate'), 
+                maxDate = minDate;
+            var totalFileLength = records[0].get('filelength');
+            for (var i = 1; i < l; i++){
+                var currentRecord = records[i];
+                // display first non null title and description from any record 
+                aggregatedValues.title = aggregatedValues.title || currentRecord.get('title');
+                aggregatedValues.description = aggregatedValues.description || currentRecord.get('description');
+                // aggregate file length and calculate min and max dates
+                totalFileLength += currentRecord.get('filelength');
+                var date = currentRecord.get('uploaddate');
+                var type = currentRecord.get('filetype');
+                if (minDate > date) {
+                    minDate = date;
+                }
+                if (maxDate < date) {
+                    maxDate = date;
+                }
+                // keep tally of number of resources for each type
+                if (aggregatedTypes[type]) {
+                    aggregatedTypes[type]++;
+                } else {
+                    aggregatedTypes[type] = 1;
+                }
+            }
+            aggregatedValues.sizeString = Ext.util.Format.fileSize(totalFileLength) + " in total";
+            var formattedMinDate = Ext.util.Format.date(minDate, "d/m/Y g:i a"),
+                formattedMaxDate = Ext.util.Format.date(maxDate, "d/m/Y g:i a");
+            if (formattedMinDate != formattedMaxDate){
+                aggregatedValues.dateString = "Between " + formattedMinDate + " and " + formattedMaxDate;
+            } else {
+                aggregatedValues.dateString = formattedMinDate;
+            }
+            for (t in aggregatedTypes) {
+                aggregatedValues.filetype += t + " (" + aggregatedTypes[t] + ")<br/>";
+            }
+            layout.getActiveItem().getForm().setValues(aggregatedValues);
+        } else {
+            // show no resources card
+            layout.setActiveItem(0);
+        }
+        
     },
     displayResource: function(dataview, record, item, index, e, eOpts){
         // TODO: allow preview display of multiple resources?
@@ -284,6 +354,9 @@ Ext.define('austese_uploader.controller.Controller', {
     },
     cancelUpdateEditorFields: function(button) {
         button.up('window').close();
+    },
+    cancelEdit: function(button){
+        button.up('propertiespanel').getLayout().getActiveItem().getForm().reset();
     },
     updateRecords: function(button){
         Ext.ComponentQuery.query('statusbar')[0].showBusy();
