@@ -28,6 +28,25 @@
 .thumbnailsIcon {
     background-image:url(../img/show_thumbnails.png);
 }
+.editIcon {
+    background-image:url(../img/edit.png);
+}
+.sendToIcon {
+    background-image:url(../img/send_to.png);
+}
+
+img.addMVDIcon {
+    background-image:url(../img/mvd_icon.png);
+}
+img.dataExportIcon {
+    background-image:url(../img/doc_export_icon_16.png);
+}
+img.transcriptionEditorIcon {
+    background-image:url(../img/doc_lines_stright_icon_16.png);
+}
+img.lightBoxIcon {
+    background-image:url(../img/lightbulb_icon_16.png);
+}
 .x-form-item-label-top, .x-form-item-label {
     font-weight:bold;
 }

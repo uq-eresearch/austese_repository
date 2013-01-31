@@ -16,7 +16,6 @@ Ext.define('austese_uploader.view.ThumbnailPanel', {
                 },
                 {
                     xtype: 'resourcegrid'
-                    //html: 'grid'
                 }
             ],
             dockedItems: [
@@ -24,28 +23,30 @@ Ext.define('austese_uploader.view.ThumbnailPanel', {
                     xtype: 'toolbar',
                     dock: 'top',
                     items: [
-                        {
-                            xtype:'buttongroup',
-                            columns: 2,
-                            items: [
-                                {xtype:'form',
-                                    items:[
-                                        {
-                                            xtype:'multifilefieldbutton',
-                                            iconCls: 'addIcon',
-                                            itemId: 'addButton',
-                                            tooltip: 'Upload additional resources'
-                                        }
-                                 ]},
+                        
+                            {xtype:'form',
+                                layout:'hbox',
+                                bodyPadding:2,
+                                bodyBorder: false,
                                 
-                                {
-                                    xtype:'button',
-                                    iconCls: 'deleteIcon',
-                                    itemId: 'deleteButton',
-                                    tooltip: 'Delete selected resource(s)'
-                                }
+                                items:[
+                                    {
+                                        xtype:'multifilefieldbutton',
+                                        iconCls: 'addIcon',
+                                        itemId: 'addButton'
+                                    },
+                                    {
+                                        xtype:'button',
+                                        text: 'Delete',
+                                        iconCls: 'deleteIcon',
+                                        itemId: 'deleteButton',
+                                        margin:{
+                                             left:2
+                                        },
+                                        tooltip: 'Delete selected resource(s)'
+                                    }
                             ]
-                        },
+                            },
                         {
                             xtype: 'tbfill'
                         },
@@ -71,12 +72,9 @@ Ext.define('austese_uploader.view.ThumbnailPanel', {
                             ]
                         },
                         {
-                            xtype: 'tbfill'
-                        },
-                        {
                             xtype: 'textfield',
                             fieldLabel: 'Filter',
-                            labelWidth: 45,
+                            labelWidth: 35,
                             labelAlign: 'right',
                             listeners: {
                                 scope : this,
@@ -113,7 +111,6 @@ Ext.define('austese_uploader.view.ThumbnailPanel', {
     sort: function() {
         var field = this.down('combobox').getValue();
         Ext.getStore('ResourceStore').sort(field);
-        //this.down('thumbnailview').store.sort(field);
     },
     filter: function(field, newValue) {
         var dataview = this.down('thumbnailview'),

@@ -11,6 +11,11 @@ Ext.define('austese_uploader.view.PropertiesPanel', {
         var me = this;
 
         Ext.applyIf(me, {
+            // constants to refer to active views
+            NONESELECTED: 0,
+            EDITSINGLE: 1,
+            EDITMULTI: 2,
+            VIEWONLY: 3,
             dockedItems: [
                 {
                     xtype: 'toolbar',
@@ -45,58 +50,19 @@ Ext.define('austese_uploader.view.PropertiesPanel', {
                     autoScroll: true,
                     trackResetOnLoad: true,
                     defaults: {
-                        anchor:'100%'
+                        anchor:'100%',
+                        labelAlign: 'top'
                     },
                     items: [
                         {
-                            xtype: 'fieldset',
-                            collapsible: true,
-                            title: 'Resource metadata',
-                            defaults: {
-                                anchor: '100%',
-                                labelAlign: 'top'
-                            },
-                            items: [
-                                {
-                                    xtype: 'textfield',
-                                    name: 'title',
-                                    fieldLabel: 'Title'
-                                },
-                                {
-                                    xtype: 'textareafield',
-                                    name: 'description',
-                                    fieldLabel: 'Description'
-                                }
-                            ]
+                            xtype: 'textfield',
+                            name: 'title',
+                            fieldLabel: 'Title'
                         },
                         {
-                            xtype: 'fieldset',
-                            collapsible: true,
-                            title: 'File information',
-                            defaultType: 'displayfield',
-                            defaults: {
-                                labelAlign: 'top',
-                                anchor: '100%'
-                            },
-                            items: [
-                                {
-                                    name: 'filename',
-                                    fieldLabel: 'Original File Name'
-                                    
-                                },
-                                {
-                                    name: 'dateString',
-                                    fieldLabel: 'Uploaded'
-                                },
-                                {
-                                    name: 'sizeString',
-                                    fieldLabel: 'Size'
-                                },
-                                {
-                                    name: 'filetype',
-                                    fieldLabel: 'Type'
-                                }
-                            ]
+                            xtype: 'textareafield',
+                            name: 'description',
+                            fieldLabel: 'Description'
                         }
                     ],
                     dockedItems: [
@@ -132,84 +98,53 @@ Ext.define('austese_uploader.view.PropertiesPanel', {
                     bodyPadding: 10,
                     autoScroll: true,
                     trackResetOnLoad: true,
+                    defaults: {
+                        layout: 'hbox'
+                    },
                     items: [
                         {
-                            xtype: 'fieldset',
-                            collapsible: true,
-                            title: 'Resource metadata',
-                            defaults: {
-                            	layout: 'hbox'
-                            },
+                            xtype: 'fieldcontainer',
+                            hideLabel: true,
+                            itemId: 'titlefc',
                             items: [
                                 {
-                                    xtype: 'fieldcontainer',
+                                    xtype: 'checkboxfield',
+                                    flex: 0,
+                                    margins: '0 10 0 0',
+                                    name: 'updatetitle',
+                                    fieldLabel: 'Label',
                                     hideLabel: true,
-                                    itemId: 'titlefc',
-                                    items: [
-                                        {
-                                            xtype: 'checkboxfield',
-                                            flex: 0,
-                                            margins: '0 10 0 0',
-                                            name: 'updatetitle',
-                                            fieldLabel: 'Label',
-                                            hideLabel: true,
-                                            boxLabel: ''
-                                        },
-                                        {
-                                            xtype: 'textfield',
-                                            flex: 1,
-                                            name: 'title',
-                                            fieldLabel: 'Title',
-                                            labelAlign: 'top'
-                                        }
-                                    ]
+                                    boxLabel: ''
                                 },
                                 {
-                                    xtype: 'fieldcontainer',
-                                    hideLabel: true,
-                                    itemId: 'descriptionfc',
-                                    items: [
-                                        {
-                                            xtype: 'checkboxfield',
-                                            flex: 0,
-                                            margins: '0 10 0 0',
-                                            name: 'updatedescription',
-                                            fieldLabel: 'Label',
-                                            hideLabel: true,
-                                            boxLabel: ''
-                                        },
-                                        {
-                                            xtype: 'textareafield',
-                                            flex: 1,
-                                            name: 'description',
-                                            fieldLabel: 'Description',
-                                            labelAlign: 'top'
-                                        }
-                                    ]
+                                    xtype: 'textfield',
+                                    flex: 1,
+                                    name: 'title',
+                                    fieldLabel: 'Title',
+                                    labelAlign: 'top'
                                 }
                             ]
                         },
                         {
-                            xtype: 'fieldset',
-                            collapsible: true,
-                            title: 'File information',
-                            defaultType: 'displayfield',
-                            defaults: {
-                                anchor:'100%',
-                                labelAlign: 'top'
-                            },
+                            xtype: 'fieldcontainer',
+                            hideLabel: true,
+                            itemId: 'descriptionfc',
                             items: [
                                 {
-                                    name: 'dateString',
-                                    fieldLabel: 'Uploaded'
+                                    xtype: 'checkboxfield',
+                                    flex: 0,
+                                    margins: '0 10 0 0',
+                                    name: 'updatedescription',
+                                    fieldLabel: 'Label',
+                                    hideLabel: true,
+                                    boxLabel: ''
                                 },
                                 {
-                                    name: 'sizeString',
-                                    fieldLabel: 'Size'
-                                },
-                                {
-                                    name: 'filetype',
-                                    fieldLabel: 'Type'
+                                    xtype: 'textareafield',
+                                    flex: 1,
+                                    name: 'description',
+                                    fieldLabel: 'Description',
+                                    labelAlign: 'top'
                                 }
                             ]
                         }
@@ -239,6 +174,87 @@ Ext.define('austese_uploader.view.PropertiesPanel', {
                                 }
                             ]
                         }
+                    ]
+                },
+                // display only view for resources
+                {
+                    xtype: 'form',
+                    bodyPadding: 10,
+                    autoScroll: true,
+                    trackResetOnLoad: true,
+                    defaults: {
+                        anchor:'100%'
+                    },
+                    items: [
+                        
+                        {   
+                            xtype:'displayfield',
+                            fieldLabel: 'Title',
+                            labelWidth: 35,
+                            name:'title',
+                            renderer: function(val){
+                                if (!val){
+                                    return "<span class='muted'>Not specified</span>";
+                                } 
+                                else {
+                                    return val;
+                                }
+                            }
+                        
+                        },
+                        // file info
+                        {
+                        xtype: 'fieldset',
+                        collapsible: true,
+                        title: 'File information',
+                        defaultType: 'displayfield',
+                        defaults: {
+                            anchor:'100%',
+                            labelAlign: 'top'
+                        },
+                        items: [
+                            {
+                                name: 'filename',
+                                fieldLabel: 'Original File Name'
+                            },
+                            {
+                                name: 'dateString',
+                                fieldLabel: 'Uploaded'
+                            },
+                            {
+                                name: 'sizeString',
+                                fieldLabel: 'Size'
+                            },
+                            {
+                                name: 'filetype',
+                                fieldLabel: 'Type'
+                            }
+                        ]
+                    }],
+                    dockedItems: [
+                                  // Actions that apply to one or more resources
+                                  {
+                                      xtype: 'toolbar',
+                                      dock: 'top',
+                                      items: [
+                                          
+                                          {xtype:'tbfill'},
+                                          {
+                                              xtype: 'button',
+                                              text: 'Edit',
+                                              iconCls: 'editIcon',
+                                              tooltip: 'Edit metadata for selected resource(s)'
+                                          },
+                                          {
+                                              // actions that involve loading resource in another tool
+                                              xtype: 'splitbutton',
+                                              text: 'Send to',
+                                              iconCls: 'sendToIcon',
+                                              menu: new Ext.menu.Menu(),
+                                              tooltip: 'Send selected resource(s) to...'
+                                          }
+                                        ]
+                                  }
                     ]
                 }
             ]

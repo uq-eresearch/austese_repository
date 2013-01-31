@@ -25,11 +25,20 @@ Ext.define('austese_uploader.controller.Controller', {
             },
             // thumbnailpanel filter and sort handler are implemented in ThumbnailPanel 
             'thumbnailview': {
-                selectionchange: this.editResourceMetadata,
+                selectionchange: this.displayResourceMetadata,
                 itemdblclick: this.displayResource
             },
+            'propertiespanel button[iconCls="editIcon"]': {
+                click: this.editResourceMetadata
+            },
+            'propertiespanel fieldcontainer textfield': {
+                change: this.onFocusMultiField
+            },
+            'propertiespanel splitbutton[iconCls="sendToIcon"]': {
+                arrowclick: this.displaySendToMenu
+            },
             'resourcegrid':{
-                selectionchange: this.editResourceMetadata
+                selectionchange: this.displayResourceMetadata
             },
             '#rotateleft': {
                 click: function(button, e, options){
@@ -73,6 +82,32 @@ Ext.define('austese_uploader.controller.Controller', {
                 click: this.selectAllCheckboxes
             }
         });
+        // listener to init select resources when resources are loaded into store
+        Ext.getStore('ResourceStore').on('load',this.initSelectResources);
+    },
+    initSelectResources: function(){
+        var urlsplit = document.location.href.split('#');
+        if (urlsplit.length > 1){
+            var selModel = Ext.ComponentQuery.query('thumbnailview')[0].getSelectionModel();
+            var store = selModel.getStore();
+            console.log(store);
+            var idsplit = urlsplit[1].split(';');
+            var records = [];
+            for (var i = 0; i < idsplit.length; i++){
+                // find resource record with matching id and add to records array
+                var id = idsplit[i];
+                
+                if (id){
+                    var rec = store.getById(id);
+                    if (rec && rec != -1){
+                        records.push(rec);
+                    }
+                }
+            }
+            if (records.length > 0){
+                selModel.select(records);
+            }
+        }
     },
     resizeUI: function(w, h){
         // force resize and repositioning of app when window resizes
@@ -101,7 +136,6 @@ Ext.define('austese_uploader.controller.Controller', {
     },
     addResources: function(button, filelist){
         button.up('mainpanel').down('statusbar').showBusy();
-        console.log(arguments);
         var modulePath = this.application.modulePath;
         var form = button.up('form').getForm();
         
@@ -110,11 +144,9 @@ Ext.define('austese_uploader.controller.Controller', {
                 //waitMsg: 'Uploading files...',
                 success: function(fp, o) {
                     //msg('Success', 'Processed file "' + o.result.file + '" on the server');
-                    //console.log("success",arguments)
                     Ext.getStore("ResourceStore").load();
                 },
                 failure: function(){
-                    //console.log("fail",arguments)
                     Ext.getStore("ResourceStore").load();
                 }
             });
@@ -169,31 +201,122 @@ Ext.define('austese_uploader.controller.Controller', {
             }
         }).show();
     },
-    editResourceMetadata: function(view, records) {
-       // if (/* form is dirty */) {
-            // prompt to save data
-       // } else {
-            //Ext.ComponentQuery.query('propertiespanel')[0].loadRecords(selections);
-       // }
+    onFocusMultiField: function(f, newValue, oldValue){
+        var name = f.getName();
+        var pp = f.up("propertiespanel");
+        var setValue = pp.aggregatedValues[name];
+        //check box if value is changed from what was originally set
+        if (newValue != setValue && setValue != undefined){
+            f.up("fieldcontainer").down("checkboxfield").setValue(1);
+        } else {
+            f.up("fieldcontainer").down("checkboxfield").setValue(0);
+        }
+    },
+    displaySendToMenu: function(button){
+        // populate menu with custom options depending on what resources are selected
+        var pp = button.up('propertiespanel');
+        var records = pp.loadedRecords;
+        var aggregatedValues = pp.aggregatedValues;
+        
+        button.menu.removeAll();
+        var filetype = (aggregatedValues && aggregatedValues.filetype) || records[0].get('filetype');
+        // TODO check permissions and tool availability before displaying options in UI
+        if (filetype && filetype.match('xml')){
+            button.menu.add({
+                text: 'MVD',
+                iconCls: 'addMVDIcon',
+                tooltip: 'Add selected transcription(s) to MVD',
+                handler: function(){}}
+            );
+            if (records.length == 1){
+                var record = records[0];
+                button.menu.add({
+                    text: 'Transcription editor',
+                    iconCls: 'transcriptionEditorIcon',
+                    tooltip: 'Edit selected transcription',
+                    handler: function(){
+                        console.log(record.get('id'));
+                        document.location.href ='/repository/resources/edit/' + record.get('id');
+                    }}
+                );
+            }
+        }
+        if (filetype && filetype.match('image')){
+            button.menu.add({
+                text: 'Light Box',
+                iconCls: 'lightBoxIcon',
+                tooltip: 'Add selected images(s) to Light Box',
+                handler: function(){}}
+            );
+            
+        }
+        button.menu.add({
+            text: 'Data Export',
+            iconCls: 'dataExportIcon',
+            tooltip: 'Export metadata for selected resource(s)',
+            handler: function(){}}
+        );
+        // force menu to show
+        button.menu.show();
+    },
+    editResourceMetadata: function(button){
+        var pp = button.up('propertiespanel');
+        var records = pp.loadedRecords;
+        var aggregatedValues = pp.aggregatedValues;
+        var l = records.length;
+        var layout = pp.getLayout();
+        var s = l !== 1 ? 's' : '';
+        pp.setTitle('Editing ' + l + ' resource' + s);
+        /*if (records[0].get('filetype').match("image") || aggregatedValues.filetype.match("image")){
+            // only show image rotation tools if at least one image is selected
+            pp.down('toolbar').show();
+        }*/
+        if (l == 1){
+            // show single record editing UI
+            layout.setActiveItem(pp.EDITSINGLE);
+            layout.getActiveItem().getForm().loadRecord(records[0]);
+        } else if (l > 0) {
+            layout.setActiveItem(pp.EDITMULTI); 
+            layout.getActiveItem().getForm().setValues(aggregatedValues);
+        }
+    },
+    displayResourceMetadata: function(view, records) {
         var pp = Ext.ComponentQuery.query('propertiespanel')[0];
+        var layout = pp.getLayout();
+        var activeItem = layout.getActiveItem();
+        if (activeItem && activeItem.getForm){
+            var form = layout.getActiveItem().getForm();
+            if (form.isDirty) {
+                // TODO: prompt to save data
+
+            }
+        }
         pp.loadedRecords = records;
         var l = records.length;
         var s = l !== 1 ? 's' : '';
+        pp.down('toolbar').hide();
+        layout.setActiveItem(pp.VIEWONLY);
+        form = layout.getActiveItem().getForm();
         if (l > 0){
-            pp.setTitle('Editing ' + l + ' resource' + s);
-            pp.down('toolbar').show();
+            pp.setTitle(l + ' resource' + s + " selected");
         } else {
             pp.setTitle('No resources selected');
-            pp.down('toolbar').hide();
         }
-        var layout = pp.getLayout();
+        // add selected ids to href after frag id to allow bookmarking selection
+        var ids="";
+        for (var i = 0; i < records.length; i++){
+            ids += records[i].get("id") + ";";
+        }
+        document.location.href = document.location.href.split('#')[0] + "#" + ids;
+        
         if (l == 1){
-            // show single record editing UI
-            layout.setActiveItem(1);
-            layout.getActiveItem().getForm().loadRecord(records[0]);
+            form.loadRecord(records[0]);
+            // show file name field
+            layout.getActiveItem().down('displayfield[name="filename"]').show();
+            layout.getActiveItem().down('displayfield[name="title"]').show();
+            
         } else if (l > 0) {
-            // show multi record editing UI - display values for upload date, size and type are aggregated
-            layout.setActiveItem(2);
+            //  display values for upload date, size and type are aggregated
             var aggregatedValues = {
                     description: records[0].get('description'), 
                     title: records[0].get('title'),
@@ -237,10 +360,14 @@ Ext.define('austese_uploader.controller.Controller', {
             for (t in aggregatedTypes) {
                 aggregatedValues.filetype += t + " (" + aggregatedTypes[t] + ")<br/>";
             }
-            layout.getActiveItem().getForm().setValues(aggregatedValues);
+            form.setValues(aggregatedValues);
+            // TODO file name field
+            layout.getActiveItem().down('displayfield[name="filename"]').hide();
+            layout.getActiveItem().down('displayfield[name="title"]').hide();
+            pp.aggregatedValues = aggregatedValues;
         } else {
             // show no resources card
-            layout.setActiveItem(0);
+            layout.setActiveItem(pp.NONESELECTED);
         }
         
     },
@@ -264,8 +391,8 @@ Ext.define('austese_uploader.controller.Controller', {
     },
     launchConfigureEditorWindow: function(single){
         var metadataFieldSet = Ext.ComponentQuery.query('propertiespanel')[0] // the propertiespanel
-        .getLayout().getActiveItem() // the active editor form
-        .down('fieldset'); // the first fieldset (i.e. metadata)
+        .getLayout().getActiveItem(); // the active editor form
+        //.down('fieldset'); // the first fieldset (i.e. metadata)
         // make a list of existing fields in metadata editor to avoid creating duplicate fields
         var existingFields = [];
         metadataFieldSet.items.each(
@@ -294,8 +421,8 @@ Ext.define('austese_uploader.controller.Controller', {
         // read config values from window's form
         var config = win.down('form').getForm().getValues();
         var metadataFieldSet = Ext.ComponentQuery.query('propertiespanel')[0] // the propertiespanel
-            .getLayout().getActiveItem() // the active editor form
-            .down('fieldset'); // the first fieldset (i.e. metadata)
+            .getLayout().getActiveItem(); // the active editor form
+            //.down('fieldset'); // the first fieldset (i.e. metadata)
         var existingFields = win.existingFields;
         metadataFieldSet.items.each(
             function(f){
@@ -356,7 +483,11 @@ Ext.define('austese_uploader.controller.Controller', {
         button.up('window').close();
     },
     cancelEdit: function(button){
-        button.up('propertiespanel').getLayout().getActiveItem().getForm().reset();
+        var pp = button.up('propertiespanel');
+        var ppLayout = pp.getLayout();
+        ppLayout.getActiveItem().getForm().reset();
+        ppLayout.setActiveItem(pp.VIEWONLY);
+        pp.down('toolbar').hide();
     },
     updateRecords: function(button){
         Ext.ComponentQuery.query('statusbar')[0].showBusy();
@@ -374,7 +505,8 @@ Ext.define('austese_uploader.controller.Controller', {
         } else {
             // get new values from form (only where checkbox is checked)
             var newValues = {};
-            activeForm.down('fieldset').items.each(function(f){
+            activeForm//.down('fieldset')
+                .items.each(function(f){
                 if (f.down("checkboxfield").getValue()){
                     // get value from textfield or textarea
                     var valueField = f.down("textfield") || f.down("textarea");
@@ -399,10 +531,11 @@ Ext.define('austese_uploader.controller.Controller', {
                     });
                     // save values to database
                     this.updateData(rec.get('uri'),newValues);
-                    //console.log("newvals",newValues);
                 }
             }
         }
+        // return to view only view
+        this.cancelEdit(button);
     },
     isEmptyObject: function(obj){
         for (p in obj) {
