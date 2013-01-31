@@ -40,5 +40,9 @@ Ext.application({
         var mainWindow = Ext.create('austese_uploader.view.MainPanel',{
                 renderTo: Ext.getBody(),
         }).showAt(placeholder.getX(),placeholder.getY());
+        var fullscreen = jQuery('#metadata').data('fullscreen');
+        if (fullscreen == 1){
+            this.getController('Controller').toggleFullscreen(Ext.ComponentQuery.query('#toggleFullscreenButton')[0]);
+        }
     }
 });

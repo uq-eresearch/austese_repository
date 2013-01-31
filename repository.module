@@ -259,7 +259,31 @@ function repository_theme(){
     ),
  );
 }
-
+/** 
+ * User preference for launching tools in full screen mode - for repository upload tool and other AustESE tools
+ * with full screen option
+ */
+function repository_form_user_profile_form_alter(&$form, &$form_state) {
+  $account = $form['#user'];
+  $form['austese'] = array(
+    '#type' => 'fieldset',
+    '#title' => 'AustESE',
+    '#collapsed' => FALSE,
+    '#collapsible' => TRUE,
+    '#weight' => 10,
+  );
+  $form['austese']['fullscreen'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('AustESE tools launch full screen'),
+    '#description' => t('Check this box if you want to launch AustESE tools in fullscreen mode by default'),
+    '#return_value' => 1,
+    '#default_value' => isset($account->data['fullscreen']) ? $account->data['fullscreen'] : 0 ,
+  );
+  // TODO add other preferences e.g. default metadata fields to display in editor
+}
+function repository_user_presave(&$edit, $account, $category) {
+  $edit['data']['fullscreen'] = isset($edit['fullscreen']) ? $edit['fullscreen'] : 0;
+}
 /**
  * @} End of "defgroup repository".
  */

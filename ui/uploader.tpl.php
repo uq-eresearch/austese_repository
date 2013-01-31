@@ -8,6 +8,7 @@ $modulePrefix = arg(0);
 $apiType = substr(arg(1),0,-1); // remove the trailing 's'
 $apiOperation = arg(2);
 $existingId=arg(3);
+$fullscreen = $user->data['fullscreen'];
 ?>
 <div id="metadata"
  <?php if (user_access('edit metadata')): ?>
@@ -15,6 +16,9 @@ $existingId=arg(3);
  <?php endif; ?>
  <?php if ($existingId):?>
  data-existingid="<?php print $existingId; ?>"
+ <?php endif; ?>
+ <?php if ($fullscreen):?>
+ data-fullscreen="<?php print $fullscreen; ?>"
  <?php endif; ?>
  data-moduleprefix="<?php print $modulePrefix; ?>"
  data-modulepath="<?php print drupal_get_path('module', 'repository'); ?>"

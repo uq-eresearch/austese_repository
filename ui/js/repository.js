@@ -51,8 +51,10 @@ jQuery.fn.serializeObject = function() {
         
         } else {
             setUpTemplates();
-            loadObject(existingId);
-        }
+            if (existingId){
+                loadObject(existingId);
+            }
+        } 
         // set up search fields
         if (typeof (jQuery().tokenInput) == 'function'){
             jQuery("#artefacts").tokenInput("/" + modulePath + "/api/artefacts/", {
