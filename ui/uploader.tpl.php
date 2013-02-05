@@ -10,6 +10,7 @@ $apiOperation = arg(2);
 $existingId=arg(3);
 $fullscreen = $user->data['fullscreen'];
 ?>
+<!--  TODO: check permissions to determine whether to enable collation tools -->
 <div id="metadata"
  <?php if (user_access('edit metadata')): ?>
   data-editable="true"
@@ -22,7 +23,8 @@ $fullscreen = $user->data['fullscreen'];
  <?php endif; ?>
  data-moduleprefix="<?php print $modulePrefix; ?>"
  data-modulepath="<?php print drupal_get_path('module', 'repository'); ?>"
- data-apioperation="<?php print $apiOperation;?>"
+ data-enablecollation="<?php print module_exists('collationtools');?>"
+ data-enablelightbox="<?php print module_exists('lightbox');?>"
  data-apitype="<?php print $apiType;?>">
 </div>
 <link rel="stylesheet" href="/sites/all/libraries/ext-4.1.1a/resources/css/ext-all.css">

@@ -98,6 +98,12 @@ Ext.define('austese_uploader.view.ThumbnailPanel', {
                         },
                         {
                             xtype: 'button',
+                            iconCls: 'homeIcon',
+                            itemId: 'homeButton',
+                            tooltip: 'Return to AustESE workbench home'
+                        },
+                        {
+                            xtype: 'button',
                             iconCls: 'fullscreenIcon',
                             itemId: 'toggleFullscreenButton',
                             tooltip: 'Toggle fullscreen mode'

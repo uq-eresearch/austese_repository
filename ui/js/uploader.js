@@ -15,6 +15,8 @@ Ext.Loader.setPath('Ext.ux', '/sites/all/libraries/ext-4.1.1a/examples/ux');
 Ext.WindowMgr.zseed = 1040;
 Ext.application({
     modulePath: modulePath,
+    enableCollation: jQuery('#metadata').data('enablecollation'),
+    enableLightBox: jQuery('#metadata').data('enablelightbox'),
     models: [
         'ResourceModel'
     ],
@@ -28,7 +30,8 @@ Ext.application({
         'ThumbnailPanel',
         'ThumbnailView',
         'ResourceGrid',
-        'SelectPropertiesWindow'
+        'SelectPropertiesWindow',
+        'SendToMVDWindow'
     ],
     autoCreateViewport: false,
     name: 'austese_uploader',

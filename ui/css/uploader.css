@@ -16,6 +16,9 @@
 .helpIcon {
     background-image:url(../img/circle_question_mark.png);
 }
+.homeIcon{
+    background-image:url(../img/home_icon_16.png);
+}
 .fullscreenIcon {
     background-image:url(../img/fullscreen_16x16.png);
 }

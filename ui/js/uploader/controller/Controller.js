@@ -23,6 +23,11 @@ Ext.define('austese_uploader.controller.Controller', {
             '#helpButton': {
                 click: this.displayHelp
             },
+            '#homeButton': {
+                click: function(){
+                    document.location.href='/';
+                }
+            },
             // thumbnailpanel filter and sort handler are implemented in ThumbnailPanel 
             'thumbnailview': {
                 selectionchange: this.displayResourceMetadata,
@@ -80,23 +85,24 @@ Ext.define('austese_uploader.controller.Controller', {
             }, 
             'selectpropertieswindow button[text="Select All"]': {
                 click: this.selectAllCheckboxes
+            },
+            'sendtomvdwindow button[text="OK"]':{
+                click: this.createMVD
             }
         });
         // listener to init select resources when resources are loaded into store
-        Ext.getStore('ResourceStore').on('load',this.initSelectResources);
+        Ext.getStore('ResourceStore').on('load',this.initSelectResources,{single:true});
     },
     initSelectResources: function(){
         var urlsplit = document.location.href.split('#');
         if (urlsplit.length > 1){
             var selModel = Ext.ComponentQuery.query('thumbnailview')[0].getSelectionModel();
             var store = selModel.getStore();
-            console.log(store);
             var idsplit = urlsplit[1].split(';');
             var records = [];
             for (var i = 0; i < idsplit.length; i++){
                 // find resource record with matching id and add to records array
                 var id = idsplit[i];
-                
                 if (id){
                     var rec = store.getById(id);
                     if (rec && rec != -1){
@@ -138,7 +144,6 @@ Ext.define('austese_uploader.controller.Controller', {
         button.up('mainpanel').down('statusbar').showBusy();
         var modulePath = this.application.modulePath;
         var form = button.up('form').getForm();
-        
             form.submit({
                 url: modulePath + '/api/resources/',
                 //waitMsg: 'Uploading files...',
@@ -212,53 +217,7 @@ Ext.define('austese_uploader.controller.Controller', {
             f.up("fieldcontainer").down("checkboxfield").setValue(0);
         }
     },
-    displaySendToMenu: function(button){
-        // populate menu with custom options depending on what resources are selected
-        var pp = button.up('propertiespanel');
-        var records = pp.loadedRecords;
-        var aggregatedValues = pp.aggregatedValues;
-        
-        button.menu.removeAll();
-        var filetype = (aggregatedValues && aggregatedValues.filetype) || records[0].get('filetype');
-        // TODO check permissions and tool availability before displaying options in UI
-        if (filetype && filetype.match('xml')){
-            button.menu.add({
-                text: 'MVD',
-                iconCls: 'addMVDIcon',
-                tooltip: 'Add selected transcription(s) to MVD',
-                handler: function(){}}
-            );
-            if (records.length == 1){
-                var record = records[0];
-                button.menu.add({
-                    text: 'Transcription editor',
-                    iconCls: 'transcriptionEditorIcon',
-                    tooltip: 'Edit selected transcription',
-                    handler: function(){
-                        console.log(record.get('id'));
-                        document.location.href ='/repository/resources/edit/' + record.get('id');
-                    }}
-                );
-            }
-        }
-        if (filetype && filetype.match('image')){
-            button.menu.add({
-                text: 'Light Box',
-                iconCls: 'lightBoxIcon',
-                tooltip: 'Add selected images(s) to Light Box',
-                handler: function(){}}
-            );
-            
-        }
-        button.menu.add({
-            text: 'Data Export',
-            iconCls: 'dataExportIcon',
-            tooltip: 'Export metadata for selected resource(s)',
-            handler: function(){}}
-        );
-        // force menu to show
-        button.menu.show();
-    },
+    
     editResourceMetadata: function(button){
         var pp = button.up('propertiespanel');
         var records = pp.loadedRecords;
@@ -595,5 +554,115 @@ Ext.define('austese_uploader.controller.Controller', {
                 }
             });
         }
+    },
+    displaySendToMenu: function(button){
+        // populate menu with custom options depending on what resources are selected
+        var pp = button.up('propertiespanel');
+        var records = pp.loadedRecords;
+        var aggregatedValues = pp.aggregatedValues;
+        
+        button.menu.removeAll();
+        var filetype = (aggregatedValues && aggregatedValues.filetype) || records[0].get('filetype');
+        console.log("send to menu",this.application);
+        if (filetype && (filetype.match('xml') ||  filetype.match('text')) && this.application.enableCollation==1){
+            button.menu.add({
+                text: 'MVD',
+                iconCls: 'addMVDIcon',
+                tooltip: 'Add selected transcription(s) to MVD',
+                handler: this.sendToMVD
+            });
+            if (records.length == 1){
+                var record = records[0];
+                button.menu.add({
+                    text: 'Transcription editor',
+                    iconCls: 'transcriptionEditorIcon',
+                    tooltip: 'Edit selected transcription',
+                    handler: function(){
+                        document.location.href ='/repository/resources/edit/' + record.get('id');
+                    }}
+                );
+            }
+        }
+        if (filetype && filetype.match('image') && this.application.enableLightBox==1){
+            button.menu.add({
+                text: 'Light Box',
+                iconCls: 'lightBoxIcon',
+                tooltip: 'Add selected images(s) to Light Box',
+                handler: this.sendToLightBox
+            });
+            
+        }
+        /*button.menu.add({
+            text: 'Data Export',
+            iconCls: 'dataExportIcon',
+            tooltip: 'Export metadata for selected resource(s)',
+            handler: function(){}}
+        );*/
+        // force menu to show
+        button.menu.show();
+    },
+    // send to handlers
+    sendToMVD: function(button){
+        var pp = button.up('propertiespanel');
+        var records = pp.loadedRecords;
+        console.log("send to MVD",records);
+        var ids='';
+        // for each selected resource that is a transcription (i.e. not an image)
+        for (var i = 0; i < records.length; i++){
+            if (records[i].get('filetype').match('xml') || records[i].get('filetype').match('text')){
+                ids+=records[i].get("id") +";";
+            }
+        }
+        // TODO: prompt for existing document id, 
+        // but HRIT server import doesn't support adding to existing at present
+        // however could look up existing MVD with some of these resources and offer to replace it
+        Ext.create('austese_uploader.view.SendToMVDWindow',{
+            ids: ids
+        }).show();
+        
+        // redirect to collation module sendtomvd page
+        // TODO: post the ids so they don't display in URL?
+        
+        
+    },
+    createMVD: function(button){
+      var mvdWin = button.up('window');
+      var ids = mvdWin.ids;
+      var docpath = mvdWin;
+      var formValues = mvdWin.down('form').getForm().getValues();
+      // TODO strip spaces and any other illegal characters
+      var docpath = (formValues.language? formValues.language : "")
+          + (formValues.author? '%2f' + formValues.author : "")
+          + (formValues.work? '%2f' + formValues.work : "")
+          + (formValues.section? '%2f' +  formValues.section : "")
+          + (formValues.subsection? '%2f'+ formValues.subsection : "");
+      mvdWin.close();
+      var progressWin = Ext.create('Ext.window.Window',{
+          header:false, closable:false, modal: true, width:300,layout:'form',
+          items:[
+                 {xtype:'progressbar'},
+                 {xtype: 'label', text: 'Creating MVD (this can take a long time)'}
+          ]
+      }).show();
+      // show progress window so user knows something is happening (sendtomvd page takes awhile to load)
+      progressWin.down('progressbar').wait();
+      document.location.href='/collationtools/sendtomvd/' + ids + "?docpath=" + docpath;
+    },
+    sendToLightBox: function(button){
+        var pp = button.up('propertiespanel');
+        var records = pp.loadedRecords;
+        var ids="";
+        for (var i = 0; i < records.length; i++){
+            if (records[i].get('filetype').match('image')){
+                ids += records[i].get("id") + ";";
+            }
+        }
+        // TODO: use HTML 5 postMessage to send to lightbox if already open
+        document.location.href ='/lightbox#' + ids;
+    },
+    dataExport: function(){
+        // TODO: post selected resource ids to page
+        // that has options to export as zip containing both resources and metadata
+        // in JSON or RDF formats
     }
 });
