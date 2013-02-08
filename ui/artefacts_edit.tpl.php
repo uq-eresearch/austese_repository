@@ -44,7 +44,14 @@ $existingId=arg(3);
         <textarea rows="1" name="bibDetails" type="text" class="input-xlarge" id="bibDetails"></textarea>
         <p class="help-block">Additional bibliographic details e.g. '26 Apr., p. 5e'</p>
       </div>
-    </div
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="artefacts">Facsimiles</label>
+      <div class="controls">
+        <textarea rows="2" name="facsimiles" type="text" class="input-xlarge" id="facsimiles"></textarea>
+        <p class="help-block">Facsimiles associated with this version</p>
+      </div>
+    </div>
   <div class="control-group">
      <div class="controls">
        <input id="save-btn" type="button" class="btn" value="Save">

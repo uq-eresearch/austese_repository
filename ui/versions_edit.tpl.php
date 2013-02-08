@@ -81,6 +81,13 @@ $existingId = arg(3);
       </div>
     </div>
     <div class="control-group">
+      <label class="control-label" for="artefacts">Transcriptions</label>
+      <div class="controls">
+        <textarea rows="2" name="transcriptions" type="text" class="input-xlarge" id="transcriptions"></textarea>
+        <p class="help-block">Transcriptions associated with this version</p>
+      </div>
+    </div>
+    <div class="control-group">
       <label class="control-label" for="places">Places</label>
       <div class="controls">
         <textarea rows="2" name="places" type="text" class="input-xlarge" id="places"></textarea>
