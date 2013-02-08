@@ -66,6 +66,24 @@ jQuery.fn.serializeObject = function() {
                 resultsFormatter: function(item){return "<li><b>" + item.source + "</b>, " + item.date + ", " + item.bibDetails;},
                 tokenFormatter: function(item){return "<li>" + item.source + ", " + item.date + ", " + item.bibDetails + "</li>";}
             });
+            jQuery("#transcriptions").tokenInput("/" + modulePath + "/api/resources/?type=x", {
+                theme: "facebook",
+                tokenValue: "id",
+                hintText: "Start typing to search transcription resources by filename",
+                jsonContainer: "results",
+                propertyToSearch: "filename",
+                resultsFormatter: function(item){return "<li><b>" + item.filename + "</b>";},
+                tokenFormatter: function(item){return "<li>" + item.filename + "</li>";}
+            });
+            jQuery("#facsimiles").tokenInput("/" + modulePath + "/api/resources/?type=image", {
+                theme: "facebook",
+                tokenValue: "id",
+                hintText: "Start typing to search facsimile resources by filename",
+                jsonContainer: "results",
+                propertyToSearch: "filename",
+                resultsFormatter: function(item){return "<li><b>" + item.filename + "</b>";},
+                tokenFormatter: function(item){return "<li>" + item.filename + "</li>";}
+            });
             jQuery('#places').tokenInput("/" + modulePath + "/api/places/", {
                 theme: "facebook",
                 tokenValue: "id",
@@ -94,6 +112,7 @@ jQuery.fn.serializeObject = function() {
                 '<tpl if="description"><br/>{description: ellipsis(100)}</tpl>',
                 '<tpl if="firstLine"><br/><em>{firstLine}</em></tpl>',
                 '<tpl for="artefacts"><tpl if="xindex == 1"><br/>({[xcount]} associated artefact{[xcount != 1? "s" : ""]})</tpl></tpl>',
+                '<tpl for="transcriptions"><tpl if="xindex == 1"><br/>({[xcount]} associated transcription{[xcount != 1? "s" : ""]})</tpl></tpl>',
                 '<tpl if="hasEditPermission"><p><a href="/{modulePrefix}/versions/edit/{id}" style="font-size:smaller">EDIT</a></p></tpl>',
             '</div>'
         );
@@ -113,6 +132,11 @@ jQuery.fn.serializeObject = function() {
                     '<tpl if="xindex == 1"><h3 class="muted">Artefacts</h3><p>{[xcount]} artefact{[xcount != 1? "s" : ""]} associated with this version:</p></tpl>',
                     '<ul>',
                         '<li><div class="artefact" data-artefactid="{.}" data-template="summary"></div></li>',
+                    '</ul></tpl>',
+                    '<tpl for="transcriptions">',
+                    '<tpl if="xindex == 1"><h3 class="muted">Transcriptions</h3><p>{[xcount]} transcription{[xcount != 1? "s" : ""]} associated with this version:</p></tpl>',
+                    '<ul>',
+                    '<li class="resource" data-resourceid="{.}" data-template="summary"></li>',
                     '</ul></tpl>',
                     '<tpl for="places">',
                     '<tpl if="xindex == 1"><h3 class="muted">Places</h3><p>{[xcount]} place{[xcount != 1? "s" : ""]} associated with this version:</p></tpl>',
@@ -150,6 +174,7 @@ jQuery.fn.serializeObject = function() {
                 '<div class="obj">',
                 '<h4><a href="/{modulePrefix}/artefacts/{id}">{source}</a></h4>',
                 '{date}, {bibDetails:ellipsis(100)}',
+                '<tpl for="facsimiles"><tpl if="xindex == 1"><br/>({[xcount]} associated facsimile{[xcount != 1? "s" : ""]})</tpl></tpl>',
                 '<tpl if="hasEditPermission">',
                     '<p><a href="/{modulePrefix}/artefacts/edit/{id}" style="font-size:smaller">EDIT</a></p>',
                 '</tpl>',
@@ -163,6 +188,12 @@ jQuery.fn.serializeObject = function() {
                 '<tpl if="date"><tr><td class="metadatalabel muted">Date</td><td>{date}</td></tr></tpl>',
                 '<tpl if="bibDetails"><tr><td class="metadatalabel muted">Bibliographic Details</td><td>{bibDetails}</td></tr></tpl>',
                 '</table>',
+                '<tpl for="facsimiles">',
+                    '<tpl if="xindex == 1"><h3 class="muted">Facsimiles</h3><p>{[xcount]} facsimile{[xcount != 1? "s" : ""]} associated with this artefact:</p></tpl>',
+                    '<ul>',
+                    '<li class="resource" data-resourceid="{.}" data-template="summary"></li>',
+                    '</ul>',
+                '</tpl>',
                 '</div>'
         );
         templates.artefactDetail.compile();
@@ -219,6 +250,13 @@ jQuery.fn.serializeObject = function() {
             '<div class="span6 minimap" data-lat="{latitude}" data-long="{longitude}"></div>'
         );
         templates.placeDetail.compile();
+        templates.resourceSummary = new Ext.XTemplate(
+            '<div>',
+            '<h4><a href="/{modulePrefix}/resources/{id}"><tpl if="metadata.title">{metadata.title}, </tpl>{filename}</a></h4>',
+            '<tpl if="metadata.format">{metadata.format}</tpl>',
+            '</div>'
+        );
+        templates.resourceSummary.compile();
         templates.resourceDetail = new Ext.XTemplate(
                 //'<h2>{[values.metadata.title || values.filename]}</h2>',
                 '<div>',
@@ -268,6 +306,9 @@ jQuery.fn.serializeObject = function() {
                  jQuery('#result').append('<p class="muted" style="clear:both">Place names taken from <a href="http://www.ga.gov.au/">Geoscience Australia</a> Gazetteer of Australia. Data, imagery and map information provided by <a href="http://open.mapquest.co.uk" target="_blank">MapQuest</a>, <a href="http://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> and contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.</p>');
                 } if (result.metadata && result.metadata.filetype.match("image")){
                     jQuery("#editlink").hide();
+                    jQuery("#lightboxlink").show();
+                } else {
+                    jQuery("#editlink").show();
                 }
             }
         });
@@ -338,6 +379,28 @@ jQuery.fn.serializeObject = function() {
                    });
                   }
               }
+              if (d.transcriptions){
+                  for (var i = 0; i < d.transcriptions.length; i++){
+                   jQuery.ajax({
+                     type: 'GET',
+                     url: '/' + modulePath + '/api/resources/' + d.transcriptions[i],
+                     success: function(v){
+                       jQuery('#transcriptions').tokenInput("add",v);
+                     }
+                   });
+                  }
+              }
+              if (d.facsimiles){
+                  for (var i = 0; i < d.facsimiles.length; i++){
+                   jQuery.ajax({
+                     type: 'GET',
+                     url: '/' + modulePath + '/api/resources/' + d.facsimiles[i],
+                     success: function(v){
+                       jQuery('#facsimiles').tokenInput("add",v);
+                     }
+                   });
+                  }
+              }
               if (d.places){
                   for (var i = 0; i < d.places.length; i++){
                    jQuery.ajax({
@@ -387,6 +450,20 @@ jQuery.fn.serializeObject = function() {
                data.versions.push(split[i]);
             }
         }
+        if (data.transcriptions){
+            var split = data.transcriptions.split(",");
+            data.transcriptions = [];
+            for (var i = 0; i < split.length; i++){
+               data.transcriptions.push(split[i]);
+            }
+        }
+        if (data.facsimiles){
+            var split = data.facsimiles.split(",");
+            data.facsimiles = [];
+            for (var i = 0; i < split.length; i++){
+               data.facsimiles.push(split[i]);
+            }
+        }
         if (data.places){
             var split = data.places.split(",");
             data.places = [];
@@ -420,6 +497,27 @@ jQuery.fn.serializeObject = function() {
                     elem.html(templates.placeCompact.apply(d));
                 } else {
                     elem.html('<a href="/' + modulePrefix + '/places/{id}">' + d.name + ', ' + d.state + '</a>');
+                }
+              }
+            });
+        });
+        jQuery(".resource").each(function(){
+            var elem = jQuery(this);
+            var template = elem.data('template');
+            jQuery.ajax({
+              type: 'GET',
+              url: '/' + modulePath + '/api/resources/' + elem.data('resourceid'),
+              dataType: "json",
+              headers: {
+                  'Accept': 'application/json'
+              },
+              success: function(d){
+                
+                d.modulePrefix = modulePrefix;
+                if (template && template == "summary"){
+                    elem.html(templates.resourceSummary.apply(d));
+                } else {
+                    elem.html('<a href="/' + modulePrefix + '/resources/{id}">' + d.filename + '</a>');
                 }
               }
             });

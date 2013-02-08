@@ -137,7 +137,10 @@ $app->post('/agents/', function(){
 });
 $app->post('/places/', function(){
   createRecord('places');
- });
+});
+$app->post('/mvds/', function(){
+  createRecord('mvds');
+});
 $app->post('/resources/', function(){
     //createRecord('resources');
     createResource();
@@ -160,6 +163,9 @@ $app->get('/agents/', function(){
 });
 $app->get('/places/', function(){
   listRecords('places','name');
+});
+$app->get('/mvds/', function(){
+  listRecords('mvds','resources');
 });
 $app->get('/resources/',function(){
     //listRecords('resources','fileUri');
@@ -225,13 +231,19 @@ function listResources(){
   // provide a default for page Index. Default for pagesize is null (all results will be returned)
   $pagenum = $pagenum? $pagenum : 0;
   $filterTerm = $request->get('q');
+  $typeFilter = $request->get('type');
   $findopts = array('_superseded'=>array('$exists'=>false));
+  
   $findopts = array('$and'=>array($findopts,
       array('_deleted'=>array('$exists'=>false))));
   if ($filterTerm != null){
       $regex = new MongoRegex("/".$filterTerm."/i");
       $findopts = array('$and'=>array($findopts,
-          array('metadata.filename'=>$regex)));
+          array('$or'=>array(array('filename'=>$regex),array('metadata.title'=>$regex)))));
+  }
+  if ($typeFilter != null){
+      $regex = new MongoRegex("/".$typeFilter."/i");
+      $findopts = array('$and'=>array($findopts, array('metadata.filetype'=>$regex)));
   }
   // sort by reverse id (newest objects should be listed first)
   $cursor = $grid->find($findopts)->sort(array('_id'=>-1))->limit($pagesize)->skip($pagenum * $pagesize);
@@ -409,6 +421,9 @@ $app->get('/agents/:id(/:revision)', function ($id,$revision=NULL) use ($config)
 $app->get('/places/:id(/:revision)', function ($id,$revision=NULL) use ($config) {
   getRecord('places',$id,$revision);
 });
+$app->get('/mvds/:id(/:revision)', function ($id,$revision=NULL) use ($config) {
+  getRecord('mvds',$id,$revision);
+});
 $app->get('/resources/:id(/:revision)', function ($id,$revision=NULL) use ($config) {
     getResource($id,$revision);
 });
@@ -560,6 +575,9 @@ $app->put('/agents/:id', function ($id) use ($config) {
 $app->put('/places/:id', function ($id) use ($config) {
   updateRecord('places',$id);
 });
+$app->put('/mvds/:id', function ($id) use ($config) {
+  updateRecord('mvds',$id);
+});
 $app->put('/resources/:id',function($id) use ($config) {
     updateResource($id);
 });
@@ -609,8 +627,8 @@ $app->delete('/works/:id', function ($id) {
 $app->delete('/agents/:id', function ($id) {
     deleteRecord('agents',$id);
 });
-$app->delete('/places/:id', function ($id) {
-  deleteRecord('places',$id);
+$app->delete('/mvds/:id', function ($id) {
+  deleteRecord('mvds',$id);
 });
 $app->delete('/resources/:id', function ($id) {
     deleteResource($id);

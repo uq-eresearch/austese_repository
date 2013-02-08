@@ -25,6 +25,7 @@ $fullscreen = $user->data['fullscreen'];
  data-modulepath="<?php print drupal_get_path('module', 'repository'); ?>"
  data-enablecollation="<?php print module_exists('collationtools');?>"
  data-enablelightbox="<?php print module_exists('lightbox');?>"
+ data-enablealignment="<?php print module_exists('alignment');?>"
  data-apitype="<?php print $apiType;?>">
 </div>
 <link rel="stylesheet" href="/sites/all/libraries/ext-4.1.1a/resources/css/ext-all.css">
