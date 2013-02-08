@@ -30,7 +30,13 @@ $existingId = arg(2);
 <div class="actionsidebar span4 filler">
 <div>
  <?php if (user_access('edit metadata')): ?>
-   <a id="editlink" href="../<?php print $apiType; ?>s/edit/<?php print $existingId; ?>">EDIT</a>
+   <?php if ($apiType=='resource'):?>
+   <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s#<?php print $existingId; ?>">VIEW IN RESOURCE ORGANISER</a><br/>
+   <?php endif; ?>
+   <a id="editlink" href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/edit/<?php print $existingId; ?>">EDIT
+   <?php if ($apiType=='resource'):?> CONTENT<?php endif; ?>
+   </a>
+   
  <?php endif; ?>
 </div>
 

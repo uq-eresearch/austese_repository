@@ -563,7 +563,6 @@ Ext.define('austese_uploader.controller.Controller', {
         
         button.menu.removeAll();
         var filetype = (aggregatedValues && aggregatedValues.filetype) || records[0].get('filetype');
-        console.log("send to menu",this.application);
         if (filetype && (filetype.match('xml') ||  filetype.match('text')) && this.application.enableCollation==1){
             button.menu.add({
                 text: 'MVD',
@@ -581,6 +580,7 @@ Ext.define('austese_uploader.controller.Controller', {
                         document.location.href ='/repository/resources/edit/' + record.get('id');
                     }}
                 );
+                
             }
         }
         if (filetype && filetype.match('image') && this.application.enableLightBox==1){
@@ -590,14 +590,28 @@ Ext.define('austese_uploader.controller.Controller', {
                 tooltip: 'Add selected images(s) to Light Box',
                 handler: this.sendToLightBox
             });
-            
         }
-        /*button.menu.add({
-            text: 'Data Export',
-            iconCls: 'dataExportIcon',
-            tooltip: 'Export metadata for selected resource(s)',
-            handler: function(){}}
-        );*/
+        if (records.length == 1){
+            var record = records[0];
+            button.menu.add({
+                text: 'View resource record',
+                //iconCls: 'transcriptionEditorIcon',
+                tooltip: 'View resource metadata record',
+                handler: function(){
+                    document.location.href ='/repository/resources/' + record.get('id');
+                }}
+            );
+        }
+        // if a transcription and an image are selected, add align tool as an option
+       /* FIXME: alignment module needs to be fixed first
+        * if (this.application.enableAlignment==1 && records.length == 2 
+                && filetype && filetype.match('image') && (filetype.match('text')|| filetype.match('xml'))) {
+            button.menu.add({
+                text: 'Alignment tool',
+                tooltip: 'Align sections of selected image and transcription',
+                handler: this.sendToAlignmentTool
+            });
+        }*/
         // force menu to show
         button.menu.show();
     },
@@ -605,18 +619,20 @@ Ext.define('austese_uploader.controller.Controller', {
     sendToMVD: function(button){
         var pp = button.up('propertiespanel');
         var records = pp.loadedRecords;
-        console.log("send to MVD",records);
         var ids='';
+        var count = 0;
         // for each selected resource that is a transcription (i.e. not an image)
         for (var i = 0; i < records.length; i++){
             if (records[i].get('filetype').match('xml') || records[i].get('filetype').match('text')){
                 ids+=records[i].get("id") +";";
+                count++;
             }
         }
         // TODO: prompt for existing document id, 
         // but HRIT server import doesn't support adding to existing at present
         // however could look up existing MVD with some of these resources and offer to replace it
         Ext.create('austese_uploader.view.SendToMVDWindow',{
+            count: count,
             ids: ids
         }).show();
         
@@ -660,9 +676,14 @@ Ext.define('austese_uploader.controller.Controller', {
         // TODO: use HTML 5 postMessage to send to lightbox if already open
         document.location.href ='/lightbox#' + ids;
     },
-    dataExport: function(){
-        // TODO: post selected resource ids to page
-        // that has options to export as zip containing both resources and metadata
-        // in JSON or RDF formats
+    sendToAlignmentTool: function(button){
+        console.log("send to alignment")
+        var pp = button.up('propertiespanel');
+        var records = pp.loadedRecords;
+        var ids="";
+        for (var i = 0; i < records.length; i++){
+                ids += "/" + records[i].get("id") ;
+        }
+        document.location.href ='/alignment/edit' + ids;
     }
 });

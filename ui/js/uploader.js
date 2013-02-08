@@ -17,6 +17,7 @@ Ext.application({
     modulePath: modulePath,
     enableCollation: jQuery('#metadata').data('enablecollation'),
     enableLightBox: jQuery('#metadata').data('enablelightbox'),
+    enableAlignment: jQuery('#metadata').data('enablealignment'),
     models: [
         'ResourceModel'
     ],
