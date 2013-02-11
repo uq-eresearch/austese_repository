@@ -38,6 +38,9 @@ $existingId = arg(2);
    </a>
    
  <?php endif; ?>
+ <?php if ($apiType=='resource'):?>
+ <div style="margin-top:1em" id="viewmvd"></div>
+ <?php endif; ?>
 </div>
 
 <!--  h4>History:</h4>
