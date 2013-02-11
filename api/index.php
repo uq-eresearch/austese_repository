@@ -288,11 +288,15 @@ function listRecords($collection, $labelField){
     // TODO: allow param to sort results by custom fields?
     // allow param to filter results
     $filterTerm = $request->get('q');
+    $searchField = $request->get('searchField');
+    if (!$searchField) {
+      $searchField = $labelField;
+    }
     $findopts = array('_deleted'=>array('$exists'=>false));
     if ($filterTerm != null){
       $regex = new MongoRegex("/".$filterTerm."/i");
       $findopts = array('$and'=>array($findopts,
-				      array('metadata.'.$labelField=>
+				      array('metadata.'.$searchField=>
       				      $regex)));
     }
     // sort by reverse id (newest objects should be listed first)
