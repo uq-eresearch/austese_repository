@@ -310,6 +310,10 @@ jQuery.fn.serializeObject = function() {
                 } else {
                     jQuery("#editlink").show();
                 }
+                if (apiType == "resource" && result.metadata && (result.metadata.filetype.match("xml") || result.metadata.filetype.match("text"))) {
+                    // transcription
+                    loadRelatedMVDs(id);
+                }
             }
         });
         
@@ -482,6 +486,41 @@ jQuery.fn.serializeObject = function() {
                     + '<p><a href="/' + modulePrefix + '/' + apiType + 's">View ' + apiType + 's</a></p></div>').alert());
           }
         });
+    }
+    function loadRelatedMVDs(id){
+        jQuery.ajax({
+            url: '/' + modulePath + '/api/mvds/?q=' + id,
+            success: function(d){
+                if (d.results.length > 0) {
+                    var result = "<h4>VIEW MVD:</h4><form class='form-inline' onsubmit='return false;'><select id='mvdselect'>";
+                    for (var i = 0; i < d.results.length; i++){
+                        var res = d.results[i];
+                        result += '<option value="' + res.name + '">' + decodeURIComponent(res.name) + '</option>';
+                    }
+                    result+= '</select>'
+                        + '<button id="comparebtn" class="btn">Compare</button>'
+                        + '<button id="tablebtn" class="btn">Table</button>'
+                        + '</form>';
+                    jQuery('#viewmvd').append(result);
+                    jQuery('#comparebtn').on('click',viewCompare);
+                    jQuery('#tablebtn').on('click',viewTable);
+                }
+            }
+        });
+    }
+    function viewCompare(){
+        var docpath = jQuery('#mvdselect').val();
+        if (docpath) {
+            // TODO actually select this resource
+            document.location.href = "/collationtools/compare#" + encodeURIComponent(docpath);
+        }
+    }
+    function viewTable(){
+        var docpath = jQuery('#mvdselect').val();
+        if (docpath) {
+            // TODO actually select this resource
+            document.location.href = "/collationtools/apparatus#" + encodeURIComponent(docpath);
+        }
     }
     function loadReferencedObjects(){
         
