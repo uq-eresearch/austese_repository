@@ -144,17 +144,27 @@ Ext.define('austese_uploader.controller.Controller', {
         button.up('mainpanel').down('statusbar').showBusy();
         var modulePath = this.application.modulePath;
         var form = button.up('form').getForm();
-            form.submit({
-                url: modulePath + '/api/resources/',
-                //waitMsg: 'Uploading files...',
-                success: function(fp, o) {
-                    //msg('Success', 'Processed file "' + o.result.file + '" on the server');
-                    Ext.getStore("ResourceStore").load();
-                },
-                failure: function(){
+        for(var i = 0; i < filelist.length; i++){
+            var file = filelist[i];
+            var data = new FormData();
+            data.append('data',file);
+            var headers;
+            if (data.fake){
+                headers=  {'Content-type': "multipart/form-data; boundary="+ data.boundary};
+            } 
+            jQuery.ajax({
+                url:  modulePath + '/api/resources/',
+                data: data,
+                headers: headers,
+                cache: false,
+                contentType: false,
+                processData: false,
+                type: 'POST',
+                success: function(data){
                     Ext.getStore("ResourceStore").load();
                 }
             });
+        }
     },
 
     promptDeleteResources: function(button, e, options){
@@ -677,7 +687,6 @@ Ext.define('austese_uploader.controller.Controller', {
         document.location.href ='/lightbox#' + ids;
     },
     sendToAlignmentTool: function(button){
-        console.log("send to alignment")
         var pp = button.up('propertiespanel');
         var records = pp.loadedRecords;
         var ids="";

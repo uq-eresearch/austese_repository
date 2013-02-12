@@ -138,10 +138,7 @@ function repository_display($template){
             return;
         }
         drupal_add_css($modulePath . '/ui/css/uploader.css');
-        //drupal_add_css('/sites/all/libraries/plupload/js/jquery.plupload.queue/css/jquery.plupload.queue.css');
-        //drupal_add_js('/sites/all/libraries/plupload/js/plupload.full.js');
-        //drupal_add_js('/sites/all/libraries/plupload/js/jquery.plupload.queue/jquery.plupload.queue.js');
-        
+        drupal_add_js($modulePath . '/ui/js/formdata.js');
         drupal_add_js($modulePath . '/ui/js/uploader.js');
         return theme("resources", array());
     } else if ($template == 'places'){
