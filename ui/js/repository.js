@@ -63,8 +63,8 @@ jQuery.fn.serializeObject = function() {
                 hintText: "Start typing to search artefacts by source",
                 jsonContainer: "results",
                 propertyToSearch: "source",
-                resultsFormatter: function(item){return "<li><b>" + item.source + "</b>, " + item.date + ", " + item.bibDetails;},
-                tokenFormatter: function(item){return "<li>" + item.source + ", " + item.date + ", " + item.bibDetails + "</li>";}
+                resultsFormatter: function(item){return "<li><b>" + item.source + "</b>, " + item.date;},
+                tokenFormatter: function(item){return "<li>" + item.source + ", " + item.date + "</li>";}
             });
             jQuery("#transcriptions").tokenInput("/" + modulePath + "/api/resources/?type=x", {
                 theme: "facebook",
@@ -99,7 +99,7 @@ jQuery.fn.serializeObject = function() {
                 hintText: "Start typing to search versions by title",
                 jsonContainer: "results",
                 propertyToSearch: "versionTitle",
-                resultsFormatter: function(item){return "<li><b>"+item.versionTitle + "</b>, " + item.name + ", " + item.date + "<br/>"+item.firstLine;},
+                resultsFormatter: function(item){return "<li><b>"+item.versionTitle + "</b>, " + item.name + ", " + item.date;},
                 tokenFormatter: function(item){return "<li>" + item.versionTitle + ", " + item.name + ", " + item.date + "</li>";}
             });
         }
@@ -387,6 +387,10 @@ jQuery.fn.serializeObject = function() {
                   for (var i = 0; i < d.transcriptions.length; i++){
                    jQuery.ajax({
                      type: 'GET',
+                     dataType: "json",
+                     headers: {
+                          'Accept': 'application/json'
+                     },
                      url: '/' + modulePath + '/api/resources/' + d.transcriptions[i],
                      success: function(v){
                        jQuery('#transcriptions').tokenInput("add",v);
@@ -399,6 +403,10 @@ jQuery.fn.serializeObject = function() {
                    jQuery.ajax({
                      type: 'GET',
                      url: '/' + modulePath + '/api/resources/' + d.facsimiles[i],
+                     dataType: "json",
+                     headers: {
+                          'Accept': 'application/json'
+                     },
                      success: function(v){
                        jQuery('#facsimiles').tokenInput("add",v);
                      }
