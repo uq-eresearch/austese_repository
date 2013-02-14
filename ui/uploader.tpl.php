@@ -8,7 +8,11 @@ $modulePrefix = arg(0);
 $apiType = substr(arg(1),0,-1); // remove the trailing 's'
 $apiOperation = arg(2);
 $existingId=arg(3);
-$fullscreen = $user->data['fullscreen'];
+if (property_exists($user,'data')){
+ $fullscreen = $user->data['fullscreen'];
+} else {
+ $fullscreen = false;
+}
 ?>
 <!--  TODO: check permissions to determine whether to enable collation tools -->
 <div id="metadata"
