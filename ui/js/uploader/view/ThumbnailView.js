@@ -5,6 +5,7 @@
 Ext.define('austese_uploader.view.ThumbnailView', {
     extend: 'Ext.view.View',
     alias: 'widget.thumbnailview',
+    autoScroll: true,
     initComponent: function() {
         var me = this;
         Ext.applyIf(me, {
@@ -16,11 +17,10 @@ Ext.define('austese_uploader.view.ThumbnailView', {
             emptyText: 'No resources to display',
             plugins: [
                 Ext.create('Ext.ux.DataView.DragSelector', {}),
-                //Ext.create('Ext.ux.DataView.LabelEditor', {dataIndex: 'filename'})
             ],
             tpl: [
                   '<tpl for=".">',
-                      '<div class="thumb-wrap">',
+                      '<div class="x-unselectable thumb-wrap">',
                           '<div class="thumb">',
                           '<img class="thumbnail" src="{thumbnailUri}" title="{shortName}. Double click to view details" />',
                           '</div>',
