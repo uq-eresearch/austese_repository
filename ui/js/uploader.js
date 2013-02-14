@@ -41,6 +41,7 @@ Ext.application({
     ], 
     launch: function(){
         var placeholder = Ext.get('uploaderui');
+        Ext.getBody().setStyle('overflow', 'hidden');
         var mainWindow = Ext.create('austese_uploader.view.MainPanel',{
                 renderTo: Ext.getBody(),
         }).showAt(placeholder.getX(),placeholder.getY());
