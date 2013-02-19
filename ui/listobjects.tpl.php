@@ -8,9 +8,11 @@ $apiType = substr(arg(1),0,-1); // remove the trailing 's'
 $apiOperation = "load";
 if ($apiType == "artefact"){
     $filterField = "source";
-} else if ($apiType == "place") {
+} else if ($apiType == "place" || $apiType == "agent") {
     $filterField = "name";
-}else {
+} else if ($apiType == "event" || $apiType == "action") {
+    $filterField = "description";
+} else {
     $filterField = "title";
 }
 ?>

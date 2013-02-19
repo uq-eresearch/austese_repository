@@ -21,6 +21,10 @@ function repository_help($path, $arg) {
   switch ($path) {
     case 'repository/agents':
         return t('Content Repository: Agents');
+    case 'repository/events':
+        return t('Content Repository: Events');
+    case 'repository/acions':
+        return t('Content Repository: Actions');
     case 'repository/artefacts':
         return t('Content Repository: Artefacts');
     case 'repository/versions':
@@ -116,7 +120,7 @@ function repository_description() {
 }
 
 function repository_display($template){
-    if (!in_array($template,array("agents","artefacts","versions","works","resources", "places"))) {
+    if (!in_array($template,array("agents","artefacts","versions","works","resources", "places", "events", "actions"))) {
         drupal_access_denied();
         return;
     }
@@ -151,7 +155,7 @@ function repository_display($template){
     }
 }
 function repository_edit($template, $id=null){
-    if (!in_array($template,array("agents","artefacts","versions","works", "resources"))) {
+    if (!in_array($template,array("agents","artefacts","versions","works", "resources", "events", "actions"))) {
         drupal_access_denied();
         return;
     }
@@ -184,7 +188,7 @@ function repository_edit($template, $id=null){
     return theme($template.'_edit',array());
 }
 function repository_display_record($template, $id=null){
-    if (!in_array($template,array("agents","artefacts","versions","works", "resources", "places"))) {
+    if (!in_array($template,array("agents","artefacts","versions","works", "resources", "places", "events", "actions"))) {
         drupal_access_denied();
         return;
     }
@@ -213,6 +217,8 @@ function repository_toc() {
   $list[] = l("Works","repository/works");
   $list[] = l("Digital Resources","repository/resources");
   $list[] = l("Agents","repository/agents");
+  $list[] = l("Events","repository/events");
+  $list[] = l("Actions","repository/actions");
   $list[] = l("Places", "repository/places");
   $render_array['repository_list'] = array(
     '#theme' => 'item_list',  
@@ -232,6 +238,14 @@ function repository_theme(){
     ),
     'agents_edit' => array(
         'template' => 'ui/agents_edit',
+        'variables' => array()
+    ),
+    'events_edit' => array(
+        'template' => 'ui/events_edit',
+        'variables' => array()
+    ),
+    'actions_edit' => array(
+        'template' => 'ui/actions_edit',
         'variables' => array()
     ),
     'artefacts_edit' => array(
