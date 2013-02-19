@@ -63,8 +63,35 @@ jQuery.fn.serializeObject = function() {
                 hintText: "Start typing to search artefacts by source",
                 jsonContainer: "results",
                 propertyToSearch: "source",
-                resultsFormatter: function(item){return "<li><b>" + item.source + "</b>, " + item.date;},
+                resultsFormatter: function(item){return "<li><b>" + item.source + "</b>, " + item.date + "</li>";},
                 tokenFormatter: function(item){return "<li>" + item.source + ", " + item.date + "</li>";}
+            });
+            jQuery("#events").tokenInput("/" + modulePath + "/api/events/", {
+                theme: "facebook",
+                tokenValue: "id",
+                hintText: "Start typing to search events by description",
+                jsonContainer: "results",
+                propertyToSearch: "description",
+                resultsFormatter: function(item){return "<li><b>" + item.description + "</b>, " + item.eventType + "</li>";},
+                tokenFormatter: function(item){return "<li>" + item.description + ", " + item.eventType + "</li>";}
+            });
+            jQuery("#actions").tokenInput("/" + modulePath + "/api/actions/", {
+                theme: "facebook",
+                tokenValue: "id",
+                hintText: "Start typing to search actions by description",
+                jsonContainer: "results",
+                propertyToSearch: "description",
+                resultsFormatter: function(item){return "<li><b>" + item.description + "</b>, " + item.actionType + "</li>";},
+                tokenFormatter: function(item){return "<li>" + item.description + ", " + item.actionType + "</li>";}
+            });
+            jQuery("#agents").tokenInput("/" + modulePath + "/api/agents/", {
+                theme: "facebook",
+                tokenValue: "id",
+                hintText: "Start typing to search agents by last name",
+                jsonContainer: "results",
+                propertyToSearch: "lastName",
+                resultsFormatter: function(item){return "<li><b>" + item.firstName + " " + item.lastName + "</b></li>";},
+                tokenFormatter: function(item){return "<li>" + item.firstName + " " + item.lastName + "</li>";}
             });
             jQuery("#transcriptions").tokenInput("/" + modulePath + "/api/resources/?type=x", {
                 theme: "facebook",
@@ -72,7 +99,7 @@ jQuery.fn.serializeObject = function() {
                 hintText: "Start typing to search transcription resources by filename",
                 jsonContainer: "results",
                 propertyToSearch: "filename",
-                resultsFormatter: function(item){return "<li><b>" + item.filename + "</b>";},
+                resultsFormatter: function(item){return "<li><b>" + item.filename + "</b></li>";},
                 tokenFormatter: function(item){return "<li>" + item.filename + "</li>";}
             });
             jQuery("#facsimiles").tokenInput("/" + modulePath + "/api/resources/?type=image", {
@@ -81,7 +108,7 @@ jQuery.fn.serializeObject = function() {
                 hintText: "Start typing to search facsimile resources by filename",
                 jsonContainer: "results",
                 propertyToSearch: "filename",
-                resultsFormatter: function(item){return "<li><b>" + item.filename + "</b>";},
+                resultsFormatter: function(item){return "<li><b>" + item.filename + "</b></li>";},
                 tokenFormatter: function(item){return "<li>" + item.filename + "</li>";}
             });
             jQuery('#places').tokenInput("/" + modulePath + "/api/places/", {
@@ -90,7 +117,7 @@ jQuery.fn.serializeObject = function() {
                 hintText: "Start typing to search places by name",
                 jsonContainer: "results",
                 propertyToSearch: "name",
-                resultsFormatter: function(item){return "<li><b>" + item.name + "</b>, " + item.state;},
+                resultsFormatter: function(item){return "<li><b>" + item.name + "</b>, " + item.state + "</li>";},
                 tokenFormatter: function(item){return "<li>" + item.name + ", " + item.state + "</li>";}
             });
             jQuery("#versions").tokenInput("/" + modulePath + "/api/versions/", {
@@ -99,7 +126,7 @@ jQuery.fn.serializeObject = function() {
                 hintText: "Start typing to search versions by title",
                 jsonContainer: "results",
                 propertyToSearch: "versionTitle",
-                resultsFormatter: function(item){return "<li><b>"+item.versionTitle + "</b>, " + item.name + ", " + item.date;},
+                resultsFormatter: function(item){return "<li><b>"+item.versionTitle + "</b>, " + item.name + ", " + item.date + "</li>";},
                 tokenFormatter: function(item){return "<li>" + item.versionTitle + ", " + item.name + ", " + item.date + "</li>";}
             });
         }
@@ -170,6 +197,68 @@ jQuery.fn.serializeObject = function() {
                 '</div>'
         );
         templates.agentDetail.compile();
+        templates.eventSummary = new Ext.XTemplate(
+                '<div class="obj">',
+                '<h4><a href="/{modulePrefix}/events/{id}">{description}<tpl if="eventType"> ({eventType})</tpl></a></h4>',
+                '<tpl for="actions"><tpl if="xindex == 1"><br/>({[xcount]} associated action{[xcount != 1? "s" : ""]})</tpl></tpl>',
+                '<tpl for="events"><tpl if="xindex == 1"><br/>({[xcount]} associated sub-event{[xcount != 1? "s" : ""]})</tpl></tpl>',
+                '</div>'
+        );
+        templates.eventSummary.compile();
+        templates.eventDetail = new Ext.XTemplate(
+                '<div class="obj">',
+                '<h4><a href="/{modulePrefix}/events/{id}">{description}<tpl if="eventType"> ({eventType})</tpl></a></h4>',
+                '<tpl for="actions">',
+                    '<tpl if="xindex == 1"><h3 class="muted">Actions</h3><p>{[xcount]} action{[xcount != 1? "s" : ""]} associated with this event:</p></tpl>',
+                    '<ul>',
+                        '<li><div class="action" data-actionid="{.}" data-template="summary"></div></li>',
+                    '</ul>',
+                '</tpl>',
+                '<tpl for="events">',
+                    '<tpl if="xindex == 1"><h3 class="muted">Sub-Events</h3><p>{[xcount]} sub-event{[xcount != 1? "s" : ""]} associated with this event:</p></tpl>',
+                    '<ul>',
+                        '<li><div class="event" data-eventid="{.}" data-template="summary"></div></li>',
+                    '</ul>',
+                '</tpl>',
+                '</div>'
+        );
+        templates.eventDetail.compile();
+        templates.actionSummary = new Ext.XTemplate(
+                '<div class="obj">',
+                '<h4><a href="/{modulePrefix}/actions/{id}">{description}<tpl if="actionType"> ({actionType})</tpl></a></h4>',
+                '<tpl if="startDate">{startDate} &ndash; </tpl>',
+                '<tpl if="endDate">{endDate}</tpl>',
+                '<tpl for="agents"><tpl if="xindex == 1"><br/>({[xcount]} associated participant{[xcount != 1? "s" : ""]})</tpl></tpl>',
+                '<tpl for="artefacts"><tpl if="xindex == 1"><br/>(Produced {[xcount]} artefact{[xcount != 1? "s" : ""]})</tpl></tpl>',
+                '</div>'
+        );
+        templates.actionSummary.compile();
+        templates.actionDetail = new Ext.XTemplate(
+                '<div class="obj">',
+                '<h4><a href="/{modulePrefix}/actions/{id}">{description}<tpl if="actionType"> ({actionType})</tpl></a></h4>',
+                '<tpl if="startDate">{startDate} &ndash; </tpl>',
+                '<tpl if="endDate">{endDate}</tpl>',
+                '<tpl for="agents">',
+                    '<tpl if="xindex == 1"><h3 class="muted">Agents</h3><p>{[xcount]} agent{[xcount != 1? "s" : ""]} participated in this action:</p></tpl>',
+                    '<ul>',
+                        '<li><div class="agent" data-agentid="{.}" data-template="summary"></div></li>',
+                    '</ul>',
+                '</tpl>',
+                '<tpl for="artefacts">',
+                    '<tpl if="xindex == 1"><h3 class="muted">Artefacts</h3><p>{[xcount]} artefact{[xcount != 1? "s" : ""]} produced by this action:</p></tpl>',
+                    '<ul>',
+                        '<li><div class="artefact" data-artefactid="{.}" data-template="summary"></div></li>',
+                    '</ul>',
+                '</tpl>',
+                '<tpl for="places">',
+                    '<tpl if="xindex == 1"><h3 class="muted">Places</h3><p>{[xcount]} place{[xcount != 1? "s" : ""]} associated with this version:</p></tpl>',
+                    '<ul>',
+                    '<li class="place" data-placeid="{.}" data-template="compact"></li>',
+                    '</ul>',
+                '</tpl>',
+                '</div>'
+        );
+        templates.actionDetail.compile();
         templates.artefactSummary = new Ext.XTemplate(
                 '<div class="obj">',
                 '<h4><a href="/{modulePrefix}/artefacts/{id}">{source}</a></h4>',
@@ -383,6 +472,39 @@ jQuery.fn.serializeObject = function() {
                    });
                   }
               }
+              if (d.agents){
+                  for (var i = 0; i < d.agents.length; i++){
+                   jQuery.ajax({
+                     type: 'GET',
+                     url: '/' + modulePath + '/api/agents/' + d.agents[i],
+                     success: function(v){
+                       jQuery('#agents').tokenInput("add",v);
+                     }
+                   });
+                  }
+              }
+              if (d.events){
+                  for (var i = 0; i < d.events.length; i++){
+                   jQuery.ajax({
+                     type: 'GET',
+                     url: '/' + modulePath + '/api/events/' + d.events[i],
+                     success: function(v){
+                       jQuery('#events').tokenInput("add",v);
+                     }
+                   });
+                  }
+              }
+              if (d.actions){
+                  for (var i = 0; i < d.actions.length; i++){
+                   jQuery.ajax({
+                     type: 'GET',
+                     url: '/' + modulePath + '/api/actions/' + d.actions[i],
+                     success: function(v){
+                       jQuery('#actions').tokenInput("add",v);
+                     }
+                   });
+                  }
+              }
               if (d.transcriptions){
                   for (var i = 0; i < d.transcriptions.length; i++){
                    jQuery.ajax({
@@ -453,6 +575,27 @@ jQuery.fn.serializeObject = function() {
             data.artefacts = [];
             for (var i = 0; i < split.length; i++){
                data.artefacts.push(split[i]);
+            }
+        }
+        if (data.actions){
+            var split = data.actions.split(",");
+            data.actions = [];
+            for (var i = 0; i < split.length; i++){
+               data.actions.push(split[i]);
+            }
+        }
+        if (data.events){
+            var split = data.events.split(",");
+            data.events = [];
+            for (var i = 0; i < split.length; i++){
+               data.events.push(split[i]);
+            }
+        }
+        if (data.agents){
+            var split = data.agents.split(",");
+            data.agents = [];
+            for (var i = 0; i < split.length; i++){
+               data.agents.push(split[i]);
             }
         }
         if (data.versions){
@@ -623,6 +766,48 @@ jQuery.fn.serializeObject = function() {
               }
             });
           });
+        jQuery(".agent").each(function(){
+            var elem = jQuery(this);
+            var template = elem.data('template');
+            jQuery.ajax({
+              type: 'GET',
+              url: '/' + modulePath + '/api/agents/' + elem.data('agentid'),
+              success: function(d){
+                d.modulePrefix = modulePrefix;
+                if (template && template == 'summary'){
+                    elem.html(templates.agentSummary.apply(d));
+                }
+              }
+            });
+        });
+        jQuery(".action").each(function(){
+            var elem = jQuery(this);
+            var template = elem.data('template');
+            jQuery.ajax({
+              type: 'GET',
+              url: '/' + modulePath + '/api/actions/' + elem.data('actionid'),
+              success: function(d){
+                d.modulePrefix = modulePrefix;
+                if (template && template == 'summary'){
+                    elem.html(templates.actionSummary.apply(d));
+                }
+              }
+            });
+        });
+        jQuery(".event").each(function(){
+            var elem = jQuery(this);
+            var template = elem.data('template');
+            jQuery.ajax({
+              type: 'GET',
+              url: '/' + modulePath + '/api/events/' + elem.data('eventid'),
+              success: function(d){
+                d.modulePrefix = modulePrefix;
+                if (template && template == 'summary'){
+                    elem.html(templates.eventSummary.apply(d));
+                }
+              }
+            });
+        });
     }
     function displayFeatureCodes(){
         jQuery.ajax({

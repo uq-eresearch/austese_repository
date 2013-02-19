@@ -135,6 +135,12 @@ $app->post('/works/', function(){
 $app->post('/agents/', function(){
     createRecord('agents');
 });
+$app->post('/events/', function(){
+    createRecord('events');
+});
+$app->post('/actions/', function(){
+    createRecord('actions');
+});
 $app->post('/places/', function(){
   createRecord('places');
 });
@@ -159,7 +165,13 @@ $app->get('/works/', function(){
     listRecords('works','workTitle');
 });
 $app->get('/agents/', function(){
-    listRecords('agents','name');
+    listRecords('agents','lastName');
+});
+$app->get('/events/', function(){
+    listRecords('events','description');
+});
+$app->get('/actions/', function(){
+    listRecords('actions','description');
 });
 $app->get('/places/', function(){
   listRecords('places','name');
@@ -422,6 +434,12 @@ $app->get('/works/:id(/:revision)', function ($id,$revision=NULL) use ($config) 
 $app->get('/agents/:id(/:revision)', function ($id,$revision=NULL) use ($config) {
     getRecord('agents',$id,$revision);
 });
+$app->get('/events/:id(/:revision)', function ($id,$revision=NULL) use ($config) {
+    getRecord('events',$id,$revision);
+});
+$app->get('/actions/:id(/:revision)', function ($id,$revision=NULL) use ($config) {
+    getRecord('actions',$id,$revision);
+});
 $app->get('/places/:id(/:revision)', function ($id,$revision=NULL) use ($config) {
   getRecord('places',$id,$revision);
 });
@@ -576,6 +594,12 @@ $app->put('/works/:id', function ($id) use ($config) {
 $app->put('/agents/:id', function ($id) use ($config) {
     updateRecord('agents',$id);
 });
+$app->put('/events/:id', function ($id) use ($config) {
+    updateRecord('events',$id);
+});
+$app->put('/actions/:id', function ($id) use ($config) {
+    updateRecord('actions',$id);
+});
 $app->put('/places/:id', function ($id) use ($config) {
   updateRecord('places',$id);
 });
@@ -630,6 +654,12 @@ $app->delete('/works/:id', function ($id) {
 });
 $app->delete('/agents/:id', function ($id) {
     deleteRecord('agents',$id);
+});
+$app->delete('/events/:id', function ($id) {
+    deleteRecord('events',$id);
+});
+$app->delete('/actions/:id', function ($id) {
+    deleteRecord('actions',$id);
 });
 $app->delete('/mvds/:id', function ($id) {
   deleteRecord('mvds',$id);
