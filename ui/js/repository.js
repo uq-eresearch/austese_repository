@@ -644,8 +644,9 @@ jQuery.fn.serializeObject = function() {
             success: function(d){
                 if (d.results.length > 0) {
                     var result = "<h4>VIEW MVD:</h4><form class='form-inline' onsubmit='return false;'><select id='mvdselect'>";
+                    var res = "";
                     for (var i = 0; i < d.results.length; i++){
-                        var res = d.results[i];
+                        res = d.results[i];
                         result += '<option value="' + res.name + '">' + decodeURIComponent(res.name) + '</option>';
                     }
                     result+= '</select>'
@@ -655,6 +656,12 @@ jQuery.fn.serializeObject = function() {
                     jQuery('#viewmvd').append(result);
                     jQuery('#comparebtn').on('click',viewCompare);
                     jQuery('#tablebtn').on('click',viewTable);
+                    // FIXME: Look up actual full id of version e.g. id/base or /Base/id
+                    var url = '/html/' + encodeURIComponent(res.name) + "?version1="  + id + "%2fbase";
+                    
+                    jQuery('#result').append("<script type='text/javascript'>jQuery.ajax({url:'" + url + "', " 
+                            + "success: function(r){if (r.indexOf(\"HritServer Error\") == -1){jQuery('#result').append('<div class=\"well\">' + r + '</div>');}}})</script>");
+                    
                 }
             }
         });

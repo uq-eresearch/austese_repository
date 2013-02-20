@@ -341,11 +341,8 @@ Ext.define('austese_uploader.controller.Controller', {
         
     },
     displayResource: function(dataview, record, item, index, e, eOpts){
-        // TODO: allow preview display of multiple resources?
         var uri = record.get('uri');
-        var msg = '';
-        window.open('resources/' + record.get('id'));
-        window.focus();
+        document.location.href = 'resources/' + record.get('id');
     },
     rotateImages: function(clockwise) {
         // for all selected records
