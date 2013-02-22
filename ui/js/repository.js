@@ -635,6 +635,7 @@ jQuery.fn.serializeObject = function() {
                 jQuery('<div class="alert alert-block"><button type="button" class="close" data-dismiss="alert">x</button>'
                     + '<h4>Successfully saved ' + apiType + '</h4>'
                     + '<p><a href="/' + modulePrefix + '/' + apiType + 's">View ' + apiType + 's</a></p></div>').alert());
+                existingId = d.id;
           }
         });
     }
