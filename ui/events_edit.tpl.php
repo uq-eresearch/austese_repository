@@ -34,21 +34,67 @@ $existingId=arg(3);
       <label class="control-label" for="eventType">Type</label>
       <div class="controls">
         <input name="eventType" type="text" class="input-xlarge" id="eventType">
-        <p class="help-block">E.g. Composition, Serialisation, Edition</p>
+        <p class="help-block">E.g. composition, serialisation, edition, writing, editing, advising, printing, publishing...</p>
       </div>
     </div>
-    <div class="control-group">
-      <label class="control-label" for="actions">Actions</label>
-      <div class="controls">
-        <textarea rows="2" name="actions" type="text" class="input-xlarge" id="actions"></textarea>
-      </div>
-    </div>
+    </fieldset>
+    <div class="well">
+    <p>This field is most likely to apply to "composite" events:</p>
+    <fieldset>
     <div class="control-group">
       <label class="control-label" for="events">Sub-Events</label>
       <div class="controls">
         <textarea rows="2" name="events" type="text" class="input-xlarge" id="events"></textarea>
       </div>
     </div>
+    </fieldset>
+    </div>
+    
+    <div class="well">
+    <p>These fields are most likely to apply to basic "action" events:</p>
+    <fieldset>
+    
+    <div class="control-group">
+      <label class="control-label" for="startDate">Began</label>
+      <div class="controls">
+        <input name="startDate" type="text" class="input-xlarge" id="startDate">
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="endDate">Ended</label>
+      <div class="controls">
+        <input name="endDate" type="text" class="input-xlarge" id="endDate">
+      </div>
+    </div>
+    
+    <div class="control-group">
+      <label class="control-label" for="artefacts">Artefacts</label>
+      <div class="controls">
+        <textarea rows="2" name="artefacts" type="text" class="input-xlarge" id="artefacts"></textarea>
+        <span class="help-block">Artefacts produced by or impacted on by this event</span>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="agents">Agents</label>
+      <div class="controls">
+        <textarea rows="2" name="agents" type="text" class="input-xlarge" id="agents"></textarea>
+        <span class="help-block">Agents participating in or responsible for this event</span>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="places">Places</label>
+      <div class="controls">
+        <textarea rows="2" name="places" type="text" class="input-xlarge" id="places"></textarea>
+        <span class="help-block">Where this event took place</span>
+      </div>
+    </div>
+    </fieldset>
+    </div>
+    
+
+
+   
+    
     <div class="control-group">
       <div class="controls">
          <input id="save-btn" type="button" class="btn" value="Save">
