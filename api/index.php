@@ -138,9 +138,6 @@ $app->post('/agents/', function(){
 $app->post('/events/', function(){
     createRecord('events');
 });
-$app->post('/actions/', function(){
-    createRecord('actions');
-});
 $app->post('/places/', function(){
   createRecord('places');
 });
@@ -169,9 +166,6 @@ $app->get('/agents/', function(){
 });
 $app->get('/events/', function(){
     listRecords('events','description');
-});
-$app->get('/actions/', function(){
-    listRecords('actions','description');
 });
 $app->get('/places/', function(){
   listRecords('places','name');
@@ -437,9 +431,6 @@ $app->get('/agents/:id(/:revision)', function ($id,$revision=NULL) use ($config)
 $app->get('/events/:id(/:revision)', function ($id,$revision=NULL) use ($config) {
     getRecord('events',$id,$revision);
 });
-$app->get('/actions/:id(/:revision)', function ($id,$revision=NULL) use ($config) {
-    getRecord('actions',$id,$revision);
-});
 $app->get('/places/:id(/:revision)', function ($id,$revision=NULL) use ($config) {
   getRecord('places',$id,$revision);
 });
@@ -597,9 +588,6 @@ $app->put('/agents/:id', function ($id) use ($config) {
 $app->put('/events/:id', function ($id) use ($config) {
     updateRecord('events',$id);
 });
-$app->put('/actions/:id', function ($id) use ($config) {
-    updateRecord('actions',$id);
-});
 $app->put('/places/:id', function ($id) use ($config) {
   updateRecord('places',$id);
 });
@@ -657,9 +645,6 @@ $app->delete('/agents/:id', function ($id) {
 });
 $app->delete('/events/:id', function ($id) {
     deleteRecord('events',$id);
-});
-$app->delete('/actions/:id', function ($id) {
-    deleteRecord('actions',$id);
 });
 $app->delete('/mvds/:id', function ($id) {
   deleteRecord('mvds',$id);
