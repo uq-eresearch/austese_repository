@@ -75,15 +75,6 @@ jQuery.fn.serializeObject = function() {
                 resultsFormatter: function(item){return "<li><b>" + item.description + "</b>, " + item.eventType + "</li>";},
                 tokenFormatter: function(item){return "<li>" + item.description + ", " + item.eventType + "</li>";}
             });
-            jQuery("#actions").tokenInput("/" + modulePath + "/api/actions/", {
-                theme: "facebook",
-                tokenValue: "id",
-                hintText: "Start typing to search actions by description",
-                jsonContainer: "results",
-                propertyToSearch: "description",
-                resultsFormatter: function(item){return "<li><b>" + item.description + "</b>, " + item.actionType + "</li>";},
-                tokenFormatter: function(item){return "<li>" + item.description + ", " + item.actionType + "</li>";}
-            });
             jQuery("#agents").tokenInput("/" + modulePath + "/api/agents/", {
                 theme: "facebook",
                 tokenValue: "id",
@@ -200,7 +191,10 @@ jQuery.fn.serializeObject = function() {
         templates.eventSummary = new Ext.XTemplate(
                 '<div class="obj">',
                 '<h4><a href="/{modulePrefix}/events/{id}">{description}<tpl if="eventType"> ({eventType})</tpl></a></h4>',
-                '<tpl for="actions"><tpl if="xindex == 1"><br/>({[xcount]} associated action{[xcount != 1? "s" : ""]})</tpl></tpl>',
+                '<tpl if="startDate">{startDate} &ndash; </tpl>',
+                '<tpl if="endDate">{endDate}</tpl>',
+                '<tpl for="agents"><tpl if="xindex == 1"><br/>({[xcount]} associated participant{[xcount != 1? "s" : ""]})</tpl></tpl>',
+                '<tpl for="artefacts"><tpl if="xindex == 1"><br/>(Produced {[xcount]} artefact{[xcount != 1? "s" : ""]})</tpl></tpl>',
                 '<tpl for="events"><tpl if="xindex == 1"><br/>({[xcount]} associated sub-event{[xcount != 1? "s" : ""]})</tpl></tpl>',
                 '</div>'
         );
@@ -208,10 +202,24 @@ jQuery.fn.serializeObject = function() {
         templates.eventDetail = new Ext.XTemplate(
                 '<div class="obj">',
                 '<h4><a href="/{modulePrefix}/events/{id}">{description}<tpl if="eventType"> ({eventType})</tpl></a></h4>',
-                '<tpl for="actions">',
-                    '<tpl if="xindex == 1"><h3 class="muted">Actions</h3><p>{[xcount]} action{[xcount != 1? "s" : ""]} associated with this event:</p></tpl>',
+                '<tpl if="startDate">{startDate} &ndash; </tpl>',
+                '<tpl if="endDate">{endDate}</tpl>',
+                '<tpl for="agents">',
+                    '<tpl if="xindex == 1"><h3 class="muted">Agents</h3><p>{[xcount]} agent{[xcount != 1? "s" : ""]} participated in this event:</p></tpl>',
                     '<ul>',
-                        '<li><div class="action" data-actionid="{.}" data-template="summary"></div></li>',
+                        '<li><div class="agent" data-agentid="{.}" data-template="summary"></div></li>',
+                    '</ul>',
+                '</tpl>',
+                '<tpl for="artefacts">',
+                    '<tpl if="xindex == 1"><h3 class="muted">Artefacts</h3><p>{[xcount]} artefact{[xcount != 1? "s" : ""]} produced by this event:</p></tpl>',
+                    '<ul>',
+                        '<li><div class="artefact" data-artefactid="{.}" data-template="summary"></div></li>',
+                    '</ul>',
+                '</tpl>',
+                '<tpl for="places">',
+                    '<tpl if="xindex == 1"><h3 class="muted">Places</h3><p>{[xcount]} place{[xcount != 1? "s" : ""]} associated with this event:</p></tpl>',
+                    '<ul>',
+                    '<li class="place" data-placeid="{.}" data-template="compact"></li>',
                     '</ul>',
                 '</tpl>',
                 '<tpl for="events">',
@@ -223,42 +231,6 @@ jQuery.fn.serializeObject = function() {
                 '</div>'
         );
         templates.eventDetail.compile();
-        templates.actionSummary = new Ext.XTemplate(
-                '<div class="obj">',
-                '<h4><a href="/{modulePrefix}/actions/{id}">{description}<tpl if="actionType"> ({actionType})</tpl></a></h4>',
-                '<tpl if="startDate">{startDate} &ndash; </tpl>',
-                '<tpl if="endDate">{endDate}</tpl>',
-                '<tpl for="agents"><tpl if="xindex == 1"><br/>({[xcount]} associated participant{[xcount != 1? "s" : ""]})</tpl></tpl>',
-                '<tpl for="artefacts"><tpl if="xindex == 1"><br/>(Produced {[xcount]} artefact{[xcount != 1? "s" : ""]})</tpl></tpl>',
-                '</div>'
-        );
-        templates.actionSummary.compile();
-        templates.actionDetail = new Ext.XTemplate(
-                '<div class="obj">',
-                '<h4><a href="/{modulePrefix}/actions/{id}">{description}<tpl if="actionType"> ({actionType})</tpl></a></h4>',
-                '<tpl if="startDate">{startDate} &ndash; </tpl>',
-                '<tpl if="endDate">{endDate}</tpl>',
-                '<tpl for="agents">',
-                    '<tpl if="xindex == 1"><h3 class="muted">Agents</h3><p>{[xcount]} agent{[xcount != 1? "s" : ""]} participated in this action:</p></tpl>',
-                    '<ul>',
-                        '<li><div class="agent" data-agentid="{.}" data-template="summary"></div></li>',
-                    '</ul>',
-                '</tpl>',
-                '<tpl for="artefacts">',
-                    '<tpl if="xindex == 1"><h3 class="muted">Artefacts</h3><p>{[xcount]} artefact{[xcount != 1? "s" : ""]} produced by this action:</p></tpl>',
-                    '<ul>',
-                        '<li><div class="artefact" data-artefactid="{.}" data-template="summary"></div></li>',
-                    '</ul>',
-                '</tpl>',
-                '<tpl for="places">',
-                    '<tpl if="xindex == 1"><h3 class="muted">Places</h3><p>{[xcount]} place{[xcount != 1? "s" : ""]} associated with this version:</p></tpl>',
-                    '<ul>',
-                    '<li class="place" data-placeid="{.}" data-template="compact"></li>',
-                    '</ul>',
-                '</tpl>',
-                '</div>'
-        );
-        templates.actionDetail.compile();
         templates.artefactSummary = new Ext.XTemplate(
                 '<div class="obj">',
                 '<h4><a href="/{modulePrefix}/artefacts/{id}">{source}</a></h4>',
@@ -494,17 +466,6 @@ jQuery.fn.serializeObject = function() {
                    });
                   }
               }
-              if (d.actions){
-                  for (var i = 0; i < d.actions.length; i++){
-                   jQuery.ajax({
-                     type: 'GET',
-                     url: '/' + modulePath + '/api/actions/' + d.actions[i],
-                     success: function(v){
-                       jQuery('#actions').tokenInput("add",v);
-                     }
-                   });
-                  }
-              }
               if (d.transcriptions){
                   for (var i = 0; i < d.transcriptions.length; i++){
                    jQuery.ajax({
@@ -575,13 +536,6 @@ jQuery.fn.serializeObject = function() {
             data.artefacts = [];
             for (var i = 0; i < split.length; i++){
                data.artefacts.push(split[i]);
-            }
-        }
-        if (data.actions){
-            var split = data.actions.split(",");
-            data.actions = [];
-            for (var i = 0; i < split.length; i++){
-               data.actions.push(split[i]);
             }
         }
         if (data.events){
@@ -784,20 +738,6 @@ jQuery.fn.serializeObject = function() {
                 d.modulePrefix = modulePrefix;
                 if (template && template == 'summary'){
                     elem.html(templates.agentSummary.apply(d));
-                }
-              }
-            });
-        });
-        jQuery(".action").each(function(){
-            var elem = jQuery(this);
-            var template = elem.data('template');
-            jQuery.ajax({
-              type: 'GET',
-              url: '/' + modulePath + '/api/actions/' + elem.data('actionid'),
-              success: function(d){
-                d.modulePrefix = modulePrefix;
-                if (template && template == 'summary'){
-                    elem.html(templates.actionSummary.apply(d));
                 }
               }
             });
