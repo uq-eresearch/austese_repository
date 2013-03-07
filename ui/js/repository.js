@@ -343,7 +343,7 @@ jQuery.fn.serializeObject = function() {
                 '<tr><td class="muted">MD5 checksum</td><td>{md5}</td></tr>',
                 '</table>',
                 '<p><a href="{uri}"><i class="icon-download"></i> Download resource</a></p>',
-                '<tpl if="metadata.filetype.match(\'image\')"><img class="thumbnail" src="{uri}" alt="Image preview"></tpl>',
+                '<tpl if="metadata.filetype.match(\'image\')"><img data-id="{id}" class="thumbnail" src="{uri}" alt="Image preview"></tpl>',
             '</div>'
         );
         templates.resourceDetail.compile();
