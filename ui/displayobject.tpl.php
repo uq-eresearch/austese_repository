@@ -39,7 +39,7 @@ $existingId = arg(2);
    
  <?php endif; ?>
  <?php if ($apiType=='resource'):?>
- <div style="margin-top:1em" id="viewmvd"></div>
+ <div style="margin-top:1em" data-id="<?php print $existingId; ?>" id="viewmvd"></div>
  <?php endif; ?>
 </div>
 
