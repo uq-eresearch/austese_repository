@@ -20,6 +20,7 @@ jQuery.fn.serializeObject = function() {
     var hasEditPermission = false;
     var apiOperation = null;
     var existingId = null;
+    var serverName = null;
     var templates = {};
     jQuery(document).ready(function(){
         var metadata = jQuery('#metadata');
@@ -29,6 +30,7 @@ jQuery.fn.serializeObject = function() {
         modulePath = metadata.data('modulepath');
         modulePrefix = metadata.data('moduleprefix');
         existingId = metadata.data('existingid');
+        serverName = metadata.data('servername');
         // Note: it is drupal that actually enforces these permissions, 
         // the data attributes are only used to control whether to display the associated UI elements
         hasEditPermission = metadata.data('editable');
@@ -343,7 +345,9 @@ jQuery.fn.serializeObject = function() {
                 '<tr><td class="muted">MD5 checksum</td><td>{md5}</td></tr>',
                 '</table>',
                 '<p><a href="{uri}"><i class="icon-download"></i> Download resource</a></p>',
-                '<tpl if="metadata.filetype.match(\'image\')"><img data-id="{id}" class="thumbnail" src="{uri}" alt="Image preview"></tpl>',
+                '<tpl if="metadata.filetype.match(\'image\')">',
+                '<div data-id="http://{serverName}/repository/resources/{id}/content"><img class="thumbnail" src="{uri}" alt="Image preview"/></div>',
+                '</tpl>',
             '</div>'
         );
         templates.resourceDetail.compile();
@@ -361,6 +365,7 @@ jQuery.fn.serializeObject = function() {
             success: function(result){
                 //console.log("loaded",result)
                 result.modulePrefix = modulePrefix;
+                result.serverName = serverName;
                 template.append('result', result);
                 loadReferencedObjects();
                 if (apiType == "place"){
@@ -368,6 +373,7 @@ jQuery.fn.serializeObject = function() {
                 } if (result.metadata && result.metadata.filetype.match("image")){
                     jQuery("#editlink").hide();
                     jQuery("#lightboxlink").show();
+                    jQuery('#result').append('<script type="text/javascript">if (typeof enableAnnotations == \"function\"){enableAnnotations();}</script>');
                 } else {
                     jQuery("#editlink").show();
                 }
@@ -615,7 +621,10 @@ jQuery.fn.serializeObject = function() {
                     var url = '/html/' + encodeURIComponent(res.name) + "?version1="  + id + "%2fbase";
                     
                     jQuery('#result').append("<script type='text/javascript'>jQuery.ajax({url:'" + url + "', " 
-                            + "success: function(r){if (r.indexOf(\"HritServer Error\") == -1){jQuery('#result').append('<div class=\"well\">' + r + '</div>');}}})</script>");
+                            + "success: function(r){if (r.indexOf(\"HritServer Error\") == -1){"
+                            + "jQuery('#result').append('<div data-id=\"http://" + serverName + "/repository/resources/" + existingId + "/content\" class=\"well\">' + r + '</div>');"
+                            + "if (typeof enableAnnotations == \"function\"){enableAnnotations();}" 
+                            + "}}})</script>");
                     
                 }
             }

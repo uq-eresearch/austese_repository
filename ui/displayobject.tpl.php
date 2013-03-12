@@ -18,6 +18,7 @@ $existingId = arg(2);
  <?php endif; ?>
  data-moduleprefix="<?php print $modulePrefix; ?>"
  data-modulepath="<?php print drupal_get_path('module', 'repository'); ?>"
+ data-servername="<?php print $_SERVER['SERVER_NAME']; ?>"
  data-apitype="<?php print $apiType;?>">
 </div>
 
@@ -39,7 +40,7 @@ $existingId = arg(2);
    
  <?php endif; ?>
  <?php if ($apiType=='resource'):?>
- <div style="margin-top:1em" data-id="<?php print $existingId; ?>" id="viewmvd"></div>
+ <div style="margin-top:1em" id="viewmvd"></div>
  <?php endif; ?>
 </div>
 
