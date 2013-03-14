@@ -423,7 +423,7 @@ function getResource($id, $revision){
            $height = 120;
          } else {
           // check that supplied height is not greater than original image dimension
-           $d = $image->getImageGeometry();
+           $d = $img->getImageGeometry();
            $h = $d['height'];
            if ($h < $height){
              $height = $h;
