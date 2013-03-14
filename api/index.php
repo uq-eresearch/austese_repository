@@ -414,12 +414,20 @@ function getResource($id, $revision){
       }
       $response->header('Content-Description','File Transfer');
       $response->header('Content-Disposition','attachment; filename='.$filename);
-      if (preg_match('/image/',$filetype) && $scale == true){
+      // generate a thumbnail
+      if ($scale == true && preg_match('/image/',$filetype) && class_exists('Imagick')){
          $img = new Imagick();
          $img->readImageBlob($file->getBytes());
          $height = $request->get('height');
-	 if ($height == null) {
+         if ($height == null) {
            $height = 120;
+         } else {
+          // check that supplied height is not greater than original image dimension
+           $d = $image->getImageGeometry();
+           $h = $d['height'];
+           if ($h < $height){
+             $height = $h;
+           }
          }
          $img->thumbnailImage(0,$height);
          echo $img;
