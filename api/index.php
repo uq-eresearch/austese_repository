@@ -369,6 +369,7 @@ function getResource($id, $revision){
   $response = Slim::getInstance()->response();
   $request = Slim::getInstance()->request();
   $requesttype = $request->headers('Accept');
+  $scale = $request->get('scale');
   $m = new Mongo($config['dbhost'].':'.$config['dbport'], array('persist' => 'restapi'));
   $db = $m->selectDB($config['dbname']);
   $grid = $db->getGridFS();
@@ -413,7 +414,18 @@ function getResource($id, $revision){
       }
       $response->header('Content-Description','File Transfer');
       $response->header('Content-Disposition','attachment; filename='.$filename);
-      echo $file->getBytes();
+      if (preg_match('/image/',$filetype) && $scale == true){
+         $img = new Imagick();
+         $img->readImageBlob($file->getBytes());
+         $height = $request->get('height');
+	 if ($height == null) {
+           $height = 120;
+         }
+         $img->thumbnailImage(0,$height);
+         echo $img;
+      } else {
+         echo $file->getBytes();
+      }
   }
 }
 $app->get('/artefacts/:id(/:revision)', function ($id,$revision=NULL) use ($config) {

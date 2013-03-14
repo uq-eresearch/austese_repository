@@ -349,7 +349,7 @@ jQuery.fn.serializeObject = function() {
                 '<p><a href="{uri}"><i class="icon-download"></i> Download resource</a></p>',
                 '<tpl if="metadata.filetype.match(\'image\')">',
                 '<h3>Image Preview</h3>',
-                '<div data-id="http://{serverName}/repository/resources/{id}/content"><img class="thumbnail" src="{uri}" alt="Image preview"/></div>',
+                '<div data-id="http://{serverName}/repository/resources/{id}/content"><img class="thumbnail" src="{uri}?scale=true&height=480" alt="Image preview"/></div>',
                 '</tpl>',
             '</div>'
         );
