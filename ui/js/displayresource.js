@@ -14,6 +14,9 @@ jQuery(document).ready(function(){
             // if resource is an image create image tag
             if (mimeType.match("image")) {
                 jQuery('#resourceContent').html("<img alt='Image preview' class='thumbnail' src='" + resURI + "'/>");
+                if (typeof enableAnnotations == "function"){
+                    enableAnnotations();
+                }
             } else if (mimeType.match("xml") || mimeType.match("text")){
                 var resURL;
                 // if resource is plain text insert text content directly
@@ -32,6 +35,9 @@ jQuery(document).ready(function(){
                               result = "<pre>" + d + "</pre>"
                           }
                           jQuery('#resourceContent').html(result);
+                          if (typeof enableAnnotations == "function"){
+                              enableAnnotations();
+                          }
                       }
                 });
             }
