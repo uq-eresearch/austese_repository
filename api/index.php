@@ -414,6 +414,11 @@ function getResource($id, $revision){
       }
       $response->header('Content-Description','File Transfer');
       $response->header('Content-Disposition','attachment; filename='.$filename);
+      // set 10 minute expires header for file content
+      $expires = (60*10);
+      header("Pragma: public");
+      header("Cache-Control: maxage=".$expires);
+      header('Expires: ' . gmdate('D, d M Y H:i:s', time()+$expires) . ' GMT');
       // generate a thumbnail
       if ($scale == true && preg_match('/image/',$filetype) && class_exists('Imagick')){
          $img = new Imagick();
