@@ -89,6 +89,13 @@ function repository_menu() {
     'access arguments' => array('view metadata'),
     'type' => MENU_CALLBACK
   );
+  $items['repository/resources/%/content'] = array(
+    'title' => 'View Resource Content',
+    'page callback' => 'repository_display_resource',
+    'page arguments' => array(2,4),
+    'access arguments' => array('view metadata'),
+    'type' => MENU_CALLBACK
+  );
   // Record view for individual objects
   $items['repository/%/%'] = array(
     'title arguments' => array('title'=>1),
@@ -185,6 +192,46 @@ function repository_edit($template, $id=null){
         array('group' => CSS_DEFAULT, 'every_page' => FALSE));
     return theme($template.'_edit',array());
 }
+function repository_display_resource($id,$raw=null){
+    $breadcrumb = array();
+    $breadcrumb[] = l('Home', '<front>');
+    $breadcrumb[] = l('Repository', 'repository');
+    $breadcrumb[] = l('Resources','repository/resources');
+    $breadcrumb[] = l('View Resource','repository/resources/'.$id);
+    $breadcrumb[] = t('View Resource Content'); 
+    drupal_set_breadcrumb($breadcrumb);
+    if ($raw == 'raw'){
+        echo repository_render_tei($id);;
+    } else {
+        //too slow use ajax instead - return theme('resources_content',array('content'=>$result));
+        drupal_add_js(drupal_get_path('module', 'repository') . '/ui/js/displayresource.js');
+        return theme('resources_content',array());
+    }
+}
+// shift to repository api
+function repository_render_tei($id){
+    $resurl = 'http://' . $_SERVER['HTTP_HOST'] . "/" . drupal_get_path('module', 'repository') . "/api/resources/" . $id;
+    $xml = file_get_contents($resurl);
+    if (!$xml) {
+        watchdog('Content', "Empty resource content", array(), WATCHDOG_WARNING);
+        echo $xml;
+    }
+    $dom = new DomDocument('1.0', 'UTF-8');
+    @$valid = $dom->loadXML($xml);
+    if (!$valid) {
+        watchdog('TEI Content', "Invalid XML/TEI Content", array(), WATCHDOG_WARNING);
+        return $xml;
+    }
+    $xsl = new DomDocument('1.0', 'UTF-8');
+    $modulePath = drupal_get_path('module', 'repository');
+    $xsl->load($modulePath . '/ui/xslt/formats.xsl');
+    $proc = new XsltProcessor();
+    $xsl = $proc->importStylesheet($xsl);
+    $newdom = $proc->transformToDoc($dom);
+    $out = $newdom->saveXML();
+    return $out;
+}
+
 function repository_display_record($template, $id=null){
     if (!in_array($template,array("agents","artefacts","versions","works", "resources", "places", "events"))) {
         drupal_access_denied();
@@ -261,6 +308,10 @@ function repository_theme(){
        'template' => 'ui/uploader',
        'variables' => array()
     ),
+    'resources_content' => array(
+        'template' =>'ui/displayresource',
+        'variables' => array('content' => null)
+    )
  );
 }
 /** 

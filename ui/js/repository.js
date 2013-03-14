@@ -323,6 +323,7 @@ jQuery.fn.serializeObject = function() {
         templates.resourceDetail = new Ext.XTemplate(
                 //'<h2>{[values.metadata.title || values.filename]}</h2>',
                 '<div>',
+
                 '<h3>Metadata</h3>',
                 '<table class="table">',
                 '<tpl if="metadata.title"><tr><td class="metadatalabel muted">Title</td><td>{metadata.title}</td></tr></tpl>',
@@ -344,8 +345,10 @@ jQuery.fn.serializeObject = function() {
                 '<tr><td class="muted">File size</td><td>{length:fileSize}</td></tr>',
                 '<tr><td class="muted">MD5 checksum</td><td>{md5}</td></tr>',
                 '</table>',
+                '<p><a href="./{id}/content"><i class="icon-eye-open"></i> View resource content</a></p>',
                 '<p><a href="{uri}"><i class="icon-download"></i> Download resource</a></p>',
                 '<tpl if="metadata.filetype.match(\'image\')">',
+                '<h3>Image Preview</h3>',
                 '<div data-id="http://{serverName}/repository/resources/{id}/content"><img class="thumbnail" src="{uri}" alt="Image preview"/></div>',
                 '</tpl>',
             '</div>'
@@ -618,14 +621,13 @@ jQuery.fn.serializeObject = function() {
                     jQuery('#comparebtn').on('click',viewCompare);
                     jQuery('#tablebtn').on('click',viewTable);
                     // FIXME: Look up actual full id of version e.g. id/base or /Base/id
-                    var url = '/html/' + encodeURIComponent(res.name) + "?version1="  + id + "%2fbase";
-                    
+                    /*var url = '/html/' + encodeURIComponent(res.name) + "?version1=%2f"  + id + "%2fbase";
                     jQuery('#result').append("<script type='text/javascript'>jQuery.ajax({url:'" + url + "', " 
                             + "success: function(r){if (r.indexOf(\"HritServer Error\") == -1){"
                             + "jQuery('#result').append('<div data-id=\"http://" + serverName + "/repository/resources/" + existingId + "/content\" class=\"well\">' + r + '</div>');"
                             + "if (typeof enableAnnotations == \"function\"){enableAnnotations();}" 
                             + "}}})</script>");
-                    
+                    */
                 }
             }
         });
