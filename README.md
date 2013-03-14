@@ -5,6 +5,7 @@ Drupal 7 module providing search, display and editing UI and lightweight REST AP
 How to use this module
 * Ensure that MongoDB is running and that the configuration in api/config.php matches your setup
 * Ensure that ExtJS 4.1.1a is installed in sites/all/libraries
+* If you wish to take advantage of image scaling for thumbnails, ensure that PHP Imagick is installed (optional)
 * Install this module to sites/all/modules/austese_repository
 * Enable module via drupal admin console
 
