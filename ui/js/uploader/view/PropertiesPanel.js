@@ -42,7 +42,8 @@ Ext.define('austese_uploader.view.PropertiesPanel', {
             ],
             items: [
                 // blank card for when no property editor is to be displayed
-                {html:"<p></p>"},
+                {html:"<p class='muted' style='margin:auto;padding:1em'>Select one or more resources to view or edit resource metadata or to enable the 'Send To' menu.</p>"
+                    + "<p class='muted' style='margin:auto;padding:1em'>To select multiple resources, use the mouse to drag around a group of resources, or hold down the shift key or command/control when clicking on resources.</p>"},
                 // single resource property editor
                 {
                     xtype: 'form',
