@@ -391,6 +391,9 @@ function getResource($id, $revision){
    echo 'The requested resource has been deleted';
    return;
   }
+  // Tell any cache the different resources are served
+  // depending on content type
+  $response->header('Vary', 'accept');
   if ($requesttype=='application/json'){
       // return json metadata
       $returnobj = $file->file;
