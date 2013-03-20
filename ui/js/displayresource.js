@@ -32,7 +32,7 @@ jQuery(document).ready(function(){
                       success: function(d){
                           var result = d;
                           if (!mimeType.match("xml")){
-                              result = "<pre>" + d + "</pre>"
+                              result = "<pre style='white-space:pre-wrap'>" + d + "</pre>"
                           }
                           jQuery('#resourceContent').html(result);
                           if (typeof enableAnnotations == "function"){
