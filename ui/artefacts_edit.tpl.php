@@ -46,6 +46,36 @@ $existingId=arg(3);
       </div>
     </div>
     <div class="control-group">
+      <label class="control-label" for="publisher">Publisher</label>
+      <div class="controls">
+        <textarea rows="1" name="publisher" type="text" class="input-xlarge" id="publisher"></textarea>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="printer">Printer</label>
+      <div class="controls">
+        <textarea rows="1" name="printer" type="text" class="input-xlarge" id="printer"></textarea>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="format">Format</label>
+      <div class="controls">
+        <textarea rows="1" name="format" type="text" class="input-xlarge" id="format"></textarea>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="paperType">Paper Type</label>
+      <div class="controls">
+        <textarea rows="1" name="paperType" type="text" class="input-xlarge" id="paperType"></textarea>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="artefactSize">Size</label>
+      <div class="controls">
+        <textarea rows="1" name="artefactSize" type="text" class="input-xlarge" id="artefactSize"></textarea>
+      </div>
+    </div>
+    <div class="control-group">
       <label class="control-label" for="artefacts">Facsimiles</label>
       <div class="controls">
         <textarea rows="2" name="facsimiles" type="text" class="input-xlarge" id="facsimiles"></textarea>
