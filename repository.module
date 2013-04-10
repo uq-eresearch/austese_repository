@@ -107,6 +107,37 @@ function repository_menu() {
   );
   return $items;
 }
+function repository_xmlrpc() {
+  $methods[] = array(
+    'check_login',
+    'repository_xmlrpc_check_login',
+    array(
+      'struct',
+      'string'),
+    t('Check the session is valid')
+    );
+  return $methods;
+}
+function repository_xmlrpc_check_login($sid) {
+  if ("127.0.0.1" != $_SERVER['REMOTE_ADDR']) {
+    return false;
+  }
+  // Refer: http://api.drupal.org/api/drupal/includes%21session.inc/function/_drupal_session_read/7
+  $user = db_query("SELECT u.*, s.* FROM {users} u INNER JOIN {sessions} s ON u.uid = s.uid WHERE s.sid = :sid", array(':sid' => $sid))->fetchObject();
+
+  $account = user_load($user->uid);
+
+  $response['valid'] = (bool) $user;
+
+  if ($user) {
+    $response['user'] = $user;
+    $response['account'] = $account;
+    $response['admin'] = in_array('administrator', $account->roles);
+  }
+
+  return $response;
+}
+
 function repository_display_title($title){
     return ucwords($title);
 }
