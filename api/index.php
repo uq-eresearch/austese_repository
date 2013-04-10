@@ -424,21 +424,25 @@ function getResource($id, $revision){
       header('Expires: ' . gmdate('D, d M Y H:i:s', time()+$expires) . ' GMT');
       // generate a thumbnail
       if ($scale == true && preg_match('/image/',$filetype) && class_exists('Imagick')){
-         $img = new Imagick();
-         $img->readImageBlob($file->getBytes());
-         $height = $request->get('height');
-         if ($height == null) {
-           $height = 120;
-         } else {
+        try{
+          $img = new Imagick();
+          $img->readImageBlob($file->getBytes());
+          $height = $request->get('height');
+          if ($height == null) {
+            $height = 120;
+          } else {
           // check that supplied height is not greater than original image dimension
-           $d = $img->getImageGeometry();
-           $h = $d['height'];
-           if ($h < $height){
-             $height = $h;
-           }
-         }
-         $img->thumbnailImage(0,$height);
-         echo $img;
+            $d = $img->getImageGeometry();
+            $h = $d['height'];
+            if ($h < $height){
+              $height = $h;
+            }
+          }
+          $img->thumbnailImage(0,$height);
+          echo $img;
+        } catch (Exception $e){
+         echo $file->getBytes();
+        }
       } else {
          echo $file->getBytes();
       }

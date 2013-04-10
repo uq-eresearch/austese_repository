@@ -37,7 +37,7 @@ $existingId = arg(2);
    <a id="editlink" href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/edit/<?php print $existingId; ?>">EDIT
    <?php if ($apiType=='resource'):?> CONTENT<?php endif; ?>
    </a>
-   
+   <a style="display:none" id="lightboxlink" href="/lightbox#<?php print $existingId; ?>">VIEW IN LIGHTBOX</a>
  <?php endif; ?>
  <?php if ($apiType=='resource'):?>
  <div style="margin-top:1em" id="viewmvd"></div>
