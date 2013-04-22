@@ -28,6 +28,8 @@ jQuery(document).ready(function(){
                 }
                 jQuery.ajax({
                       type: 'GET',
+                      cache: false, // FIXME: this is horrible
+                      // we really do want to cache these, but for text resources either jQuery or the browser is getting confused and not sending another request to the server
                       url: resURL,
                       success: function(d){
                           var result = d;
