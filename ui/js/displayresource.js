@@ -26,6 +26,17 @@ jQuery(document).ready(function(){
                 } else {
                     resURL = resURI;
                 }
+                // Listen for mouse up events for displaying selection word count
+                jQuery('body').mouseup(function (e){
+                    var selected = getSelectionText();
+                    if (selected && selected.length > 0){
+                        var wordCount = selected.replace(/\-+|&nbsp;/gi,' ').trim().split(/\s+/).length;
+                        jQuery('#selectedWordCount').html("Selected Word Count: " + wordCount);
+                    } else {
+                        jQuery('#selectedWordCount').html("");
+                    }
+                    
+                });
                 jQuery.ajax({
                       type: 'GET',
                       cache: false, // FIXME: this is horrible
@@ -40,6 +51,8 @@ jQuery(document).ready(function(){
                           if (typeof enableAnnotations == "function"){
                               enableAnnotations();
                           }
+                          var wordCount=jQuery('#resourceContent').text().replace(/\-+|&nbsp;/gi,' ').trim().split(/\s+/).length;
+                          jQuery('#wordCount').html("Resource Total Word Count: " + wordCount);
                       }
                 });
             }
@@ -47,3 +60,13 @@ jQuery(document).ready(function(){
     });
     
 });
+function getSelectionText() {
+    var text = "";
+    if (window.getSelection) {
+        text = window.getSelection().toString();
+    } else if (document.selection && document.selection.type != "Control") {
+        text = document.selection.createRange().text;
+    }
+    return text;
+}
+

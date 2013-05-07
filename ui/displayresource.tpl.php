@@ -23,3 +23,5 @@ $existingId = arg(2);
 <div id="resourceContent" class="well" data-id="http://<?php print $_SERVER['SERVER_NAME']; ?>/repository/resources/<?php print $existingId; ?>/content">
 Rendering content...
 </div>
+<div id="wordCount"></div>
+<div id="selectedWordCount"></div>
