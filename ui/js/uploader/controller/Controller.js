@@ -655,10 +655,10 @@ Ext.define('austese_uploader.controller.Controller', {
       var formValues = mvdWin.down('form').getForm().getValues();
       // TODO strip spaces and any other illegal characters
       var docpath = (formValues.language? formValues.language : "")
-          + (formValues.author? '%2f' + formValues.author : "")
-          + (formValues.work? '%2f' + formValues.work : "")
-          + (formValues.section? '%2f' +  formValues.section : "")
-          + (formValues.subsection? '%2f'+ formValues.subsection : "");
+          + (formValues.author? '/' + formValues.author : "")
+          + (formValues.work? '/' + formValues.work : "")
+          + (formValues.section? '/' +  formValues.section : "")
+          + (formValues.subsection? '/'+ formValues.subsection : "");
       mvdWin.close();
       var progressWin = Ext.create('Ext.window.Window',{
           header:false, closable:false, modal: true, width:300,layout:'form',
