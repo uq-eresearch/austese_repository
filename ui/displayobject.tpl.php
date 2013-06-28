@@ -38,6 +38,7 @@ $existingId = arg(2);
    <?php if ($apiType=='resource'):?> CONTENT<?php endif; ?>
    </a>
    <a style="display:none" id="lightboxlink" href="/lightbox#<?php print $existingId; ?>">VIEW IN LIGHTBOX</a>
+   <?php if ($apiType=='work'):?><br/><a href="/reading/<?php print $existingId; ?>">VIEW IN READING INTERFACE</a><?php endif; ?>
  <?php endif; ?>
  <?php if ($apiType=='resource'):?>
  <div style="margin-top:1em" id="viewmvd"></div>
