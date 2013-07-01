@@ -82,7 +82,10 @@ function createResource(){
   $filename=$_FILES["data"]["name"];
   $filetype=$_FILES["data"]["type"];
   $tmp = $_FILES["data"]["tmp_name"];
-  $project = $_POST["project"];
+  $project = '';
+  if (isset($_POST["project"])){
+   $project = $_POST["project"];
+  }
   if ($_FILES["data"]["error"]!=0){
     $response->status(500);    
     echo "Error uploading file";
@@ -253,7 +256,7 @@ function listResources(){
       $regex = new MongoRegex("/".$typeFilter."/i");
       $findopts = array('$and'=>array($findopts, array('metadata.filetype'=>$regex)));
   }
-  if ($project != null){
+  if ($project != null && $project != ''){
       $regex = new MongoRegex("/".$project."/i");
       $findopts = array('$and'=>array($findopts, array('metadata.project'=>$regex)));
   }
