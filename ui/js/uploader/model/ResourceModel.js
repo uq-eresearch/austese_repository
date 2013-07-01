@@ -56,6 +56,10 @@ Ext.define('austese_uploader.model.ResourceModel', {
             mapping: 'metadata.filetype'
         },
         {
+            name: 'project',
+            mapping: 'metadata.project'
+        },
+        {
             name: 'thumb'
         }
     ]

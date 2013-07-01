@@ -4,6 +4,7 @@ Ext.Loader.setConfig({
 });
 
 var modulePath = '/' + jQuery('#metadata').data('modulepath');
+var project = jQuery('#metadata').data('project');
 // necessary to map paths because we are running in a drupal module
 Ext.Loader.setPath('austese_uploader.store', modulePath + '/ui/js/uploader/store');
 Ext.Loader.setPath('austese_uploader.model', modulePath + '/ui/js/uploader/model');
@@ -15,6 +16,7 @@ Ext.Loader.setPath('Ext.ux', '/sites/all/libraries/ext-4.1.1a/examples/ux');
 Ext.WindowMgr.zseed = 1040;
 Ext.application({
     modulePath: modulePath,
+    project: project,
     enableCollation: jQuery('#metadata').data('enablecollation'),
     enableLightBox: jQuery('#metadata').data('enablelightbox'),
     enableAlignment: jQuery('#metadata').data('enablealignment'),
@@ -49,5 +51,11 @@ Ext.application({
         if (fullscreen == 1){
             this.getController('Controller').toggleFullscreen(Ext.ComponentQuery.query('#toggleFullscreenButton')[0]);
         }
+        if (project){
+            // set the project param for the store: used to filter resources belonging to project
+            this.getStore('ResourceStore').proxy.extraParams.project = project;
+        }
+        this.getStore('ResourceStore').load();
+        
     }
 });

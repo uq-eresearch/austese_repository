@@ -148,6 +148,9 @@ Ext.define('austese_uploader.controller.Controller', {
             var file = filelist[i];
             var data = new FormData();
             data.append('data',file);
+            if (this.application.project) {
+                data.append('project', this.application.project);
+            }
             var headers;
             if (data.fake){
                 headers=  {'Content-type': "multipart/form-data; boundary="+ data.boundary};
@@ -289,6 +292,7 @@ Ext.define('austese_uploader.controller.Controller', {
             var aggregatedValues = {
                     description: records[0].get('description'), 
                     title: records[0].get('title'),
+                    project: records[0].get('project'),
                     filetype: ''
             };
             var aggregatedTypes = {};
@@ -301,6 +305,7 @@ Ext.define('austese_uploader.controller.Controller', {
                 // display first non null title and description from any record 
                 aggregatedValues.title = aggregatedValues.title || currentRecord.get('title');
                 aggregatedValues.description = aggregatedValues.description || currentRecord.get('description');
+                aggregatedValues.project = aggregatedValues.project || currentRecord.get('project');
                 // aggregate file length and calculate min and max dates
                 totalFileLength += currentRecord.get('filelength');
                 var date = currentRecord.get('uploaddate');
@@ -392,13 +397,14 @@ Ext.define('austese_uploader.controller.Controller', {
         var existingFields = win.existingFields;
         metadataFieldSet.items.each(
             function(f){
-                // remove deselected fields (title and description are always shown)
+                // remove deselected fields (title, description and project are always shown)
                 var fieldname = win.single? f.name : f.itemId;
                 
                 // for multi-form we look at field containers (itemId is appended with 'fc')
                 if (fieldname != ('description' + (win.single? '' : 'fc')) 
                         && fieldname != ('title' + (win.single? '' : 'fc')) 
-                            && !config.hasOwnProperty((win.single? fieldname : fieldname.substring(0,fieldname.length - 2)))){
+                        && fieldname != ('project' + (win.single? '' : 'fc'))
+                        && !config.hasOwnProperty((win.single? fieldname : fieldname.substring(0,fieldname.length - 2)))){
                     metadataFieldSet.remove(f);
                 }
             }

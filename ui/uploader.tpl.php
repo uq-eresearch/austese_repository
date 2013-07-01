@@ -13,6 +13,10 @@ if (property_exists($user,'data')){
 } else {
  $fullscreen = false;
 }
+$project = null;
+if (isset($_GET['project'])) {
+ $project = $_GET['project'];
+}
 ?>
 <!--  TODO: check permissions to determine whether to enable collation tools -->
 <div id="metadata"
@@ -24,6 +28,9 @@ if (property_exists($user,'data')){
  <?php endif; ?>
  <?php if ($fullscreen):?>
  data-fullscreen="<?php print $fullscreen; ?>"
+ <?php endif; ?>
+ <?php if ($project):?>
+ data-project="<?php print $project; ?>"
  <?php endif; ?>
  data-moduleprefix="<?php print $modulePrefix; ?>"
  data-modulepath="<?php print drupal_get_path('module', 'repository'); ?>"

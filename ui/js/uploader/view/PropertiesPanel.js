@@ -64,6 +64,11 @@ Ext.define('austese_uploader.view.PropertiesPanel', {
                             xtype: 'textareafield',
                             name: 'description',
                             fieldLabel: 'Description'
+                        },
+                        {
+                            xtype: 'textfield',
+                            name: 'project',
+                            fieldLabel: 'Project'
                         }
                     ],
                     dockedItems: [
@@ -148,7 +153,30 @@ Ext.define('austese_uploader.view.PropertiesPanel', {
                                     labelAlign: 'top'
                                 }
                             ]
-                        }
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            hideLabel: true,
+                            itemId: 'projectfc',
+                            items: [
+                                {
+                                    xtype: 'checkboxfield',
+                                    flex: 0,
+                                    margins: '0 10 0 0',
+                                    name: 'updateproject',
+                                    fieldLabel: 'Label',
+                                    hideLabel: true,
+                                    boxLabel: ''
+                                },
+                                {
+                                    xtype: 'textfield',
+                                    flex: 1,
+                                    name: 'project',
+                                    fieldLabel: 'Project',
+                                    labelAlign: 'top'
+                                }
+                            ]
+                        },
                     ],
                     dockedItems: [
                         {

@@ -82,6 +82,7 @@ function createResource(){
   $filename=$_FILES["data"]["name"];
   $filetype=$_FILES["data"]["type"];
   $tmp = $_FILES["data"]["tmp_name"];
+  $project = $_POST["project"];
   if ($_FILES["data"]["error"]!=0){
     $response->status(500);    
     echo "Error uploading file";
@@ -89,7 +90,7 @@ function createResource(){
   // generate an id for the resource (the mongo generated id is for the specific version of the resource only)
   $resid = gen_uuid();
   // return metadata
-  $storedfile = $grid->storeUpload('data', array('metadata' => array('filetype' => $filetype)));
+  $storedfile = $grid->storeUpload('data', array('metadata' => array('filetype' => $filetype, 'project' => $project)));
   //, '_resourceid'=>$resid
   $id = $storedfile->{'$id'};
   $url = $config['uriprefix'] . '/resources/' . $resid;
@@ -234,6 +235,7 @@ function listResources(){
   $grid = $db->getGridFS();
   $pagesize = $request->get('pageSize');
   $pagenum = $request->get('pageIndex');
+  $project = $request->get('project');
   // provide a default for page Index. Default for pagesize is null (all results will be returned)
   $pagenum = $pagenum? $pagenum : 0;
   $filterTerm = $request->get('q');
@@ -250,6 +252,10 @@ function listResources(){
   if ($typeFilter != null){
       $regex = new MongoRegex("/".$typeFilter."/i");
       $findopts = array('$and'=>array($findopts, array('metadata.filetype'=>$regex)));
+  }
+  if ($project != null){
+      $regex = new MongoRegex("/".$project."/i");
+      $findopts = array('$and'=>array($findopts, array('metadata.project'=>$regex)));
   }
   // sort by reverse id (newest objects should be listed first)
   $cursor = $grid->find($findopts)->sort(array('_id'=>-1))->limit($pagesize)->skip($pagenum * $pagesize);

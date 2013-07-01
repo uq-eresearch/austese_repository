@@ -11,8 +11,11 @@ Ext.define('austese_uploader.store.ResourceStore', {
     constructor: function(cfg) {
         var me = this;
         cfg = cfg || {};
+        if (cfg.project){
+            me.project = cfg.project;
+        }
         me.callParent([Ext.apply({
-            autoLoad: true,
+            autoLoad: false,
             storeId: 'ResourceStore',
             model: 'austese_uploader.model.ResourceModel',
             proxy: {
@@ -21,6 +24,9 @@ Ext.define('austese_uploader.store.ResourceStore', {
                 reader: {
                     type: 'json',
                     root: 'results'
+                },
+                extraParams: {
+                    project: ''
                 }
             }
         }, cfg)]);
