@@ -298,6 +298,7 @@ function listRecords($collection, $labelField){
 
     $pagesize = $request->get('pageSize');
     $pagenum = $request->get('pageIndex');
+    $project = $request->get('project');
     // provide a default for page Index. Default for pagesize is null (all results will be returned)
     $pagenum = $pagenum? $pagenum : 0;
     // TODO: allow param to sort results by custom fields?
@@ -313,6 +314,10 @@ function listRecords($collection, $labelField){
       $findopts = array('$and'=>array($findopts,
 				      array('metadata.'.$searchField=>
       				      $regex)));
+    }
+    if ($project != null && $project != ''){
+     $regex = new MongoRegex("/".$project."/i");
+     $findopts = array('$and'=>array($findopts, array('metadata.project'=>$regex)));
     }
     // sort by reverse id (newest objects should be listed first)
     $cursor = $coll->find($findopts)->sort(array('_id'=>-1))->limit($pagesize)->skip($pagenum * $pagesize);

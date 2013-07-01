@@ -15,11 +15,18 @@ if ($apiType == "artefact"){
 } else {
     $filterField = "title";
 }
+$project = null;
+if (isset($_GET['project'])) {
+ $project = $_GET['project'];
+}
 ?>
 <div id="alerts"></div>
 <div id="metadata"
  <?php if (user_access('edit metadata')): ?>
   data-editable="true"
+ <?php endif; ?>
+ <?php if ($project):?>
+ data-project="<?php print $project; ?>"
  <?php endif; ?>
  data-modulepath="<?php print drupal_get_path('module', 'repository'); ?>"
  data-moduleprefix="<?php print arg(0); ?>"
@@ -29,7 +36,7 @@ if ($apiType == "artefact"){
 <div class="row">
     <div class="span10" id="newobject">
      <?php if (user_access('edit metadata')): ?>
-       <a href="<?php print $apiType; ?>s/edit">+ New <?php print $apiType; ?></a>
+       <a href="<?php print $apiType; ?>s/edit<?php if ($project) print '?project='.$project; ?>">+ New <?php print $apiType; ?></a>
      <?php endif; ?>
     </div>
     <input title="Type filter terms and then hit enter" type="text" placeholder="Filter on <?php print $filterField; ?>" class="span2" id="filter">

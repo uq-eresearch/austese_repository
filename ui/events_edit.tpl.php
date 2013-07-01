@@ -90,7 +90,16 @@ $existingId=arg(3);
     </div>
     </fieldset>
     </div>
-    
+    <div class="control-group">
+      <label class="control-label" for="project">Project</label>
+      <div class="controls">
+        <input type="text" class="input-xlarge" name="project" id="project" value="<?php
+        if (isset($_GET['project'])) {
+         print $_GET['project'];
+        } 
+        ?>"/>
+      </div>
+    </div>
 
 
    

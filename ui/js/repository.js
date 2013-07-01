@@ -395,6 +395,7 @@ jQuery.fn.serializeObject = function() {
     }
     function loadObjects(page, filterTerm){
         page = page || 0;
+        var project = jQuery('#metadata').data('project');
         var pageSize = 20;
         if (apiType == 'place'){
             pageSize = 15;
@@ -406,7 +407,8 @@ jQuery.fn.serializeObject = function() {
            data: {
                pageSize: pageSize,
                pageIndex: page,
-               q: (filterTerm?  filterTerm : "")
+               q: (filterTerm?  filterTerm : ""),
+               project: (project? project : "")
            },
            success: function(result){
              var rescount = parseInt(result.count);
@@ -529,10 +531,12 @@ jQuery.fn.serializeObject = function() {
           type: 'DELETE',
           url: '/' + modulePath + '/api/' + apiType + 's/' + existingId,
           success: function(d){
+            var project = jQuery('#metadata').data('project');
+            console.log(project)
             jQuery('#alerts').append(
                 jQuery('<div class="alert alert-block"><button type="button" class="close" data-dismiss="alert">x</button>' 
                     + '<h4>Successfully deleted ' + apiType +'</h4><p><a id="last-minute-undo" href="javascript:void(0);">Undo</a></p>'
-                    + '<p><a href="/' + modulePrefix + '/' + apiType + 's">View ' + apiType + 's</a></p></div>').alert());
+                    + '<p><a href="/' + modulePrefix + '/' + apiType + 's' + (project? '?project=' + project : '') +'">View ' + apiType + 's</a></p></div>').alert());
                 jQuery('#last-minute-undo').on('click', onSave);
           }
        });
@@ -599,10 +603,11 @@ jQuery.fn.serializeObject = function() {
           data: JSON.stringify(data),
           url: url,
           success: function(d){
+            var project = jQuery('#metadata').data('project');
             jQuery('#alerts').append(
                 jQuery('<div class="alert alert-block"><button type="button" class="close" data-dismiss="alert">x</button>'
                     + '<h4>Successfully saved ' + apiType + '</h4>'
-                    + '<p><a href="/' + modulePrefix + '/' + apiType + 's">View ' + apiType + 's</a></p></div>').alert());
+                    + '<p><a href="/' + modulePrefix + '/' + apiType + 's' + (project? '?project='+project : '') +'">View ' + apiType + 's</a></p></div>').alert());
                 existingId = d.id;
           }
         });

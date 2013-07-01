@@ -43,6 +43,16 @@ $existingId=arg(3);
       </div>
     </div>
     <div class="control-group">
+      <label class="control-label" for="project">Project</label>
+      <div class="controls">
+        <input type="text" class="input-xlarge" name="project" id="project" value="<?php
+        if (isset($_GET['project'])) {
+         print $_GET['project'];
+        } 
+        ?>"/>
+      </div>
+    </div>
+    <div class="control-group">
       <div class="controls">
          <input id="save-btn" type="button" class="btn" value="Save">
          <a href="/<?php print $modulePrefix; ?>/agents/<?php if ($existingId): print $existingId; endif; ?>">

@@ -94,7 +94,16 @@ $existingId = arg(3);
         <p class="help-block">Places associated with this version e.g. place of publication</p>
       </div>
     </div>
-    
+    <div class="control-group">
+      <label class="control-label" for="project">Project</label>
+      <div class="controls">
+        <input type="text" class="input-xlarge" name="project" id="project" value="<?php
+        if (isset($_GET['project'])) {
+         print $_GET['project'];
+        } 
+        ?>"/>
+      </div>
+    </div>
 
 <div class="control-group">
 <div class="controls">
