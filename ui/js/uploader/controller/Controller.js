@@ -601,6 +601,7 @@ Ext.define('austese_uploader.controller.Controller', {
                 text: 'Light Box',
                 iconCls: 'lightBoxIcon',
                 tooltip: 'Add selected images(s) to Light Box',
+                scope: this,
                 handler: this.sendToLightBox
             });
         }
@@ -687,7 +688,7 @@ Ext.define('austese_uploader.controller.Controller', {
             }
         }
         // TODO: use HTML 5 postMessage to send to lightbox if already open
-        document.location.href ='/lightbox#' + ids;
+        document.location.href ='/lightbox' + (this.application.project? '?project='+ this.application.project: '') +'#' + ids;
     },
     sendToAlignmentTool: function(button){
         var pp = button.up('propertiespanel');
