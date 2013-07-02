@@ -8,11 +8,18 @@ $modulePrefix = arg(0);
 $apiType = substr(arg(1),0,-1); // remove the trailing 's'
 $apiOperation = arg(2);
 $existingId=arg(3);
+$project = null;
+if (isset($_GET['project'])) {
+ $project = $_GET['project'];
+}
 ?>
 <div id="alerts"></div>
 <div id="metadata"
  <?php if (user_access('edit metadata')): ?>
   data-editable="true"
+ <?php endif; ?>
+ <?php if ($project):?>
+ data-project="<?php print $project; ?>"
  <?php endif; ?>
  <?php if ($existingId):?>
  data-existingid="<?php print $existingId; ?>"
@@ -95,7 +102,7 @@ $existingId=arg(3);
   <div class="control-group">
      <div class="controls">
        <input id="save-btn" type="button" class="btn" value="Save">
-       <a href="/<?php print $modulePrefix; ?>/artefacts/<?php if ($existingId): print $existingId; endif; ?>">
+       <a href="/<?php print $modulePrefix; ?>/artefacts/<?php if ($existingId): print $existingId; endif; ?><?php if ($project): print "?project=".$project; endif; ?>">
        <input type="button" class="btn" value="Cancel"></a>
        <input id="del-btn" style="display:none" type="button" class="btn btn-danger" value="Delete">
      </div>

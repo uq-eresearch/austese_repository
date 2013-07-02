@@ -59,7 +59,9 @@ jQuery.fn.serializeObject = function() {
         } 
         // set up search fields
         if (typeof (jQuery().tokenInput) == 'function'){
-            jQuery("#artefacts").tokenInput("/" + modulePath + "/api/artefacts/", {
+            var project = jQuery('#metadata').data('project');
+            var projectParam = (project? "?project=" + project : "");
+            jQuery("#artefacts").tokenInput("/" + modulePath + "/api/artefacts/" + projectParam, {
                 theme: "facebook",
                 tokenValue: "id",
                 hintText: "Start typing to search artefacts by source",
@@ -68,7 +70,7 @@ jQuery.fn.serializeObject = function() {
                 resultsFormatter: function(item){return "<li><b>" + item.source + "</b>, " + item.date + "</li>";},
                 tokenFormatter: function(item){return "<li>" + item.source + ", " + item.date + "</li>";}
             });
-            jQuery("#events").tokenInput("/" + modulePath + "/api/events/", {
+            jQuery("#events").tokenInput("/" + modulePath + "/api/events/" + projectParam, {
                 theme: "facebook",
                 tokenValue: "id",
                 hintText: "Start typing to search events by description",
@@ -77,7 +79,7 @@ jQuery.fn.serializeObject = function() {
                 resultsFormatter: function(item){return "<li><b>" + item.description + "</b>, " + item.eventType + "</li>";},
                 tokenFormatter: function(item){return "<li>" + item.description + ", " + item.eventType + "</li>";}
             });
-            jQuery("#agents").tokenInput("/" + modulePath + "/api/agents/", {
+            jQuery("#agents").tokenInput("/" + modulePath + "/api/agents/" + projectParam, {
                 theme: "facebook",
                 tokenValue: "id",
                 hintText: "Start typing to search agents by last name",
@@ -86,7 +88,7 @@ jQuery.fn.serializeObject = function() {
                 resultsFormatter: function(item){return "<li><b>" + item.firstName + " " + item.lastName + "</b></li>";},
                 tokenFormatter: function(item){return "<li>" + item.firstName + " " + item.lastName + "</li>";}
             });
-            jQuery("#transcriptions").tokenInput("/" + modulePath + "/api/resources/?type=x", {
+            jQuery("#transcriptions").tokenInput("/" + modulePath + "/api/resources/" + projectParam + (projectParam? "&" : "?") + "type=x", {
                 theme: "facebook",
                 tokenValue: "id",
                 hintText: "Start typing to search transcription resources by filename",
@@ -95,7 +97,7 @@ jQuery.fn.serializeObject = function() {
                 resultsFormatter: function(item){return "<li><b>" + item.filename + "</b></li>";},
                 tokenFormatter: function(item){return "<li>" + item.filename + "</li>";}
             });
-            jQuery("#facsimiles").tokenInput("/" + modulePath + "/api/resources/?type=image", {
+            jQuery("#facsimiles").tokenInput("/" + modulePath + "/api/resources/" + projectParam + (projectParam? "&" : "?") + "type=image", {
                 theme: "facebook",
                 tokenValue: "id",
                 hintText: "Start typing to search facsimile resources by filename",
@@ -113,7 +115,7 @@ jQuery.fn.serializeObject = function() {
                 resultsFormatter: function(item){return "<li><b>" + item.name + "</b>, " + item.state + "</li>";},
                 tokenFormatter: function(item){return "<li>" + item.name + ", " + item.state + "</li>";}
             });
-            jQuery("#versions").tokenInput("/" + modulePath + "/api/versions/", {
+            jQuery("#versions").tokenInput("/" + modulePath + "/api/versions/" + projectParam, {
                 theme: "facebook",
                 tokenValue: "id",
                 hintText: "Start typing to search versions by title",
@@ -127,13 +129,13 @@ jQuery.fn.serializeObject = function() {
     function setUpTemplates(){
         templates.versionSummary = new Ext.XTemplate(
             '<div class="obj">',
-                '<h4><a href="/{modulePrefix}/versions/{id}">{versionTitle} <tpl if="name">({name})</tpl></a></h4>',
+                '<h4><a href="/{modulePrefix}/versions/{id}{projParam}">{versionTitle} <tpl if="name">({name})</tpl></a></h4>',
                 '{date} {publisher}',
                 '<tpl if="description"><br/>{description: ellipsis(100)}</tpl>',
                 '<tpl if="firstLine"><br/><em>{firstLine}</em></tpl>',
                 '<tpl for="artefacts"><tpl if="xindex == 1"><br/>({[xcount]} associated artefact{[xcount != 1? "s" : ""]})</tpl></tpl>',
                 '<tpl for="transcriptions"><tpl if="xindex == 1"><br/>({[xcount]} associated transcription{[xcount != 1? "s" : ""]})</tpl></tpl>',
-                '<tpl if="hasEditPermission"><p><a href="/{modulePrefix}/versions/edit/{id}" style="font-size:smaller">EDIT</a></p></tpl>',
+                '<tpl if="hasEditPermission"><p><a href="/{modulePrefix}/versions/edit/{id}{projParam}" style="font-size:smaller">EDIT</a></p></tpl>',
             '</div>'
         );
         templates.versionSummary.compile();
@@ -168,12 +170,12 @@ jQuery.fn.serializeObject = function() {
         templates.versionDetail.compile();
         templates.agentSummary = new Ext.XTemplate(
                 '<div class="obj">',
-                '<h4><a href="/{modulePrefix}/agents/{id}">{lastName}, {firstName}</a></h4>',
+                '<h4><a href="/{modulePrefix}/agents/{id}{projParam}">{lastName}, {firstName}</a></h4>',
                 '<tpl if="birthDate"> b. {birthDate}, </tpl>',
                 '<tpl if="deathDate"> d. {deathDate}, </tpl>',
                 '{biography:ellipsis(200)}',
                 '<tpl if="hasEditPermission">',
-                    '<p><a href="/{modulePrefix}/agents/edit/{id}" style="font-size:smaller">EDIT</a></p>',
+                    '<p><a href="/{modulePrefix}/agents/edit/{id}{projParam}" style="font-size:smaller">EDIT</a></p>',
                 '</tpl>',
                 '</div>'
         );
@@ -192,18 +194,21 @@ jQuery.fn.serializeObject = function() {
         templates.agentDetail.compile();
         templates.eventSummary = new Ext.XTemplate(
                 '<div class="obj">',
-                '<h4><a href="/{modulePrefix}/events/{id}">{description}<tpl if="eventType"> ({eventType})</tpl></a></h4>',
+                '<h4><a href="/{modulePrefix}/events/{id}{projParam}">{description}<tpl if="eventType"> ({eventType})</tpl></a></h4>',
                 '<tpl if="startDate">{startDate} &ndash; </tpl>',
                 '<tpl if="endDate">{endDate}</tpl>',
                 '<tpl for="agents"><tpl if="xindex == 1"><br/>({[xcount]} associated participant{[xcount != 1? "s" : ""]})</tpl></tpl>',
                 '<tpl for="artefacts"><tpl if="xindex == 1"><br/>(Produced {[xcount]} artefact{[xcount != 1? "s" : ""]})</tpl></tpl>',
                 '<tpl for="events"><tpl if="xindex == 1"><br/>({[xcount]} associated sub-event{[xcount != 1? "s" : ""]})</tpl></tpl>',
+                '<tpl if="hasEditPermission">',
+                    '<p><a href="/{modulePrefix}/events/edit/{id}{projParam}" style="font-size:smaller">EDIT</a></p>',
+                '</tpl>',
                 '</div>'
         );
         templates.eventSummary.compile();
         templates.eventDetail = new Ext.XTemplate(
                 '<div class="obj">',
-                '<h4><a href="/{modulePrefix}/events/{id}">{description}<tpl if="eventType"> ({eventType})</tpl></a></h4>',
+                '<h4><a href="/{modulePrefix}/events/{id}{projParam}">{description}<tpl if="eventType"> ({eventType})</tpl></a></h4>',
                 '<tpl if="startDate">{startDate} &ndash; </tpl>',
                 '<tpl if="endDate">{endDate}</tpl>',
                 '<tpl for="agents">',
@@ -235,11 +240,11 @@ jQuery.fn.serializeObject = function() {
         templates.eventDetail.compile();
         templates.artefactSummary = new Ext.XTemplate(
                 '<div class="obj">',
-                '<h4><a href="/{modulePrefix}/artefacts/{id}">{source}</a></h4>',
+                '<h4><a href="/{modulePrefix}/artefacts/{id}{projParam}">{source}</a></h4>',
                 '{date}, {bibDetails:ellipsis(100)}',
                 '<tpl for="facsimiles"><tpl if="xindex == 1"><br/>({[xcount]} associated facsimile{[xcount != 1? "s" : ""]})</tpl></tpl>',
                 '<tpl if="hasEditPermission">',
-                    '<p><a href="/{modulePrefix}/artefacts/edit/{id}" style="font-size:smaller">EDIT</a></p>',
+                    '<p><a href="/{modulePrefix}/artefacts/edit/{id}{projParam}" style="font-size:smaller">EDIT</a></p>',
                 '</tpl>',
                 '</div>'
         );
@@ -267,11 +272,11 @@ jQuery.fn.serializeObject = function() {
         templates.artefactDetail.compile();
         templates.workSummary = new Ext.XTemplate(
                 '<div class="obj">',
-                '<h4><a href="/{modulePrefix}/works/{id}">{workTitle}<tpl if="name"> ({name})</tpl></a></h4>',
+                '<h4><a href="/{modulePrefix}/works/{id}{projParam}">{workTitle}<tpl if="name"> ({name})</tpl></a></h4>',
                 '<tpl if="description">{description: ellipsis(100)}<br/></tpl>',
                 '<tpl for="versions"><tpl if="xindex == 1">({[xcount]} associated version{[xcount != 1? "s" : ""]})</tpl></tpl>',
                 '<tpl if="hasEditPermission">',
-                    '<p><a href="/{modulePrefix}/works/edit/{id}" style="font-size:smaller">EDIT</a></p>',
+                    '<p><a href="/{modulePrefix}/works/edit/{id}{projParam}" style="font-size:smaller">EDIT</a></p>',
                 '</tpl>',
                 '</div>'
         );
@@ -292,7 +297,7 @@ jQuery.fn.serializeObject = function() {
         templates.workDetail.compile();
         templates.placeCompact = new Ext.XTemplate(
                 '<div>',
-                '<h4><a href="/{modulePrefix}/places/{id}">{name}, {state}</a></h4>',
+                '<h4><a href="/{modulePrefix}/places/{id}{projParam}">{name}, {state}</a></h4>',
                 '<p>Feature Type: <span class="featureCode">{featureCode }</span></p>',
                 '</div>'
         );
@@ -300,7 +305,7 @@ jQuery.fn.serializeObject = function() {
         templates.placeSummary = new Ext.XTemplate(
             '<div class="span3 obj">',
                 '<div class="placedesc">',
-                '<h4><a href="/{modulePrefix}/places/{id}">{name}, {state}</a></h4>',
+                '<h4><a href="/{modulePrefix}/places/{id}{projParam}">{name}, {state}</a></h4>',
                 '<p>Feature Type: <span class="featureCode" data-truncate="true">{featureCode }</span></p>',
                 '</div>',
                 '<div class="minimap" data-lat="{latitude}" data-long="{longitude}"></div>',
@@ -322,7 +327,7 @@ jQuery.fn.serializeObject = function() {
         templates.placeDetail.compile();
         templates.resourceSummary = new Ext.XTemplate(
             '<div>',
-            '<h4><a href="/{modulePrefix}/resources/{id}"><tpl if="metadata.title">{metadata.title}, </tpl>{filename}</a></h4>',
+            '<h4><a href="/{modulePrefix}/resources/{id}{projParam}"><tpl if="metadata.title">{metadata.title}, </tpl>{filename}</a></h4>',
             '<tpl if="metadata.format">{metadata.format}</tpl>',
             '</div>'
         );
@@ -352,7 +357,7 @@ jQuery.fn.serializeObject = function() {
                 '<tr><td class="muted">File size</td><td>{length:fileSize}</td></tr>',
                 '<tr><td class="muted">MD5 checksum</td><td>{md5}</td></tr>',
                 '</table>',
-                '<p><a href="./{id}/content"><i class="icon-eye-open"></i> View resource content</a></p>',
+                '<p><a href="./{id}/content{projParam}"><i class="icon-eye-open"></i> View resource content</a></p>',
                 '<p><a href="{uri}"><i class="icon-download"></i> Download resource</a></p>',
                 '<tpl if="metadata.filetype.match(\'image\')">',
                 '<h3>Image Preview</h3>',
@@ -375,6 +380,10 @@ jQuery.fn.serializeObject = function() {
             success: function(result){
                 //console.log("loaded",result)
                 result.modulePrefix = modulePrefix;
+                var project = jQuery('#metadata').data('project');
+                if (project) {
+                    result.projParam = "?project="+ project;
+                }
                 result.serverName = serverName;
                 template.append('result', result);
                 loadReferencedObjects();
@@ -410,7 +419,7 @@ jQuery.fn.serializeObject = function() {
                pageSize: pageSize,
                pageIndex: page,
                q: (filterTerm?  filterTerm : ""),
-               project: (project? project : "")
+               project: (project && apiType != 'place'? project : "")
            },
            success: function(result){
              var rescount = parseInt(result.count);
@@ -418,6 +427,7 @@ jQuery.fn.serializeObject = function() {
              jQuery('#resultsummary').html("Found " + result.count + " " + apiType + (rescount != 1? "s" : "") + (filterTerm? (" matching '" + filterTerm + "'") : "") + ", ");
              jQuery('#resultcurrent').html("displaying page " + (page + 1) + " of " + numPages); 
              jQuery('#result').empty();
+             var project = jQuery('#metadata').data('project');
              var template = templates[apiType + "Summary"];
              if (apiType == "place"){
                  jQuery('#result').append('<p class="muted" style="clear:both">Place names taken from <a href="http://www.ga.gov.au/">Geoscience Australia</a> Gazetteer of Australia. Data, imagery and map information provided by <a href="http://open.mapquest.co.uk" target="_blank">MapQuest</a>, <a href="http://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> and contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.</p>');
@@ -427,6 +437,9 @@ jQuery.fn.serializeObject = function() {
                 if (obj){
                     obj.hasEditPermission = hasEditPermission;
                     obj.modulePrefix = modulePrefix;
+                    if (project) {
+                        obj.projParam = "?project=" + project;
+                    }
                     template.append('result', obj);
                 }
              }
@@ -667,12 +680,12 @@ jQuery.fn.serializeObject = function() {
               type: 'GET',
               url: '/' + modulePath + '/api/places/' + elem.data('placeid'),
               success: function(d){
+                var project = jQuery('#metadata').data('project');
                 d.modulePrefix = modulePrefix;
+                d.projParam = (project? '?project=' + project : '');
                 if (template && template == "compact"){
                     elem.html(templates.placeCompact.apply(d));
-                } else {
-                    elem.html('<a href="/' + modulePrefix + '/places/{id}">' + d.name + ', ' + d.state + '</a>');
-                }
+                } 
               }
             });
         });
@@ -687,13 +700,12 @@ jQuery.fn.serializeObject = function() {
                   'Accept': 'application/json'
               },
               success: function(d){
-                
+                var project = jQuery('#metadata').data('project');
+                d.projParam = (project? '?project=' + project : '');
                 d.modulePrefix = modulePrefix;
                 if (template && template == "summary"){
                     elem.html(templates.resourceSummary.apply(d));
-                } else {
-                    elem.html('<a href="/' + modulePrefix + '/resources/{id}">' + d.filename + '</a>');
-                }
+                } 
               }
             });
         });
@@ -716,15 +728,11 @@ jQuery.fn.serializeObject = function() {
               type: 'GET',
               url: '/' + modulePath + '/api/artefacts/' + elem.data('artefactid'),
               success: function(d){
+                  var project = jQuery('#metadata').data('project');
+                  d.projParam = (project? '?project=' + project : '');
                   d.modulePrefix = modulePrefix;
                   if (template && template == 'summary'){
                       elem.html(templates.artefactSummary.apply(d));
-                  } else {
-                      var markup = d.source + ", " + d.date + ", " + d.bibDetails;
-                      if (hasEditPermission){
-                          markup += " <a href='/" + modulePrefix + "/artefacts/edit/" + d.id + "' style='font-size:smaller'>EDIT</a>";
-                      }
-                      elem.html(markup);
                   }
                   
               }
@@ -738,15 +746,11 @@ jQuery.fn.serializeObject = function() {
               type: 'GET',
               url: '/' + modulePath + '/api/versions/' + elem.data('versionid'),
               success: function(d){
+                var project = jQuery('#metadata').data('project');
+                d.projParam = (project? '?project=' + project : '');
                 d.modulePrefix = modulePrefix;
                 if (template && template == 'summary'){
                     elem.html(templates.versionSummary.apply(d));
-                } else {
-                  var markup = d.versionTitle + ", " + d.name + ", " + d.date ;
-                  if (hasEditPermission){
-                      markup += " <a href='/" + modulePrefix + "/versions/edit/" + d.id + "' style='font-size:smaller'>EDIT</a>";
-                  }
-                  elem.html(markup);
                 }
               }
             });
@@ -758,6 +762,8 @@ jQuery.fn.serializeObject = function() {
               type: 'GET',
               url: '/' + modulePath + '/api/agents/' + elem.data('agentid'),
               success: function(d){
+                var project = jQuery('#metadata').data('project');
+                d.projParam = (project? '?project=' + project : '');
                 d.modulePrefix = modulePrefix;
                 if (template && template == 'summary'){
                     elem.html(templates.agentSummary.apply(d));
@@ -772,6 +778,8 @@ jQuery.fn.serializeObject = function() {
               type: 'GET',
               url: '/' + modulePath + '/api/events/' + elem.data('eventid'),
               success: function(d){
+                var project = jQuery('#metadata').data('project');
+                d.projParam = (project? '?project=' + project : '');
                 d.modulePrefix = modulePrefix;
                 if (template && template == 'summary'){
                     elem.html(templates.eventSummary.apply(d));

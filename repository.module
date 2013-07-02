@@ -160,9 +160,13 @@ function repository_display($template){
         drupal_access_denied();
         return;
     }
+    $projectParam = array();
+    if (isset($_GET['project'])) {
+      $projectParam = array('query' => array('project' => $_GET['project']));
+    }
     $breadcrumb = array();
     $breadcrumb[] = l('Home', '<front>');
-    $breadcrumb[] = l('Repository', 'repository');
+    $breadcrumb[] = l('Repository', 'repository',$projectParam);
     //linkable version of current page: $breadcrumb[] = l(drupal_get_title(), base_path() . request_uri());
     $breadcrumb[] = t(drupal_get_title()); 
     drupal_set_breadcrumb($breadcrumb);
@@ -195,10 +199,14 @@ function repository_edit($template, $id=null){
         drupal_access_denied();
         return;
     }
+    $projectParam = array();
+    if (isset($_GET['project'])) {
+       $projectParam = array('query' => array('project' => $_GET['project']));
+    }
     $breadcrumb = array();
     $breadcrumb[] = l('Home', '<front>');
-    $breadcrumb[] = l('Repository', 'repository');
-    $breadcrumb[] = l(ucwords($template),'repository/'.$template);
+    $breadcrumb[] = l('Repository', 'repository',$projectParam);
+    $breadcrumb[] = l(ucwords($template),'repository/'.$template,$projectParam);
     $breadcrumb[] = t(drupal_get_title()); 
     drupal_set_breadcrumb($breadcrumb);
     
@@ -224,11 +232,15 @@ function repository_edit($template, $id=null){
     return theme($template.'_edit',array());
 }
 function repository_display_resource($id,$raw=null){
+    $projectParam = array();
+    if (isset($_GET['project'])) {
+     $projectParam = array('query' => array('project' => $_GET['project']));
+    }
     $breadcrumb = array();
     $breadcrumb[] = l('Home', '<front>');
-    $breadcrumb[] = l('Repository', 'repository');
-    $breadcrumb[] = l('Resources','repository/resources');
-    $breadcrumb[] = l('View Resource','repository/resources/'.$id);
+    $breadcrumb[] = l('Repository', 'repository',$projectParam);
+    $breadcrumb[] = l('Resources','repository/resources',$projectParam);
+    $breadcrumb[] = l('View Resource','repository/resources/'.$id,$projectParam);
     $breadcrumb[] = t('View Resource Content'); 
     drupal_set_breadcrumb($breadcrumb);
     if ($raw == 'raw'){
@@ -268,10 +280,14 @@ function repository_display_record($template, $id=null){
         drupal_access_denied();
         return;
     }
+    $projectParam = array();
+    if (isset($_GET['project'])) {
+     $projectParam = array('query' => array('project' => $_GET['project']));
+    }
     $breadcrumb = array();
     $breadcrumb[] = l('Home', '<front>');
-    $breadcrumb[] = l('Repository', 'repository');
-    $breadcrumb[] = l(ucwords($template),'repository/'.$template);
+    $breadcrumb[] = l('Repository', 'repository',$projectParam);
+    $breadcrumb[] = l(ucwords($template),'repository/'.$template,$projectParam);
     $breadcrumb[] = t(drupal_get_title()); 
     drupal_set_breadcrumb($breadcrumb);
     
@@ -288,13 +304,17 @@ function repository_display_record($template, $id=null){
     return theme('display_record',array());
 }
 function repository_toc() {
-  $list[] = l("Artefacts","repository/artefacts");
-  $list[] = l("Versions","repository/versions");
-  $list[] = l("Works","repository/works");
-  $list[] = l("Digital Resources","repository/resources");
-  $list[] = l("Agents","repository/agents");
-  $list[] = l("Events","repository/events");
-  $list[] = l("Places", "repository/places");
+  $projectParam = array();
+  if (isset($_GET['project'])) {
+     $projectParam = array('query' => array('project' => $_GET['project']));
+  }
+  $list[] = l("Artefacts","repository/artefacts",$projectParam);
+  $list[] = l("Versions","repository/versions",$projectParam);
+  $list[] = l("Works","repository/works",$projectParam);
+  $list[] = l("Digital Resources","repository/resources",$projectParam);
+  $list[] = l("Agents","repository/agents",$projectParam);
+  $list[] = l("Events","repository/events",$projectParam);
+  $list[] = l("Places", "repository/places",$projectParam);
   $render_array['repository_list'] = array(
     '#theme' => 'item_list',  
     '#items' => $list

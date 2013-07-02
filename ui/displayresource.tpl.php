@@ -6,11 +6,18 @@
  */
 $modulePrefix = arg(0);
 $existingId = arg(2);
+$project = null;
+if (isset($_GET['project'])) {
+ $project = $_GET['project'];
+}
 ?>
 <div id="alerts"></div>
 <div id="metadata"
  <?php if (user_access('edit metadata')): ?>
   data-editable="true"
+ <?php endif; ?>
+ <?php if ($project):?>
+ data-project="<?php print $project; ?>"
  <?php endif; ?>
  <?php if ($existingId):?>
    data-existingid="<?php print $existingId; ?>"
