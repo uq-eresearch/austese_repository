@@ -268,6 +268,7 @@ jQuery.fn.serializeObject = function() {
         templates.workSummary = new Ext.XTemplate(
                 '<div class="obj">',
                 '<h4><a href="/{modulePrefix}/works/{id}">{workTitle}<tpl if="name"> ({name})</tpl></a></h4>',
+                '<tpl if="description">{description: ellipsis(100)}<br/></tpl>',
                 '<tpl for="versions"><tpl if="xindex == 1">({[xcount]} associated version{[xcount != 1? "s" : ""]})</tpl></tpl>',
                 '<tpl if="hasEditPermission">',
                     '<p><a href="/{modulePrefix}/works/edit/{id}" style="font-size:smaller">EDIT</a></p>',
@@ -280,6 +281,7 @@ jQuery.fn.serializeObject = function() {
                 '<table class="table">',
                 '<tpl if="workTitle"><tr><td class="metadatalabel muted">Title</td><td>{workTitle}</td></tr></tpl>',
                 '<tpl if="name"><tr><td class="metadatalabel muted">Name</td><td>{name}</td></tr></tpl>',
+                '<tpl if="description"><tr><td class="metadatalabel muted">Description</td><td>{description}</td></tr></tpl>',
                 '</table>',
                 
                 '<h3>Versions</h3><tpl for="versions"><ul>',
