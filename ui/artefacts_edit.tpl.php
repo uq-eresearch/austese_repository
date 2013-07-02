@@ -83,6 +83,13 @@ if (isset($_GET['project'])) {
       </div>
     </div>
     <div class="control-group">
+      <label class="control-label" for="artefacts">Has Part(s)</label>
+      <div class="controls">
+        <textarea rows="2" name="artefacts" type="text" class="input-xlarge" id="artefacts"></textarea>
+        <p class="help-block">ArtefactParts associated with this artefact</p>
+      </div>
+    </div>
+    <div class="control-group">
       <label class="control-label" for="artefacts">Facsimiles</label>
       <div class="controls">
         <textarea rows="2" name="facsimiles" type="text" class="input-xlarge" id="facsimiles"></textarea>

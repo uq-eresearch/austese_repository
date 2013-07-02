@@ -88,7 +88,14 @@ if (isset($_GET['project'])) {
       </div>
     </div>
     <div class="control-group">
-      <label class="control-label" for="artefacts">Transcriptions</label>
+      <label class="control-label" for="versions">Has Part(s)</label>
+      <div class="controls">
+        <textarea rows="2" name="versions" type="text" class="input-xlarge" id="versions"></textarea>
+        <p class="help-block">VersionParts that are part of this version</p>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="transcriptions">Transcriptions</label>
       <div class="controls">
         <textarea rows="2" name="transcriptions" type="text" class="input-xlarge" id="transcriptions"></textarea>
         <p class="help-block">Transcriptions associated with this version</p>
