@@ -127,6 +127,17 @@ jQuery.fn.serializeObject = function() {
         }
     });
     function setUpTemplates(){
+        templates.mvdSummary = new Ext.XTemplate(
+            '<div class="obj">',
+                '<h4>{name}</h4>',
+                '<tpl for="resources">',
+                '<tpl if="xindex == 1"><p>{[xcount]} Resource{[xcount != 1? "s" : ""]} associated with this MVD:</p></tpl>',
+                '<ul>',
+                '<li class="resource" data-resourceid="{.}" data-template="summary"></li>',
+                '</ul></tpl>',
+                '<tpl if="hasEditPermission"><p><a href="/{modulePrefix}/mvds/edit/{id}{projParam}" style="font-size:smaller">EDIT</a></p></tpl>',
+            '</div>'
+        );
         templates.versionSummary = new Ext.XTemplate(
             '<div class="obj">',
                 '<h4><a href="/{modulePrefix}/versions/{id}{projParam}">{versionTitle} <tpl if="name">({name})</tpl></a></h4>',
@@ -431,7 +442,7 @@ jQuery.fn.serializeObject = function() {
                pageSize: pageSize,
                pageIndex: page,
                q: (filterTerm?  filterTerm : ""),
-               project: (project && apiType != 'place'? project : "")
+               project: (project && !(apiType == 'place' || apiType == 'mvd') ? project : "")
            },
            success: function(result){
              var rescount = parseInt(result.count);
@@ -562,7 +573,8 @@ jQuery.fn.serializeObject = function() {
             console.log(project)
             jQuery('#alerts').append(
                 jQuery('<div class="alert alert-block"><button type="button" class="close" data-dismiss="alert">x</button>' 
-                    + '<h4>Successfully deleted ' + apiType +'</h4><p><a id="last-minute-undo" href="javascript:void(0);">Undo</a></p>'
+                    + '<h4>Successfully deleted ' + apiType +'</h4><p>'
+                    + (apiType != "mvd"? '<a id="last-minute-undo" href="javascript:void(0);">Undo</a>' : "") + '</p>'
                     + '<p><a href="/' + modulePrefix + '/' + apiType + 's' + (project? '?project=' + project : '') +'">View ' + apiType + 's</a></p></div>').alert());
                 jQuery('#last-minute-undo').on('click', onSave);
           }

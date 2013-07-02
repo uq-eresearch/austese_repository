@@ -156,7 +156,7 @@ function repository_description() {
 }
 
 function repository_display($template){
-    if (!in_array($template,array("agents","artefacts","versions","works","resources", "places", "events"))) {
+    if (!in_array($template,array("agents","artefacts","versions","works","resources", "places", "events", "mvds"))) {
         drupal_access_denied();
         return;
     }
@@ -195,7 +195,7 @@ function repository_display($template){
     }
 }
 function repository_edit($template, $id=null){
-    if (!in_array($template,array("agents","artefacts","versions","works", "resources", "events"))) {
+    if (!in_array($template,array("agents","artefacts","versions","works", "resources", "events", "mvds"))) {
         drupal_access_denied();
         return;
     }
@@ -353,6 +353,10 @@ function repository_theme(){
     ),
     'resources_edit' => array(
         'template' => 'ui/resources_edit',
+        'variables' => array()
+    ),
+    'mvds_edit' => array(
+        'template' => 'ui/mvds_edit',
         'variables' => array()
     ),
     'resources' => array(

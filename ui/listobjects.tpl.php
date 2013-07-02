@@ -35,11 +35,13 @@ if (isset($_GET['project'])) {
 </div>
 <div class="row">
     <div class="span10" id="newobject">
-     <?php if (user_access('edit metadata')): ?>
+     <?php if (user_access('edit metadata') && $apiType != 'mvd'): ?>
        <a href="<?php print $apiType; ?>s/edit<?php if ($project) print '?project='.$project; ?>">+ New <?php print $apiType; ?></a>
      <?php endif; ?>
     </div>
+    <?php if ($apiType != "mvd"):?>
     <input title="Type filter terms and then hit enter" type="text" placeholder="Filter on <?php print $filterField; ?>" class="span2" id="filter">
+    <?php endif; ?>
 </div>
 <div id="resultsummary"></div>
 <div id="resultcurrent"></div>
