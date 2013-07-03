@@ -483,6 +483,9 @@ $app->get('/places/:id(/:revision)', function ($id,$revision=NULL) use ($config)
 $app->get('/mvds/:id(/:revision)', function ($id,$revision=NULL) use ($config) {
   getRecord('mvds',$id,$revision);
 });
+$app->get('/collections/:id(/:revision)', function ($id,$revision=NULL) use ($config) {
+  getRecord('collections',$id,$revision);
+});
 $app->get('/resources/:id(/:revision)', function ($id,$revision=NULL) use ($config) {
     getResource($id,$revision);
 });
