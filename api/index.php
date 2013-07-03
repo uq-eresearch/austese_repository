@@ -702,9 +702,13 @@ $app->delete('/collection/:id',function($id) {
     deleteRecord('collections',$id);
 });
 function parseJson($s) {
-  // make sure keys are quoted
-  $s = preg_replace('/(\w+):/i', '"\1":', $s);
-  return json_decode($s, true);
+  try {
+   return json_decode($s, true);
+  } catch (Exception $e){
+   // make sure keys are quoted
+   $s = preg_replace('/(\w+):/i', '"\1":', $s);
+   return json_decode($s, true);
+  }
 }
 
 function gen_uuid() {
