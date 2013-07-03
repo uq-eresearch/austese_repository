@@ -487,9 +487,11 @@ Ext.define('austese_uploader.controller.Controller', {
             });
             if (!this.isEmptyObject(newValues)){
                 for (var i = 0 ; i < l; i++){
+                    var thisRecNewValues = {};
+                    Ext.apply(thisRecNewValues, newValues)
                     // update each record with new values
                     var rec = propertiespanel.loadedRecords[i];
-                    rec.set(newValues);
+                    rec.set(thisRecNewValues);
                     rec.commit();
                     // copy metadata fields only into newValues to send to database
                     var nonMetadataFields = {'filename':1,'dateString':1,
@@ -498,11 +500,11 @@ Ext.define('austese_uploader.controller.Controller', {
                             'shortName':1};
                     Ext.Object.each(rec.data,function(key, val, obj){
                         if (!nonMetadataFields[key]){
-                            newValues[key]=val;
+                            thisRecNewValues[key]=val;
                         }
                     });
                     // save values to database
-                    this.updateData(rec.get('uri'),newValues);
+                    this.updateData(rec.get('uri'),thisRecNewValues);
                 }
             }
         }
