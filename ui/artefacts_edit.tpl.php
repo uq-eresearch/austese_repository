@@ -90,7 +90,7 @@ if (isset($_GET['project'])) {
       </div>
     </div>
     <div class="control-group">
-      <label class="control-label" for="artefacts">Facsimiles</label>
+      <label class="control-label" for="facsimiles">Facsimiles</label>
       <div class="controls">
         <textarea rows="2" name="facsimiles" type="text" class="input-xlarge" id="facsimiles"></textarea>
         <p class="help-block">Facsimiles associated with this version</p>

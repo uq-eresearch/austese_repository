@@ -49,7 +49,7 @@ if (isset($_GET['project'])) {
       <label class="control-label" for="description">Description</label>
       <div class="controls">
         <textarea rows="2" name="description" type="text" class="input-xlarge" id="description"></textarea>
-        <p class="help-block">Description of this version</p>
+        <p class="help-block">Description of this work</p>
       </div>
     </div>
   <div class="control-group">
