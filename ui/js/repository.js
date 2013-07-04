@@ -714,15 +714,23 @@ jQuery.fn.serializeObject = function() {
                     var res = "";
                     for (var i = 0; i < d.results.length; i++){
                         res = d.results[i];
-                        result += '<option value="' + res.name + '">' + decodeURIComponent(res.name) + '</option>';
+                        var refreshURL = '/collationtools/sendtomvd/';
+                        for (var j = 0; j < res.resources.length; j++){
+                            refreshURL += res.resources[j] + ';'
+                        }
+                        refreshURL += '?docpath=' + res.name;
+                        result += '<option data-refresh="' + refreshURL + '" value="' + res.name + '">' + decodeURIComponent(res.name) + '</option>';
+                        
                     }
                     result+= '</select>'
-                        + '<button id="comparebtn" class="btn">Compare</button>'
-                        + '<button id="tablebtn" class="btn">Table</button>'
+                        + '<button id="comparebtn" class="btn btn-small">Compare</button>'
+                        + '<button id="tablebtn" class="btn btn-small">Table</button>'
+                        + '<button id="refreshbtn" class="btn btn-small">Refresh</button>'
                         + '</form>';
                     jQuery('#viewmvd').append(result);
                     jQuery('#comparebtn').on('click',viewCompare);
                     jQuery('#tablebtn').on('click',viewTable);
+                    jQuery('#refreshbtn').on('click',refreshMVD);
                     // FIXME: Look up actual full id of version e.g. id/base or /Base/id
                     /*var url = '/html/' + encodeURIComponent(res.name) + "?version1=%2f"  + id + "%2fbase";
                     jQuery('#result').append("<script type='text/javascript'>jQuery.ajax({url:'" + url + "', " 
@@ -747,6 +755,15 @@ jQuery.fn.serializeObject = function() {
         if (docpath) {
             // TODO actually select this resource
             document.location.href = "/collationtools/apparatus#" + encodeURIComponent(docpath);
+        }
+    }
+    function refreshMVD(){
+        console.log("refresh")
+        var refreshURL = jQuery('#mvdselect').find('option:selected').data('refresh');
+        console.log("refreshURL?",refreshURL)
+        if (refreshURL) {
+            jQuery('#viewmvd').append("Refreshing MVD, please wait...");
+            document.location.href = refreshURL;
         }
     }
     function loadReferencedObjects(){
