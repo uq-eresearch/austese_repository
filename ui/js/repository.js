@@ -57,9 +57,7 @@ jQuery.fn.serializeObject = function() {
                 loadObject(existingId);
             }
         } 
-        // set up WYSIWYG editor
-        jQuery('#description').wysihtml5();
-        jQuery('#biography').wysihtml5();
+
         // set up search fields
         if (typeof (jQuery().tokenInput) == 'function'){
             var project = jQuery('#metadata').data('project');
@@ -564,6 +562,9 @@ jQuery.fn.serializeObject = function() {
                    });
                   }
               }
+              // set up WYSIWYG editor
+              jQuery('#description').wysihtml5();
+              jQuery('#biography').wysihtml5();
            }
         });
     }
