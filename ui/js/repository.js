@@ -96,7 +96,7 @@ jQuery.fn.serializeObject = function() {
                 jsonContainer: "results",
                 propertyToSearch: "filename",
                 resultsFormatter: function(item){return "<li><b>" + item.metadata.title + " (" + item.filename + ")</b></li>";},
-                tokenFormatter: function(item){return "<li>" + item.filename + "</li>";}
+                tokenFormatter: function(item){return "<li title=\"" + item.metadata.title + "\">" + item.filename + "</li>";}
             });
             jQuery("#facsimiles").tokenInput("/" + modulePath + "/api/resources/" + projectParam + (projectParam? "&" : "?") + "type=image", {
                 theme: "facebook",
@@ -105,7 +105,7 @@ jQuery.fn.serializeObject = function() {
                 jsonContainer: "results",
                 propertyToSearch: "filename",
                 resultsFormatter: function(item){return "<li><b>" + item.metadata.title + " (" + item.filename + ")</b></li>";},
-                tokenFormatter: function(item){return "<li>" + item.filename + "</li>";}
+                tokenFormatter: function(item){return "<li title=\"" + item.metadata.title + "\">" + item.filename + "</li>";}
             });
             jQuery("#resources").tokenInput("/" + modulePath + "/api/resources/" + projectParam, {
                 theme: "facebook",
@@ -114,7 +114,7 @@ jQuery.fn.serializeObject = function() {
                 jsonContainer: "results",
                 propertyToSearch: "filename",
                 resultsFormatter: function(item){return "<li><b>" + item.metadata.title + " ("  + item.filename + ")</b></li>";},
-                tokenFormatter: function(item){return "<li>" + item.filename + "</li>";}
+                tokenFormatter: function(item){return "<li title=\"" + item.metadata.title + "\">" + item.filename + "</li>";}
             });
             jQuery('#places').tokenInput("/" + modulePath + "/api/places/", {
                 theme: "facebook",
