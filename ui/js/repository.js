@@ -135,8 +135,27 @@ jQuery.fn.serializeObject = function() {
                 tokenFormatter: function(item){return "<li>" + item.versionTitle + ", " + item.name + ", " + item.date + "</li>";}
             });
         }
+        
     });
     function setUpTemplates(){
+        templates.collectionSummary = new Ext.XTemplate(
+                '<div class="obj">',
+                    '<h4><a href="/{modulePrefix}/collections/{id}{projParam}">{name}</a></h4>',
+                    '<tpl for="resources"><tpl if="xindex == 1"><br/>({[xcount]} associated resource{[xcount != 1? "s" : ""]})</tpl></tpl>',
+                    '<tpl if="hasEditPermission"><p><a href="/{modulePrefix}/collections/edit/{id}{projParam}" style="font-size:smaller">EDIT</a></p></tpl>',
+                '</div>'
+            );
+        templates.collectionDetail = new Ext.XTemplate(
+            '<div class="obj">',
+                '<h4><a href="/{modulePrefix}/collections/{id}{projParam}">{name}</a></h4>',
+                '<tpl for="resources">',
+                '<tpl if="xindex == 1"><p>{[xcount]} Resource{[xcount != 1? "s" : ""]} associated with this ResourceCollection:</p></tpl>',
+                '<ul>',
+                '<li class="resource" data-resourceid="{.}" data-template="summary"></li>',
+                '</ul></tpl>',
+                '<tpl if="hasEditPermission"><p><a href="/{modulePrefix}/collections/edit/{id}{projParam}" style="font-size:smaller">EDIT</a></p></tpl>',
+            '</div>'
+        );
         templates.mvdSummary = new Ext.XTemplate(
             '<div class="obj">',
                 '<h4>{name}</h4>',
@@ -560,6 +579,21 @@ jQuery.fn.serializeObject = function() {
                    });
                   }
               }
+              if (d.resources){
+                  for (var i = 0; i < d.resources.length; i++){
+                   jQuery.ajax({
+                     type: 'GET',
+                     url: '/' + modulePath + '/api/resources/' + d.resources[i],
+                     dataType: "json",
+                     headers: {
+                          'Accept': 'application/json'
+                     },
+                     success: function(v){
+                       jQuery('#resources').tokenInput("add",v);
+                     }
+                   });
+                  }
+              }
               if (d.places){
                   for (var i = 0; i < d.places.length; i++){
                    jQuery.ajax({
@@ -634,6 +668,13 @@ jQuery.fn.serializeObject = function() {
             data.transcriptions = [];
             for (var i = 0; i < split.length; i++){
                data.transcriptions.push(split[i]);
+            }
+        }
+        if (data.resources) {
+            var split = data.resources.split(",");
+            data.resources = [];
+            for (var i = 0; i < split.length; i++){
+               data.resources.push(split[i]);
             }
         }
         if (data.facsimiles){
