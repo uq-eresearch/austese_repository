@@ -92,19 +92,28 @@ jQuery.fn.serializeObject = function() {
             jQuery("#transcriptions").tokenInput("/" + modulePath + "/api/resources/" + projectParam + (projectParam? "&" : "?") + "type=x", {
                 theme: "facebook",
                 tokenValue: "id",
-                hintText: "Start typing to search transcription resources by filename",
+                hintText: "Start typing to search transcriptions by filename/title",
                 jsonContainer: "results",
                 propertyToSearch: "filename",
-                resultsFormatter: function(item){return "<li><b>" + item.filename + "</b></li>";},
+                resultsFormatter: function(item){return "<li><b>" + item.metadata.title + " (" + item.filename + ")</b></li>";},
                 tokenFormatter: function(item){return "<li>" + item.filename + "</li>";}
             });
             jQuery("#facsimiles").tokenInput("/" + modulePath + "/api/resources/" + projectParam + (projectParam? "&" : "?") + "type=image", {
                 theme: "facebook",
                 tokenValue: "id",
-                hintText: "Start typing to search facsimile resources by filename",
+                hintText: "Start typing to search facsimiles by filename/title",
                 jsonContainer: "results",
                 propertyToSearch: "filename",
-                resultsFormatter: function(item){return "<li><b>" + item.filename + "</b></li>";},
+                resultsFormatter: function(item){return "<li><b>" + item.metadata.title + " (" + item.filename + ")</b></li>";},
+                tokenFormatter: function(item){return "<li>" + item.filename + "</li>";}
+            });
+            jQuery("#resources").tokenInput("/" + modulePath + "/api/resources/" + projectParam, {
+                theme: "facebook",
+                tokenValue: "id",
+                hintText: "Start typing to search resources by filename/title",
+                jsonContainer: "results",
+                propertyToSearch: "filename",
+                resultsFormatter: function(item){return "<li><b>" + item.metadata.title + " ("  + item.filename + ")</b></li>";},
                 tokenFormatter: function(item){return "<li>" + item.filename + "</li>";}
             });
             jQuery('#places').tokenInput("/" + modulePath + "/api/places/", {
