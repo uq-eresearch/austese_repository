@@ -30,6 +30,7 @@ if (isset($_GET['project'])) {
  data-apitype="<?php print $apiType;?>">
 </div>
 <form id="create-object" class="form-horizontal">
+<div class="invisi-well">
   <fieldset>
     <div class="control-group">
       <label class="control-label" for="lastName">Last Name</label>
@@ -49,23 +50,39 @@ if (isset($_GET['project'])) {
         <textarea rows="10" class="input-xlarge" name="biography" id="biography"></textarea>
       </div>
     </div>
-    <div class="control-group">
-      <label class="control-label" for="project">Project</label>
-      <div class="controls">
-        <input type="text" class="input-xlarge" name="project" id="project" value="<?php
-        if (isset($_GET['project'])) {
-         print $_GET['project'];
-        } 
-        ?>"/>
-      </div>
+    
+    </fieldset>
     </div>
-    <div class="control-group">
-      <div class="controls">
-         <input id="save-btn" type="button" class="btn" value="Save">
-         <a href="/<?php print $modulePrefix; ?>/agents/<?php if ($existingId): print $existingId; endif; ?><?php if ($project): print "?project=".$project; endif; ?>">
-         <input type="button" class="btn" value="Cancel"></a>
-         <input id="del-btn" style="display:none" type="button" class="btn btn-danger" value="Delete">
+    <div class="well">
+      <fieldset>
+      <div class="control-group">
+        <label class="control-label" for="project">Project</label>
+        <div class="controls">
+          <input type="text" class="input-xlarge" name="project" id="project" value="<?php
+          if (isset($_GET['project'])) {
+           print $_GET['project'];
+          } 
+          ?>"/>
+        </div>
       </div>
+      <div class="control-group">
+        <div class="controls">
+          <label class="checkbox">
+          <input name="locked" id="locked" type="checkbox"> Locked
+          </label>
+        </div>
+      </div>
+      
+      <div class="control-group">
+        <div class="controls">
+           
+           <input id="save-btn" type="button" class="btn" value="Save">
+           <a href="/<?php print $modulePrefix; ?>/agents/<?php if ($existingId): print $existingId; endif; ?><?php if ($project): print "?project=".$project; endif; ?>">
+           <input type="button" class="btn" value="Cancel"></a>
+           <input id="dupe-btn" style="display:none" type="button" class="btn" value="Duplicate">
+           <input id="del-btn" style="display:none" type="button" class="btn btn-danger" value="Delete">
+        </div>
+      </div>
+      </fieldset>
     </div>
-  </fieldset>
 </form>

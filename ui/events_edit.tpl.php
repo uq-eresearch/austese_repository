@@ -30,6 +30,7 @@ if (isset($_GET['project'])) {
  data-apitype="<?php print $apiType;?>">
 </div>
 <form id="create-object" class="form-horizontal">
+  <div class="invisi-well">
   <fieldset>
     <div class="control-group">
       <label class="control-label" for="description">Description</label>
@@ -45,7 +46,9 @@ if (isset($_GET['project'])) {
       </div>
     </div>
     </fieldset>
-    <div class="well">
+    </div>
+    
+    <div class="well white-well">
     <p>This field is most likely to apply to "composite" events:</p>
     <fieldset>
     <div class="control-group">
@@ -57,7 +60,7 @@ if (isset($_GET['project'])) {
     </fieldset>
     </div>
     
-    <div class="well">
+    <div class="well white-well">
     <p>These fields are most likely to apply to basic "action" events:</p>
     <fieldset>
     
@@ -97,6 +100,8 @@ if (isset($_GET['project'])) {
     </div>
     </fieldset>
     </div>
+    <div class="well">
+    <fieldset>
     <div class="control-group">
       <label class="control-label" for="project">Project</label>
       <div class="controls">
@@ -107,10 +112,13 @@ if (isset($_GET['project'])) {
         ?>"/>
       </div>
     </div>
-
-
-   
-    
+    <div class="control-group">
+        <div class="controls">
+          <label class="checkbox">
+          <input name="locked" id="locked" type="checkbox"> Locked
+          </label>
+        </div>
+    </div>
     <div class="control-group">
       <div class="controls">
          <input id="save-btn" type="button" class="btn" value="Save">
@@ -120,4 +128,5 @@ if (isset($_GET['project'])) {
       </div>
     </div>
   </fieldset>
+  </div>
 </form>

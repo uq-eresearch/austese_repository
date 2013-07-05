@@ -30,6 +30,7 @@ if (isset($_GET['project'])) {
  data-apitype="<?php print $apiType;?>">
 </div>
 <form id="create-object" class="form-horizontal">
+  <div class="invisi-well">
   <fieldset>
     <div class="control-group">
       <label class="control-label" for="versionTitle">Title</label>
@@ -108,6 +109,10 @@ if (isset($_GET['project'])) {
         <p class="help-block">Places associated with this version e.g. place of publication</p>
       </div>
     </div>
+    </fieldset>
+    </div>
+    <div class="well">
+    <fieldset>
     <div class="control-group">
       <label class="control-label" for="project">Project</label>
       <div class="controls">
@@ -118,7 +123,14 @@ if (isset($_GET['project'])) {
         ?>"/>
       </div>
     </div>
-
+    <div class="control-group">
+        <div class="controls">
+          <label class="checkbox">
+          <input name="locked" id="locked" type="checkbox"> Locked
+          </label>
+        </div>
+    </div>
+      
 <div class="control-group">
 <div class="controls">
     <input id="save-btn" type="button" class="btn" value="Save">
@@ -127,5 +139,6 @@ if (isset($_GET['project'])) {
     <input id="del-btn" style="display:none" type="button" class="btn btn-danger" value="Delete">
 </div></div>
   </fieldset>
+  </div>
 </form>
 

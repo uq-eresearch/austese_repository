@@ -22,6 +22,7 @@ jQuery.fn.serializeObject = function() {
     var existingId = null;
     var serverName = null;
     var templates = {};
+    var wysiEditors = [];
     jQuery(document).ready(function(){
         var metadata = jQuery('#metadata');
         // read parameters from data attributes set in the template
@@ -605,8 +606,9 @@ jQuery.fn.serializeObject = function() {
                   }
               }
               // set up WYSIWYG editor
-              jQuery('#description').wysihtml5();
-              jQuery('#biography').wysihtml5();
+              wysiEditors.push(jQuery('#description').wysihtml5());
+              wysiEditors.push(jQuery('#biography').wysihtml5());
+              updateUILocked(d.locked || false);
            }
         });
     }
@@ -692,6 +694,7 @@ jQuery.fn.serializeObject = function() {
         if (data["_wysihtml5_mode"]){
             delete data["_wysihtml5_mode"];
         }
+        var locked = data.locked || false;
         jQuery.ajax({
           type: type,
           data: JSON.stringify(data),
@@ -706,8 +709,30 @@ jQuery.fn.serializeObject = function() {
                     existingId = d.id;
                     jQuery('#metadata').data('existingid',d.id);
                 }
+                updateUILocked(locked);
           }
         });
+    }
+    function updateUILocked(locked){
+        // update UI editability to reflect locked/unlocked state
+        var inputs = jQuery('#create-object')
+            .find('fieldset:not(:last)')
+            .find('input, textarea');
+        inputs.attr('readonly',locked)
+        jQuery(wysiEditors).each(function(i,e){
+            var editorData = e.data("wysihtml5");
+            if (editorData){
+                if (locked) {
+                    editorData.editor.disable();
+                    jQuery('.wysihtml5-toolbar').hide();
+                } else {
+                    editorData.editor.enable();
+                    jQuery('.wysihtml5-toolbar').show();
+                }
+            }
+        })
+        
+        
     }
     function loadRelatedMVDs(id){
         jQuery.ajax({
