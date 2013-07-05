@@ -630,7 +630,6 @@ jQuery.fn.serializeObject = function() {
     function onSave(){
         var type = 'POST';
         var url = '/' + modulePath + '/api/' + apiType + 's/';
-        var existingId = jQuery('#metadata').data('existingid')
         if (existingId) {
            type = 'PUT';
            url += existingId;
