@@ -89,6 +89,15 @@ function repository_menu() {
     'access arguments' => array('view metadata'),
     'type' => MENU_CALLBACK
   );
+  // Visualize an object of a specific type
+  $items['repository/%/visualize'] = array(
+    'title arguments' => array('title'=>1),
+    'title callback' => 'repository_display_visualize_title',
+    'page callback' => 'repository_visualize',
+    'page arguments' => array(1,3),
+    'access arguments' => array('view metadata'),
+    'type' => MENU_CALLBACK
+  );
   $items['repository/resources/%/content'] = array(
     'title' => 'View Resource Content',
     'page callback' => 'repository_display_resource',
@@ -147,6 +156,9 @@ function repository_display_edit_title($title){
     } else {
         return 'Describe ' . ucwords(substr($title,0,-1));
     }
+}
+function repository_display_visualize_title($title){
+    return 'Visualize ' . ucwords(substr($title,0,-1));
 }
 function repository_display_record_title($title){
     return 'View ' . ucwords(substr($title,0,-1));
@@ -234,6 +246,30 @@ function repository_edit($template, $id=null){
     drupal_add_css($modulePath . '/ui/css/lib/token-input-facebook.css', 
         array('group' => CSS_DEFAULT, 'every_page' => FALSE));
     return theme($template.'_edit',array());
+}
+function repository_visualize($template, $id=null){
+    if (!in_array($template,array("agents","artefacts","versions","works", "resources", "events"))) {
+        drupal_access_denied();
+        return;
+    }
+    $projectParam = array();
+    if (isset($_GET['project'])) {
+       $projectParam = array('query' => array('project' => $_GET['project']));
+    }
+    $breadcrumb = array();
+    $breadcrumb[] = l('Home', '<front>');
+    $breadcrumb[] = l('Repository', 'repository',$projectParam);
+    $breadcrumb[] = l(ucwords($template),'repository/'.$template,$projectParam);
+    $breadcrumb[] = t(drupal_get_title()); 
+    drupal_set_breadcrumb($breadcrumb);
+    // Add scripts
+    $modulePath = drupal_get_path('module', 'repository');
+    drupal_add_js($modulePath . '/ui/js/lib/graphdracula/raphael.js');
+    drupal_add_js($modulePath . '/ui/js/lib/graphdracula/dracula_graffle.js');
+    drupal_add_js($modulePath . '/ui/js/lib/graphdracula/dracula_graph.js');
+    //drupal_add_js($modulePath . '/ui/js/lib/graphdracula/dracula_algorithms.js');
+    drupal_add_js($modulePath . '/ui/js/visualizeresource.js');
+    return theme('visualize',array());
 }
 function repository_display_resource($id,$raw=null){
     $projectParam = array();
@@ -329,6 +365,10 @@ function repository_theme(){
  return array(
     'display' => array(
         'template' => 'ui/listobjects',
+        'variables' => array()
+    ),
+    'visualize' => array(
+        'template' => 'ui/visualizeobject',
         'variables' => array()
     ),
     'display_record' => array(

@@ -38,6 +38,7 @@ if (isset($_GET['project'])) {
 <div class="actionsidebar span4 filler">
 <div>
  <?php if (user_access('edit metadata')): ?>
+   <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/visualize/<?php print $existingId; ?><?php if ($project): print "?project=".$project; endif; ?>">VISUALIZE</a><br/>
    <?php if ($apiType=='resource'):?>
    <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s#<?php print $existingId; ?>">VIEW IN RESOURCE ORGANISER</a><br/>
    <?php endif; ?>
