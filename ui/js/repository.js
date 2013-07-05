@@ -630,6 +630,7 @@ jQuery.fn.serializeObject = function() {
     function onSave(){
         var type = 'POST';
         var url = '/' + modulePath + '/api/' + apiType + 's/';
+        var existingId = jQuery('#metadata').data('existingid')
         if (existingId) {
            type = 'PUT';
            url += existingId;
@@ -690,6 +691,9 @@ jQuery.fn.serializeObject = function() {
             for (var i = 0; i < split.length; i++){
                data.places.push(split[i]);
             }
+        }
+        if (data["_wysihtml5_mode"]){
+            delete data["_wysihtml5_mode"];
         }
         jQuery.ajax({
           type: type,
