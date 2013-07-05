@@ -182,7 +182,7 @@ function repository_display($template){
             return;
         }
         drupal_add_css($modulePath . '/ui/css/uploader.css');
-        drupal_add_js($modulePath . '/ui/js/formdata.js');
+        drupal_add_js($modulePath . '/ui/js/lib/formdata.js');
         drupal_add_js($modulePath . '/ui/js/uploader.js');
         return theme("resources", array());
     } else if ($template == 'places'){
@@ -212,26 +212,26 @@ function repository_edit($template, $id=null){
     
     // Add scripts
     $modulePath = drupal_get_path('module', 'repository');
-    drupal_add_js($modulePath . '/ui/js/jquery.tokeninput.js');
-    drupal_add_js($modulePath . '/ui/js/js2form.js');
+    drupal_add_js($modulePath . '/ui/js/lib/jquery.tokeninput.js');
+    drupal_add_js($modulePath . '/ui/js/lib/js2form.js');
     drupal_add_js('/sites/all/libraries/ext-4.1.1a/ext-all.js'); 
     drupal_add_js($modulePath . '/ui/js/repository.js');
     
-    drupal_add_js($modulePath . '/ui/js/wysihtml5-0.3.0.min.js');
-    drupal_add_js($modulePath . '/ui/js/bootstrap-wysihtml5.js');
-    drupal_add_css($modulePath. '/ui/css/bootstrap-wysihtml5.css',  array('group' => CSS_DEFAULT, 'every_page' => FALSE));
+    drupal_add_js($modulePath . '/ui/js/lib/wysihtml5-0.3.0.min.js');
+    drupal_add_js($modulePath . '/ui/js/lib/bootstrap-wysihtml5.js');
+    drupal_add_css($modulePath. '/ui/css/lib/bootstrap-wysihtml5.css',  array('group' => CSS_DEFAULT, 'every_page' => FALSE));
     if ($template == "resources"){
-        drupal_add_js($modulePath . '/ui/js/codemirror.js');
-        drupal_add_js($modulePath . '/ui/js/xml.js');
+        drupal_add_js($modulePath . '/ui/js/lib/codemirror.js');
+        drupal_add_js($modulePath . '/ui/js/lib/xml.js');
         drupal_add_js($modulePath . '/ui/js/resourceedit.js');
-        drupal_add_css($modulePath . '/ui/css/codemirror.css'); 
-        drupal_add_css($modulePath . '/ui/css/xml.css'); 
+        drupal_add_css($modulePath . '/ui/css/lib/codemirror.css'); 
+        drupal_add_css($modulePath . '/ui/css/lib/xml.css'); 
     }
     // Add stylesheets
     drupal_add_css($modulePath . '/ui/css/repository.css',  array('group' => CSS_DEFAULT, 'every_page' => FALSE)); 
-    drupal_add_css($modulePath . '/ui/css/token-input.css', 
+    drupal_add_css($modulePath . '/ui/css/lib/token-input.css', 
         array('group' => CSS_DEFAULT, 'every_page' => FALSE));
-    drupal_add_css($modulePath . '/ui/css/token-input-facebook.css', 
+    drupal_add_css($modulePath . '/ui/css/lib/token-input-facebook.css', 
         array('group' => CSS_DEFAULT, 'every_page' => FALSE));
     return theme($template.'_edit',array());
 }
