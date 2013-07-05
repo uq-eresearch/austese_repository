@@ -430,7 +430,6 @@ jQuery.fn.serializeObject = function() {
                 'Accept': 'application/json'
             },
             success: function(result){
-                //console.log("loaded",result)
                 result.modulePrefix = modulePrefix;
                 var project = jQuery('#metadata').data('project');
                 if (project) {
@@ -617,7 +616,6 @@ jQuery.fn.serializeObject = function() {
           url: '/' + modulePath + '/api/' + apiType + 's/' + existingId,
           success: function(d){
             var project = jQuery('#metadata').data('project');
-            console.log(project)
             jQuery('#alerts').append(
                 jQuery('<div class="alert alert-block"><button type="button" class="close" data-dismiss="alert">x</button>' 
                     + '<h4>Successfully deleted ' + apiType +'</h4><p>'
@@ -764,9 +762,7 @@ jQuery.fn.serializeObject = function() {
         }
     }
     function refreshMVD(){
-        console.log("refresh")
         var refreshURL = jQuery('#mvdselect').find('option:selected').data('refresh');
-        console.log("refreshURL?",refreshURL)
         if (refreshURL) {
             jQuery('#viewmvd').append("Refreshing MVD, please wait...");
             document.location.href = refreshURL;
