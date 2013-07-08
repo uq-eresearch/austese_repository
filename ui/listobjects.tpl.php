@@ -6,6 +6,7 @@
  */
 $apiType = substr(arg(1),0,-1); // remove the trailing 's'
 $apiOperation = "load";
+$modulePrefix = drupal_get_path('module', 'repository');
 if ($apiType == "artefact"){
     $filterField = "source";
 } else if ($apiType == "place" || $apiType == "agent" || $apiType == "collection") {
@@ -28,7 +29,7 @@ if (isset($_GET['project'])) {
  <?php if ($project):?>
  data-project="<?php print $project; ?>"
  <?php endif; ?>
- data-modulepath="<?php print drupal_get_path('module', 'repository'); ?>"
+ data-modulepath="<?php print $modulePrefix; ?>"
  data-moduleprefix="<?php print arg(0); ?>"
  data-apioperation="<?php print $apiOperation;?>"
  data-apitype="<?php print $apiType;?>">
@@ -38,9 +39,12 @@ if (isset($_GET['project'])) {
      <?php if (user_access('edit metadata') && $apiType != 'mvd'): ?>
        <a href="<?php print $apiType; ?>s/edit<?php if ($project) print '?project='.$project; ?>">+ New <?php print $apiType; ?></a>
      <?php endif; ?>
-    </div>
+     <?php if ($apiType=='event'):?>
+       &nbsp;&nbsp;&nbsp;<a href="/<?php print arg(0); ?>/<?php print $apiType; ?>s/map/<?php if ($project): print "?project=".$project; endif; ?>">View Map</a><br/>
+     <?php endif;?>
+     </div>
     <?php if ($apiType != "mvd"):?>
-    <input title="Type filter terms and then hit enter" type="text" placeholder="Filter on <?php print $filterField; ?>" class="span2" id="filter">
+    <input title="Type filter terms and then hit enter" type="text" placeholder="Filter on <?php print $filterField; ?>" class="span2" id="filter"/>
     <?php endif; ?>
 </div>
 <div id="resultsummary"></div>

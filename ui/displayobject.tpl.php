@@ -37,16 +37,16 @@ if (isset($_GET['project'])) {
 <?php if ($apiType!='place'):?>
 <div class="actionsidebar span4 filler">
 <div>
- <?php if (user_access('edit metadata')): ?>
    <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/visualize/<?php print $existingId; ?><?php if ($project): print "?project=".$project; endif; ?>">VISUALIZE</a><br/>
+   <?php if (user_access('edit metadata')): ?>
    <?php if ($apiType=='resource'):?>
    <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s#<?php print $existingId; ?>">VIEW IN RESOURCE ORGANISER</a><br/>
    <?php endif; ?>
    <a id="editlink" href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/edit/<?php print $existingId; ?><?php if ($project): print "?project=".$project; endif; ?>">EDIT
    <?php if ($apiType=='resource'):?> CONTENT<?php endif; ?>
    </a>
+   <?php endif; ?>
    <a style="display:none" id="lightboxlink" href="/lightbox#<?php if ($project): print '?project='.$project; endif; ?><?php print $existingId; ?>">VIEW IN LIGHTBOX</a>
- <?php endif; ?>
  <?php if ($apiType=='work'):?><br/><a href="/reading/<?php print $existingId; ?>">VIEW IN READING INTERFACE</a><?php endif; ?>
  <?php if ($apiType=='resource'):?>
  <div style="margin-top:1em" id="viewmvd"></div>
