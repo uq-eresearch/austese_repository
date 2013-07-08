@@ -268,7 +268,7 @@ function repository_visualize($template, $id=null){
     drupal_add_js($modulePath . '/ui/js/lib/graphdracula/dracula_graffle.js');
     drupal_add_js($modulePath . '/ui/js/lib/graphdracula/dracula_graph.js');
     //drupal_add_js($modulePath . '/ui/js/lib/graphdracula/dracula_algorithms.js');
-    drupal_add_js($modulePath . '/ui/js/visualizeresource.js');
+    drupal_add_js($modulePath . '/ui/js/visualizeentity.js');
     return theme('visualize',array());
 }
 function repository_display_resource($id,$raw=null){
