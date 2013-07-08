@@ -79,7 +79,9 @@ jQuery(document).ready(function(){
       subDomains = ['otile1','otile2','otile3','otile4']; 
     
     L.tileLayer(mapquestUrl, 
-      {maxZoom: 18, subdomains: subDomains}
+      {maxZoom: 18, 
+        attribution: 'Map imagery and data provided by <a href="http://open.mapquest.co.uk" target="_blank">MapQuest</a> &amp; <a href="http://www.openstreetmap.org/" target="_blank">OpenStreetMap</a>, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+        subdomains: subDomains}
     ).addTo(map);
     loadEvents();
 });
