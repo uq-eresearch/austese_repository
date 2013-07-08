@@ -40,7 +40,8 @@ if (isset($_GET['project'])) {
        <a href="<?php print $apiType; ?>s/edit<?php if ($project) print '?project='.$project; ?>">+ New <?php print $apiType; ?></a>
      <?php endif; ?>
      <?php if ($apiType=='event'):?>
-       &nbsp;&nbsp;&nbsp;<a href="/<?php print arg(0); ?>/<?php print $apiType; ?>s/map/<?php if ($project): print "?project=".$project; endif; ?>">View Map</a><br/>
+       &nbsp;&nbsp;&nbsp;<a href="/<?php print arg(0); ?>/<?php print $apiType; ?>s/map/<?php if ($project): print "?project=".$project; endif; ?>">View Map</a>
+       &nbsp;&nbsp;&nbsp;<a href="/<?php print arg(0); ?>/<?php print $apiType; ?>s/timeline/<?php if ($project): print "?project=".$project; endif; ?>">View Timeline</a>
      <?php endif;?>
      </div>
     <?php if ($apiType != "mvd"):?>
