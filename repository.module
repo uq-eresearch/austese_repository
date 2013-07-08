@@ -100,9 +100,17 @@ function repository_menu() {
   );
   // Map events
   $items['repository/events/map'] = array(
-    'title' => 'Map Events',
+    'title' => 'Map of Events',
     'page callback' => 'repository_map_events',
     'page arguments' => array(1,3),
+    'access arguments' => array('view metadata'),
+    'type' => MENU_CALLBACK
+  );
+  // Timeline of events
+  $items['repository/events/timeline'] = array(
+    'title' => 'Timeline of Events',
+    'page callback' => 'repository_timeline_events',
+    'page arguments' => array(),
     'access arguments' => array('view metadata'),
     'type' => MENU_CALLBACK
   );
@@ -254,6 +262,25 @@ function repository_edit($template, $id=null){
     drupal_add_css($modulePath . '/ui/lib/token-input-facebook.css', 
         array('group' => CSS_DEFAULT, 'every_page' => FALSE));
     return theme($template.'_edit',array());
+}
+function repository_timeline_events(){
+    $projectParam = array();
+    if (isset($_GET['project'])) {
+       $projectParam = array('query' => array('project' => $_GET['project']));
+    }
+    $breadcrumb = array();
+    $breadcrumb[] = l('Home', '<front>');
+    $breadcrumb[] = l('Repository', 'repository',$projectParam);
+    $breadcrumb[] = l('Events','repository/events',$projectParam);
+    $breadcrumb[] = t(drupal_get_title()); 
+    drupal_set_breadcrumb($breadcrumb);
+    // Add scripts
+    $modulePath = drupal_get_path('module', 'repository');
+    drupal_add_js('/sites/all/libraries/ext-4.1.1a/ext-all.js'); 
+    drupal_add_css($modulePath.'/ui/lib/timeline/css/timeline.css');
+    drupal_add_js($modulePath.'/ui/lib/timeline/js/storyjs-embed.js'); 
+    drupal_add_js($modulePath.'/ui/js/timelineevents.js'); 
+    return theme('visualize',array());
 }
 function repository_map_events($id=null){
     $projectParam = array();
