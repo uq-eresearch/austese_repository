@@ -49,6 +49,7 @@ jQuery.fn.serializeObject = function() {
             jQuery('#save-btn').on('click',onSave);
             if (existingId) {
              loadObjectIntoEditor(existingId);
+             jQuery('#dupe-btn').css('display','inline').on('click',onDuplicate);
              jQuery('#del-btn').css('display','inline').on('click',onDelete);
             }
         
@@ -627,13 +628,20 @@ jQuery.fn.serializeObject = function() {
           }
        });
     }
+    function onDuplicate(){
+        delete existingId;
+        jQuery('#metadata').removeAttr('data-existingid').removeData('existingid');
+        onSave();
+    }
     function onSave(){
+        var existingId = jQuery('#metadata').data('existingid');
         var type = 'POST';
         var url = '/' + modulePath + '/api/' + apiType + 's/';
         if (existingId) {
            type = 'PUT';
            url += existingId;
         }
+        var newObject =  !(existingId || false);
         var data = jQuery('#create-object').serializeObject();
         if (data.artefacts){
             var split = data.artefacts.split(",");
@@ -710,6 +718,10 @@ jQuery.fn.serializeObject = function() {
                     jQuery('#metadata').data('existingid',d.id);
                 }
                 updateUILocked(locked);
+                // load new page URI (because we have an id for the new object)
+                if (newObject){
+                   document.location.href= '/' + modulePrefix + "/" + apiType + 's/edit/'  + existingId;
+                }
           }
         });
     }

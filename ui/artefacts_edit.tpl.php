@@ -123,6 +123,7 @@ if (isset($_GET['project'])) {
        <input id="save-btn" type="button" class="btn" value="Save">
        <a href="/<?php print $modulePrefix; ?>/artefacts/<?php if ($existingId): print $existingId; endif; ?><?php if ($project): print "?project=".$project; endif; ?>">
        <input type="button" class="btn" value="Cancel"></a>
+       <input id="dupe-btn" style="display:none" type="button" class="btn" value="Duplicate">
        <input id="del-btn" style="display:none" type="button" class="btn btn-danger" value="Delete">
      </div>
   </div>
