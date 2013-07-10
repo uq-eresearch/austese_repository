@@ -299,6 +299,7 @@ function repository_map_events($id=null){
     drupal_add_css('http://cdn.leafletjs.com/leaflet-0.4/leaflet.css',array('type' => 'external'));
     drupal_add_js('http://cdn.leafletjs.com/leaflet-0.4/leaflet.js',array('type' => 'external'));
     drupal_add_css($modulePath . '/ui/css/repository.css'); 
+    drupal_add_js($modulePath . '/ui/lib/oms.min.js');
     drupal_add_js($modulePath . '/ui/js/mapevents.js');
     return theme('visualize',array());
 }

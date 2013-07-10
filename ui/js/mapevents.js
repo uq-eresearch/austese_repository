@@ -49,10 +49,10 @@ jQuery(document).ready(function(){
                                     'Accept': 'application/json'
                                 },
                                 success: function(placeResult){
-                                    L.marker([placeResult.latitude,placeResult.longitude])
-                                      .addTo(map)
-                                      .bindPopup(popup)
-                                    
+                                    var marker = L.marker([placeResult.latitude,placeResult.longitude]);
+                                    marker.desc = popup + "<p>" + placeResult.name + ", " + placeResult.state + "</p>";
+                                    map.addLayer(marker);
+                                    oms.addMarker(marker);
                                 }
                             });
                         });
@@ -73,7 +73,16 @@ jQuery(document).ready(function(){
     
     // center map on Australia
     var map = L.map('canvas').setView([-24.994167,134.866944],3);
-
+    var oms = new OverlappingMarkerSpiderfier(map);
+    var popup = new L.Popup();
+    oms.addListener('click', function(marker) {
+      popup.setContent(marker.desc);
+      popup.setLatLng(marker.getLatLng());
+      map.openPopup(popup);
+    });
+    oms.addListener('spiderfy', function(markers) {
+        map.closePopup();
+    });
      // use tiles from Mapquest
      var mapquestUrl = 'http://{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png',
       subDomains = ['otile1','otile2','otile3','otile4']; 
