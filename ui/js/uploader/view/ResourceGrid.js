@@ -13,6 +13,7 @@ Ext.define('austese_uploader.view.ResourceGrid', {
             columns: [
                   {text: 'File', dataIndex: 'filename'},
                   {text: 'Title', dataIndex: 'title', flex: 1},
+                  {text: 'Short Name', dataIndex: 'shortname'},
                   {text: 'Type', dataIndex: 'filetype'},
                   {text: 'Size', dataIndex: 'sizeString'},
                   {
@@ -26,7 +27,8 @@ Ext.define('austese_uploader.view.ResourceGrid', {
                   {text: 'Language', dataIndex: 'language', hidden: true},
                   {text: 'Publisher', dataIndex: 'publisher', hidden: true},
                   {text: 'Rights', dataIndex: 'rights', hidden: true},
-                  {text: 'Source', dataIndex: 'source', hidden: true}
+                  {text: 'Source', dataIndex: 'source', hidden: true},
+                  {text: 'Project', dataIndex: 'project', hidden: true}
             ]
         });
         me.callParent(arguments);

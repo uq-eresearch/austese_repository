@@ -67,6 +67,11 @@ Ext.define('austese_uploader.view.PropertiesPanel', {
                         },
                         {
                             xtype: 'textfield',
+                            name: 'shortname',
+                            fieldLabel: 'Short name'
+                        },
+                        {
+                            xtype: 'textfield',
                             name: 'project',
                             fieldLabel: 'Project'
                         }
@@ -212,15 +217,59 @@ Ext.define('austese_uploader.view.PropertiesPanel', {
                     autoScroll: true,
                     trackResetOnLoad: true,
                     defaults: {
-                        anchor:'100%'
+                        anchor:'100%',
+                        labelAlign: 'left',
+                        fieldStyle: 'padding-top:4px;'
                     },
                     items: [
                         
                         {   
                             xtype:'displayfield',
                             fieldLabel: 'Title',
-                            labelWidth: 35,
+                            labelWidth: 45,
                             name:'title',
+                            renderer: function(val){
+                                if (!val){
+                                    return "<span class='muted'>Not specified</span>";
+                                } 
+                                else {
+                                    return Ext.util.Format.ellipsis(val,25);
+                                }
+                            }
+                        },
+                        {   
+                            xtype:'displayfield',
+                            fieldLabel: 'Desc.',
+                            labelWidth: 45,
+                            name:'description',
+                            renderer: function(val){
+                                if (!val){
+                                    return "<span class='muted'>Not specified</span>";
+                                } 
+                                else {
+                                    return Ext.util.Format.ellipsis(val, 25);
+                                }
+                            }
+                        },
+                        {   
+                            xtype:'displayfield',
+                            fieldLabel: 'Name',
+                            labelWidth: 45,
+                            name:'shortname',
+                            renderer: function(val){
+                                if (!val){
+                                    return "<span class='muted'>Not specified</span>";
+                                } 
+                                else {
+                                    return val;
+                                }
+                            }
+                        },
+                        {   
+                            xtype:'displayfield',
+                            fieldLabel: 'Project',
+                            labelWidth: 45,
+                            name:'project',
                             renderer: function(val){
                                 if (!val){
                                     return "<span class='muted'>Not specified</span>";

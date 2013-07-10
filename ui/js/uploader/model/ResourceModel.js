@@ -60,6 +60,10 @@ Ext.define('austese_uploader.model.ResourceModel', {
             mapping: 'metadata.project'
         },
         {
+            name: 'shortname',
+            mapping: 'metadata.shortname'
+        },
+        {
             name: 'thumb'
         }
     ]
