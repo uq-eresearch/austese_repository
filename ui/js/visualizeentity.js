@@ -64,9 +64,9 @@ jQuery(document).ready(function(){
                     var label;
                     if (result.versions){
                         if (apiType == "version"){
-                            label = "hasPart";
+                            label = "has_part";
                         } else if (apiType == "work") {
-                            label = "realisedBy";
+                            label = "realised_by";
                         } else {
                             label = "";
                         }
@@ -76,14 +76,14 @@ jQuery(document).ready(function(){
                         });
                     }
                     if (result.places) {
-                        label = "hasPlace";
+                        label = "has_place";
                         jQuery(result.places).each(function(i,a){
                             edges.push([id,a,{directed: true, label: label}]);
                             loadObject("place", a, ++numberInQ)
                         });
                     }
                     if (result.agents) {
-                        label = "hasParticipant";
+                        label = "has_participant";
                         jQuery(result.agents).each(function(i,a){
                             edges.push([id,a,{directed: true, label: label}]);
                             loadObject("agent", a, ++numberInQ)
@@ -91,11 +91,11 @@ jQuery(document).ready(function(){
                     }
                     if (result.artefacts){
                         if (apiType == "artefact"){
-                            label = "hasPart";
+                            label = "has_part";
                         } else if (apiType == "event") {
                             label = "produces";
                         } else if (apiType == "version"){
-                            label = "appearsIn";
+                            label = "appears_in";
                         } else {
                             label = "";
                         }
@@ -106,9 +106,9 @@ jQuery(document).ready(function(){
                     }
                     if (result.events) {
                         if (apiType == "event"){
-                            label = "hasSubEvent";
+                            label = "has_sub_event";
                         } else {
-                            label = "hasEvent";
+                            label = "has_event";
                         }
                         jQuery(result.events).each(function(i,a){
                             edges.push([id,a,{directed: true, label: label}]);
@@ -116,14 +116,14 @@ jQuery(document).ready(function(){
                         });
                     }
                     if (result.transcriptions) {
-                        label = "isEmbodiedBy";
+                        label = "is_embodied_by";
                         jQuery(result.transcriptions).each(function(i,a){
                             edges.push([id,a,{directed: true, label: label}]);
                             loadObject("resource", a, ++numberInQ)
                         });
                     }
                     if (result.facsimiles) {
-                        label = "hasDigitalSurrogate";
+                        label = "has_digital_surrogate";
                         jQuery(result.facsimiles).each(function(i,a){
                             edges.push([id,a,{directed: true, label: label}]);
                             loadObject("resource", a, ++numberInQ)
