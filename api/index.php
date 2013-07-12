@@ -44,7 +44,7 @@ function createRecord($collection){
     // insert passes newobj by reference, so new _id will have been added
     // use _id to generate uri
     $id = $newobj['_id'];
-    $obj['uri'] = $config['uriprefix'] . $collection . '/' . $id->{'$id'};
+    $obj['uri'] = $config['uriprefix'] . '/' . $collection . '/' . $id->{'$id'};
     $obj['id'] = $id->{'$id'};
     $response->header('Content-Type','application/json');
     echo json_encode($obj);
