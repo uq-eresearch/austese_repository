@@ -166,7 +166,11 @@ jQuery.fn.serializeObject = function() {
                 '<ul>',
                 '<li class="resource" data-resourceid="{.}" data-template="summary"></li>',
                 '</ul></tpl>',
-                '<tpl if="hasEditPermission"><p><a href="/{modulePrefix}/mvds/edit/{id}{projParam}" style="font-size:smaller">EDIT</a></p></tpl>',
+                '<p>',
+                '<tpl if="hasEditPermission"><a href="/{modulePrefix}/mvds/edit/{id}{projParam}" style="font-size:smaller">EDIT</a>&nbsp;&nbsp;</tpl>',
+                '<a href="/collationtools/compare#{[encodeURIComponent(values.name)]}" style="font-size:smaller">COMPARE</a>&nbsp;&nbsp;',
+                '<a href="/collationtools/apparatus#{[encodeURIComponent(values.name)]}" style="font-size:smaller">TABLE</a>',
+                '</p>',
             '</div>'
         );
         templates.versionSummary = new Ext.XTemplate(
