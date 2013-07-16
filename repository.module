@@ -227,6 +227,11 @@ function repository_edit($template, $id=null){
         drupal_access_denied();
         return;
     }
+    if (!user_access('edit metadata')){
+        drupal_access_denied();
+        return;
+    }
+    
     $projectParam = array();
     if (isset($_GET['project'])) {
        $projectParam = array('query' => array('project' => $_GET['project']));
