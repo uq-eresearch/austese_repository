@@ -30,7 +30,12 @@ jQuery(document).ready(function(){
                 jQuery('body').mouseup(function (e){
                     var selected = getSelectionText();
                     if (selected && selected.length > 0){
-                        var wordCount = selected.replace(/\-+|&nbsp;/gi,' ').trim().split(/\s+/).length;
+                        var wordCount = 0;
+                        var normalizedText = selected.replace(/\-+|&nbsp;/gi,' ').trim();
+                        if (normalizedText){
+                           wordCount = normalizedText.split(/\s+/).length;
+                        }
+                        
                         jQuery('#selectedWordCount').html("Selected Word Count: " + wordCount);
                     } else {
                         jQuery('#selectedWordCount').html("");
@@ -51,7 +56,11 @@ jQuery(document).ready(function(){
                           if (typeof enableAnnotations == "function"){
                               enableAnnotations();
                           }
-                          var wordCount=jQuery('#resourceContent').text().replace(/\-+|&nbsp;/gi,' ').trim().split(/\s+/).length;
+                          var wordCount = 0;
+                          var normalizedText = jQuery('#resourceContent').text().replace(/\-+|&nbsp;/gi,' ').trim();
+                          if (normalizedText){
+                              wordCount=normalizedText.split(/\s+/).length;
+                          }
                           jQuery('#wordCount').html("Resource Total Word Count: " + wordCount);
                       }
                 });
