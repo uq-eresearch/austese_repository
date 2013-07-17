@@ -1,6 +1,6 @@
 <div id="successMessage" style="display:none" class="alert alert-success">
   <a href="#" data-dismiss="alert"class="close">x</a>
-  <span class="label label-success">Success</span> resource has been updated
+  <span class="label label-success">Success</span> Resource has been updated. Return to <a href="/repository/resources/<?php print arg(3); ?>">View Resource</a> page.
 </div>
 <div id="failureMessage" style="display:none" class="alert alert-error">
   <a href="#" data-dismiss="alert" class="close">x</a>
