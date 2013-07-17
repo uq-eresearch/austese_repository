@@ -10,8 +10,8 @@ Ext.define('austese_repository.form.MultiFileFieldButton', {
         });
         Ext.apply(this, {
             buttonConfig : {
-                text: 'Add',
-                tooltip:'Upload additional resources',
+                text: 'Upload',
+                tooltip:'Upload resources',
                 iconCls : this.iconCls
             }
         });

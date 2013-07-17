@@ -14,6 +14,9 @@ Ext.define('austese_uploader.controller.Controller', {
             '#addButton': {
                 fileselected: this.addResources
             },
+            '#newButton': {
+                click: this.newResource
+            },
             '#deleteButton': {
                 click: this.promptDeleteResources
             },
@@ -81,13 +84,19 @@ Ext.define('austese_uploader.controller.Controller', {
                 click: this.updateEditorFields
             },
             'selectpropertieswindow button[text="Cancel"]': {
-                click: this.cancelUpdateEditorFields
+                click: this.cancelWindow
             }, 
             'selectpropertieswindow button[text="Select All"]': {
                 click: this.selectAllCheckboxes
             },
             'sendtomvdwindow button[text="OK"]':{
                 click: this.createMVD
+            },
+            'newresourcewindow button[text="OK"]':{
+                click: this.createResource
+            },
+            'newresourcewindow button[text="Cancel"]':{
+                click: this.cancelWindow
             }
         });
         // listener to init select resources when resources are loaded into store
@@ -139,6 +148,58 @@ Ext.define('austese_uploader.controller.Controller', {
             resourcePanel.getLayout().setActiveItem(0);
             thumbs.getSelectionModel().select(grid.getSelectionModel().getSelection(),false,true);
         }
+    },
+    newResource: function(button){
+        Ext.create('austese_uploader.view.NewResourceWindow').show();
+    },
+    createResource: function(button){
+        var newresourcewindow = button.up("newresourcewindow");
+        var filename = newresourcewindow.down('form').getForm().findField("filename").getValue() || "transcription";
+        var filetype = newresourcewindow.down('form').getForm().findField("filetype").getGroupValue() || "text/plain";
+        var modulePath = this.application.modulePath;
+        var data = new FormData();
+        // create a blob to represent the contents of the new transcription (simulates file)
+        var content, size;
+        if (filetype == "text/xml"){
+            content = "<TEI></TEI>";
+            size = 11;
+        } else {
+            content = "";
+            size = 0;
+        }
+        var blob = new Blob([content], {
+            size: size,
+            type: filetype
+        });
+        // append the blob, providing the filename
+        data.append('data',blob,filename);
+        if (this.application.project) {
+            data.append('project', this.application.project);
+        }
+        var headers;
+        if (data.fake){
+            headers=  {'Content-type': "multipart/form-data; boundary="+ data.boundary};
+        } 
+        jQuery.ajax({
+            url:  modulePath + '/api/resources/',
+            data: data,
+            headers: headers,
+            cache: false,
+            contentType: false,
+            processData: false,
+            type: 'POST',
+            success: function(d){
+                newresourcewindow.close();
+                Ext.getStore("ResourceStore").load();
+            },
+            error: function(response){
+                Ext.ComponentQuery.query('statusbar')[0].setStatus({
+                    iconCls: 'x-status-error',
+                    text: "Unable to update resource: " + response.responseText,
+                    clear: true
+                });;
+            }
+        });
     },
     addResources: function(button, filelist){
         button.up('mainpanel').down('statusbar').showBusy();
@@ -451,7 +512,7 @@ Ext.define('austese_uploader.controller.Controller', {
         }
         win.close();
     },
-    cancelUpdateEditorFields: function(button) {
+    cancelWindow: function(button) {
         button.up('window').close();
     },
     cancelEdit: function(button){

@@ -36,6 +36,13 @@ Ext.define('austese_uploader.view.ThumbnailPanel', {
                                         itemId: 'addButton'
                                     },
                                     {
+                                        xtype: 'button',
+                                        text: 'New',
+                                        iconCls: 'newIcon',
+                                        itemId: 'newButton',
+                                        tooltip: 'Create new (empty) transcription'
+                                    },
+                                    {
                                         xtype:'button',
                                         text: 'Delete',
                                         iconCls: 'deleteIcon',

@@ -10,6 +10,9 @@
 .addIcon {
     background-image:url(../img/plus_16x16.png);
 }
+.newIcon {
+    background-image:url(../img/doc_new_icon_16.png);
+}
 .deleteIcon {
     background-image:url(../img/trash_stroke_16x16.png);
 }
@@ -70,7 +73,7 @@ img.lightBoxIcon {
     padding-bottom:5px;
 }
 /* override bootstrap default for Ext checkbox */
-.uploaderui .x-form-checkbox, #selectpropertieswindow .x-form-checkbox {
+.uploaderui .x-form-checkbox, #selectpropertieswindow .x-form-checkbox, #newresourcewindow .x-form-radio {
     width:13px;
 }
 .x-form-item-body label {
