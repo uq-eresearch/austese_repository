@@ -192,7 +192,7 @@ Ext.define('austese_uploader.controller.Controller', {
                 newresourcewindow.close();
                 Ext.getStore("ResourceStore").load();
             },
-            error: function(response){
+            failure: function(response){
                 Ext.ComponentQuery.query('statusbar')[0].setStatus({
                     iconCls: 'x-status-error',
                     text: "Unable to update resource: " + response.responseText,
