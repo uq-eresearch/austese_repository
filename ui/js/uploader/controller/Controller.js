@@ -43,7 +43,8 @@ Ext.define('austese_uploader.controller.Controller', {
                 change: this.onFocusMultiField
             },
             'propertiespanel splitbutton[iconCls="sendToIcon"]': {
-                arrowclick: this.displaySendToMenu
+                arrowclick: this.displaySendToMenu,
+                click: this.displaySendToMenu
             },
             'resourcegrid':{
                 selectionchange: this.displayResourceMetadata
@@ -631,7 +632,7 @@ Ext.define('austese_uploader.controller.Controller', {
             });
         }
     },
-    displaySendToMenu: function(button){
+    displaySendToMenu: function(button, e){
         // populate menu with custom options depending on what resources are selected
         var pp = button.up('propertiespanel');
         var records = pp.loadedRecords;
@@ -690,7 +691,7 @@ Ext.define('austese_uploader.controller.Controller', {
             });
         }*/
         // force menu to show
-        button.menu.show();
+        button.showMenu(e);
     },
     // send to handlers
     sendToMVD: function(button){
