@@ -37,7 +37,8 @@ Ext.define('austese_uploader.view.NewResourceWindow', {
                                {
                                    boxLabel  : 'Plain text',
                                    name      : 'filetype',
-                                   inputValue: 'text/plain'
+                                   inputValue: 'text/plain',
+                                   checked: true
                                }, {
                                    boxLabel  : 'TEI/XML',
                                    name      : 'filetype',
