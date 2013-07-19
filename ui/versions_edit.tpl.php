@@ -78,9 +78,13 @@ if (isset($_GET['project'])) {
       <label class="control-label" for="illust">Illustrations</label>
       <div class="controls">
         <textarea rows="2" name="illust" type="text" class="input-xlarge" id="illust"></textarea>
-        <p class="help-block">Describe illustrations associated with this version</p>
+        <p class="help-block">Describe illustrations for this version</p>
       </div>
     </div>
+    </fieldset>
+    </div>
+    <div class="well white-well">
+    <fieldset>
     <div class="control-group">
       <label class="control-label" for="artefacts">Artefacts</label>
       <div class="controls">

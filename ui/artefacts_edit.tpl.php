@@ -83,6 +83,11 @@ if (isset($_GET['project'])) {
         <textarea rows="1" name="artefactSize" type="text" class="input-xlarge" id="artefactSize"></textarea>
       </div>
     </div>
+    </fieldset>
+    </div>
+  <div class="well white-well">
+  
+  <fieldset>
     <div class="control-group">
       <label class="control-label" for="artefacts">Has Part(s)</label>
       <div class="controls">

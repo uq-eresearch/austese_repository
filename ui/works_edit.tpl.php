@@ -53,6 +53,10 @@ if (isset($_GET['project'])) {
         <p class="help-block">Description of this work</p>
       </div>
     </div>
+    </fieldset>
+  </div>
+  <div class="well white-well">
+  <fieldset>
   <div class="control-group">
       <label class="control-label" for="versions">Versions</label>
       <div class="controls">

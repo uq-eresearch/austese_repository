@@ -30,6 +30,7 @@ if (isset($_GET['project'])) {
  data-apitype="<?php print $apiType;?>">
 </div>
 <form id="create-object" class="form-horizontal">
+  <p>Please confirm that you wish to delete the following MVD (this action cannot be undone):</p>
   <fieldset>
     <div class="control-group">
       <label class="control-label" for="name">Name</label>

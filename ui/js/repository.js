@@ -167,7 +167,7 @@ jQuery.fn.serializeObject = function() {
                 '<li class="resource" data-resourceid="{.}" data-template="summary"></li>',
                 '</ul></tpl>',
                 '<p>',
-                '<tpl if="hasEditPermission"><a href="/{modulePrefix}/mvds/edit/{id}{projParam}" style="font-size:smaller">EDIT</a>&nbsp;&nbsp;</tpl>',
+                '<tpl if="hasEditPermission"><a href="/{modulePrefix}/mvds/edit/{id}{projParam}" style="font-size:smaller">DELETE</a>&nbsp;&nbsp;</tpl>',
                 '<a href="/collationtools/compare#{[encodeURIComponent(values.name)]}" style="font-size:smaller">COMPARE</a>&nbsp;&nbsp;',
                 '<a href="/collationtools/apparatus#{[encodeURIComponent(values.name)]}" style="font-size:smaller">TABLE</a>',
                 '</p>',
