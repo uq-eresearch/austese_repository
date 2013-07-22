@@ -51,6 +51,10 @@ function repository_permission() {
     'view metadata' => array(
       'title' => t('View metadata'),
       'description' => t('Allow users to view metadata in the content repository')
+    ),
+    'view visualizations' => array(
+      'title' => t('View visualizations'),
+      'description' => t('Allow users to view visualizations')
     )
   );
 }
@@ -86,7 +90,7 @@ function repository_menu() {
     'title callback' => 'repository_display_edit_title',
     'page callback' => 'repository_edit',
     'page arguments' => array(1,3),
-    'access arguments' => array('view metadata'),
+    'access arguments' => array('edit metadata'),
     'type' => MENU_CALLBACK
   );
   // Visualize an object of a specific type
@@ -95,7 +99,7 @@ function repository_menu() {
     'title callback' => 'repository_display_visualize_title',
     'page callback' => 'repository_visualize',
     'page arguments' => array(1,3),
-    'access arguments' => array('view metadata'),
+    'access arguments' => array('view visualizations'),
     'type' => MENU_CALLBACK
   );
   // Map events
@@ -103,7 +107,7 @@ function repository_menu() {
     'title' => 'Map of Events',
     'page callback' => 'repository_map_events',
     'page arguments' => array(1,3),
-    'access arguments' => array('view metadata'),
+    'access arguments' => array('view visualizations'),
     'type' => MENU_CALLBACK
   );
   // Timeline of events
@@ -111,7 +115,7 @@ function repository_menu() {
     'title' => 'Timeline of Events',
     'page callback' => 'repository_timeline_events',
     'page arguments' => array(),
-    'access arguments' => array('view metadata'),
+    'access arguments' => array('view visualizations'),
     'type' => MENU_CALLBACK
   );
   $items['repository/resources/%/content'] = array(
