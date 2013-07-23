@@ -111,8 +111,9 @@ function createResource(){
   $response->header('Content-Type','application/json');
   echo "{\"uri\":\"". $url 
      //."\",\"thumb\":\"/sites/default/files/thumbs/".$id
+     ."\",\"id\":\"".$resid
      ."\",\"filename\":\"".$file->file['filename']
-     ."\",\"length\":\"".$file->file['length']."\"}";
+     ."\",\"length\":".$file->file['length']."}";
   
  } catch (Exception $e){
     $response->status(500);
@@ -216,7 +217,7 @@ function getFeatureCodes() {
  $cursor = $coll->find($findopts)->sort(array('_id'=>1))->limit($pagesize)->skip($pagenum * $pagesize);
  
  // return metadata for results
- echo "{\"count\":\"" . $cursor->count(0) . "\", \"pageSize\": \"". $pagesize . "\", \"pageIndex\": \"" . $pagenum . "\", \"results\": {";
+ echo "{\"count\":" . $cursor->count(0) . ", \"pageSize\": \"". $pagesize . "\", \"pageIndex\": \"" . $pagenum . "\", \"results\": {";
  
  foreach ($cursor as $obj){
   try{
@@ -266,7 +267,7 @@ function listResources(){
   $cursor = $grid->find($findopts)->sort(array('_id'=>-1))->limit($pagesize)->skip($pagenum * $pagesize);
 
 
-  echo "{\"count\":\"" . $cursor->count(0) . "\", \"pageSize\": \"". $pagesize . "\", \"pageIndex\": \"". $pagenum . "\", \"results\": [";
+  echo "{\"count\":" . $cursor->count(0) . ", \"pageSize\": \"". $pagesize . "\", \"pageIndex\": \"". $pagenum . "\", \"results\": [";
   foreach ($cursor as $obj){
      try{
       $returnobj = $obj->file;
@@ -325,7 +326,7 @@ function listRecords($collection, $labelField){
     $cursor = $coll->find($findopts)->sort(array('_id'=>-1))->limit($pagesize)->skip($pagenum * $pagesize);
 
     // return metadata for results
-    echo "{\"count\":\"" . $cursor->count(0) . "\", \"pageSize\": \"". $pagesize . "\", \"pageIndex\": \"" . $pagenum . "\", \"results\": [";
+    echo "{\"count\":" . $cursor->count(0) . ", \"pageSize\": \"". $pagesize . "\", \"pageIndex\": \"" . $pagenum . "\", \"results\": [";
     
     foreach ($cursor as $obj){
      try{
