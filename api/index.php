@@ -107,6 +107,8 @@ function createResource(){
   $file = $grid->findOne($query);
   // store generated id
   $grid->update(array('_id'=>new MongoId($id)), array('$set' => array('_resourceid' => $resid)), array('safe' => true));
+
+  $response->header('Content-Type','application/json');
   echo "{\"uri\":\"". $url 
      //."\",\"thumb\":\"/sites/default/files/thumbs/".$id
      ."\",\"filename\":\"".$file->file['filename']
@@ -407,7 +409,7 @@ function getResource($id, $revision){
   }
   // Tell any cache the different resources are served
   // depending on content type
-  $response->header('Vary', 'accept');
+  $response->header('Vary', 'Accept');
   if ($requesttype=='application/json'){
       // return json metadata
       $returnobj = $file->file;
