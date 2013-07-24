@@ -84,7 +84,7 @@ Ext.define('austese_uploader.controller.Controller', {
             'selectpropertieswindow button[text="Update"]': {
                 click: this.updateEditorFields
             },
-            'selectpropertieswindow button[text="Cancel"]': {
+            'selectpropertieswindow button[text="Cancel"], sendtomvdwindow button[text="Cancel"]': {
                 click: this.cancelWindow
             }, 
             'selectpropertieswindow button[text="Select All"]': {
@@ -93,10 +93,10 @@ Ext.define('austese_uploader.controller.Controller', {
             'sendtomvdwindow button[text="OK"]':{
                 click: this.createMVD
             },
-            'newresourcewindow button[text="OK"]':{
+            'newresourcewindow button[text="OK"], duperesourcewindow button[text="OK"]':{
                 click: this.createResource
             },
-            'newresourcewindow button[text="Cancel"]':{
+            'newresourcewindow button[text="Cancel"], duperesourcewindow button[text="Cancel"]':{
                 click: this.cancelWindow
             }
         });
@@ -153,34 +153,29 @@ Ext.define('austese_uploader.controller.Controller', {
     newResource: function(button){
         Ext.create('austese_uploader.view.NewResourceWindow').show();
     },
-    createResource: function(button){
-        var newresourcewindow = button.up("newresourcewindow");
-        var filename = newresourcewindow.down('form').getForm().findField("filename").getValue() || "transcription";
-        var filetype = newresourcewindow.down('form').getForm().findField("filetype").getGroupValue() || "text/plain";
-        var modulePath = this.application.modulePath;
-        var data = new FormData();
-        // create a blob to represent the contents of the new transcription (simulates file)
-        var content, size;
-        if (filetype == "text/xml"){
-            content = "<TEI></TEI>";
-            size = 11;
-        } else {
-            content = "";
-            size = 0;
-        }
+    duplicateResource: function(button){
+        var dwindow = Ext.create('austese_uploader.view.DuplicateResourceWindow');
+        dwindow.show();
+        var pp = button.up('propertiespanel');
+        dwindow.record = pp.loadedRecords[0];
+        dwindow.getForm.findField("filename").setValue("Copy of " + record.get("filename"));
+    },
+    postResource : function(content, size, filetype, filename){
         var blob = new Blob([content], {
             size: size,
             type: filetype
         });
         // append the blob, providing the filename
+        var data = new FormData();
         data.append('data',blob,filename);
         if (this.application.project) {
             data.append('project', this.application.project);
         }
-        var headers;
+        var headers = {};
         if (data.fake){
             headers=  {'Content-type': "multipart/form-data; boundary="+ data.boundary};
         } 
+        var modulePath = this.application.modulePath;
         jQuery.ajax({
             url:  modulePath + '/api/resources/',
             data: data,
@@ -190,17 +185,52 @@ Ext.define('austese_uploader.controller.Controller', {
             processData: false,
             type: 'POST',
             success: function(d){
-                newresourcewindow.close();
                 Ext.getStore("ResourceStore").load();
             },
             failure: function(response){
                 Ext.ComponentQuery.query('statusbar')[0].setStatus({
                     iconCls: 'x-status-error',
-                    text: "Unable to update resource: " + response.responseText,
+                    text: "Unable to create resource: " + response.responseText,
                     clear: true
-                });;
+                });
             }
         });
+    },
+    createResource: function(button){
+        
+        var extwindow = button.up("window");
+        var windowId = extwindow.getItemId();
+        var filename = extwindow.down('form').getForm().findField("filename").getValue() || "transcription";
+        var filetype, content, size;
+        // determine whether this is a new or duplicated resource
+        if (windowId == "newresourcewindow"){
+            filetype = extwindow.down('form').getForm().findField("filetype").getGroupValue() || "text/plain";
+            // create a blob to represent the contents of the new transcription (simulates file)
+            if (filetype == "text/xml"){
+                content = "<TEI></TEI>";
+                size = 11;
+            } else {
+                content = "";
+                size = 0;
+            }
+            this.postResource(content, size, filetype, filename);
+        } else {
+            // get value from original resource record
+            filetype = extwindow.record.get('filetype');
+            // get content from existing record
+            var controller = this;
+            jQuery.ajax({
+                url: extwindow.record.get('uri'),
+                dataType: 'text',
+                success: function(rescontent){
+                    controller.postResource(rescontent, rescontent.length, filetype, filename);
+                    // TODO: duplicate resource metadata as well as content
+                }, 
+                scope: this
+            })
+        }
+        extwindow.close();
+        
     },
     addResources: function(button, filelist){
         button.up('mainpanel').down('statusbar').showBusy();
@@ -241,7 +271,7 @@ Ext.define('austese_uploader.controller.Controller', {
                 title: 'Confirm deletion',
                 msg: 'Are you sure you wish to delete ' 
                     + numResources + ' selected resource' + (numResources != 1? 's': '') + '?',
-                buttons: Ext.Msg.YESNO,
+                buttons: Ext.Msg.OKCANCEL,
                 fn: function(buttonId){
                     if(buttonId=='yes'){
                         controller.deleteResources(selections);
@@ -657,7 +687,12 @@ Ext.define('austese_uploader.controller.Controller', {
                         document.location.href ='/repository/resources/edit/' + record.get('id');
                     }}
                 );
-                
+                var record = records[0];
+                button.menu.add({
+                    text: 'Duplicate resource',
+                    tooltip: 'Create an exact duplicate of this resource',
+                    handler: this.duplicateResource
+                });
             }
         }
         if (filetype && filetype.match('image') && this.application.enableLightBox==1){

@@ -73,11 +73,11 @@ Ext.define('austese_uploader.view.SendToMVDWindow', {
                     items: [
                         {
                             xtype: 'button',
-                            text: 'Cancel'
+                            text: 'OK'
                         },
                         {
                             xtype: 'button',
-                            text: 'OK'
+                            text: 'Cancel'
                         }
                     ]
                 }

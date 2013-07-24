@@ -1,9 +1,9 @@
-Ext.define('austese_uploader.view.NewResourceWindow', {
+Ext.define('austese_uploader.view.DuplicateResourceWindow', {
     extend: 'Ext.window.Window',
-    alias: 'widget.newresourcewindow',
+    alias: 'widget.duperesourcewindow',
     width: 350,
-    id: 'newresourcewindow',
-    title: 'Create new transcription',
+    id: 'duperesourcewindow',
+    title: 'Duplicate resource',
     initComponent: function() {
         var me = this;
         Ext.applyIf(me, {
@@ -17,36 +17,14 @@ Ext.define('austese_uploader.view.NewResourceWindow', {
                        
                        {
                            xtype: 'label',
-                           text: 'Create a new transcription resource:'
+                           text: 'Enter a file name for the new duplicate resource:'
                        },
                        
                        {
                            name: 'filename',
                            fieldLabel: 'File Name',
                            value: ''
-                       },
-                       {
-                           xtype      : 'fieldcontainer',
-                           fieldLabel : 'File Type',
-                           defaultType: 'radiofield',
-                           defaults: {
-                               flex: 1
-                           },
-                           layout: 'hbox',
-                           items: [
-                               {
-                                   boxLabel  : 'Plain text',
-                                   name      : 'filetype',
-                                   inputValue: 'text/plain',
-                                   checked: true
-                               }, {
-                                   boxLabel  : 'TEI/XML',
-                                   name      : 'filetype',
-                                   inputValue: 'text/xml'
-                                  
-                               }
-                           ]
-                       },
+                       }
                     ]
                 }
             ],

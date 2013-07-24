@@ -92,12 +92,12 @@ Ext.define('austese_uploader.view.PropertiesPanel', {
                                 },
                                 {
                                     xtype: 'button',
-                                    text: 'Cancel'
+                                    text: 'Save',
+                                    tooltip: 'Update stored information for this resource'
                                 },
                                 {
                                     xtype: 'button',
-                                    text: 'Save',
-                                    tooltip: 'Update stored information for this resource'
+                                    text: 'Cancel'
                                 }
                             ]
                         }

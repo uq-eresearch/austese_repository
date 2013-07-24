@@ -62,11 +62,11 @@ Ext.define('austese_uploader.view.SelectPropertiesWindow', {
                         },
                         {
                             xtype: 'button',
-                            text: 'Cancel'
+                            text: 'Update'
                         },
                         {
                             xtype: 'button',
-                            text: 'Update'
+                            text: 'Cancel'
                         }
                     ]
                 }
