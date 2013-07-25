@@ -1,8 +1,6 @@
 {
 	"require": {
-		   "slim/slim": "1.6.*",
-		   "behat/behat": "2.4.*@stable",
-		   "guzzle/guzzle":"2.6.*"
+		   "slim/slim": "1.6.4"
 	},
 
 	"config": {
