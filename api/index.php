@@ -30,7 +30,7 @@ function createRecord($collection){
     }
     // Insert new object with one revision
     $newobj = array('_revisions' => array($obj), 'metadata'=>array($obj));
-    $m = new Mongo($config['dbhost'].':'.$config['dbport'], array('persist' => 'restapi'));
+    $m = new Mongo($config['dbhost'].':'.$config['dbport']);
     $db = $m->selectDB($config['dbname']);
     $coll = $db->selectCollection($collection);
     $inserted = $coll->insert($newobj, array('safe' => true));
@@ -76,7 +76,7 @@ function createResource(){
   try{
   $env = Slim_Environment::getInstance();
   $response = Slim::getInstance()->response();
-  $m = new Mongo($config['dbhost'].':'.$config['dbport'], array('persist' => 'restapi'));
+  $m = new Mongo($config['dbhost'].':'.$config['dbport']);
   $db = $m->selectDB($config['dbname']);
   $grid = $db->getGridFS();
   $filename=$_FILES["data"]["name"];
@@ -198,7 +198,7 @@ function getFeatureCodes() {
  $labelField = 'description';
  $response = Slim::getInstance()->response();
  $request = Slim::getInstance()->request();
- $m = new Mongo($config['dbhost'].':'.$config['dbport'], array('persist' => 'restapi'));
+ $m = new Mongo($config['dbhost'].':'.$config['dbport']);
  $db = $m->selectDB($config['dbname']);
  $coll = $db->selectCollection($collection);
  $pagesize = $request->get('pageSize');
@@ -236,7 +236,7 @@ function listResources(){
   global $app;
   $response = Slim::getInstance()->response();
   $request = Slim::getInstance()->request();
-  $m = new Mongo($config['dbhost'].':'.$config['dbport'], array('persist' => 'restapi'));
+  $m = new Mongo($config['dbhost'].':'.$config['dbport']);
   $db = $m->selectDB($config['dbname']);
   $grid = $db->getGridFS();
   $pagesize = $request->get('pageSize');
@@ -295,7 +295,7 @@ function listRecords($collection, $labelField){
     global $app;
     $response = Slim::getInstance()->response();
     $request = Slim::getInstance()->request();
-    $m = new Mongo($config['dbhost'].':'.$config['dbport'], array('persist' => 'restapi'));
+    $m = new Mongo($config['dbhost'].':'.$config['dbport']);
     $db = $m->selectDB($config['dbname']);
     $coll = $db->selectCollection($collection);
 
@@ -352,7 +352,7 @@ function listRecords($collection, $labelField){
 function getRecord($collection,$id,$revision) {
     global $config;
     $response = Slim::getInstance()->response();
-    $m = new Mongo($config['dbhost'].':'.$config['dbport'], array('persist' => 'restapi'));
+    $m = new Mongo($config['dbhost'].':'.$config['dbport']);
     $db = $m->selectDB($config['dbname']);
     $coll = $db->selectCollection($collection);
     $query = array('_id'=>new MongoId($id));
@@ -387,7 +387,7 @@ function getResource($id, $revision){
   $request = Slim::getInstance()->request();
   $requesttype = $request->headers('Accept');
   $scale = $request->get('scale');
-  $m = new Mongo($config['dbhost'].':'.$config['dbport'], array('persist' => 'restapi'));
+  $m = new Mongo($config['dbhost'].':'.$config['dbport']);
   $db = $m->selectDB($config['dbname']);
   $grid = $db->getGridFS();
   // todo and superseded is false
@@ -517,7 +517,7 @@ function updateRecord($collection,$id){
     }
     $obj['updated'] = date("Y-m-d H:i:s");
     // TOD0 check for provenance fields, add date if required
-    $m = new Mongo($config['dbhost'].':'.$config['dbport'], array('persist' => 'restapi'));
+    $m = new Mongo($config['dbhost'].':'.$config['dbport']);
     $db = $m->selectDB($config['dbname']);
     $coll = $db->selectCollection($collection);
     // lookup existing object to find revision number
@@ -546,7 +546,7 @@ function updateRecord($collection,$id){
 }
 function updateResource($id){
  global $config;
- $m = new Mongo($config['dbhost'].':'.$config['dbport'], array('persist' => 'restapi'));
+ $m = new Mongo($config['dbhost'].':'.$config['dbport']);
  $db = $m->selectDB($config['dbname']);
  $grid = $db->getGridFS();
  $env = Slim_Environment::getInstance();
@@ -660,7 +660,7 @@ function deleteRecord($collection,$id){
   global $config;
   $response = Slim::getInstance()->response();
   try {
-    $m = new Mongo($config['dbhost'].':'.$config['dbport'], array('persist' => 'restapi'));
+    $m = new Mongo($config['dbhost'].':'.$config['dbport']);
     $db = $m->selectDB($config['dbname']);
     $coll = $db->selectCollection($collection);
     $inserted = $coll->update(array('_id'=> new MongoId($id)),  array('$set' => array('_deleted' => true)), array('safe' => true));
@@ -678,7 +678,7 @@ function deleteRecord($collection,$id){
 function deleteResource($id){
   global $config;
   // add _deleted flag to resource (do not actually delete)
-  $m = new Mongo($config['dbhost'].':'.$config['dbport'], array('persist' => 'restapi'));
+  $m = new Mongo($config['dbhost'].':'.$config['dbport']);
   $db = $m->selectDB($config['dbname']);
   $grid = $db->getGridFS();
   $grid->update(array('_resourceid'=> $id), array('$set' => array('_deleted' => true)), array('safe' => true));
