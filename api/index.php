@@ -314,9 +314,12 @@ function listRecords($collection, $labelField){
     $findopts = array('_deleted'=>array('$exists'=>false));
     if ($filterTerm != null){
       $regex = new MongoRegex("/".$filterTerm."/i");
-      $findopts = array('$and'=>array($findopts,
-				      array('metadata.'.$searchField=>
-      				      $regex)));
+      $searchQueryOpts = array('metadata.'.$searchField=> $regex);
+      // Quick fix to search MVD resource arrays for optional internal id property
+      if ($searchField == "resources"){
+       $searchQueryOpts = array ('$or'=>array($searchQueryOpts,array('metadata.resources.id'=> $regex)));
+      }
+      $findopts = array('$and'=>array($findopts,$searchQueryOpts));
     }
     if ($project != null && $project != ''){
      $regex = new MongoRegex("/".$project."/i");

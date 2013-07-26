@@ -164,12 +164,12 @@ jQuery.fn.serializeObject = function() {
                 '<tpl for="resources">',
                 '<tpl if="xindex == 1"><p>{[xcount]} Resource{[xcount != 1? "s" : ""]} associated with this MVD:</p></tpl>',
                 '<ul>',
-                '<li class="resource" data-resourceid="{.}" data-template="summary"></li>',
+                '<li class="resource" data-resourceid="<tpl if="id">{id}</tpl><tpl if=".">{.}</tpl>" data-template="summary"></li>',
                 '</ul></tpl>',
                 '<p>',
                 '<tpl if="hasEditPermission"><a href="/{modulePrefix}/mvds/edit/{id}{projParam}" style="font-size:smaller">DELETE</a>&nbsp;&nbsp;</tpl>',
                 '<tpl if="hasEditPermission">',
-                '<a href="/collationtools/sendtomvd/<tpl for="resources">{.};</tpl>?docpath={name]}" style="font-size:smaller">REFRESH</a>&nbsp;&nbsp;',
+                '<a href="/collationtools/sendtomvd/<tpl for="resources"><tpl if="id">{id}</tpl><tpl if=".">{.}</tpl>;</tpl>?docpath={name]}" style="font-size:smaller">REFRESH</a>&nbsp;&nbsp;',
                 '</tpl>',
                 '<a href="/collationtools/compare#{[encodeURIComponent(values.name)]}" style="font-size:smaller">COMPARE</a>&nbsp;&nbsp;',
                 '<a href="/collationtools/apparatus#{[encodeURIComponent(values.name)]}" style="font-size:smaller">TABLE</a>',
@@ -764,7 +764,8 @@ jQuery.fn.serializeObject = function() {
                         res = d.results[i];
                         var refreshURL = '/collationtools/sendtomvd/';
                         for (var j = 0; j < res.resources.length; j++){
-                            refreshURL += res.resources[j] + ';'
+                            var resData = res.resources[j];
+                            refreshURL += (resData.id? resData.id : resData) + ';'
                         }
                         refreshURL += '?docpath=' + res.name;
                         result += '<option data-refresh="' + refreshURL + '" value="' + res.name + '">' + decodeURIComponent(res.name) + '</option>';
