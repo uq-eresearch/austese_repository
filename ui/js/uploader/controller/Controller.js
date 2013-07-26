@@ -273,7 +273,7 @@ Ext.define('austese_uploader.controller.Controller', {
                     + numResources + ' selected resource' + (numResources != 1? 's': '') + '?',
                 buttons: Ext.Msg.OKCANCEL,
                 fn: function(buttonId){
-                    if(buttonId=='yes'){
+                    if(buttonId=='ok'){
                         controller.deleteResources(selections);
                     }
                 }
