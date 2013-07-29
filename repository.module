@@ -349,7 +349,7 @@ function repository_display_resource($id,$raw=null){
     $breadcrumb[] = t('View Resource Content'); 
     drupal_set_breadcrumb($breadcrumb);
     if ($raw == 'raw'){
-        echo repository_render_tei($id);;
+        repository_render_tei($id);
     } else {
         //too slow use ajax instead - return theme('resources_content',array('content'=>$result));
         drupal_add_js(drupal_get_path('module', 'repository') . '/ui/js/displayresource.js');
@@ -358,26 +358,26 @@ function repository_display_resource($id,$raw=null){
 }
 // shift to repository api
 function repository_render_tei($id){
+    $modulePath = drupal_get_path('module', 'repository');
     $resurl = 'http://' . $_SERVER['HTTP_HOST'] . "/" . drupal_get_path('module', 'repository') . "/api/resources/" . $id;
-    $xml = file_get_contents($resurl);
+    $xslurl = $modulePath . '/ui/xslt/formats.xsl';
+    /*$xml = file_get_contents($resurl);
     if (!$xml) {
         watchdog('Content', "Empty resource content", array(), WATCHDOG_WARNING);
         echo $xml;
-    }
-    $dom = new DomDocument('1.0', 'UTF-8');
-    @$valid = $dom->loadXML($xml);
+    }*/
+    $dom = new DomDocument();
+    @$valid = $dom->load($resurl);
     if (!$valid) {
         watchdog('TEI Content', "Invalid XML/TEI Content", array(), WATCHDOG_WARNING);
         return $xml;
     }
-    $xsl = new DomDocument('1.0', 'UTF-8');
-    $modulePath = drupal_get_path('module', 'repository');
-    $xsl->load($modulePath . '/ui/xslt/formats.xsl');
+    $xslDoc = new DomDocument();
+    $xslDoc->load($xslurl);
+    
     $proc = new XsltProcessor();
-    $xsl = $proc->importStylesheet($xsl);
-    $newdom = $proc->transformToDoc($dom);
-    $out = $newdom->saveXML();
-    return $out;
+    $proc->importStylesheet($xslDoc);
+    echo $proc->transformToXML($dom);
 }
 
 function repository_display_record($template, $id=null){

@@ -2,6 +2,17 @@ jQuery(document).ready(function(){
     var existingId = jQuery('#metadata').data('existingid');
     // get metadata
     var resURI = '/' + jQuery('#metadata').data('modulepath') + "/api/resources/" + existingId;
+    function afterContentLoaded(){
+        if (typeof enableAnnotations == "function"){
+            enableAnnotations();
+        }
+        var wordCount = 0;
+        var normalizedText = jQuery('#resourceContent').text().replace(/\-+|&nbsp;/gi,' ').trim();
+        if (normalizedText){
+            wordCount=normalizedText.split(/\s+/).length;
+        }
+        jQuery('#wordCount').html("Resource Total Word Count: " + wordCount);
+    };
     jQuery.ajax({
         type: 'GET',
         dataType: "json",
@@ -42,27 +53,49 @@ jQuery(document).ready(function(){
                     }
                     
                 });
+                
                 jQuery.ajax({
-                      type: 'GET',
-                      cache: false, // FIXME: this is horrible
-                      // we really do want to cache these, but for text resources either jQuery or the browser is getting confused and not sending another request to the server
-                      url: resURL,
-                      success: function(d){
-                          var result = d;
-                          if (!mimeType.match("xml")){
-                              result = "<pre style='white-space:pre-wrap'>" + d + "</pre>"
-                          }
-                          jQuery('#resourceContent').html(result);
-                          if (typeof enableAnnotations == "function"){
-                              enableAnnotations();
-                          }
-                          var wordCount = 0;
-                          var normalizedText = jQuery('#resourceContent').text().replace(/\-+|&nbsp;/gi,' ').trim();
-                          if (normalizedText){
-                              wordCount=normalizedText.split(/\s+/).length;
-                          }
-                          jQuery('#wordCount').html("Resource Total Word Count: " + wordCount);
-                      }
+                    type:'GET',
+                    cache:false,
+                    url:resURI,
+                    success: function(xml){
+                        console.log("got",xml);
+                        if (!mimeType.match("xml")){
+                            result = "<pre style='white-space:pre-wrap'>" + xml + "</pre>";
+                            jQuery("#resourceContent").html(result);
+                            afterContentLoaded();
+                        } else {
+                            jQuery.ajax({
+                                url:'/sites/all/modules/austese_repository/ui/xslt/formats.xsl',
+                                success: function(xsl){
+                                    var result = "FALLBACK";
+                                    if (window.ActiveXObject) { // IE
+                                        result = xml.transformNode(xsl);
+                                    } else if (document.implementation && document.implementation.createDocument){
+                                        xsltProcessor=new XSLTProcessor();
+                                        xsltProcessor.importStylesheet(xsl);
+                                        result = xsltProcessor.transformToFragment(xml,document);
+                                    } 
+                                    if (result == "FALLBACK"){
+                                        jQuery.ajax({
+                                            type: 'GET',
+                                            cache: false, // FIXME: this is horrible
+                                            // we really do want to cache these, but for text resources either jQuery or the browser is getting confused and not sending another request to the server
+                                            url: resURL,
+                                            success: function(d){
+                                                jQuery('#resourceContent').html(d);
+                                                afterContentLoaded();
+                                            }
+                                      });
+                                    } else{
+                                        jQuery("#resourceContent").html(result);
+                                        afterContentLoaded();
+                                    }
+                                }
+                            });
+                        }
+                        
+                    }
                 });
             }
         }
