@@ -15,27 +15,6 @@ jQuery(document).ready(function() {
         '</p>',
         '</div>'
     );
-    var dummyDate = {
-            "startDate":"2011,12,10",
-            "endDate":"2011,12,11",
-            "headline":"Headline Goes Here",
-            "text":"<p>Body text goes here, some HTML is OK</p>",
-            "tag":"This is Optional",
-            "classname":"optionaluniqueclassnamecanbeaddedhere",
-            "asset": {
-                "media":"http://twitter.com/ArjunaSoriano/status/164181156147900416",
-                "thumbnail":"optional-32x32px.jpg",
-                "credit":"Credit Name Goes Here",
-                "caption":"Caption text goes here"
-            }
-        };
-    var dummyEra = {
-            "startDate":"2011,12,10",
-            "endDate":"2011,12,11",
-            "headline":"Headline Goes Here",
-            "text":"<p>Body text goes here, some HTML is OK</p>",
-            "tag":"This is Optional"
-        }
     var timelineData = {
         "timeline":
         {
@@ -43,6 +22,27 @@ jQuery(document).ready(function() {
             "type":"default",
             "date": [],
             "era": []
+        }
+    };
+    function formatDate(dateString){
+        // remove c. from the front of the date string in case of circa
+        if (dateString.indexOf("c.") == 0){
+            dateString = dateString.substring(2, dateString.length);
+        }
+        // if it's just a year, return the year
+        if (jQuery.isNumeric(dateString)){
+            return dateString;
+        }
+        // otherwise try to parse the date
+        try {
+            var eventDate = new Date(Date.parse(dateString));
+            if (eventDate instanceof Date){
+                // format date according to timelinejs requirement
+                return eventDate.getFullYear() + "," + (eventDate.getMonth()+1) + "," + eventDate.getDate();
+            }
+        } catch(e){
+            // ignore date parsing error
+            return dateString;
         }
     };
     jQuery.ajax({
@@ -56,18 +56,18 @@ jQuery(document).ready(function() {
             jQuery(result.results).each(function(i,e){
                 e.modulePrefix = 'repository';
                 e.hasEditPermission = editable;
+                
                 var eventData = {
                     headline: e.description + (e.eventType? " (" + e.eventType  + ")": ""),
-                    text: eventSummary.apply(e),
-                    startDate: e.startDate
+                    text: eventSummary.apply(e)
                 };
-                // FIXME: parse dates
-                if (e.endDate && jQuery.isNumeric(e.endDate)) {
-                    eventData.endDate=e.endDate;
+                if (e.startDate){
+                    eventData.startDate=formatDate(e.startDate);
                 }
-
+                if (e.endDate) {
+                    eventData.endDate=formatDate(e.endDate);
+                }
                 timelineData.timeline.date.push(eventData);
-                
             });
             createStoryJS({
                 type:       'timeline',
