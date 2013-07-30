@@ -18,9 +18,16 @@ var editor = {
              success: function(data, status, xhr){
                  editor.cm.setValue(xhr.responseText);
              },
-             error: function(jqXHR, textStatus, errorThrown){
-                 jQuery('#failMessage').html("<span class='label label-important'>" + textStatus + "</span> " + errorThrown);
+             error: function(xhr, textStatus, errorThrown){
+                 console.log(errorThrown);
+                 var errorMessage = errorThrown.message;
+                 // truncate error message as it tends to include the entire document
+                 if (textStatus == "parsererror" && errorMessage && errorMessage.indexOf(":")!=-1){
+                     errorMessage = errorMessage.substring(0,errorMessage.indexOf(":"));
+                 }
+                 jQuery('#failMessage').html("<span class='label label-important'>" + textStatus + "</span> " + errorMessage);
                  jQuery('#failureMessage').css('display','block');
+                 editor.cm.setValue(xhr.responseText);
              }
          });
      } else {

@@ -1,5 +1,7 @@
 jQuery(document).ready(function(){
     var existingId = jQuery('#metadata').data('existingid');
+    var modulePrefix = jQuery('#metadata').data('moduleprefix');
+    var project = jQuery('#metadata').data('project');
     // get metadata
     var resURI = '/' + jQuery('#metadata').data('modulepath') + "/api/resources/" + existingId;
     function afterContentLoaded(){
@@ -53,15 +55,26 @@ jQuery(document).ready(function(){
                     }
                     
                 });
-                
                 jQuery.ajax({
                     type:'GET',
                     cache:false,
                     url:resURI,
-                    success: function(xml){
-                        console.log("got",xml);
-                        if (!mimeType.match("xml")){
-                            result = "<pre style='white-space:pre-wrap'>" + xml + "</pre>";
+                    complete: function(xhr){
+                        if (xhr.status != 200){
+                            jQuery("#resourceContent").html("Error retrieving resource content");
+                            return;
+                        }
+                        var content = xhr.responseText;
+                        var xml = xhr.responseXML;
+                        if (!xml){
+                            if (mimeType.match("xml")){
+                                jQuery('#alerts').append(
+                                    jQuery('<div class="alert alert-block"><button type="button" class="close" data-dismiss="alert">x</button>' 
+                                        + '<h4>Resource does not contain valid XML</h4>'
+                                        + '<p><a href="/' + modulePrefix + '/resources/edit/' + existingId + (project? '?project=' + project : '') +'">Edit content</a> in transcription editor to view and correct errors</p>'
+                                        + '</div>').alert());
+                            }
+                            result = "<pre style='white-space:pre-wrap'>" + content + "</pre>";
                             jQuery("#resourceContent").html(result);
                             afterContentLoaded();
                         } else {
@@ -72,9 +85,13 @@ jQuery(document).ready(function(){
                                     if (window.ActiveXObject) { // IE
                                         result = xml.transformNode(xsl);
                                     } else if (document.implementation && document.implementation.createDocument){
-                                        xsltProcessor=new XSLTProcessor();
-                                        xsltProcessor.importStylesheet(xsl);
-                                        result = xsltProcessor.transformToFragment(xml,document);
+                                        try {
+                                            xsltProcessor=new XSLTProcessor();
+                                            xsltProcessor.importStylesheet(xsl);
+                                            result = xsltProcessor.transformToFragment(xml,document);
+                                        } catch (error){
+                                            result = error.message;
+                                        }
                                     } 
                                     if (result == "FALLBACK"){
                                         jQuery.ajax({
@@ -94,7 +111,6 @@ jQuery(document).ready(function(){
                                 }
                             });
                         }
-                        
                     }
                 });
             }
