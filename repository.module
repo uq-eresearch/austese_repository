@@ -258,11 +258,23 @@ function repository_edit($template, $id=null){
     drupal_add_js($modulePath . '/ui/lib/bootstrap-wysihtml5.js');
     drupal_add_css($modulePath. '/ui/lib/bootstrap-wysihtml5.css',  array('group' => CSS_DEFAULT, 'every_page' => FALSE));
     if ($template == "resources"){
-        drupal_add_js($modulePath . '/ui/lib/codemirror.js');
-        drupal_add_js($modulePath . '/ui/lib/xml.js');
+        drupal_add_js($modulePath . '/ui/lib/codemirror/codemirror.js');
+        // support collapsing tags
+        drupal_add_js($modulePath. '/ui/lib/codemirror/foldcode.js');
+        drupal_add_js($modulePath. '/ui/lib/codemirror/xml-fold.js');
+        // support autoclosing tags
+        drupal_add_js($modulePath . '/ui/lib/codemirror/closetag.js');
+        // support highlighting tags pairs
+        drupal_add_js($modulePath . '/ui/lib/codemirror/matchtags.js');
+        // autocmpletion
+        drupal_add_js($modulePath. '/ui/lib/codemirror/show-hint.js');
+        drupal_add_js($modulePath. '/ui/lib/codemirror/xml-hint.js');
+        drupal_add_css($modulePath. '/ui/lib/codemirror/show-hint.css');
+        // xml edit
+        drupal_add_js($modulePath . '/ui/lib/codemirror/xml.js');
         drupal_add_js($modulePath . '/ui/js/resourceedit.js');
-        drupal_add_css($modulePath . '/ui/lib/codemirror.css'); 
-        drupal_add_css($modulePath . '/ui/lib/xml.css'); 
+        drupal_add_css($modulePath . '/ui/lib/codemirror/codemirror.css'); 
+ 
     }
     // Add stylesheets
     drupal_add_css($modulePath . '/ui/css/repository.css',  array('group' => CSS_DEFAULT, 'every_page' => FALSE)); 
