@@ -3,7 +3,7 @@ jQuery(function(){
      editor.loadResource(jQuery('#savebtn').data("resource"));
      jQuery('#savebtn').click(editor.newResourceVersion);
  });
-var generalElements = ["div","p","lb","l","pb","hi","list","note"];
+var generalElements = ["div","p","lb","l","pb","lg","hi","list","note"];
 var generalAttrs = {"xml:id":null,"n":null,"xml:lang":null,"rend":null};
 var divAttrs = generalAttrs;
 divAttrs.type=null;
