@@ -2,6 +2,13 @@ jQuery(function(){
      editor.init();
      editor.loadResource(jQuery('#savebtn').data("resource"));
      jQuery('#savebtn').click(editor.newResourceVersion);
+     jQuery('#previewbtn').click(editor.previewResource);
+     jQuery.ajax({
+         url:'/sites/all/modules/austese_repository/ui/xslt/formats.xsl',
+         success: function(xsl){
+             editor.xsl = xsl;
+         }
+     });
  });
 var generalElements = ["div","p","lb","l","pb","lg","hi","list","note"];
 var generalAttrs = {"xml:id":null,"n":null,"xml:lang":null,"rend":null};
@@ -152,5 +159,28 @@ var editor = {
              }
          });
      } 
+ },
+ previewResource: function(){
+     if (editor.xsl){
+         var text = editor.cm.getValue();
+         var result = "Preview unavailable: Your browser does not support XSLT";
+         if (window.ActiveXObject) { // IE
+             var doc=new ActiveXObject('Microsoft.XMLDOM');
+             doc.async='false';
+             doc.loadXML(text);
+             result = doc.transformNode(editor.xsl);
+         } else if (document.implementation && document.implementation.createDocument){
+             try {
+                 var parser=new DOMParser();
+                 var doc=parser.parseFromString(text,'text/xml');
+                 xsltProcessor=new XSLTProcessor();
+                 xsltProcessor.importStylesheet(editor.xsl);
+                 result = xsltProcessor.transformToFragment(doc,document);
+             } catch (error){
+                 result = error.message;
+             }
+         } 
+         jQuery("#preview").html(result);
+     }
  }
 };

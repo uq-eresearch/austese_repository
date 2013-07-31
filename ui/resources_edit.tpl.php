@@ -10,5 +10,7 @@
 <textarea id="editor" name="editor" cols="100" rows="1"> 
 </textarea>
 <div class="form-actions">
-<button data-resource="/<?php print drupal_get_path('module', 'repository');?>/api/resources/<?php print arg(3); ?>" class="btn" id="savebtn">Save New Version</button>
+<button data-resource="/<?php print drupal_get_path('module', 'repository');?>/api/resources/<?php print arg(3); ?>" class="btn btn-primary" title="Save as new version" id="savebtn">Save</button>
+<button data-resource="/<?php print drupal_get_path('module', 'repository');?>/api/resources/<?php print arg(3); ?>" class="pull-right btn" title="Preview hhow this resource will appear when rendered from TEI/XML" id="previewbtn">Preview</button>
 </div>
+<div id="preview"></div>
