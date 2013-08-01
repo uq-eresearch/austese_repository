@@ -270,6 +270,7 @@ function repository_edit($template, $id=null){
         drupal_add_js($modulePath. '/ui/lib/codemirror/show-hint.js');
         drupal_add_js($modulePath. '/ui/lib/codemirror/xml-hint.js');
         drupal_add_css($modulePath. '/ui/lib/codemirror/show-hint.css');
+        drupal_add_css($modulePath . '/ui/css/tei.css');
         // xml edit
         drupal_add_js($modulePath . '/ui/lib/codemirror/xml.js');
         drupal_add_js($modulePath . '/ui/js/resourceedit.js');
@@ -365,6 +366,7 @@ function repository_display_resource($id,$raw=null){
     } else {
         //too slow use ajax instead - return theme('resources_content',array('content'=>$result));
         drupal_add_js(drupal_get_path('module', 'repository') . '/ui/js/displayresource.js');
+        drupal_add_css(drupal_get_path('module', 'repository') . '/ui/css/tei.css');
         return theme('resources_content',array());
     }
 }

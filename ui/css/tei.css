@@ -1,0 +1,69 @@
+p.stage-italic { 
+    color: #51666b;
+    font-style: italic;
+    margin-top:1em;
+    margin-bottom:1em;
+}
+p.stage { 
+    color: #51666b;
+    margin-top:1em;
+    margin-bottom:1em;
+}
+span.speaker {
+    font-weight: bold
+}
+br.l {}
+p.sp {
+    line-height:2em;
+}
+span.italics {
+    font-style: italic
+}
+span.bold {
+    font-weight: bold;
+}
+span.deleted {
+   background-color:#FFDFDF;
+   border-radius: 3px;
+}
+.founddeleted {
+    text-decoration: line-through;
+}
+span.added, span.inserted {
+    background-color:#E0EAF8;
+    border-radius: 3px;
+    position: relative;
+}
+span.base { 
+   border-bottom: 1px dotted #ba0000;
+}
+span.left {
+    position: relative;
+    float:left;
+}
+span.right {
+    position: relative;
+    float:right;
+}
+span.inserted-left {
+    position: relative;
+    float: left;
+    background-color: #E0EAF8;
+    border-radius: 3px;
+}
+span.inserted-right {
+    position: relative;
+    float: right;
+    background-color: #E0EAF8;
+    border-radius: 3px;
+}
+span.merged { -hrit-mergeid: id }
+a.parent { 
+    color:black;
+    border-bottom: 1px dashed purple; 
+    -hrit-childid: href 
+}
+a.child { 
+    color:black;
+    border-bottom: 1px dashed purple; 
+    -hrit-parentid: href }
