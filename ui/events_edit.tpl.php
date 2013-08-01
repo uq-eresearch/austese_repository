@@ -48,17 +48,7 @@ if (isset($_GET['project'])) {
     </fieldset>
     </div>
     
-    <div class="well white-well">
-    <p>This field is most likely to apply to "composite" events:</p>
-    <fieldset>
-    <div class="control-group">
-      <label class="control-label" for="events">Sub-Events</label>
-      <div class="controls">
-        <textarea rows="2" name="events" type="text" class="input-xlarge" id="events"></textarea>
-      </div>
-    </div>
-    </fieldset>
-    </div>
+    
     
     <div class="well white-well">
     <p>These fields are most likely to apply to basic "action" events:</p>
@@ -76,19 +66,25 @@ if (isset($_GET['project'])) {
         <input name="endDate" type="text" class="input-xlarge" id="endDate">
       </div>
     </div>
-    
+    <hr class="muted"/>
     <div class="control-group">
       <label class="control-label" for="artefacts">Artefacts</label>
       <div class="controls">
         <textarea rows="2" name="artefacts" type="text" class="input-xlarge" id="artefacts"></textarea>
-        <span class="help-block">Artefacts produced by or impacted on by this event</span>
+        <p class="help-block">Artefacts produced by or impacted on by this event</p>
+        <a target="_blank" href="/repository/artefacts/edit<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
+        <button type="button" title="Describe new artefact in new tab" class="btn"><i class="icon-plus"></i> New artefact</button>
+        </a>
       </div>
     </div>
     <div class="control-group">
       <label class="control-label" for="agents">Agents</label>
       <div class="controls">
         <textarea rows="2" name="agents" type="text" class="input-xlarge" id="agents"></textarea>
-        <span class="help-block">Agents participating in or responsible for this event</span>
+        <p class="help-block">Agents participating in or responsible for this event</p>
+        <a target="_blank" href="/repository/agents/edit<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
+        <button type="button" title="Describe new agent in new tab" class="btn"><i class="icon-plus"></i> New agent</button>
+        </a>
       </div>
     </div>
     <div class="control-group">
@@ -96,6 +92,21 @@ if (isset($_GET['project'])) {
       <div class="controls">
         <textarea rows="2" name="places" type="text" class="input-xlarge" id="places"></textarea>
         <span class="help-block">Where this event took place</span>
+      </div>
+    </div>
+    </fieldset>
+    </div>
+    <div class="well white-well">
+    <p>This field is most likely to apply to "composite" events:</p>
+    <fieldset>
+    <div class="control-group">
+      <label class="control-label" for="events">Sub-Events</label>
+      <div class="controls">
+        <textarea rows="2" name="events" type="text" class="input-xlarge" id="events"></textarea>
+        <p class="help-block">Sub-events associated with this event</p>
+        <a target="_blank" href="/repository/events/edit<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
+        <button type="button" title="Describe new event in new tab" class="btn"><i class="icon-plus"></i> New event</button>
+        </a>
       </div>
     </div>
     </fieldset>

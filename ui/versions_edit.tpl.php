@@ -86,17 +86,23 @@ if (isset($_GET['project'])) {
     <div class="well white-well">
     <fieldset>
     <div class="control-group">
-      <label class="control-label" for="artefacts">Artefacts</label>
-      <div class="controls">
-        <textarea rows="2" name="artefacts" type="text" class="input-xlarge" id="artefacts"></textarea>
-        <p class="help-block">Artefacts associated with this version</p>
-      </div>
-    </div>
-    <div class="control-group">
       <label class="control-label" for="versions">Has Part(s)</label>
       <div class="controls">
         <textarea rows="2" name="versions" type="text" class="input-xlarge" id="versions"></textarea>
         <p class="help-block">VersionParts that are part of this version</p>
+        <a target="_blank" href="/repository/versions/edit<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
+        <button type="button" title="Describe new version part in new tab" class="btn"><i class="icon-plus"></i> New version part</button>
+        </a>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="artefacts">Artefacts</label>
+      <div class="controls">
+        <textarea rows="2" name="artefacts" type="text" class="input-xlarge" id="artefacts"></textarea>
+        <p class="help-block">Artefacts associated with this version</p>
+        <a target="_blank" href="/repository/artefacts/edit<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
+        <button type="button" title="Describe new artefact in new tab" class="btn"><i class="icon-plus"></i> New artefact</button>
+        </a>
       </div>
     </div>
     <div class="control-group">
@@ -104,6 +110,9 @@ if (isset($_GET['project'])) {
       <div class="controls">
         <textarea rows="2" name="transcriptions" type="text" class="input-xlarge" id="transcriptions"></textarea>
         <p class="help-block">Transcriptions associated with this version</p>
+        <a target="_blank" href="/repository/resources<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
+        <button type="button" title="Upload new transcription resource in new tab" class="btn"><i class="icon-plus"></i> New transcription</button>
+        </a>
       </div>
     </div>
     <div class="control-group">

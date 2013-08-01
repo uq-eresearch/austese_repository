@@ -36,12 +36,12 @@ if (isset($_GET['project'])) {
 </div>
 <div class="row">
     <div class="span10" id="newobject">
-     <?php if (user_access('edit metadata') && $apiType != 'mvd'): ?>
-       <a href="<?php print $apiType; ?>s/edit<?php if ($project) print '?project='.$project; ?>">+ New <?php print $apiType; ?></a>
+     <?php if (user_access('edit metadata') && $apiType != 'mvd' && $apiType != 'place'): ?>
+       <a href="<?php print $apiType; ?>s/edit<?php if ($project) print '?project='.$project; ?>"><button type="button" class="btn"><i class="icon-plus"></i> New <?php print $apiType; ?></button></a>
      <?php endif; ?>
      <?php if ($apiType=='event'):?>
-       &nbsp;&nbsp;&nbsp;<a href="/<?php print arg(0); ?>/<?php print $apiType; ?>s/map/<?php if ($project): print "?project=".$project; endif; ?>">View Map</a>
-       &nbsp;&nbsp;&nbsp;<a href="/<?php print arg(0); ?>/<?php print $apiType; ?>s/timeline/<?php if ($project): print "?project=".$project; endif; ?>">View Timeline</a>
+       &nbsp;<a href="/<?php print arg(0); ?>/<?php print $apiType; ?>s/map/<?php if ($project): print "?project=".$project; endif; ?>"><button type="button" class="btn"><i class="icon-globe"></i> View Map</button></a>
+       &nbsp;<a href="/<?php print arg(0); ?>/<?php print $apiType; ?>s/timeline/<?php if ($project): print "?project=".$project; endif; ?>"><button type="button" class="btn"><i class="icon-time"></i> View Timeline</button></a>
      <?php endif;?>
      </div>
     <?php if ($apiType != "mvd"):?>

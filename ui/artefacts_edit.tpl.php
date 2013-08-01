@@ -89,17 +89,25 @@ if (isset($_GET['project'])) {
   
   <fieldset>
     <div class="control-group">
+    
       <label class="control-label" for="artefacts">Has Part(s)</label>
-      <div class="controls">
-        <textarea rows="2" name="artefacts" type="text" class="input-xlarge" id="artefacts"></textarea>
+      <div class="controls ">
+        
+        <input name="artefacts" type="text" id="artefacts" />
         <p class="help-block">ArtefactParts associated with this artefact</p>
+        <a target="_blank" href="/repository/artefacts/edit<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
+        <button type="button" title="Describe new artefact part in new tab" class="btn"><i class="icon-plus"></i> New artefact part</button>
+        </a>
       </div>
     </div>
     <div class="control-group">
       <label class="control-label" for="facsimiles">Facsimiles</label>
       <div class="controls">
         <textarea rows="2" name="facsimiles" type="text" class="input-xlarge" id="facsimiles"></textarea>
-        <p class="help-block">Facsimiles associated with this version</p>
+        <p class="help-block">Facsimiles associated with this artefact</p>
+        <a target="_blank" href="/repository/resources<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
+        <button type="button" title="Upload new facsimile resource in new tab" class="btn"><i class="icon-plus"></i> New facsimile</button>
+        </a>
       </div>
     </div>
     </fieldset>
