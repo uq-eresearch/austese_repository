@@ -51,13 +51,16 @@ jQuery.fn.serializeObject = function() {
              loadObjectIntoEditor(existingId);
              jQuery('#dupe-btn').css('display','inline').on('click',onDuplicate);
              jQuery('#del-btn').css('display','inline').on('click',onDelete);
+            } else {
+                wysiEditors.push(jQuery('#description').wysihtml5());
+                wysiEditors.push(jQuery('#biography').wysihtml5());
             }
         
         } else {
             setUpTemplates();
             if (existingId){
                 loadObject(existingId);
-            }
+            } 
         } 
 
         // set up search fields
