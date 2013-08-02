@@ -3,18 +3,7 @@ jQuery(document).ready(function() {
     var modulePath =  metadata.data('modulepath');
     var project = metadata.data('project');
     var editable = metadata.data('editable');
-    var eventSummary = new Ext.XTemplate(
-        '<div class="obj">',
-        '<tpl for="agents"><tpl if="xindex == 1"><br/>({[xcount]} associated participant{[xcount != 1? "s" : ""]})</tpl></tpl>',
-        '<tpl for="artefacts"><tpl if="xindex == 1"><br/>(Produced {[xcount]} artefact{[xcount != 1? "s" : ""]})</tpl></tpl>',
-        '<tpl for="events"><tpl if="xindex == 1"><br/>({[xcount]} associated sub-event{[xcount != 1? "s" : ""]})</tpl></tpl>',
-        '<p><a href="/{modulePrefix}/events/{id}{projParam}" style="font-size:smaller">VIEW</a>',
-        '<tpl if="hasEditPermission">',
-            '&nbsp;&nbsp;<a href="/{modulePrefix}/events/edit/{id}{projParam}" style="font-size:smaller">EDIT</a>',
-        '</tpl>',
-        '</p>',
-        '</div>'
-    );
+    var eventSummary = templates.eventTimelineSummary;
     var timelineData = {
         "timeline":
         {
@@ -56,10 +45,12 @@ jQuery(document).ready(function() {
             jQuery(result.results).each(function(i,e){
                 e.modulePrefix = 'repository';
                 e.hasEditPermission = editable;
-                
+                if (project){
+                    e.projParam = "?project=" + project;
+                }
                 var eventData = {
                     headline: e.description + (e.eventType? " (" + e.eventType  + ")": ""),
-                    text: eventSummary.apply(e)
+                    text: eventSummary(e)
                 };
                 if (e.startDate){
                     eventData.startDate=formatDate(e.startDate);

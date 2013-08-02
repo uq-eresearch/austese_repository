@@ -39,8 +39,6 @@ if (isset($_GET['project'])) {
  data-enablealignment="<?php print module_exists('alignment');?>"
  data-apitype="<?php print $apiType;?>">
 </div>
-<link rel="stylesheet" href="/sites/all/libraries/ext-4.1.1a/resources/css/ext-all.css">
-<link rel="stylesheet" href="/sites/all/libraries/ext-4.1.1a/resources/css/ext-all-gray.css">
 <div id="uploaderui"></div>
 <div id="images"></div>
 

@@ -21,7 +21,6 @@ jQuery.fn.serializeObject = function() {
     var apiOperation = null;
     var existingId = null;
     var serverName = null;
-    var templates = {};
     var wysiEditors = [];
     jQuery(document).ready(function(){
         var metadata = jQuery('#metadata');
@@ -37,7 +36,6 @@ jQuery.fn.serializeObject = function() {
         hasEditPermission = metadata.data('editable');
         if (apiOperation == "load"){
             // display list of results
-            setUpTemplates();
             loadObjects(0);
             // set up handler for filter field
             jQuery('#filter').keyup(function(e) {
@@ -57,7 +55,6 @@ jQuery.fn.serializeObject = function() {
             }
         
         } else {
-            setUpTemplates();
             if (existingId){
                 loadObject(existingId);
             } 
@@ -142,295 +139,6 @@ jQuery.fn.serializeObject = function() {
         }
         
     });
-    function setUpTemplates(){
-        templates.collectionSummary = new Ext.XTemplate(
-                '<div class="obj">',
-                    '<h4><a href="/{modulePrefix}/collections/{id}{projParam}">{name}</a></h4>',
-                    '<tpl for="resources"><tpl if="xindex == 1"><br/>({[xcount]} associated resource{[xcount != 1? "s" : ""]})</tpl></tpl>',
-                    '<tpl if="hasEditPermission"><p><a href="/{modulePrefix}/collections/edit/{id}{projParam}" style="font-size:smaller">EDIT</a></p></tpl>',
-                '</div>'
-            );
-        templates.collectionDetail = new Ext.XTemplate(
-            '<div class="obj">',
-                '<h4><a href="/{modulePrefix}/collections/{id}{projParam}">{name}</a></h4>',
-                '<tpl for="resources">',
-                '<tpl if="xindex == 1"><p>{[xcount]} Resource{[xcount != 1? "s" : ""]} associated with this ResourceCollection:</p></tpl>',
-                '<ul>',
-                '<li class="resource" data-resourceid="{.}" data-template="summary"></li>',
-                '</ul></tpl>',
-                '<tpl if="hasEditPermission"><p><a href="/{modulePrefix}/collections/edit/{id}{projParam}" style="font-size:smaller">EDIT</a></p></tpl>',
-            '</div>'
-        );
-        templates.mvdSummary = new Ext.XTemplate(
-            '<div class="obj">',
-                '<h4>{name}</h4>',
-                '<tpl for="resources">',
-                '<tpl if="xindex == 1"><p>{[xcount]} Resource{[xcount != 1? "s" : ""]} associated with this MVD:</p></tpl>',
-                '<ul>',
-                '<li class="resource" data-resourceid="<tpl if="id">{id}</tpl><tpl if=".">{.}</tpl>" data-template="summary"></li>',
-                '</ul></tpl>',
-                '<p>',
-                '<tpl if="hasEditPermission"><a href="/{modulePrefix}/mvds/edit/{id}{projParam}" style="font-size:smaller">DELETE</a>&nbsp;&nbsp;</tpl>',
-                '<tpl if="hasEditPermission">',
-                '<a href="/collationtools/sendtomvd/<tpl for="resources"><tpl if="id">{id}</tpl><tpl if=".">{.}</tpl>;</tpl>?docpath={name]}" style="font-size:smaller">REFRESH</a>&nbsp;&nbsp;',
-                '</tpl>',
-                '<a href="/collationtools/compare#{[encodeURIComponent(values.name)]}" style="font-size:smaller">COMPARE</a>&nbsp;&nbsp;',
-                '<a href="/collationtools/apparatus#{[encodeURIComponent(values.name)]}" style="font-size:smaller">TABLE</a>',
-                '</p>',
-            '</div>'
-        );
-        templates.versionSummary = new Ext.XTemplate(
-            '<div class="obj">',
-                '<h4><a href="/{modulePrefix}/versions/{id}{projParam}">{versionTitle} <tpl if="name">({name})</tpl></a></h4>',
-                '{date} {publisher}',
-                '<tpl if="description"><br/>{description: ellipsis(100)}</tpl>',
-                '<tpl if="firstLine"><br/><em>{firstLine}</em></tpl>',
-                '<tpl for="artefacts"><tpl if="xindex == 1"><br/>({[xcount]} associated artefact{[xcount != 1? "s" : ""]})</tpl></tpl>',
-                '<tpl for="versions"><tpl if="xindex == 1"><br/>({[xcount]} associated part{[xcount != 1? "s" : ""]})</tpl></tpl>',
-                '<tpl for="transcriptions"><tpl if="xindex == 1"><br/>({[xcount]} associated transcription{[xcount != 1? "s" : ""]})</tpl></tpl>',
-                '<tpl if="hasEditPermission"><p><a href="/{modulePrefix}/versions/edit/{id}{projParam}" style="font-size:smaller">EDIT</a></p></tpl>',
-            '</div>'
-        );
-        templates.versionSummary.compile();
-        templates.versionDetail = new Ext.XTemplate(
-                '<div>',
-                    '<table class="table">',
-                    '<tpl if="versionTitle"><tr><td class="metadatalabel muted">Title</td><td>{versionTitle}</td></tr></tpl>',
-                    '<tpl if="name"><tr><td class="metadatalabel muted">Name</td><td>{name}</td></tr></tpl>',
-                    '<tpl if="date"><tr><td class="metadatalabel muted">Date</td><td>{date}</td></tr></tpl>',
-                    '<tpl if="publisher"><tr><td class="metadatalabel muted">Publisher</td><td>{publisher}</td></tr></tpl>',
-                    '<tpl if="description"><tr><td class="metadatalabel muted">Description</td><td>{description}</td></tr></tpl>',
-                    '<tpl if="illust"><tr><td class="metadatalabel muted">Illustrations</td><td>{illust}</td></tr></tpl>',
-                    '<tpl if="firstLine"><tr><td class="metadatalabel muted">First Line</td><td>{firstLine}</td></tr></tpl>',
-                    '</table>',
-                    '<tpl for="artefacts">',
-                    '<tpl if="xindex == 1"><h3 class="muted">Artefacts</h3><p>{[xcount]} artefact{[xcount != 1? "s" : ""]} associated with this version:</p></tpl>',
-                    '<ul>',
-                        '<li><div class="artefact" data-artefactid="{.}" data-template="summary"></div></li>',
-                    '</ul></tpl>',
-                    '<tpl for="versions">',
-                    '<tpl if="xindex == 1"><h3 class="muted">Parts</h3><p>{[xcount]} part{[xcount != 1? "s" : ""]} associated with this version:</p></tpl>',
-                    '<ul>',
-                        '<li><div class="version" data-versionid="{.}" data-template="summary"></div></li>',
-                    '</ul></tpl>',
-                    '<tpl for="transcriptions">',
-                    '<tpl if="xindex == 1"><h3 class="muted">Transcriptions</h3><p>{[xcount]} transcription{[xcount != 1? "s" : ""]} associated with this version:</p></tpl>',
-                    '<ul>',
-                    '<li class="resource" data-resourceid="{.}" data-template="summary"></li>',
-                    '</ul></tpl>',
-                    '<tpl for="places">',
-                    '<tpl if="xindex == 1"><h3 class="muted">Places</h3><p>{[xcount]} place{[xcount != 1? "s" : ""]} associated with this version:</p></tpl>',
-                    '<ul>',
-                    '<li class="place" data-placeid="{.}" data-template="compact"></li>',
-                    '</ul></tpl>',
-                '</div>'
-            );
-        templates.versionDetail.compile();
-        templates.agentSummary = new Ext.XTemplate(
-                '<div class="obj">',
-                '<h4><a href="/{modulePrefix}/agents/{id}{projParam}">{lastName}, {firstName}</a></h4>',
-                '<tpl if="birthDate"> b. {birthDate}, </tpl>',
-                '<tpl if="deathDate"> d. {deathDate}, </tpl>',
-                '{biography:ellipsis(200)}',
-                '<tpl if="hasEditPermission">',
-                    '<p><a href="/{modulePrefix}/agents/edit/{id}{projParam}" style="font-size:smaller">EDIT</a></p>',
-                '</tpl>',
-                '</div>'
-        );
-        templates.agentSummary.compile();
-        templates.agentDetail = new Ext.XTemplate(
-                '<div>',
-                '<table class="table">',
-                '<tpl if="lastName"><tr><td class="metadatalabel muted">Last Name</td><td>{lastName}</td></tr></tpl>',
-                '<tpl if="firstName"><tr><td class="metadatalabel muted">Given Name(s)</td><td>{firstName}</td></tr></tpl>',
-                '<tpl if="birthDate"><tr><td class="metadatalabel muted">Born</td><td>{birthDate}</td></tr></tpl>',
-                '<tpl if="deathDate"><tr><td class="metadatalabel muted">Died</td><td>{deathDate}</td></tr></tpl>',
-                '<tpl if="biography"><tr><td class="metadatalabel muted">Biography</td><td>{biography}</td></tr></tpl>',
-                '</table>',
-                '</div>'
-        );
-        templates.agentDetail.compile();
-        templates.eventSummary = new Ext.XTemplate(
-                '<div class="obj">',
-                '<h4><a href="/{modulePrefix}/events/{id}{projParam}">{description}<tpl if="eventType"> ({eventType})</tpl></a></h4>',
-                '<tpl if="startDate">{startDate} &ndash; </tpl>',
-                '<tpl if="endDate">{endDate}</tpl>',
-                '<tpl for="agents"><tpl if="xindex == 1"><br/>({[xcount]} associated participant{[xcount != 1? "s" : ""]})</tpl></tpl>',
-                '<tpl for="artefacts"><tpl if="xindex == 1"><br/>(Produced {[xcount]} artefact{[xcount != 1? "s" : ""]})</tpl></tpl>',
-                '<tpl for="events"><tpl if="xindex == 1"><br/>({[xcount]} associated sub-event{[xcount != 1? "s" : ""]})</tpl></tpl>',
-                '<tpl if="hasEditPermission">',
-                    '<p><a href="/{modulePrefix}/events/edit/{id}{projParam}" style="font-size:smaller">EDIT</a></p>',
-                '</tpl>',
-                '</div>'
-        );
-        templates.eventSummary.compile();
-        templates.eventDetail = new Ext.XTemplate(
-                '<div class="obj">',
-                '<h4><a href="/{modulePrefix}/events/{id}{projParam}">{description}<tpl if="eventType"> ({eventType})</tpl></a></h4>',
-                '<tpl if="startDate">{startDate} &ndash; </tpl>',
-                '<tpl if="endDate">{endDate}</tpl>',
-                '<tpl for="agents">',
-                    '<tpl if="xindex == 1"><h3 class="muted">Agents</h3><p>{[xcount]} agent{[xcount != 1? "s" : ""]} participated in this event:</p></tpl>',
-                    '<ul>',
-                        '<li><div class="agent" data-agentid="{.}" data-template="summary"></div></li>',
-                    '</ul>',
-                '</tpl>',
-                '<tpl for="artefacts">',
-                    '<tpl if="xindex == 1"><h3 class="muted">Artefacts</h3><p>{[xcount]} artefact{[xcount != 1? "s" : ""]} produced by this event:</p></tpl>',
-                    '<ul>',
-                        '<li><div class="artefact" data-artefactid="{.}" data-template="summary"></div></li>',
-                    '</ul>',
-                '</tpl>',
-                '<tpl for="places">',
-                    '<tpl if="xindex == 1"><h3 class="muted">Places</h3><p>{[xcount]} place{[xcount != 1? "s" : ""]} associated with this event:</p></tpl>',
-                    '<ul>',
-                    '<li class="place" data-placeid="{.}" data-template="compact"></li>',
-                    '</ul>',
-                '</tpl>',
-                '<tpl for="events">',
-                    '<tpl if="xindex == 1"><h3 class="muted">Sub-Events</h3><p>{[xcount]} sub-event{[xcount != 1? "s" : ""]} associated with this event:</p></tpl>',
-                    '<ul>',
-                        '<li><div class="event" data-eventid="{.}" data-template="summary"></div></li>',
-                    '</ul>',
-                '</tpl>',
-                '</div>'
-        );
-        templates.eventDetail.compile();
-        templates.artefactSummary = new Ext.XTemplate(
-                '<div class="obj">',
-                '<h4><a href="/{modulePrefix}/artefacts/{id}{projParam}">{source}</a></h4>',
-                '<tpl if="date">{date}, </tpl>{bibDetails:ellipsis(100)}',
-                '<tpl for="artefacts"><tpl if="xindex == 1"><br/>({[xcount]} associated part{[xcount != 1? "s" : ""]})</tpl></tpl>',
-                '<tpl for="facsimiles"><tpl if="xindex == 1"><br/>({[xcount]} associated facsimile{[xcount != 1? "s" : ""]})</tpl></tpl>',
-                '<tpl if="hasEditPermission">',
-                    '<p><a href="/{modulePrefix}/artefacts/edit/{id}{projParam}" style="font-size:smaller">EDIT</a></p>',
-                '</tpl>',
-                '</div>'
-        );
-        templates.artefactSummary.compile();
-        templates.artefactDetail = new Ext.XTemplate(
-                '<div>',
-                '<table class="table">',
-                '<tpl if="source"><tr><td class="metadatalabel muted">Source</td><td>{source}</td></tr></tpl>',
-                '<tpl if="date"><tr><td class="metadatalabel muted">Date</td><td>{date}</td></tr></tpl>',
-                '<tpl if="bibDetails"><tr><td class="metadatalabel muted">Bibliographic Details</td><td>{bibDetails}</td></tr></tpl>',
-                '<tpl if="publisher"><tr><td class="metadatalabel muted">Publisher</td><td>{publisher}</td></tr></tpl>',
-                '<tpl if="printer"><tr><td class="metadatalabel muted">Printer</td><td>{printer}</td></tr></tpl>',
-                '<tpl if="format"><tr><td class="metadatalabel muted">Format</td><td>{format}</td></tr></tpl>',
-                '<tpl if="paperType"><tr><td class="metadatalabel muted">Paper Type</td><td>{paperType}</td></tr></tpl>',
-                '<tpl if="artefactSize"><tr><td class="metadatalabel muted">Size</td><td>{artefactSize}</td></tr></tpl>',
-                '</table>',
-                '<tpl for="artefacts">',
-                '<tpl if="xindex == 1"><h3 class="muted">Parts</h3><p>{[xcount]} part{[xcount != 1? "s" : ""]} associated with this artefact:</p></tpl>',
-                '<ul>',
-                    '<li><div class="artefact" data-artefactid="{.}" data-template="summary"></div></li>',
-                '</ul></tpl>',
-                '<tpl for="facsimiles">',
-                    '<tpl if="xindex == 1"><h3 class="muted">Facsimiles</h3><p>{[xcount]} facsimile{[xcount != 1? "s" : ""]} associated with this artefact:</p></tpl>',
-                    '<ul>',
-                    '<li class="resource" data-resourceid="{.}" data-template="summary"></li>',
-                    '</ul>',
-                '</tpl>',
-                '</div>'
-        );
-        templates.artefactDetail.compile();
-        templates.workSummary = new Ext.XTemplate(
-                '<div class="obj">',
-                '<h4><a href="/{modulePrefix}/works/{id}{projParam}">{workTitle}<tpl if="name"> ({name})</tpl></a></h4>',
-                '<tpl if="description">{description: ellipsis(100)}<br/></tpl>',
-                '<tpl for="versions"><tpl if="xindex == 1">({[xcount]} associated version{[xcount != 1? "s" : ""]})</tpl></tpl>',
-                '<tpl if="hasEditPermission">',
-                    '<p><a href="/{modulePrefix}/works/edit/{id}{projParam}" style="font-size:smaller">EDIT</a></p>',
-                '</tpl>',
-                '</div>'
-        );
-        templates.workSummary.compile();
-        templates.workDetail = new Ext.XTemplate(
-                '<div>',
-                '<table class="table">',
-                '<tpl if="workTitle"><tr><td class="metadatalabel muted">Title</td><td>{workTitle}</td></tr></tpl>',
-                '<tpl if="name"><tr><td class="metadatalabel muted">Name</td><td>{name}</td></tr></tpl>',
-                '<tpl if="description"><tr><td class="metadatalabel muted">Description</td><td>{description}</td></tr></tpl>',
-                '</table>',
-                
-                '<h3>Versions</h3><tpl for="versions"><ul>',
-                '<li class="version" data-versionid="{.}" data-template="summary"></li>',
-                '</ul></tpl>',
-                '</div>'
-        );
-        templates.workDetail.compile();
-        templates.placeCompact = new Ext.XTemplate(
-                '<div>',
-                '<h4><a href="/{modulePrefix}/places/{id}{projParam}">{name}, {state}</a></h4>',
-                '<p>Feature Type: <span class="featureCode">{featureCode }</span></p>',
-                '</div>'
-        );
-        templates.placeCompact.compile();
-        templates.placeSummary = new Ext.XTemplate(
-            '<div class="span3 obj">',
-                '<div class="placedesc">',
-                '<h4><a href="/{modulePrefix}/places/{id}{projParam}">{name}, {state}</a></h4>',
-                '<p>Feature Type: <span class="featureCode" data-truncate="true">{featureCode }</span></p>',
-                '</div>',
-                '<div class="minimap" data-lat="{latitude}" data-long="{longitude}"></div>',
-            '</div>'
-        );
-        templates.placeSummary.compile();
-        templates.placeDetail = new Ext.XTemplate(
-            '<div class="span6">',
-                '<table class="table">',
-                '<tr><td class="metadatalabel muted">Name</td><td>{name}</td></tr>',
-                '<tr><td class="muted">State</td><td>{state}</td></tr>',
-                '<tr><td class="muted">Longitude</td><td>{longitude}</td></tr>',
-                '<tr><td class="muted">Latitude</td><td>{latitude}</td></tr>',
-                '<tr><td class="muted">Feature Type</td><td><span class="featureCode">{featureCode }</span></td></tr>',
-                '</table>',
-            '</div>',
-            '<div class="span6 minimap" data-lat="{latitude}" data-long="{longitude}"></div>'
-        );
-        templates.placeDetail.compile();
-        templates.resourceSummary = new Ext.XTemplate(
-            '<div>',
-            '<h4><a href="/{modulePrefix}/resources/{id}{projParam}"><tpl if="metadata.title">{metadata.title}, </tpl>{filename}</a></h4>',
-            '<tpl if="metadata.format">{metadata.format}</tpl>',
-            '</div>'
-        );
-        templates.resourceSummary.compile();
-        templates.resourceDetail = new Ext.XTemplate(
-                //'<h2>{[values.metadata.title || values.filename]}</h2>',
-                '<div>',
-
-                '<h3>Metadata</h3>',
-                '<table class="table">',
-                '<tpl if="metadata.title"><tr><td class="metadatalabel muted">Title</td><td>{metadata.title}</td></tr></tpl>',
-                '<tpl if="metadata.description"><tr><td class="muted">Description</td><td>{metadata.description}</td></tr></tpl>',
-                '<tpl if="metadata.coverage"><tr><td class="muted">Coverage</td><td>{metadata.coverage}</td></tr></tpl>',
-                '<tpl if="metadata.format"><tr><td class="muted">Format</td><td>{metadata.format}</td></tr></tpl>',
-                '<tpl if="metadata.language"><tr><td class="muted">Language</td><td>{metadata.language}</td></tr></tpl>',
-                '<tpl if="metadata.publisher"><tr><td class="muted">Publisher</td><td>{metadata.publisher}</td></tr></tpl>',
-                //Ext 4.1.2 only
-                //'<tpl foreach="metadata">',
-                //    '<tr><td class="muted">{$}</td><td>{.}</td></tr>',
-                //'</tpl>',
-                '</table>',
-                '<h3>File information</h3>',
-                '<table class="table">',
-                '<tr><td class="metadatalabel muted">File name</td><td>{filename} </td></td></td></tr>',
-                '<tr><td class="muted">Uploaded</td><td>{[Ext.util.Format.date(new Date(values.uploadDate.sec*1000),"d/m/Y g:i a")]}</td></tr>',
-                '<tr><td class="muted">File type</td><td>{metadata.filetype}</td></tr>',
-                '<tr><td class="muted">File size</td><td>{length:fileSize}</td></tr>',
-                '<tr><td class="muted">MD5 checksum</td><td>{md5}</td></tr>',
-                '</table>',
-                '<p><a href="./{id}/content{projParam}"><i class="icon-eye-open"></i> View resource content</a></p>',
-                '<p><a href="{uri}"><i class="icon-download"></i> Download resource</a></p>',
-                '<tpl if="metadata.filetype.match(\'image\')">',
-                '<h3>Image Preview</h3>',
-                '<div data-id="http://{serverName}/repository/resources/{id}/content"><img class="thumbnail" src="{uri}?scale=true&height=480" alt="Image preview"/></div>',
-                '</tpl>',
-            '</div>'
-        );
-        templates.resourceDetail.compile();
-    }
     function loadObject(id){
         var template = templates[apiType + 'Detail'];
         
@@ -448,7 +156,7 @@ jQuery.fn.serializeObject = function() {
                     result.projParam = "?project="+ project;
                 }
                 result.serverName = serverName;
-                template.append('result', result);
+                jQuery('#result').append(template(result));
                 loadReferencedObjects();
                 if (apiType == "place"){
                  jQuery('#result').append('<p class="muted" style="clear:both">Place names taken from <a href="http://www.ga.gov.au/">Geoscience Australia</a> Gazetteer of Australia. Data, imagery and map information provided by <a href="http://open.mapquest.co.uk" target="_blank">MapQuest</a>, <a href="http://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> and contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.</p>');
@@ -503,7 +211,7 @@ jQuery.fn.serializeObject = function() {
                     if (project) {
                         obj.projParam = "?project=" + project;
                     }
-                    template.append('result', obj);
+                    jQuery('#result').append(template(obj));
                 }
              }
              loadReferencedObjects();
@@ -829,7 +537,7 @@ jQuery.fn.serializeObject = function() {
                 d.modulePrefix = modulePrefix;
                 d.projParam = (project? '?project=' + project : '');
                 if (template && template == "compact"){
-                    elem.html(templates.placeCompact.apply(d));
+                    elem.html(templates.placeCompact(d));
                 } 
               }
             });
@@ -849,7 +557,7 @@ jQuery.fn.serializeObject = function() {
                 d.projParam = (project? '?project=' + project : '');
                 d.modulePrefix = modulePrefix;
                 if (template && template == "summary"){
-                    elem.html(templates.resourceSummary.apply(d));
+                    elem.html(templates.resourceSummary(d));
                 } 
               }
             });
@@ -877,7 +585,7 @@ jQuery.fn.serializeObject = function() {
                   d.projParam = (project? '?project=' + project : '');
                   d.modulePrefix = modulePrefix;
                   if (template && template == 'summary'){
-                      elem.html(templates.artefactSummary.apply(d));
+                      elem.html(templates.artefactSummary(d));
                   }
                   
               }
@@ -895,7 +603,7 @@ jQuery.fn.serializeObject = function() {
                 d.projParam = (project? '?project=' + project : '');
                 d.modulePrefix = modulePrefix;
                 if (template && template == 'summary'){
-                    elem.html(templates.versionSummary.apply(d));
+                    elem.html(templates.versionSummary(d));
                 }
               }
             });
@@ -911,7 +619,7 @@ jQuery.fn.serializeObject = function() {
                 d.projParam = (project? '?project=' + project : '');
                 d.modulePrefix = modulePrefix;
                 if (template && template == 'summary'){
-                    elem.html(templates.agentSummary.apply(d));
+                    elem.html(templates.agentSummary(d));
                 }
               }
             });
@@ -927,7 +635,7 @@ jQuery.fn.serializeObject = function() {
                 d.projParam = (project? '?project=' + project : '');
                 d.modulePrefix = modulePrefix;
                 if (template && template == 'summary'){
-                    elem.html(templates.eventSummary.apply(d));
+                    elem.html(templates.eventSummary(d));
                 }
               }
             });

@@ -1,20 +1,7 @@
 
 
 jQuery(document).ready(function(){
-    var eventSummary = new Ext.XTemplate(
-            '<div class="obj">',
-            '<b><a href="/{modulePrefix}/events/{id}{projParam}">{description}<tpl if="eventType"> ({eventType})</tpl></a></b><br/>',
-            '<tpl if="startDate">{startDate} &ndash; </tpl>',
-            '<tpl if="endDate">{endDate}</tpl>',
-            '<tpl for="agents"><tpl if="xindex == 1"><br/>({[xcount]} associated participant{[xcount != 1? "s" : ""]})</tpl></tpl>',
-            '<tpl for="artefacts"><tpl if="xindex == 1"><br/>(Produced {[xcount]} artefact{[xcount != 1? "s" : ""]})</tpl></tpl>',
-            '<tpl for="events"><tpl if="xindex == 1"><br/>({[xcount]} associated sub-event{[xcount != 1? "s" : ""]})</tpl></tpl>',
-            '<tpl if="hasEditPermission">',
-                '<p><a href="/{modulePrefix}/events/edit/{id}{projParam}" style="font-size:smaller">EDIT</a></p>',
-            '</tpl>',
-            '</div>'
-    );
-    eventSummary.compile();
+    var eventSummary = templates.eventSummary;
     var loadEvents = function(){
         jQuery.ajax({
             type: 'GET',
@@ -39,7 +26,7 @@ jQuery(document).ready(function(){
                         if (project) {
                             e.projParam = "?project="+ project;
                         }
-                        var popup = eventSummary.apply(e);
+                        var popup = eventSummary(e);
                         jQuery(e.places).each(function(i2, p){
                             jQuery.ajax({
                                 type: 'GET',
