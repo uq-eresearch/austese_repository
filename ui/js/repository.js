@@ -100,10 +100,10 @@ jQuery.fn.serializeObject = function() {
                 resultsFormatter: function(item){return "<li><b>" + item.metadata.title + " (" + item.filename + ")</b></li>";},
                 tokenFormatter: function(item){return "<li title=\"" + item.metadata.title + "\">" + item.filename + "</li>";}
             });
-            jQuery("#facsimiles").tokenInput("/" + modulePath + "/api/resources/" + projectParam + (projectParam? "&" : "?") + "type=image", {
+            jQuery("#facsimiles, #images").tokenInput("/" + modulePath + "/api/resources/" + projectParam + (projectParam? "&" : "?") + "type=image", {
                 theme: "facebook",
                 tokenValue: "id",
-                hintText: "Start typing to search facsimiles by filename/title",
+                hintText: "Start typing to search images by filename/title",
                 jsonContainer: "results",
                 propertyToSearch: "filename",
                 resultsFormatter: function(item){return "<li><b>" + item.metadata.title + " (" + item.filename + ")</b></li>";},
@@ -283,6 +283,21 @@ jQuery.fn.serializeObject = function() {
                    });
                   }
               }
+              if (d.images){
+                  for (var i = 0; i < d.images.length; i++){
+                   jQuery.ajax({
+                     type: 'GET',
+                     dataType: "json",
+                     headers: {
+                          'Accept': 'application/json'
+                     },
+                     url: '/' + modulePath + '/api/resources/' + d.images[i],
+                     success: function(v){
+                       jQuery('#images').tokenInput("add",v);
+                     }
+                   });
+                  }
+              }
               if (d.facsimiles){
                   for (var i = 0; i < d.facsimiles.length; i++){
                    jQuery.ajax({
@@ -401,6 +416,13 @@ jQuery.fn.serializeObject = function() {
             data.resources = [];
             for (var i = 0; i < split.length; i++){
                data.resources.push(split[i]);
+            }
+        }
+        if (data.images){
+            var split = data.images.split(",");
+            data.images = [];
+            for (var i = 0; i < split.length; i++){
+               data.images.push(split[i]);
             }
         }
         if (data.facsimiles){
@@ -558,7 +580,9 @@ jQuery.fn.serializeObject = function() {
                 d.modulePrefix = modulePrefix;
                 if (template && template == "summary"){
                     elem.html(templates.resourceSummary(d));
-                } 
+                } else if (template == "image"){
+                    elem.html(templates.imageEmbed(d));
+                }
               }
             });
         });

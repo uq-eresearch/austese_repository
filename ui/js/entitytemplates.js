@@ -138,15 +138,18 @@ templates.agentSummary = Handlebars.compile(
     {{/if}}\
     </div>'
 );
+
+// Array access notation is obj.[index] (with a dot)
 templates.agentDetail = Handlebars.compile(
     '<div>\
-    <table class="table">\
+    {{#if images}}{{#gt images.length 0}}<div class="span2"><div class="resource" data-resourceid="{{images.[0]}}" data-template="image">Image</div></div>{{/gt}}{{/if}}\
+    <div {{#if images}}{{#gt images.length 0}}class="span10"{{/gt}}{{/if}}><table class="table">\
     {{#if lastName}}<tr><td class="metadatalabel muted">Last Name</td><td>{{lastName}}</td></tr>{{/if}}\
     {{#if firstName}}<tr><td class="metadatalabel muted">Given Name(s)</td><td>{{firstName}}</td></tr>{{/if}}\
     {{#if birthDate}}<tr><td class="metadatalabel muted">Born</td><td>{{birthDate}}</td></tr>{{/if}}\
     {{#if deathDate}}<tr><td class="metadatalabel muted">Died</td><td>{{deathDate}}</td></tr>{{/if}}\
     {{#if biography}}<tr><td class="metadatalabel muted">Biography</td><td>{{{biography}}}</td></tr>{{/if}}\
-    </table>\
+    </table></div>\
     </div>'
 );
 templates.eventSummary = Handlebars.compile(
@@ -293,6 +296,9 @@ templates.placeDetail = Handlebars.compile(
         </table>\
     </div>\
     <div class="span6 minimap" data-lat="{{latitude}}" data-long="{{longitude}}"></div>'
+);
+templates.imageEmbed = Handlebars.compile(
+    '<img class="thumbnail" src="{{uri}}/content"/><br/><a style="font-size:smaller" href="/{{modulePrefix}}/resources/{{id}}{{projParam}}">Image details</a>'
 );
 templates.resourceSummary = Handlebars.compile(
     '<div>\

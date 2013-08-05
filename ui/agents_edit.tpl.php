@@ -50,7 +50,20 @@ if (isset($_GET['project'])) {
         <textarea rows="10" class="input-xlarge" name="biography" id="biography"></textarea>
       </div>
     </div>
-    
+    </fieldset>
+    </div>
+    <div class="well white-well">
+      <fieldset>
+    <div class="control-group">
+      <label class="control-label" for="images">Images</label>
+      <div class="controls">
+        <textarea rows="2" name="images" type="text" class="input-xlarge" id="images"></textarea>
+        <p class="help-block">Images of this agent</p>
+        <a target="_blank" href="/repository/resources<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
+        <button type="button" title="Upload new image resource in new tab" class="btn"><i class="icon-plus"></i> New image</button>
+        </a>
+      </div>
+    </div>
     </fieldset>
     </div>
     <div class="well">
