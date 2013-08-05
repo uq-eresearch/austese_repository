@@ -82,7 +82,7 @@ jQuery.fn.serializeObject = function() {
                 resultsFormatter: function(item){return "<li><b>" + item.description + "</b>, " + item.eventType + "</li>";},
                 tokenFormatter: function(item){return "<li>" + item.description + ", " + item.eventType + "</li>";}
             });
-            jQuery("#agents").tokenInput("/" + modulePath + "/api/agents/" + projectParam, {
+            jQuery("#agents, #authors, #editors, #publishers, #printers, #advisers, #writers, #compositors, #typists, #illustrators, #binders, #readers, #translators, #booksellers").tokenInput("/" + modulePath + "/api/agents/" + projectParam, {
                 theme: "facebook",
                 tokenValue: "id",
                 hintText: "Start typing to search agents by last name",
@@ -140,7 +140,7 @@ jQuery.fn.serializeObject = function() {
         
     });
     function loadObject(id){
-        var template = templates[apiType + 'Detail'];
+        var template = apiType + 'Detail';
         
         jQuery.ajax({
             type: 'GET',
@@ -156,7 +156,7 @@ jQuery.fn.serializeObject = function() {
                     result.projParam = "?project="+ project;
                 }
                 result.serverName = serverName;
-                jQuery('#result').append(template(result));
+                jQuery('#result').append(getTemplate(template)(result));
                 loadReferencedObjects();
                 if (apiType == "place"){
                  jQuery('#result').append('<p class="muted" style="clear:both">Place names taken from <a href="http://www.ga.gov.au/">Geoscience Australia</a> Gazetteer of Australia. Data, imagery and map information provided by <a href="http://open.mapquest.co.uk" target="_blank">MapQuest</a>, <a href="http://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> and contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.</p>');
@@ -199,7 +199,7 @@ jQuery.fn.serializeObject = function() {
              jQuery('#resultcurrent').html("displaying page " + (page + 1) + " of " + numPages); 
              jQuery('#result').empty();
              var project = jQuery('#metadata').data('project');
-             var template = templates[apiType + "Summary"];
+             var template = apiType + "Summary";
              if (apiType == "place"){
                  jQuery('#result').append('<p class="muted" style="clear:both">Place names taken from <a href="http://www.ga.gov.au/">Geoscience Australia</a> Gazetteer of Australia. Data, imagery and map information provided by <a href="http://open.mapquest.co.uk" target="_blank">MapQuest</a>, <a href="http://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> and contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.</p>');
              }
@@ -211,7 +211,11 @@ jQuery.fn.serializeObject = function() {
                     if (project) {
                         obj.projParam = "?project=" + project;
                     }
-                    jQuery('#result').append(template(obj));
+                    try {
+                      jQuery('#result').append(getTemplate(template)(obj));
+                    } catch (e){
+                        console.log("error applying template",template, obj, e);
+                    }
                 }
              }
              loadReferencedObjects();
@@ -219,126 +223,52 @@ jQuery.fn.serializeObject = function() {
            }
         });
     }
+    function tokenizeListField(data, fieldType, fieldName){
+        var fieldName = fieldName || fieldType;
+        var field = data[fieldName];
+        if (field){
+            for (var i = 0; i < field.length; i++){
+                jQuery.ajax({
+                  type: 'GET',
+                  dataType: 'json',
+                  headers: {
+                       'Accept': 'application/json'
+                  },
+                  url: '/' + modulePath + '/api/' + fieldType + '/' + field[i],
+                  success: function(v){
+                    jQuery('#' + fieldName).tokenInput("add",v);
+                  }
+                });
+            }
+        }
+    }
     function loadObjectIntoEditor(id){
         jQuery.ajax({
            url: '/' + modulePath + '/api/' + apiType + 's/'+ id,
            success: function(d){
               js2form(document.getElementById('create-object'), d);
-              if (d.versions){
-                  for (var i = 0; i < d.versions.length; i++){
-                   jQuery.ajax({
-                     type: 'GET',
-                     url: '/' + modulePath + '/api/versions/' + d.versions[i],
-                     success: function(v){
-                       jQuery('#versions').tokenInput("add",v);
-                     }
-                   });
-                  }
-              }
-              if (d.artefacts){
-                  for (var i = 0; i < d.artefacts.length; i++){
-                   jQuery.ajax({
-                     type: 'GET',
-                     url: '/' + modulePath + '/api/artefacts/' + d.artefacts[i],
-                     success: function(v){
-                       jQuery('#artefacts').tokenInput("add",v);
-                     }
-                   });
-                  }
-              }
-              if (d.agents){
-                  for (var i = 0; i < d.agents.length; i++){
-                   jQuery.ajax({
-                     type: 'GET',
-                     url: '/' + modulePath + '/api/agents/' + d.agents[i],
-                     success: function(v){
-                       jQuery('#agents').tokenInput("add",v);
-                     }
-                   });
-                  }
-              }
-              if (d.events){
-                  for (var i = 0; i < d.events.length; i++){
-                   jQuery.ajax({
-                     type: 'GET',
-                     url: '/' + modulePath + '/api/events/' + d.events[i],
-                     success: function(v){
-                       jQuery('#events').tokenInput("add",v);
-                     }
-                   });
-                  }
-              }
-              if (d.transcriptions){
-                  for (var i = 0; i < d.transcriptions.length; i++){
-                   jQuery.ajax({
-                     type: 'GET',
-                     dataType: "json",
-                     headers: {
-                          'Accept': 'application/json'
-                     },
-                     url: '/' + modulePath + '/api/resources/' + d.transcriptions[i],
-                     success: function(v){
-                       jQuery('#transcriptions').tokenInput("add",v);
-                     }
-                   });
-                  }
-              }
-              if (d.images){
-                  for (var i = 0; i < d.images.length; i++){
-                   jQuery.ajax({
-                     type: 'GET',
-                     dataType: "json",
-                     headers: {
-                          'Accept': 'application/json'
-                     },
-                     url: '/' + modulePath + '/api/resources/' + d.images[i],
-                     success: function(v){
-                       jQuery('#images').tokenInput("add",v);
-                     }
-                   });
-                  }
-              }
-              if (d.facsimiles){
-                  for (var i = 0; i < d.facsimiles.length; i++){
-                   jQuery.ajax({
-                     type: 'GET',
-                     url: '/' + modulePath + '/api/resources/' + d.facsimiles[i],
-                     dataType: "json",
-                     headers: {
-                          'Accept': 'application/json'
-                     },
-                     success: function(v){
-                       jQuery('#facsimiles').tokenInput("add",v);
-                     }
-                   });
-                  }
-              }
-              if (d.resources){
-                  for (var i = 0; i < d.resources.length; i++){
-                   jQuery.ajax({
-                     type: 'GET',
-                     url: '/' + modulePath + '/api/resources/' + d.resources[i],
-                     dataType: "json",
-                     headers: {
-                          'Accept': 'application/json'
-                     },
-                     success: function(v){
-                       jQuery('#resources').tokenInput("add",v);
-                     }
-                   });
-                  }
-              }
-              if (d.places){
-                  for (var i = 0; i < d.places.length; i++){
-                   jQuery.ajax({
-                     type: 'GET',
-                     url: '/' + modulePath + '/api/places/' + d.places[i],
-                     success: function(v){
-                       jQuery('#places').tokenInput("add",v);
-                     }
-                   });
-                  }
-              }
+              tokenizeListField(d,'versions');
+              tokenizeListField(d,'artefacts');
+              tokenizeListField(d,'agents')
+              tokenizeListField(d,'agents','authors');
+              tokenizeListField(d,'agents','editors');
+              tokenizeListField(d,'agents','publishers');
+              tokenizeListField(d,'agents','printers');
+              tokenizeListField(d,'agents','advisers');
+              tokenizeListField(d,'agents','writers');
+              tokenizeListField(d,'agents','compositors');
+              tokenizeListField(d,'agents','typists');
+              tokenizeListField(d,'agents','illustrators');
+              tokenizeListField(d,'agents','binders');
+              tokenizeListField(d,'agents','readers');
+              tokenizeListField(d,'agents','translators');
+              tokenizeListField(d,'agents','booksellers');
+              tokenizeListField(d,'events');
+              tokenizeListField(d,'resources');
+              tokenizeListField(d,'resources','transcriptions');
+              tokenizeListField(d,'resources','images');
+              tokenizeListField(d,'resources','facsimiles');
+              tokenizeListField(d,'places');
               // set up WYSIWYG editor
               wysiEditors.push(jQuery('#description').wysihtml5());
               wysiEditors.push(jQuery('#biography').wysihtml5());
@@ -376,69 +306,22 @@ jQuery.fn.serializeObject = function() {
         }
         var newObject =  !(existingId || false);
         var data = jQuery('#create-object').serializeObject();
-        if (data.artefacts){
-            var split = data.artefacts.split(",");
-            data.artefacts = [];
-            for (var i = 0; i < split.length; i++){
-               data.artefacts.push(split[i]);
+        function splitField(data,fieldNames){
+            for (var i = 0; i < fieldNames.length; i++){
+                var fieldName = fieldNames[i];
+                if (data[fieldName]){
+                    console.log("found " + fieldName,data[fieldName])
+                    if (data[fieldName] && data[fieldName].split){
+                        var split = data[fieldName].split(",");
+                        data[fieldName] = [];
+                        for (var i = 0; i < split.length; i++){
+                           data[fieldName].push(split[i]);
+                        }
+                    }
+                }
             }
         }
-        if (data.events){
-            var split = data.events.split(",");
-            data.events = [];
-            for (var i = 0; i < split.length; i++){
-               data.events.push(split[i]);
-            }
-        }
-        if (data.agents){
-            var split = data.agents.split(",");
-            data.agents = [];
-            for (var i = 0; i < split.length; i++){
-               data.agents.push(split[i]);
-            }
-        }
-        if (data.versions){
-            var split = data.versions.split(",");
-            data.versions = [];
-            for (var i = 0; i < split.length; i++){
-               data.versions.push(split[i]);
-            }
-        }
-        if (data.transcriptions){
-            var split = data.transcriptions.split(",");
-            data.transcriptions = [];
-            for (var i = 0; i < split.length; i++){
-               data.transcriptions.push(split[i]);
-            }
-        }
-        if (data.resources) {
-            var split = data.resources.split(",");
-            data.resources = [];
-            for (var i = 0; i < split.length; i++){
-               data.resources.push(split[i]);
-            }
-        }
-        if (data.images){
-            var split = data.images.split(",");
-            data.images = [];
-            for (var i = 0; i < split.length; i++){
-               data.images.push(split[i]);
-            }
-        }
-        if (data.facsimiles){
-            var split = data.facsimiles.split(",");
-            data.facsimiles = [];
-            for (var i = 0; i < split.length; i++){
-               data.facsimiles.push(split[i]);
-            }
-        }
-        if (data.places){
-            var split = data.places.split(",");
-            data.places = [];
-            for (var i = 0; i < split.length; i++){
-               data.places.push(split[i]);
-            }
-        }
+        splitField(data,['artefacts','events','agents','writers','authors','editors', 'publishers', 'printers', 'advisers', 'compositors', 'typists', 'illustrators', 'binders', 'readers', 'translators', 'booksellers', 'versions','transcriptions','resources','images','facsimiles','places']);
         if (data["_wysihtml5_mode"]){
             delete data["_wysihtml5_mode"];
         }
@@ -559,7 +442,7 @@ jQuery.fn.serializeObject = function() {
                 d.modulePrefix = modulePrefix;
                 d.projParam = (project? '?project=' + project : '');
                 if (template && template == "compact"){
-                    elem.html(templates.placeCompact(d));
+                    elem.html(getTemplate("placeCompact")(d));
                 } 
               }
             });
@@ -579,9 +462,9 @@ jQuery.fn.serializeObject = function() {
                 d.projParam = (project? '?project=' + project : '');
                 d.modulePrefix = modulePrefix;
                 if (template && template == "summary"){
-                    elem.html(templates.resourceSummary(d));
+                    elem.html(getTemplate("resourceSummary")(d));
                 } else if (template == "image"){
-                    elem.html(templates.imageEmbed(d));
+                    elem.html(getTemplate("imageEmbed")(d));
                 }
               }
             });
@@ -609,7 +492,7 @@ jQuery.fn.serializeObject = function() {
                   d.projParam = (project? '?project=' + project : '');
                   d.modulePrefix = modulePrefix;
                   if (template && template == 'summary'){
-                      elem.html(templates.artefactSummary(d));
+                      elem.html(getTemplate("artefactSummary")(d));
                   }
                   
               }
@@ -627,7 +510,7 @@ jQuery.fn.serializeObject = function() {
                 d.projParam = (project? '?project=' + project : '');
                 d.modulePrefix = modulePrefix;
                 if (template && template == 'summary'){
-                    elem.html(templates.versionSummary(d));
+                    elem.html(getTemplate("versionSummary")(d));
                 }
               }
             });
@@ -643,7 +526,7 @@ jQuery.fn.serializeObject = function() {
                 d.projParam = (project? '?project=' + project : '');
                 d.modulePrefix = modulePrefix;
                 if (template && template == 'summary'){
-                    elem.html(templates.agentSummary(d));
+                    elem.html(getTemplate("agentSummary")(d));
                     enablePopups(elem);
                 }
               }
@@ -660,7 +543,7 @@ jQuery.fn.serializeObject = function() {
                 d.projParam = (project? '?project=' + project : '');
                 d.modulePrefix = modulePrefix;
                 if (template && template == 'summary'){
-                    elem.html(templates.eventSummary(d));
+                    elem.html(getTemplate("eventSummary")(d));
                 }
               }
             });

@@ -78,22 +78,121 @@ if (isset($_GET['project'])) {
       </div>
     </div>
     <div class="control-group">
-      <label class="control-label" for="agents">Agents</label>
-      <div class="controls">
-        <textarea rows="2" name="agents" type="text" class="input-xlarge" id="agents"></textarea>
-        <p class="help-block">Agents participating in or responsible for this event</p>
-        <a target="_blank" href="/repository/agents/edit<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
-        <button type="button" title="Describe new agent in new tab" class="btn"><i class="icon-plus"></i> New agent</button>
-        </a>
-      </div>
-    </div>
-    <div class="control-group">
       <label class="control-label" for="places">Places</label>
       <div class="controls">
         <textarea rows="2" name="places" type="text" class="input-xlarge" id="places"></textarea>
         <span class="help-block">Where this event took place</span>
       </div>
     </div>
+    <hr class="muted"/>
+    <div class="control-group">
+    <div class="controls">
+    <h4>Agent Roles</h4>
+    
+    <a target="_blank" href="/repository/agents/edit<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
+        <button type="button" title="Describe new agent in new tab" class="btn"><i class="icon-plus"></i> New agent</button>
+    </a>
+    </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="agents">Agents</label>
+      <div class="controls">
+        <textarea rows="2" name="agents" type="text" class="input-xlarge" id="agents"></textarea>
+        <p class="help-block">Agents participating in or responsible for this event (no assigned role)</p>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="authors">Authors</label>
+      <div class="controls">
+        <textarea rows="2" name="authors" type="text" class="input-xlarge" id="authors"></textarea>
+        <p class="help-block">Agents participating in this event as authors</p>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="writers">Writers</label>
+      <div class="controls">
+        <textarea rows="2" name="writers" type="text" class="input-xlarge" id="writers"></textarea>
+        <p class="help-block">Agents participating in this event as writers (as distinct from authors)</p>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="advisers">Advisers</label>
+      <div class="controls">
+        <textarea rows="2" name="advisers" type="text" class="input-xlarge" id="advisers"></textarea>
+        <p class="help-block">Agents participating in this event as advisers</p>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="editors">Editors</label>
+      <div class="controls">
+        <textarea rows="2" name="editors" type="text" class="input-xlarge" id="editors"></textarea>
+        <p class="help-block">Agents participating in this event as editors</p>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="publishers">Publishers</label>
+      <div class="controls">
+        <textarea rows="2" name="publishers" type="text" class="input-xlarge" id="publishers"></textarea>
+        <p class="help-block">Agents participating in this event as publishers</p>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="printers">Printers</label>
+      <div class="controls">
+        <textarea rows="2" name="printers" type="text" class="input-xlarge" id="printers"></textarea>
+        <p class="help-block">Agents participating in this event as printers</p>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="compositors">Compositors</label>
+      <div class="controls">
+        <textarea rows="2" name="compositors" type="text" class="input-xlarge" id="compositors"></textarea>
+        <p class="help-block">Agents participating in this event as compositors</p>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="typists">Typists</label>
+      <div class="controls">
+        <textarea rows="2" name="typists" type="text" class="input-xlarge" id="typists"></textarea>
+        <p class="help-block">Agents participating in this event as typists</p>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="illustrators">Illustrators</label>
+      <div class="controls">
+        <textarea rows="2" name="illustrators" type="text" class="input-xlarge" id="illustrators"></textarea>
+        <p class="help-block">Agents participating in this event as illustrators</p>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="binders">Binders</label>
+      <div class="controls">
+        <textarea rows="2" name="binders" type="text" class="input-xlarge" id="binders"></textarea>
+        <p class="help-block">Agents participating in this event as binders</p>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="readers">Readers</label>
+      <div class="controls">
+        <textarea rows="2" name="readers" type="text" class="input-xlarge" id="readers"></textarea>
+        <p class="help-block">Agents participating in this event as readers</p>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="translators">Translators</label>
+      <div class="controls">
+        <textarea rows="2" name="translators" type="text" class="input-xlarge" id="translators"></textarea>
+        <p class="help-block">Agents participating in this event as translators</p>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="booksellers">Booksellers</label>
+      <div class="controls">
+        <textarea rows="2" name="booksellers" type="text" class="input-xlarge" id="booksellers"></textarea>
+        <p class="help-block">Agents participating in this event as booksellers</p>
+      </div>
+    </div>
+    
     </fieldset>
     </div>
     <div class="well white-well">

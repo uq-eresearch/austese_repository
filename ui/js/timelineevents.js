@@ -3,7 +3,7 @@ jQuery(document).ready(function() {
     var modulePath =  metadata.data('modulepath');
     var project = metadata.data('project');
     var editable = metadata.data('editable');
-    var eventSummary = templates.eventTimelineSummary;
+    var eventSummary = getTemplate("eventTimelineSummary");
     var timelineData = {
         "timeline":
         {

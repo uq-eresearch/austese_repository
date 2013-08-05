@@ -40,13 +40,25 @@ Handlebars.registerHelper('filesize', function(len, options) {
     return new Handlebars.SafeString(len.toFixed(2) + sizes[s-1]);
 }); 
 var templates = {};
-templates.collectionSummary = Handlebars.compile('\
+var compiledTemplates = {};
+function getTemplate(tName) {
+    if (!compiledTemplates[tName]) {
+        try {
+            compiledTemplates[tName] = Handlebars.compile(templates[tName]);
+        } catch (e){
+            console.log("Error compiling template",e);
+        }
+    }
+    return compiledTemplates[tName];
+}
+templates.collectionSummary = '\
     <div class="obj">\
         <h4><a href="/{{modulePrefix}}/collections/{{id}}{{projParam}}">{{name}}</a></h4>\
         {{#gt resources.length 0}}<br/>({{resources.length}} associated resource{{#neq resources.length 1}}s{{/neq}}){{/gt}}\
         {{#if hasEditPermission}}<p><a href="/{{modulePrefix}}/collections/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a></p>{{/if}}\
-    </div>');
-templates.collectionDetail = Handlebars.compile(
+    </div>'
+;
+templates.collectionDetail = 
     '<div class="obj">\
         <h4><a href="/{{modulePrefix}}/collections/{{id}}{{projParam}}">{{name}}</a></h4>\
         {{#gt resources.length 0}}\
@@ -57,9 +69,8 @@ templates.collectionDetail = Handlebars.compile(
         {{\gt}}\
         {{#if hasEditPermission}}<p><a href="/{{modulePrefix}}/collections/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a></p>{{/if}}\
     </div>'
-);
-
-templates.mvdSummary = Handlebars.compile(
+;
+templates.mvdSummary = 
     '<div class="obj">\
         <h4>{{name}}</h4>\
         {{#gt resources.length 0}}<p>{{resources.length}} Resource{{#neq resources.length 1}}s{{/neq}} associated with this MVD:</p>\
@@ -76,21 +87,20 @@ templates.mvdSummary = Handlebars.compile(
         <a href="/collationtools/apparatus#{{encode name}}" style="font-size:smaller">TABLE</a>\
         </p>\
     </div>'
-);
-
-templates.versionSummary = Handlebars.compile(
+;
+templates.versionSummary = 
     '<div class="obj">\
         <h4><a href="/{{modulePrefix}}/versions/{{id}}{{projParam}}">{{versionTitle}} {{#if name}}({{name}}){{/if}}</a></h4>\
         {{date}} {{publisher}}\
-        {{#if description}}<br/>{{{ellipsis description 100}}}{{/if}}\
+        {{#if description}}<br/>{{{ellipsis description 80}}}{{/if}}\
         {{#if firstLine}}<br/><em>{{firstLine}}</em>{{/if}}\
         {{#gt artefacts.length 0}}<br/>({{artefacts.length}} associated artefact{{#neq artefacts.length 1}}s{{/neq}}){{/gt}}\
         {{#gt versions.length 0}}<tpl if="xindex == 1"><br/>({{versions.length}} associated part{{#neq versions.length 1}}s{{/neq}}){{/gt}}\
         {{#gt transcriptions.length 0}}<tpl if="xindex == 1"><br/>({{transcriptions.length}} associated transcription{{#neq transcriptions.length 1}}s{{/neq}}){{/gt}}\
         {{#if hasEditPermission}}<p><a href="/{{modulePrefix}}/versions/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a></p>{{/if}}\
     </div>'
-);
-templates.versionDetail = Handlebars.compile(
+;
+templates.versionDetail = 
     '<div>\
         <table class="table">\
         {{#if versionTitle}}<tr><td class="metadatalabel muted">Title</td><td>{{versionTitle}}</td></tr>{{/if}}\
@@ -126,21 +136,20 @@ templates.versionDetail = Handlebars.compile(
             </ul>\
         {{/gt}}\
     </div>'
-);
-templates.agentSummary = Handlebars.compile(
+;
+templates.agentSummary =
     '<div class="obj">\
     <h4><a title="{{lastName}}, {{firstName}}" data-content="{{biography}}" href="/{{modulePrefix}}/agents/{{id}}{{projParam}}">{{lastName}}, {{firstName}}</a></h4>\
     {{#if birthDate}} b. {{birthDate}}, {{/if}}\
     {{#if deathDate}} d. {{deathDate}}, {{/if}}\
-    {{{ellipsis biography 100}}}\
+    {{{ellipsis biography 80}}}\
     {{#if hasEditPermission}}\
         <p><a href="/{{modulePrefix}}/agents/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a></p>\
     {{/if}}\
     </div>'
-);
-
+;
 // Array access notation is obj.[index] (with a dot)
-templates.agentDetail = Handlebars.compile(
+templates.agentDetail = 
     '<div>\
     {{#if images}}{{#gt images.length 0}}<div class="span2"><div class="resource" data-resourceid="{{images.[0]}}" data-template="image">Image</div></div>{{/gt}}{{/if}}\
     <div {{#if images}}{{#gt images.length 0}}class="span10"{{/gt}}{{/if}}><table class="table">\
@@ -151,24 +160,22 @@ templates.agentDetail = Handlebars.compile(
     {{#if biography}}<tr><td class="metadatalabel muted">Biography</td><td>{{{biography}}}</td></tr>{{/if}}\
     </table></div>\
     </div>'
-);
-templates.eventSummary = Handlebars.compile(
+;
+templates.eventSummary = 
     '<div class="obj">\
     <h4><a href="/{{modulePrefix}}/events/{{id}}{{projParam}}">\
       {{{description}}}{{#if eventType}} ({{eventType}}){{/if}}</a></h4>\
         {{#if startDate}}{{startDate}} &ndash; {{/if}}\
         {{#if endDate}}{{endDate}}{{/if}}\
-        {{#gt agents.length 0}}<br/>({{agents.length}} participant{{#neq agents.length 1}}s{{/neq}}){{/gt}}\
         {{#gt artefacts.length 0}}<br/>(Produced {{artefacts.length}} artefact{{#neq artefacts.length 1}}s{{/neq}}){{/gt}}\
         {{#gt events.length 0}}<br/>({{events.length}} sub-event{{#neq events.length 1}}s{{/neq}}){{/gt}}\
         {{#if hasEditPermission}}\
         <p><a href="/{{modulePrefix}}/events/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a></p>\
         {{/if}}\
     </div>'
-);
-templates.eventTimelineSummary = Handlebars.compile(
+;
+templates.eventTimelineSummary = 
     '<div class="obj">\
-        {{#gt agents.length 0}}<br/>({{agents.length}} participant{{#neq agents.length 1}}s{{/neq}}){{/gt}}\
         {{#gt artefacts.length 0}}<br/>(Produced {{artefacts.length}} artefact{{#neq artefacts.length 1}}s{{/neq}}){{/gt}}\
         {{#gt events.length 0}}<br/>({{events.length}} sub-event{{#neq events.length 1}}s{{/neq}}){{/gt}}\
         <p><a style="font-size:smaller" href="/{{modulePrefix}}/events/{{id}}{{projParam}}">VIEW</a> \
@@ -177,30 +184,110 @@ templates.eventTimelineSummary = Handlebars.compile(
         {{/if}}\
         <p>\
     </div>'
-);
-templates.eventDetail = Handlebars.compile(
+;
+//{{#gt agents.length 0}}<br/>({{agents.length}} participant{{#neq agents.length 1}}s{{/neq}}){{/gt}}\
+templates.eventDetail = 
     '<div class="obj">\
     <h4><a href="/{{modulePrefix}}/events/{{id}}{{projParam}}">{{{description}}}\
     {{#if eventType}} ({{eventType}}){{/if}}</a></h4>\
     {{#if startDate}}{{startDate}} &ndash; {{/if}}\
     {{#if endDate}}{{endDate}}{{/if}}\
+    {{#if artefacts}}{{#gt artefacts.length 0}}\
+    <h3 class="muted">Artefacts</h3><p>{{artefacts.length}} artefact{{#neq artefacts.length 1}}s{{/neq}} produced by this event:</p>\
+    <ul>\
+    {{#each artefacts}}<li><div class="artefact" data-artefactid="{{.}}" data-template="summary"></div></li>{{/each}}\
+    </ul>\
+    {{/gt}}{{/if}}\
+    {{#if places}}{{#gt places.length 0}}\
+    <h3 class="muted">Places</h3><p>{{places.length}} place{{#neq places.length 1}}s{{/neq}} associated with this event:</p>\
+    <ul>\
+    {{#each places}}<li class="place" data-placeid="{{.}}" data-template="compact"></li>{{/each}}\
+    </ul>\
+    {{/gt}}{{/if}}\
+    <h3 class="muted">Agent Roles</h3>\
     {{#if agents}}{{#gt agents.length 0}}\
-    <h3 class="muted">Agents</h3><p>{{agents.length}} agent{{#neq agents.length 1}}s{{/neq}} participated in this event:</p>\
+    <p>{{agents.length}} agent{{#neq agents.length 1}}s{{/neq}} participated in this event (no role specified):</p>\
     <ul>\
     {{#each agents}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}\
     </ul>\
     {{/gt}}{{/if}}\
-    {{#if artefacts}}{{#gt artefacts.length 0}}\
-        <h3 class="muted">Artefacts</h3><p>{{artefacts.length}} artefact{{#neq artefacts.length 1}}s{{/neq}} produced by this event:</p>\
-        <ul>\
-        {{#each artefacts}}<li><div class="artefact" data-artefactid="{{.}}" data-template="summary"></div></li>{{/each}}\
-        </ul>\
+    {{#if authors}}{{#gt authors.length 0}}\
+    <p>{{authors.length}} author{{#neq authors.length 1}}s{{/neq}} participated in this event:</p>\
+    <ul>\
+    {{#each authors}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}\
+    </ul>\
     {{/gt}}{{/if}}\
-    {{#if places}}{{#gt places.length 0}}\
-        <h3 class="muted">Places</h3><p>{{places.length}} place{{#neq places.length 1}}s{{/neq}} associated with this event:</p>\
-        <ul>\
-        {{#each places}}<li class="place" data-placeid="{{.}}" data-template="compact"></li>{{/each}}\
-        </ul>\
+    {{#if writers}}{{#gt writers.length 0}}\
+    <p>{{writers.length}} writer{{#neq writers.length 1}}s{{/neq}} participated in this event:</p>\
+    <ul>\
+    {{#each writers}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}\
+    </ul>\
+    {{/gt}}{{/if}}\
+    {{#if advisers}}{{#gt advisers.length 0}}\
+    <p>{{advisers.length}} adviser{{#neq advisers.length 1}}s{{/neq}} participated in this event:</p>\
+    <ul>\
+    {{#each advisers}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}\
+    </ul>\
+    {{/gt}}{{/if}}\
+    {{#if editors}}{{#gt editors.length 0}}\
+    <p>{{editors.length}} editor{{#neq editors.length 1}}s{{/neq}} participated in this event:</p>\
+    <ul>\
+    {{#each editors}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}\
+    </ul>\
+    {{/gt}}{{/if}}\
+    {{#if publishers}}{{#gt publishers.length 0}}\
+    <p>{{publishers.length}} publisher{{#neq publishers.length 1}}s{{/neq}} participated in this event:</p>\
+    <ul>\
+    {{#each publishers}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}\
+    </ul>\
+    {{/gt}}{{/if}}\
+    {{#if printers}}{{#gt printers.length 0}}\
+    <p>{{printers.length}} printer{{#neq printers.length 1}}s{{/neq}} participated in this event:</p>\
+    <ul>\
+    {{#each printers}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}\
+    </ul>\
+    {{/gt}}{{/if}}\
+    {{#if compositors}}{{#gt compositors.length 0}}\
+    <p>{{compositors.length}} compositor{{#neq compositors.length 1}}s{{/neq}} participated in this event:</p>\
+    <ul>\
+    {{#each compositors}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}\
+    </ul>\
+    {{/gt}}{{/if}}\
+    {{#if typists}}{{#gt typists.length 0}}\
+    <p>{{typists.length}} typist{{#neq typists.length 1}}s{{/neq}} participated in this event:</p>\
+    <ul>\
+    {{#each typists}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}\
+    </ul>\
+    {{/gt}}{{/if}}\
+    {{#if illustrators}}{{#gt illustrators.length 0}}\
+    <p>{{illustrators.length}} illustrator{{#neq illustrators.length 1}}s{{/neq}} participated in this event:</p>\
+    <ul>\
+    {{#each illustrators}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}\
+    </ul>\
+    {{/gt}}{{/if}}\
+    {{#if binders}}{{#gt binders.length 0}}\
+    <p>{{binders.length}} binder{{#neq binders.length 1}}s{{/neq}} participated in this event:</p>\
+    <ul>\
+    {{#each binders}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}\
+    </ul>\
+    {{/gt}}{{/if}}\
+    {{#if readers}}{{#gt readers.length 0}}\
+    <p>{{readers.length}} reader{{#neq readers.length 1}}s{{/neq}} participated in this event:</p>\
+    <ul>\
+    {{#each readers}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}\
+    </ul>\
+    {{/gt}}{{/if}}\
+    {{#if translators}}{{#gt translators.length 0}}\
+    <p>{{translators.length}} translator{{#neq translators.length 1}}s{{/neq}} participated in this event:</p>\
+    <ul>\
+    {{#each translators}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}\
+    </ul>\
+    {{/gt}}{{/if}}\
+    {{#if booksellers}}{{#gt booksellers.length 0}}\
+    <p>{{booksellers.length}} bookseller{{#neq booksellers.length 1}}s{{/neq}} participated in this event:</p>\
+    <ul>\
+    {{#each booksellers}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}\
+    </ul>\
     {{/gt}}{{/if}}\
     {{#if events}}{{#gt events.length 0}}\
         <h3 class="muted">Sub-Events</h3><p>{{events.length}} sub-event{{#neq events.length 1}}s{{/neq}} associated with this event:</p>\
@@ -209,19 +296,18 @@ templates.eventDetail = Handlebars.compile(
         </ul>\
     {{/gt}}{{/if}}\
     </div>'
-);
-templates.artefactSummary = Handlebars.compile(
+;
+templates.artefactSummary = 
     '<div class="obj">\
     <h4><a href="/{{modulePrefix}}/artefacts/{{id}}{{projParam}}">{{source}}</a></h4>\
-    {{#if date}}{{date}}, {{/if}}{{ellipsis bibDetails 100}}\
+    {{#if date}}{{date}}, {{/if}}{{ellipsis bibDetails 80}}\
     {{#gt artefacts.length 0}}<br/>({{artefacts.length}} associated part{{#neq artefacts.length 1}}s{{/neq}}){{/gt}}\
     {{#gt facsimiles.length 0}}<br/>({{facsimiles.length}} associated facsimile{{#neq facsimiles.length 1}}s{{/neq}}){{/gt}}\
     {{#if hasEditPermission}}\
         <p><a href="/{{modulePrefix}}/artefacts/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a></p>\
     {{/if}}\
-    </div>'
-);
-templates.artefactDetail = Handlebars.compile(
+    </div>';
+templates.artefactDetail = 
     '<div>\
     <table class="table">\
     {{#if source}}<tr><td class="metadatalabel muted">Source</td><td>{{source}}</td></tr>{{/if}}\
@@ -246,19 +332,18 @@ templates.artefactDetail = Handlebars.compile(
         </ul>\
     {{/gt}}\
     </div>'
-);
-templates.workSummary = Handlebars.compile(
+;
+templates.workSummary = 
     '<div class="obj">\
     <h4><a href="/{{modulePrefix}}/works/{{id}}{{projParam}}">{{workTitle}}{{#if name}} ({{name}}){{/if}}</a></h4>\
-    {{#if description}}{{{ellipsis description 100}}}<br/>{{/if}}\
+    {{#if description}}{{{ellipsis description 80}}}<br/>{{/if}}\
     {{#gt versions.length 0}}({{versions.length}} associated version{{#neq versions.length 1}}s{{/neq}}){{/gt}}\
     {{#if hasEditPermission}}\
         <p><a href="/{{modulePrefix}}/works/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a></p>\
     {{/if}}\
     </div>'
-);
-
-templates.workDetail = Handlebars.compile(
+;
+templates.workDetail = 
     '<div>\
     <table class="table">\
     {{#if workTitle}}<tr><td class="metadatalabel muted">Title</td><td>{{workTitle}}</td></tr>{{/if}}\
@@ -269,14 +354,14 @@ templates.workDetail = Handlebars.compile(
     {{#each versions}}<li class="version" data-versionid="{{.}}" data-template="summary"></li>{{/each}}\
     </ul>\
     </div>'
-);
-templates.placeCompact = Handlebars.compile(
+;
+templates.placeCompact = 
     '<div>\
     <h4><a href="/{{modulePrefix}}/places/{{id}}{{projParam}}">{{name}}, {{state}}</a></h4>\
     <p>Feature Type: <span class="featureCode">{{featureCode }}</span></p>\
     </div>'
-);
-templates.placeSummary = Handlebars.compile(
+;
+templates.placeSummary = 
     '<div class="span3 obj">\
         <div class="placedesc">\
         <h4><a href="/{{modulePrefix}}/places/{{id}}{{projParam}}">{{name}}, {{state}}</a></h4>\
@@ -284,8 +369,8 @@ templates.placeSummary = Handlebars.compile(
         </div>\
         <div class="minimap" data-lat="{{latitude}}" data-long="{{longitude}}"></div>\
     </div>'
-);
-templates.placeDetail = Handlebars.compile(
+;
+templates.placeDetail = 
     '<div class="span6">\
         <table class="table">\
         <tr><td class="metadatalabel muted">Name</td><td>{{name}}</td></tr>\
@@ -296,17 +381,17 @@ templates.placeDetail = Handlebars.compile(
         </table>\
     </div>\
     <div class="span6 minimap" data-lat="{{latitude}}" data-long="{{longitude}}"></div>'
-);
-templates.imageEmbed = Handlebars.compile(
+;
+templates.imageEmbed = 
     '<img class="thumbnail" src="{{uri}}/content"/><br/><a style="font-size:smaller" href="/{{modulePrefix}}/resources/{{id}}{{projParam}}">Image details</a>'
-);
-templates.resourceSummary = Handlebars.compile(
+;
+templates.resourceSummary = 
     '<div>\
     <h4><a href="/{{modulePrefix}}/resources/{{id}}{{projParam}}">{{#if metadata.title}}{{metadata.title}}, {{/if}}{{filename}}</a></h4>\
     {{metadata.format}}\
     </div>'
-);
-templates.resourceDetail = Handlebars.compile(
+;
+templates.resourceDetail = 
     '<div>\
     <h3>Metadata</h3>\
     <table class="table">\
@@ -331,7 +416,7 @@ templates.resourceDetail = Handlebars.compile(
         <div data-id="http://{{serverName}}/repository/resources/{{id}}/content"><img class="thumbnail" src="{{uri}}?scale=true&height=480" alt="Image preview"/></div>\
     {{/match}}\
     </div>'
-);
+;
 //<tr><td class="muted">Uploaded</td><td>{{[Ext.util.Format.date(new Date(values.uploadDate.sec*1000),"d/m/Y g:i a")]}}</td></tr>\
     //Ext 4.1.2 only
     //'<tpl foreach="metadata">\

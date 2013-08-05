@@ -1,7 +1,7 @@
 
 
 jQuery(document).ready(function(){
-    var eventSummary = templates.eventSummary;
+    var eventSummary = getTemplate("eventSummary");
     var loadEvents = function(){
         jQuery.ajax({
             type: 'GET',
