@@ -63,3 +63,9 @@ ul.token-input-list-facebook {
     height: 200px;
     width: 100%
 }
+.popover-content {
+    font-size:small;
+    font-weight:normal;
+    max-height:200px;
+    overflow:auto;
+}

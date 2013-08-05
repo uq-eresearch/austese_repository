@@ -525,7 +525,7 @@ jQuery.fn.serializeObject = function() {
         }
     }
     function loadReferencedObjects(){
-        
+        enablePopups();
         jQuery(".place").each(function(){
             var elem = jQuery(this);
             var template = elem.data('template');
@@ -620,6 +620,7 @@ jQuery.fn.serializeObject = function() {
                 d.modulePrefix = modulePrefix;
                 if (template && template == 'summary'){
                     elem.html(templates.agentSummary(d));
+                    enablePopups(elem);
                 }
               }
             });
@@ -639,6 +640,25 @@ jQuery.fn.serializeObject = function() {
                 }
               }
             });
+        });
+        
+    }
+    function enablePopups(context){
+        var context = context? jQuery(context).find('.obj > h4 > a') : jQuery('.obj > h4 > a');
+        console.log("enable popups",context)
+        context.popover({
+            offset: 10,
+            trigger: 'manual',
+            html: true,
+            placement: 'right',
+            template: '<div class="popover" onmouseover="clearTimeout(timeoutObj);jQuery(this).mouseleave(function() {jQuery(this).hide();});"><div class="arrow"></div><div class="popover-inner"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
+        }).mouseenter(function(e) {
+            jQuery(this).popover('show');
+        }).mouseleave(function(e) {
+            var ref = jQuery(this);
+            timeoutObj = setTimeout(function(){
+                ref.popover('hide');
+            }, 50);
         });
     }
     function displayFeatureCodes(){

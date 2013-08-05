@@ -129,10 +129,10 @@ templates.versionDetail = Handlebars.compile(
 );
 templates.agentSummary = Handlebars.compile(
     '<div class="obj">\
-    <h4><a href="/{{modulePrefix}}/agents/{{id}}{{projParam}}">{{lastName}}, {{firstName}}</a></h4>\
+    <h4><a title="{{lastName}}, {{firstName}}" data-content="{{biography}}" href="/{{modulePrefix}}/agents/{{id}}{{projParam}}">{{lastName}}, {{firstName}}</a></h4>\
     {{#if birthDate}} b. {{birthDate}}, {{/if}}\
     {{#if deathDate}} d. {{deathDate}}, {{/if}}\
-    {{{ellipsis biography 200}}}\
+    {{{ellipsis biography 100}}}\
     {{#if hasEditPermission}}\
         <p><a href="/{{modulePrefix}}/agents/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a></p>\
     {{/if}}\
