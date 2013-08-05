@@ -224,7 +224,7 @@ jQuery.fn.serializeObject = function() {
         });
     }
     function tokenizeListField(data, fieldType, fieldName){
-        var fieldName = fieldName || fieldType;
+        fieldName = fieldName || fieldType;
         var field = data[fieldName];
         if (field){
             for (var i = 0; i < field.length; i++){
@@ -249,7 +249,7 @@ jQuery.fn.serializeObject = function() {
               js2form(document.getElementById('create-object'), d);
               tokenizeListField(d,'versions');
               tokenizeListField(d,'artefacts');
-              tokenizeListField(d,'agents')
+              tokenizeListField(d,'agents');
               tokenizeListField(d,'agents','authors');
               tokenizeListField(d,'agents','editors');
               tokenizeListField(d,'agents','publishers');
@@ -310,7 +310,6 @@ jQuery.fn.serializeObject = function() {
             for (var i = 0; i < fieldNames.length; i++){
                 var fieldName = fieldNames[i];
                 if (data[fieldName]){
-                    console.log("found " + fieldName,data[fieldName])
                     if (data[fieldName] && data[fieldName].split){
                         var split = data[fieldName].split(",");
                         data[fieldName] = [];
@@ -353,7 +352,7 @@ jQuery.fn.serializeObject = function() {
         var inputs = jQuery('#create-object')
             .find('fieldset:not(:last)')
             .find('input, textarea');
-        inputs.attr('readonly',locked)
+        inputs.attr('readonly',locked);
         jQuery(wysiEditors).each(function(i,e){
             var editorData = e.data("wysihtml5");
             if (editorData){
@@ -365,9 +364,7 @@ jQuery.fn.serializeObject = function() {
                     jQuery('.wysihtml5-toolbar').show();
                 }
             }
-        })
-        
-        
+        });
     }
     function loadRelatedMVDs(id){
         jQuery.ajax({
@@ -381,7 +378,7 @@ jQuery.fn.serializeObject = function() {
                         var refreshURL = '/collationtools/sendtomvd/';
                         for (var j = 0; j < res.resources.length; j++){
                             var resData = res.resources[j];
-                            refreshURL += (resData.id? resData.id : resData) + ';'
+                            refreshURL += (resData.id? resData.id : resData) + ';';
                         }
                         refreshURL += '?docpath=' + res.name;
                         result += '<option data-refresh="' + refreshURL + '" value="' + res.name + '">' + decodeURIComponent(res.name) + '</option>';
@@ -477,7 +474,7 @@ jQuery.fn.serializeObject = function() {
             var marker = L.marker([lat, long]).addTo(map);
             var mapquestUrl = 'http://{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png',
                 subDomains = ['otile1','otile2','otile3','otile4']; 
-            var mapquest = L.tileLayer(mapquestUrl, {maxZoom: 18, subdomains: subDomains}).addTo(map);
+            L.tileLayer(mapquestUrl, {maxZoom: 18, subdomains: subDomains}).addTo(map);
          });
         displayFeatureCodes(false);
         
@@ -551,8 +548,7 @@ jQuery.fn.serializeObject = function() {
         
     }
     function enablePopups(context){
-        var context = context? jQuery(context).find('.obj > h4 > a') : jQuery('.obj > h4 > a');
-        console.log("enable popups",context)
+        context = (context? jQuery(context).find('.obj > h4 > a') : jQuery('.obj > h4 > a'));
         context.popover({
             offset: 10,
             trigger: 'manual',
@@ -617,7 +613,7 @@ jQuery.fn.serializeObject = function() {
             loadObjects(page-1, filterTerm);
          }));
        }
-       for (i = startIndex; i < endIndex; i++){
+       for (var i = startIndex; i < endIndex; i++){
           var cls = "btn pagebtn";
           if (i == page){
             cls += " btn-highlight";
