@@ -181,30 +181,30 @@ templates.eventDetail = Handlebars.compile(
     {{#if eventType}} ({{eventType}}){{/if}}</a></h4>\
     {{#if startDate}}{{startDate}} &ndash; {{/if}}\
     {{#if endDate}}{{endDate}}{{/if}}\
-    {{#gt agents.length 0}}\
+    {{#if agents}}{{#gt agents.length 0}}\
     <h3 class="muted">Agents</h3><p>{{agents.length}} agent{{#neq agents.length 1}}s{{/neq}} participated in this event:</p>\
     <ul>\
     {{#each agents}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}\
     </ul>\
-    {{/gt}}\
-    {{#gt artefacts.length 0}}\
+    {{/gt}}{{/if}}\
+    {{#if artefacts}}{{#gt artefacts.length 0}}\
         <h3 class="muted">Artefacts</h3><p>{{artefacts.length}} artefact{{#neq artefacts.length 1}}s{{/neq}} produced by this event:</p>\
         <ul>\
         {{#each artefacts}}<li><div class="artefact" data-artefactid="{{.}}" data-template="summary"></div></li>{{/each}}\
         </ul>\
-    {{/gt}}\
-    {{#gt places.length 0}}\
+    {{/gt}}{{/if}}\
+    {{#if places}}{{#gt places.length 0}}\
         <h3 class="muted">Places</h3><p>{{places.length}} place{{#neq places.length 1}}s{{/neq}} associated with this event:</p>\
         <ul>\
         {{#each places}}<li class="place" data-placeid="{{.}}" data-template="compact"></li>{{/each}}\
         </ul>\
-    {{/gt}}\
-    {{#gt events.length 0}}\
+    {{/gt}}{{/if}}\
+    {{#if events}}{{#gt events.length 0}}\
         <h3 class="muted">Sub-Events</h3><p>{{events.length}} sub-event{{#neq events.length 1}}s{{/neq}} associated with this event:</p>\
         <ul>\
-        {{#each}}<li><div class="event" data-eventid="{{.}}" data-template="summary"></div></li>{{/each}}\
+        {{#each events}}<li><div class="event" data-eventid="{{.}}" data-template="summary"></div></li>{{/each}}\
         </ul>\
-    {{/gt}}\
+    {{/gt}}{{/if}}\
     </div>'
 );
 templates.artefactSummary = Handlebars.compile(
