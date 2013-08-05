@@ -1,6 +1,9 @@
 .obj {
     padding-top:1em;
 }
+li .obj {
+    padding-top:0;
+}
 #newobject{
     padding-bottom:1em
 }
