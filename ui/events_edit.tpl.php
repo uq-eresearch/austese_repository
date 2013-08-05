@@ -151,10 +151,10 @@ if (isset($_GET['project'])) {
       </div>
     </div>
     <div class="control-group">
-      <label class="control-label" for="typists">Typists</label>
+      <label class="control-label" for="amanuenses">Amanuenses</label>
       <div class="controls">
-        <textarea rows="2" name="typists" type="text" class="input-xlarge" id="typists"></textarea>
-        <p class="help-block">Agents participating in this event as typists</p>
+        <textarea rows="2" name="amanuenses" type="text" class="input-xlarge" id="amanuenses"></textarea>
+        <p class="help-block">Agents participating in this event as people employed to take dictation or create copy in manuscript or typescript</p>
       </div>
     </div>
     <div class="control-group">

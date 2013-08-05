@@ -13,6 +13,13 @@ Handlebars.registerHelper('neq', function(value, compare, options) {
       return options.inverse(this);
     }
 });
+Handlebars.registerHelper('eq', function(value, compare, options) {
+    if (value == compare) {
+      return options.fn(this);
+    } else {
+      return options.inverse(this);
+    }
+});
 Handlebars.registerHelper('match', function(value, compare, options) {
     if (value && value.match(compare)) {
       return options.fn(this);
@@ -253,10 +260,10 @@ templates.eventDetail =
     {{#each compositors}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}\
     </ul>\
     {{/gt}}{{/if}}\
-    {{#if typists}}{{#gt typists.length 0}}\
-    <p>{{typists.length}} typist{{#neq typists.length 1}}s{{/neq}} participated in this event:</p>\
+    {{#if amanuenses}}{{#gt amanuenses.length 0}}\
+    <p>{{amanuenses.length}} amanuens{{#eq amanuenses.length 1}}i{{/eq}}{{#neq amanuenses.length 1}}e{{/neq}}s participated in this event:</p>\
     <ul>\
-    {{#each typists}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}\
+    {{#each amanuenses}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}\
     </ul>\
     {{/gt}}{{/if}}\
     {{#if illustrators}}{{#gt illustrators.length 0}}\

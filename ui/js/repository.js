@@ -82,7 +82,7 @@ jQuery.fn.serializeObject = function() {
                 resultsFormatter: function(item){return "<li><b>" + item.description + "</b>, " + item.eventType + "</li>";},
                 tokenFormatter: function(item){return "<li>" + item.description + ", " + item.eventType + "</li>";}
             });
-            jQuery("#agents, #authors, #editors, #publishers, #printers, #advisers, #writers, #compositors, #typists, #illustrators, #binders, #readers, #translators, #booksellers").tokenInput("/" + modulePath + "/api/agents/" + projectParam, {
+            jQuery("#agents, #authors, #editors, #publishers, #printers, #advisers, #writers, #compositors, #amanuenses, #illustrators, #binders, #readers, #translators, #booksellers").tokenInput("/" + modulePath + "/api/agents/" + projectParam, {
                 theme: "facebook",
                 tokenValue: "id",
                 hintText: "Start typing to search agents by last name",
@@ -257,7 +257,7 @@ jQuery.fn.serializeObject = function() {
               tokenizeListField(d,'agents','advisers');
               tokenizeListField(d,'agents','writers');
               tokenizeListField(d,'agents','compositors');
-              tokenizeListField(d,'agents','typists');
+              tokenizeListField(d,'agents','amanuenses');
               tokenizeListField(d,'agents','illustrators');
               tokenizeListField(d,'agents','binders');
               tokenizeListField(d,'agents','readers');
@@ -320,7 +320,7 @@ jQuery.fn.serializeObject = function() {
                 }
             }
         }
-        splitField(data,['artefacts','events','agents','writers','authors','editors', 'publishers', 'printers', 'advisers', 'compositors', 'typists', 'illustrators', 'binders', 'readers', 'translators', 'booksellers', 'versions','transcriptions','resources','images','facsimiles','places']);
+        splitField(data,['artefacts','events','agents','writers','authors','editors', 'publishers', 'printers', 'advisers', 'compositors', 'amanuenses', 'illustrators', 'binders', 'readers', 'translators', 'booksellers', 'versions','transcriptions','resources','images','facsimiles','places']);
         if (data["_wysihtml5_mode"]){
             delete data["_wysihtml5_mode"];
         }
