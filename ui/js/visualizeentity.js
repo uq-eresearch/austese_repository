@@ -37,8 +37,8 @@ jQuery(document).ready(function(){
         });
         var layouter = new Graph.Layout.Spring(g);
         layouter.layout();
-         
-        var renderer = new Graph.Renderer.Raphael('canvas', g, 600, 400);
+        var width = jQuery('#canvas').width();
+        var renderer = new Graph.Renderer.Raphael('canvas', g, width, 600);
         renderer.draw();
     };
     var loadObject = function(apiType, id){

@@ -29,4 +29,4 @@ if (isset($_GET['project'])) {
  data-apitype="<?php print $apiType;?>">
 </div>
 
-<div id="canvas" style="width:100%;height:400px"></div>
+<div id="canvas" style="width:100%;height:600px"></div>
