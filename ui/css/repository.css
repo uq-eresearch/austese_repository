@@ -66,6 +66,12 @@ ul.token-input-list-facebook {
     height: 200px;
     width: 100%
 }
+ul.token-input-list-facebook li input[type="text"]{
+    border:none;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+}
 .popover-content {
     font-size:small;
     font-weight:normal;
