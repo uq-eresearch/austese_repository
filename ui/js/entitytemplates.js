@@ -36,7 +36,7 @@ Handlebars.registerHelper('ellipsis', function(value, len, options) {
     return new Handlebars.SafeString(result);
 });
 Handlebars.registerHelper('encode', function(value, options) {
-    return new Handlebars.SafeString(encodeURIComponent(result));
+    return new Handlebars.SafeString(encodeURIComponent(value));
 }); 
 Handlebars.registerHelper('filesize', function(len, options) {
     var sizes = [" B", " KB", " MB", " GB" ];
