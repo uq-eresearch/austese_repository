@@ -109,17 +109,17 @@ if (isset($_GET['project'])) {
       </div>
     </div>
     <div class="control-group">
-      <label class="control-label" for="writers">Writers</label>
+      <label class="control-label" for="amanuenses">Amanuenses</label>
       <div class="controls">
-        <textarea rows="2" name="writers" type="text" class="input-xlarge" id="writers"></textarea>
-        <p class="help-block">Agents participating in this event as writers (as distinct from authors)</p>
+        <textarea rows="2" name="amanuenses" type="text" class="input-xlarge" id="amanuenses"></textarea>
+        <p class="help-block">Agents participating in this event as people employed to take dictation or create copy in manuscript or typescript</p>
       </div>
     </div>
     <div class="control-group">
-      <label class="control-label" for="advisers">Advisers</label>
+      <label class="control-label" for="influencers">Influencers</label>
       <div class="controls">
-        <textarea rows="2" name="advisers" type="text" class="input-xlarge" id="advisers"></textarea>
-        <p class="help-block">Agents participating in this event as advisers</p>
+        <textarea rows="2" name="influencers" type="text" class="input-xlarge" id="influencers"></textarea>
+        <p class="help-block">Agents participating in this event as influencers</p>
       </div>
     </div>
     <div class="control-group">
@@ -148,13 +148,6 @@ if (isset($_GET['project'])) {
       <div class="controls">
         <textarea rows="2" name="compositors" type="text" class="input-xlarge" id="compositors"></textarea>
         <p class="help-block">Agents participating in this event as compositors</p>
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="amanuenses">Amanuenses</label>
-      <div class="controls">
-        <textarea rows="2" name="amanuenses" type="text" class="input-xlarge" id="amanuenses"></textarea>
-        <p class="help-block">Agents participating in this event as people employed to take dictation or create copy in manuscript or typescript</p>
       </div>
     </div>
     <div class="control-group">

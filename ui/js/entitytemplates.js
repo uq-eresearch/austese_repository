@@ -224,16 +224,16 @@ templates.eventDetail =
     {{#each authors}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}\
     </ul>\
     {{/gt}}{{/if}}\
-    {{#if writers}}{{#gt writers.length 0}}\
-    <p>{{writers.length}} writer{{#neq writers.length 1}}s{{/neq}} participated in this event:</p>\
+    {{#if amanuenses}}{{#gt amanuenses.length 0}}\
+    <p>{{amanuenses.length}} amanuens{{#eq amanuenses.length 1}}i{{/eq}}{{#neq amanuenses.length 1}}e{{/neq}}s participated in this event:</p>\
     <ul>\
-    {{#each writers}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}\
+    {{#each amanuenses}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}\
     </ul>\
     {{/gt}}{{/if}}\
-    {{#if advisers}}{{#gt advisers.length 0}}\
-    <p>{{advisers.length}} adviser{{#neq advisers.length 1}}s{{/neq}} participated in this event:</p>\
+    {{#if influencers}}{{#gt influencers.length 0}}\
+    <p>{{influencers.length}} influencer{{#neq influencers.length 1}}s{{/neq}} participated in this event:</p>\
     <ul>\
-    {{#each advisers}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}\
+    {{#each influencers}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}\
     </ul>\
     {{/gt}}{{/if}}\
     {{#if editors}}{{#gt editors.length 0}}\
@@ -258,12 +258,6 @@ templates.eventDetail =
     <p>{{compositors.length}} compositor{{#neq compositors.length 1}}s{{/neq}} participated in this event:</p>\
     <ul>\
     {{#each compositors}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}\
-    </ul>\
-    {{/gt}}{{/if}}\
-    {{#if amanuenses}}{{#gt amanuenses.length 0}}\
-    <p>{{amanuenses.length}} amanuens{{#eq amanuenses.length 1}}i{{/eq}}{{#neq amanuenses.length 1}}e{{/neq}}s participated in this event:</p>\
-    <ul>\
-    {{#each amanuenses}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}\
     </ul>\
     {{/gt}}{{/if}}\
     {{#if illustrators}}{{#gt illustrators.length 0}}\
