@@ -26,8 +26,38 @@ span.deleted {
    background-color:#FFDFDF;
    border-radius: 3px;
 }
-.founddeleted {
+.founddeleted-default, .overstrike {
     text-decoration: line-through;
+}
+.foundadded-default:before {
+  font-weight:bold;
+  color:#999999;
+  content: "|";
+}
+.foundadded-default:after{
+  color:#999999;
+  font-weight:bold;
+  content: "|";
+}
+.foundadded-above:before{
+  font-weight:bold;
+  color:#999999;
+  content: "\\";
+}
+.foundadded-above:after {
+  font-weight:bold;
+  color:#999999;
+  content: "/";
+}
+.foundadded-below:before{
+  font-weight:bold;
+  color:#999999;
+  content: "/";
+}
+.foundadded-below:after {
+  font-weight:bold;
+  color:#999999;
+  content: "\\";
 }
 span.added, span.inserted {
     background-color:#E0EAF8;

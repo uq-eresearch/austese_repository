@@ -326,7 +326,10 @@ along with MVD_GUI. If not, see <http://www.gnu.org/licenses/>.
     <span class="foundadded">
 	<xsl:attribute name="class">
 	<xsl:text>foundadded</xsl:text>
-        <xsl:if test="@place"><xsl:text> </xsl:text><xsl:value-of select="@place"/></xsl:if>
+	   <xsl:choose>
+        <xsl:when test="@place"><xsl:text> foundadded-</xsl:text><xsl:value-of select="@place"/></xsl:when>
+        <xsl:otherwise><xsl:text> foundadded-default</xsl:text></xsl:otherwise>
+       </xsl:choose>
 	</xsl:attribute>
 	 <xsl:apply-templates/>
     </span>
@@ -344,13 +347,13 @@ along with MVD_GUI. If not, see <http://www.gnu.org/licenses/>.
                {<xsl:apply-templates/>} 
             </font>
         </xsl:when>
-	<xsl:when test="@rend='overstrike'">
-	    <span class="founddeleted overstrike">
-		<xsl:apply-templates/>
-	    </span>
-	</xsl:when>
+        <xsl:when test="@rend='overstrike'">
+           <span class="founddeleted overstrike">
+              <xsl:apply-templates/>
+           </span>
+        </xsl:when>
         <xsl:otherwise>
-	    <span class="founddeleted">
+           <span class="founddeleted founddeleted-default">
                 <xsl:apply-templates/>
             </span>
         </xsl:otherwise>
