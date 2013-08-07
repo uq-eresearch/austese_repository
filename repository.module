@@ -247,6 +247,9 @@ function repository_edit($template, $id=null){
     $breadcrumb[] = l('Home', '<front>');
     $breadcrumb[] = l('Repository', 'repository',$projectParam);
     $breadcrumb[] = l(ucwords($template),'repository/'.$template,$projectParam);
+    if ($template != 'mvds'){
+        $breadcrumb[] = l('View '. ucwords(substr($template,0,-1)),'repository/'.$template.'/'.$id,$projectParam);
+    }
     $breadcrumb[] = t(drupal_get_title()); 
     drupal_set_breadcrumb($breadcrumb);
     
