@@ -43,7 +43,7 @@ if (isset($_GET['project'])) {
     <div class="control-group">
       <label class="control-label" for="workTitle">Title</label>
       <div class="controls">
-        <textarea rows="1" name="workTitle" type="text" class="input-xlarge" id="workTitle"></textarea>
+        <textarea autofocus="true" rows="1" name="workTitle" type="text" class="input-xlarge" id="workTitle"></textarea>
         <p class="help-block">Full title of the work</p>
       </div>
     </div>

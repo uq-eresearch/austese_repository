@@ -43,7 +43,7 @@ if (isset($_GET['project'])) {
     <div class="control-group">
       <label class="control-label" for="versionTitle">Title</label>
       <div class="controls">
-        <textarea rows="1" name="versionTitle" type="text" class="input-xlarge" id="versionTitle"></textarea>
+        <textarea autofocus="true" rows="1" name="versionTitle" type="text" class="input-xlarge" id="versionTitle"></textarea>
         <p class="help-block">Title of this version</p>
       </div>
     </div>

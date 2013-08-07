@@ -67,6 +67,7 @@ jQuery.fn.serializeObject = function() {
             jQuery("#artefacts").tokenInput("/" + modulePath + "/api/artefacts/" + projectParam, {
                 theme: "facebook",
                 tokenValue: "id",
+                allowTabOut: true,
                 hintText: "Start typing to search artefacts by source",
                 jsonContainer: "results",
                 propertyToSearch: "source",
@@ -76,6 +77,7 @@ jQuery.fn.serializeObject = function() {
             jQuery("#events").tokenInput("/" + modulePath + "/api/events/" + projectParam, {
                 theme: "facebook",
                 tokenValue: "id",
+                allowTabOut: true,
                 hintText: "Start typing to search events by description",
                 jsonContainer: "results",
                 propertyToSearch: "description",
@@ -85,6 +87,7 @@ jQuery.fn.serializeObject = function() {
             jQuery("#agents, #authors, #editors, #publishers, #printers, #influencers, #compositors, #amanuenses, #illustrators, #binders, #readers, #translators, #booksellers").tokenInput("/" + modulePath + "/api/agents/" + projectParam, {
                 theme: "facebook",
                 tokenValue: "id",
+                allowTabOut: true,
                 hintText: "Start typing to search agents by last name",
                 jsonContainer: "results",
                 propertyToSearch: "lastName",
@@ -94,6 +97,7 @@ jQuery.fn.serializeObject = function() {
             jQuery("#transcriptions").tokenInput("/" + modulePath + "/api/resources/" + projectParam + (projectParam? "&" : "?") + "type=x", {
                 theme: "facebook",
                 tokenValue: "id",
+                allowTabOut: true,
                 hintText: "Start typing to search transcriptions by filename/title",
                 jsonContainer: "results",
                 propertyToSearch: "filename",
@@ -103,6 +107,7 @@ jQuery.fn.serializeObject = function() {
             jQuery("#facsimiles, #images").tokenInput("/" + modulePath + "/api/resources/" + projectParam + (projectParam? "&" : "?") + "type=image", {
                 theme: "facebook",
                 tokenValue: "id",
+                allowTabOut: true,
                 hintText: "Start typing to search images by filename/title",
                 jsonContainer: "results",
                 propertyToSearch: "filename",
@@ -112,6 +117,7 @@ jQuery.fn.serializeObject = function() {
             jQuery("#resources").tokenInput("/" + modulePath + "/api/resources/" + projectParam, {
                 theme: "facebook",
                 tokenValue: "id",
+                allowTabOut: true,
                 hintText: "Start typing to search resources by filename/title",
                 jsonContainer: "results",
                 propertyToSearch: "filename",
@@ -121,6 +127,7 @@ jQuery.fn.serializeObject = function() {
             jQuery('#places').tokenInput("/" + modulePath + "/api/places/", {
                 theme: "facebook",
                 tokenValue: "id",
+                allowTabOut: true,
                 hintText: "Start typing to search places by name",
                 jsonContainer: "results",
                 propertyToSearch: "name",
@@ -130,6 +137,7 @@ jQuery.fn.serializeObject = function() {
             jQuery("#versions").tokenInput("/" + modulePath + "/api/versions/" + projectParam, {
                 theme: "facebook",
                 tokenValue: "id",
+                allowTabOut: true,
                 hintText: "Start typing to search versions by title",
                 jsonContainer: "results",
                 propertyToSearch: "versionTitle",

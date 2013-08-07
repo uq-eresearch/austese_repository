@@ -43,7 +43,7 @@ if (isset($_GET['project'])) {
     <div class="control-group">
       <label class="control-label" for="source">Source</label>
       <div class="controls">
-        <textarea rows="1" name="source" type="text" class="input-xlarge" id="source"></textarea>
+        <textarea autofocus="true" rows="1" name="source" type="text" class="input-xlarge" id="source"></textarea>
         <p class="help-block">Short title to identify artefact/source e.g. MS378</p>
       </div>
     </div>
