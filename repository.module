@@ -221,13 +221,13 @@ function repository_display($template){
         drupal_add_css($modulePath . '/ui/css/uploader.css');
         drupal_add_js($modulePath . '/ui/lib/formdata.js');
         drupal_add_js($modulePath . '/ui/js/uploader.js');
-        return theme("resources", array());
+        return theme("repository_resources", array());
     } else if ($template == 'places'){
         drupal_add_css('http://cdn.leafletjs.com/leaflet-0.4/leaflet.css',array('type' => 'external'));
         drupal_add_js('http://cdn.leafletjs.com/leaflet-0.4/leaflet.js',array('type' => 'external'));
-        return theme("display",array());
+        return theme("repository_display",array());
     } else {
-        return theme("display",array());
+        return theme("repository_display",array());
     }
 }
 function repository_edit($template, $id=null){
@@ -290,7 +290,7 @@ function repository_edit($template, $id=null){
         array('group' => CSS_DEFAULT, 'every_page' => FALSE));
     drupal_add_css($modulePath . '/ui/lib/token-input-facebook.css', 
         array('group' => CSS_DEFAULT, 'every_page' => FALSE));
-    return theme($template.'_edit',array());
+    return theme('repository_'.$template.'_edit',array());
 }
 function repository_timeline_events(){
     $projectParam = array();
@@ -310,7 +310,7 @@ function repository_timeline_events(){
     drupal_add_js($modulePath . '/ui/lib/handlebars.js');
     drupal_add_js($modulePath . '/ui/js/entitytemplates.js'); 
     drupal_add_js($modulePath.'/ui/js/timelineevents.js'); 
-    return theme('visualize',array());
+    return theme('repository_visualize',array());
 }
 function repository_map_events($id=null){
     $projectParam = array();
@@ -332,7 +332,7 @@ function repository_map_events($id=null){
     drupal_add_js($modulePath . '/ui/lib/handlebars.js');
     drupal_add_js($modulePath . '/ui/js/entitytemplates.js');
     drupal_add_js($modulePath . '/ui/js/mapevents.js');
-    return theme('visualize',array());
+    return theme('repository_visualize',array());
 }
 function repository_visualize($template, $id=null){
     if (!in_array($template,array("agents","artefacts","versions","works", "resources", "events"))) {
@@ -356,7 +356,7 @@ function repository_visualize($template, $id=null){
     drupal_add_js($modulePath . '/ui/lib/graphdracula/dracula_graph.js');
     //drupal_add_js($modulePath . '/ui/js/lib/graphdracula/dracula_algorithms.js');
     drupal_add_js($modulePath . '/ui/js/visualizeentity.js');
-    return theme('visualize',array());
+    return theme('repository_visualize',array());
 }
 function repository_display_resource($id,$raw=null){
     $projectParam = array();
@@ -376,7 +376,7 @@ function repository_display_resource($id,$raw=null){
         //too slow use ajax instead - return theme('resources_content',array('content'=>$result));
         drupal_add_js(drupal_get_path('module', 'repository') . '/ui/js/displayresource.js');
         drupal_add_css(drupal_get_path('module', 'repository') . '/ui/css/tei.css');
-        return theme('resources_content',array());
+        return theme('repository_resources_content',array());
     }
 }
 // shift to repository api
@@ -430,7 +430,7 @@ function repository_display_record($template, $id=null){
     drupal_add_js($modulePath . '/ui/lib/handlebars.js'); 
     drupal_add_js($modulePath . '/ui/js/entitytemplates.js');
     drupal_add_js($modulePath . '/ui/js/repository.js');
-    return theme('display_record',array());
+    return theme('repository_display_record',array());
 }
 function repository_toc() {
   $projectParam = array();
@@ -453,57 +453,61 @@ function repository_toc() {
 }
 function repository_theme(){
  return array(
-    'display' => array(
+    'repository_display' => array(
         'template' => 'ui/listobjects',
         'variables' => array()
     ),
-    'visualize' => array(
+    'repository_visualize' => array(
         'template' => 'ui/visualizeobject',
         'variables' => array()
     ),
-    'display_record' => array(
+    'repository_display_record' => array(
         'template' => 'ui/displayobject',
         'variables' => array()
     ),
-    'agents_edit' => array(
+    'repository_agents_edit' => array(
         'template' => 'ui/agents_edit',
         'variables' => array()
     ),
-    'events_edit' => array(
+    'repository_events_edit' => array(
         'template' => 'ui/events_edit',
         'variables' => array()
     ),
-    'artefacts_edit' => array(
+    'repository_artefacts_edit' => array(
        'template' => 'ui/artefacts_edit',
        'variables' => array()
     ),
-    'versions_edit' => array(
+    'repository_versions_edit' => array(
        'template' => 'ui/versions_edit',
        'variables' => array()
     ),
-    'works_edit' => array(
+    'repository_works_edit' => array(
        'template' => 'ui/works_edit',
        'variables' => array()
     ),
-    'resources_edit' => array(
+    'repository_resources_edit' => array(
         'template' => 'ui/resources_edit',
         'variables' => array()
     ),
-    'mvds_edit' => array(
+    'repository_mvds_edit' => array(
         'template' => 'ui/mvds_edit',
         'variables' => array()
     ),
-    'collections_edit' => array (
+    'repository_collections_edit' => array (
         'template' => 'ui/collections_edit',
         'variables' => array()
     ),
-    'resources' => array(
+    'repository_resources' => array(
        'template' => 'ui/uploader',
        'variables' => array()
     ),
-    'resources_content' => array(
+    'repository_resources_content' => array(
         'template' =>'ui/displayresource',
         'variables' => array('content' => null)
+    ),
+    'repository_version_toc_block' => array(
+        'template' => 'ui/toc_block',
+        'variables'=>  array('versionid' => null)
     )
  );
 }
