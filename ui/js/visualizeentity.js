@@ -57,7 +57,7 @@ jQuery(document).ready(function(){
                 }
                 nodes.push([id,{
                     nodeType: apiType,
-                    label: "[" + apiType.toUpperCase() + "]\n" + (result.name || result.source || result.title || result.filename || result.eventType || result.lastName || result.versionTitle),
+                    label: "[" + apiType.toUpperCase() + "]\n" + (result.name || result.source || result.title || result.filename || result.eventType || (result.lastName + ", " + result.firstName)|| result.versionTitle || "Untitled"),
                     render: renderFunc
                 }]);
                 if (depth <= maxDepth) { // keep processing

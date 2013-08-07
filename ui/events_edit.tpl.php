@@ -41,6 +41,12 @@ if (isset($_GET['project'])) {
   <div class="invisi-well">
   <fieldset>
     <div class="control-group">
+      <label class="control-label" for="name">Name</label>
+      <div class="controls">
+        <input name="name" type="text" class="input-xlarge" id="name">
+      </div>
+    </div>
+    <div class="control-group">
       <label class="control-label" for="description">Description</label>
       <div class="controls">
         <input name="description" type="text" class="input-xlarge" id="description">

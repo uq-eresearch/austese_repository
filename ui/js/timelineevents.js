@@ -48,8 +48,9 @@ jQuery(document).ready(function() {
                 if (project){
                     e.projParam = "?project=" + project;
                 }
+                var title = e.name || "Untitled Event"
                 var eventData = {
-                    headline: e.description + (e.eventType? " (" + e.eventType  + ")": ""),
+                    headline: title + (e.eventType? " (" + e.eventType  + ")": ""),
                     text: eventSummary(e)
                 };
                 if (e.startDate){

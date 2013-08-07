@@ -171,9 +171,10 @@ templates.agentDetail =
 templates.eventSummary = 
     '<div class="obj">\
     <h4><a href="/{{modulePrefix}}/events/{{id}}{{projParam}}">\
-      {{{description}}}{{#if eventType}} ({{eventType}}){{/if}}</a></h4>\
+      {{#if name}}{{name}}{{else}}Untitled Event{{/if}}{{#if eventType}} ({{eventType}}){{/if}}</a></h4>\
         {{#if startDate}}{{startDate}} &ndash; {{/if}}\
         {{#if endDate}}{{endDate}}{{/if}}\
+        {{#if description}}<br/>{{ellipsis description 80}}{{/if}}\
         {{#gt artefacts.length 0}}<br/>(Produced {{artefacts.length}} artefact{{#neq artefacts.length 1}}s{{/neq}}){{/gt}}\
         {{#gt events.length 0}}<br/>({{events.length}} sub-event{{#neq events.length 1}}s{{/neq}}){{/gt}}\
         {{#if hasEditPermission}}\
@@ -185,6 +186,7 @@ templates.eventTimelineSummary =
     '<div class="obj">\
         {{#gt artefacts.length 0}}<br/>(Produced {{artefacts.length}} artefact{{#neq artefacts.length 1}}s{{/neq}}){{/gt}}\
         {{#gt events.length 0}}<br/>({{events.length}} sub-event{{#neq events.length 1}}s{{/neq}}){{/gt}}\
+        {{#if description}}<br/>{{ellipsis description 80}}{{/if}}\
         <p><a style="font-size:smaller" href="/{{modulePrefix}}/events/{{id}}{{projParam}}">VIEW</a> \
         {{#if hasEditPermission}}\
         <a href="/{{modulePrefix}}/events/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a>\
@@ -195,10 +197,11 @@ templates.eventTimelineSummary =
 //{{#gt agents.length 0}}<br/>({{agents.length}} participant{{#neq agents.length 1}}s{{/neq}}){{/gt}}\
 templates.eventDetail = 
     '<div class="obj">\
-    <h4><a href="/{{modulePrefix}}/events/{{id}}{{projParam}}">{{{description}}}\
+    <h4><a href="/{{modulePrefix}}/events/{{id}}{{projParam}}">{{#if name}}{{name}}{{else}}Untitled Event{{/if}}\
     {{#if eventType}} ({{eventType}}){{/if}}</a></h4>\
     {{#if startDate}}{{startDate}} &ndash; {{/if}}\
     {{#if endDate}}{{endDate}}{{/if}}\
+    {{{description}}}\
     {{#if artefacts}}{{#gt artefacts.length 0}}\
     <h3 class="muted">Artefacts</h3><p>{{artefacts.length}} artefact{{#neq artefacts.length 1}}s{{/neq}} produced by this event:</p>\
     <ul>\
