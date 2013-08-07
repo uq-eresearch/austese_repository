@@ -30,6 +30,14 @@ if (isset($_GET['project'])) {
  data-apitype="<?php print $apiType;?>">
 </div>
 <form id="create-object" class="form-horizontal">
+  <div class="sticky-bottom well">
+    <div class="pull-right">
+       <input type="button" class="save-btn btn" value="Save">
+       <a href="/<?php print $modulePrefix; ?>/agents/<?php if ($existingId): print $existingId; endif; ?><?php if ($project): print "?project=".$project; endif; ?>">
+       <input type="button" class="btn" value="Cancel"></a>
+       <input style="display:none" type="button" class="dupe-btn btn" value="Duplicate">
+     </div>
+  </div>
 <div class="invisi-well">
   <fieldset>
     <div class="control-group">

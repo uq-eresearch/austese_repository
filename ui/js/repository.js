@@ -44,11 +44,11 @@ jQuery.fn.serializeObject = function() {
               }
             });
         } else if (apiOperation == "edit"){
-            jQuery('#save-btn').on('click',onSave);
+            jQuery('#save-btn, .save-btn').on('click',onSave);
             if (existingId) {
              loadObjectIntoEditor(existingId);
-             jQuery('#dupe-btn').css('display','inline').on('click',onDuplicate);
-             jQuery('#del-btn').css('display','inline').on('click',onDelete);
+             jQuery('#dupe-btn, .dupe-btn').css('display','inline').on('click',onDuplicate);
+             jQuery('#del-btn, .del-btn').css('display','inline').on('click',onDelete);
             } else {
                 wysiEditors.push(jQuery('#description').wysihtml5());
                 wysiEditors.push(jQuery('#biography').wysihtml5());

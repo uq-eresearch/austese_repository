@@ -78,3 +78,11 @@ ul.token-input-list-facebook li input[type="text"]{
     max-height:200px;
     overflow:auto;
 }
+div.sticky-bottom {
+    position:fixed; 
+    bottom:0px; 
+    margin-bottom:0px; 
+    right:0px; 
+    padding:5px;
+    z-index:1000;
+}
