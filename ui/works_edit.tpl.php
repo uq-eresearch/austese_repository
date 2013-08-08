@@ -75,6 +75,13 @@ if (isset($_GET['project'])) {
         </a>
       </div>
     </div>
+    <div class="control-group">
+      <label class="control-label" for="readingVersion">Reading Version</label>
+      <div class="controls">
+        <textarea rows="2" name="readingVersion" type="text" class="input-xlarge" id="readingVersion"></textarea>
+        <p class="help-block">The default reading version</p>
+      </div>
+    </div>
   </fieldset>
   </div>
   <div class="well">

@@ -144,6 +144,17 @@ jQuery.fn.serializeObject = function() {
                 resultsFormatter: function(item){return "<li><b>"+item.versionTitle + "</b>, " + item.name + ", " + item.date + "</li>";},
                 tokenFormatter: function(item){return "<li>" + item.versionTitle + ", " + item.name + ", " + item.date + "</li>";}
             });
+            jQuery("#readingVersion").tokenInput("/" + modulePath + "/api/versions/" + projectParam, {
+                theme: "facebook",
+                tokenValue: "id",
+                tokenLimit:1,
+                allowTabOut: true,
+                hintText: "Start typing to search versions by title",
+                jsonContainer: "results",
+                propertyToSearch: "versionTitle",
+                resultsFormatter: function(item){return "<li><b>"+item.versionTitle + "</b>, " + item.name + ", " + item.date + "</li>";},
+                tokenFormatter: function(item){return "<li>" + item.versionTitle + ", " + item.name + ", " + item.date + "</li>";}
+            });
         }
         
     });
@@ -264,6 +275,10 @@ jQuery.fn.serializeObject = function() {
            url: '/' + modulePath + '/api/' + apiType + 's/'+ id,
            success: function(d){
               js2form(document.getElementById('create-object'), d);
+              if (d.readingVersion){
+                  d.readingVersion = [d.readingVersion];
+                  tokenizeListField(d,'versions','readingVersion');
+              }
               tokenizeListField(d,'versions');
               tokenizeListField(d,'artefacts');
               tokenizeListField(d,'agents');
