@@ -23,7 +23,7 @@ var DEFAULT_SETTINGS = {
     // Prepopulation settings
     prePopulate: null,
     processPrePopulate: false,
-
+    makeSortable: false,
     // Display settings
     hintText: "Type in a search term",
     noResultsText: "No results",
@@ -85,6 +85,8 @@ var DEFAULT_CLASSES = {
     dropdownItem2: "token-input-dropdown-item2",
     selectedDropdownItem: "token-input-selected-dropdown-item",
     inputToken: "token-input-input-token",
+    insertBefore: "token-input-insert-before",
+    insertAfter: "token-input-insert-after",
     focused: "token-input-focused",
     disabled: "token-input-disabled"
 };
@@ -453,7 +455,14 @@ $.TokenList = function (input, url_or_data, settings) {
             letterSpacing: input_box.css("letterSpacing"),
             whiteSpace: "nowrap"
         });
-
+    
+    // True during dragging process    
+    var dragging = false;
+    // the dragged Token
+    var dragToken;
+    // the destination Token
+    var dragDestination;
+    
     // Pre-populate list if items exist
     hidden_input.val("");
     var li_data = $(input).data("settings").prePopulate || hidden_input.data("pre");
@@ -600,6 +609,7 @@ $.TokenList = function (input, url_or_data, settings) {
         if(readonly) $this_token.addClass($(input).data("settings").classes.tokenReadOnly);
 
         $this_token.addClass($(input).data("settings").classes.token).insertBefore(input_token);
+        addDragFunctionality($this_token);
 
         // The 'delete token' button
         if(!readonly) {
@@ -636,7 +646,83 @@ $.TokenList = function (input, url_or_data, settings) {
 
         return $this_token;
     }
+    function addDragFunctionality(token) {
+        console.log("add drag functionality",token)
+        token.bind('mousedown',function(){ 
+          var token = $(this)
+          dragToken = token;
+          token.addClass(settings.classes.selectedToken);
+          dragging= true;
+          $(document).one('mouseup',function(){
+            token.removeClass(settings.classes.selectedToken);
+            dragging=false;
+            move_token(token, dragDestination);
+            reindex_results();
+          });
+          return false;
+        })
+        .bind('mouseover',function(){
+          if(!dragging) return;
+          dragDestination = $(this);        
+          if(is_after(dragToken, dragDestination)) {
+            dragDestination.addClass(settings.classes.insertAfter);
+          } else {
+            dragDestination.addClass(settings.classes.insertBefore);
+          };
+        }).bind('mouseout', function(){
+          if(!dragging) return;
+          $(this).removeClass(settings.classes.insertBefore);
+          $(this).removeClass(settings.classes.insertAfter);
+        }).bind('mouseup', function(){
+          $(this).removeClass(settings.classes.insertBefore);
+          $(this).removeClass(settings.classes.insertAfter);
+        });
+      }
+      
+      
+      function move_token(token, destinationToken) {
+        if(!token || !destinationToken || (token.get(0) == destinationToken.get(0))) return;
 
+        if(is_after(token, destinationToken)) {
+          token.insertAfter(destinationToken);
+        } else {
+          token.insertBefore(destinationToken);
+        }
+         
+        
+      }
+      
+      function is_after(first, last) {
+        index_tokens();
+        first = $.data(first.get(0), "tokeninput")
+        last = $.data(last.get(0), "tokeninput")
+        return last.index > first.index 
+      }
+      
+      
+      function index_tokens() {
+        var i = 0;
+        token_list.find('li').each(function(){
+          var data = $.data(this, "tokeninput");
+          if(data){ data.index = i; }
+          i++;
+        });
+      }
+      
+      function reindex_results() {
+        var ids = [], tokens = [];
+        token_list.find('li').each(function(){
+          var data = $.data(this, "tokeninput");
+          if(data){  
+             ids.push(data.id); 
+             tokens.push(data);
+          };
+        });
+        saved_tokens = tokens;
+        hidden_input.val(ids.join(settings.tokenDelimiter));
+        console.log("new order is ",tokens, hidden_input.val())
+        
+      }
     // Add a token to the token list based on user input
     function add_token (item) {
         var callback = $(input).data("settings").onAdd;

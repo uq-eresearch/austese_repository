@@ -232,21 +232,30 @@ jQuery.fn.serializeObject = function() {
         });
     }
     function tokenizeListField(data, fieldType, fieldName){
+        
         fieldName = fieldName || fieldType;
         var field = data[fieldName];
         if (field){
-            for (var i = 0; i < field.length; i++){
+            var fieldLength = field.length;
+            if (fieldLength > 0){
+                var getToken = function(index){
                 jQuery.ajax({
                   type: 'GET',
                   dataType: 'json',
                   headers: {
                        'Accept': 'application/json'
                   },
-                  url: '/' + modulePath + '/api/' + fieldType + '/' + field[i],
+                        url: '/' + modulePath + '/api/' + fieldType + '/' + field[index],
                   success: function(v){
                     jQuery('#' + fieldName).tokenInput("add",v);
+                          if (index < (fieldLength - 1)){
+                              getToken(index+1);
+                          }
+                          
                   }
                 });
+            }
+                getToken(0);
             }
         }
     }
