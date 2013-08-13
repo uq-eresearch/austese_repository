@@ -1,0 +1,7 @@
+name = AustESE Content Repository API
+description = Content Repository API
+package = AustESE
+core = 7.x
+version = "7.x-1.x-dev"
+core = "7.x"
+project = "austese"
