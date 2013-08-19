@@ -29,8 +29,9 @@ jQuery(document).ready(function(){
         return set;
     };
     var drawGraph = function(){
+        var actualnodes = []
         jQuery(nodes).each(function(i,n){
-            g.addNode(n[0],n[1]);
+            actualnodes.push(g.addNode(n[0],n[1]));
         });
         jQuery(edges).each(function(i,e){
             g.addEdge(e[0],e[1], e[2]);
@@ -39,6 +40,10 @@ jQuery(document).ready(function(){
         layouter.layout();
         var width = jQuery('#canvas').width();
         var renderer = new Graph.Renderer.Raphael('canvas', g, width, 600);
+        // adjust to fix layout for single node diagrams
+        if (actualnodes.length ==  1) {
+            actualnodes[0].shape.translate(200,100);
+        }
         renderer.draw();
     };
     var loadObject = function(apiType, id){
