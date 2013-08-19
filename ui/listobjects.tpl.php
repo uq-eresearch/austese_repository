@@ -34,7 +34,7 @@ if (isset($_GET['project'])) {
  data-apioperation="<?php print $apiOperation;?>"
  data-apitype="<?php print $apiType;?>">
 </div>
-<div class="row">
+<div class="row-fluid">
     <div class="span10" id="newobject">
      <?php if (user_access('edit metadata') && $apiType != 'mvd' && $apiType != 'place'): ?>
        <a href="<?php print $apiType; ?>s/edit<?php if ($project) print '?project='.$project; ?>"><button type="button" class="btn"><i class="icon-plus"></i> New <?php print $apiType; ?></button></a>

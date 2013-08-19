@@ -32,7 +32,7 @@ if (isset($_GET['project'])) {
 <form id="create-object" class="form-horizontal">
   <div class="sticky-bottom well">
     <div class="pull-right">
-       <input type="button" class="save-btn btn" value="Save">
+       <input type="button" class="save-btn btn btn-primary" value="Save">
        <a href="/<?php print $modulePrefix; ?>/artefacts/<?php if ($existingId): print $existingId; endif; ?><?php if ($project): print "?project=".$project; endif; ?>">
        <input type="button" class="btn" value="Cancel"></a>
        <input style="display:none" type="button" class="dupe-btn btn" value="Duplicate">
@@ -141,7 +141,7 @@ if (isset($_GET['project'])) {
     </div>
   <div class="control-group">
      <div class="controls">
-       <input type="button" class="save-btn btn" value="Save">
+       <input type="button" class="save-btn btn btn-primary" value="Save">
        <a href="/<?php print $modulePrefix; ?>/artefacts/<?php if ($existingId): print $existingId; endif; ?><?php if ($project): print "?project=".$project; endif; ?>">
        <input type="button" class="btn" value="Cancel"></a>
        <input style="display:none" type="button" class="dupe-btn btn" value="Duplicate">
