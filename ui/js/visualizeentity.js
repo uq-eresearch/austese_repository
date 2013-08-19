@@ -29,7 +29,7 @@ jQuery(document).ready(function(){
         return set;
     };
     var drawGraph = function(){
-        var actualnodes = []
+        var actualnodes = [];
         jQuery(nodes).each(function(i,n){
             actualnodes.push(g.addNode(n[0],n[1]));
         });
@@ -54,6 +54,17 @@ jQuery(document).ready(function(){
             headers: {
                 'Accept': 'application/json'
             },
+            error : function (r){
+                numberInQ--;
+                nodes.push([id,{
+                    nodeType: apiType,
+                    label: "[" + apiType.toUpperCase() + "]\n" + r.statusText,
+                    render: renderFunc
+                }]);
+                if (numberInQ == 0) {
+                    drawGraph();
+                }
+            },
             success: function(result){
                 depth++;
                 var project = jQuery('#metadata').data('project');
@@ -62,77 +73,67 @@ jQuery(document).ready(function(){
                 }
                 nodes.push([id,{
                     nodeType: apiType,
-                    label: "[" + apiType.toUpperCase() + "]\n" + (result.name || result.source || result.title || result.filename || result.eventType || (result.lastName + ", " + result.firstName)|| result.versionTitle || "Untitled"),
+                    label: "[" + apiType.toUpperCase() + "]\n" + (result.name || result.source || result.title || result.filename || result.eventType ||  result.versionTitle || result.workTitle || (result.lastName? result.lastName + ", " + result.firstName: undefined) || "Untitled"),
                     render: renderFunc
                 }]);
                 if (depth <= maxDepth) { // keep processing
+                    function showEdges(coll,type, label){
+                        jQuery(coll).each(function(i,a){
+                            edges.push([id,a,{directed: true, label: label}]);
+                            loadObject(type, a, ++numberInQ);
+                        });
+                    }
                     var label;
                     if (result.versions){
-                        if (apiType == "version"){
-                            label = "has_part";
-                        } else if (apiType == "work") {
-                            label = "realised_by";
-                        } else {
-                            label = "";
+                        switch (apiType) {
+                            case "version": label = "has_part"; break;
+                            case "work": label = "realised_by"; break;
+                            default: label = "has_version"; break;
                         }
-                        jQuery(result.versions).each(function(i,v){
-                            edges.push([id,v, {directed: true, label: label}]);
-                            loadObject("version", v, ++numberInQ)
-                        });
+                        showEdges(result.versions,"version",label);
                     }
                     if (result.places) {
                         label = "has_place";
-                        jQuery(result.places).each(function(i,a){
-                            edges.push([id,a,{directed: true, label: label}]);
-                            loadObject("place", a, ++numberInQ)
-                        });
+                        showEdges(result.places,"place",label);
                     }
-                    if (result.agents) {
-                        label = "has_participant";
-                        jQuery(result.agents).each(function(i,a){
-                            edges.push([id,a,{directed: true, label: label}]);
-                            loadObject("agent", a, ++numberInQ)
-                        });
+                    // all of the different agent roles for events
+                    ["agents", "authors", "amanuenses", "influencers", "editors", "publishers",
+                     "printers", "compositors", "illustrators", "binders", "readers", "translators",
+                     "booksellers"].forEach(function(key){
+                        if (result[key]){
+                            switch (key) {
+                                case "amanuenses": label = "has_amanuensis"; break;
+                                default: label = "has_" + key.substr(0, key.length - 1);
                     }
-                    if (result.artefacts){
-                        if (apiType == "artefact"){
-                            label = "has_part";
-                        } else if (apiType == "event") {
-                            label = "produces";
-                        } else if (apiType == "version"){
-                            label = "appears_in";
-                        } else {
-                            label = "";
+                            showEdges(result[key], "agent", label);
                         }
-                        jQuery(result.artefacts).each(function(i,a){
-                            edges.push([id,a,{directed: true, label: label}]);
-                            loadObject("artefact", a, ++numberInQ)
                         });
+                    if (result.artefacts){
+                        switch (apiType) {
+                            case "artefact": label = "has_part"; break;
+                            case "event": label = "produces"; break;
+                            case "version": label = "appears_in"; break;
+                            default: label = "has_artefact";
+                        }
+                        showEdges(result.artefacts,"artefact", label);
                     }
+                    // events
                     if (result.events) {
                         if (apiType == "event"){
                             label = "has_sub_event";
                         } else {
                             label = "has_event";
                         }
-                        jQuery(result.events).each(function(i,a){
-                            edges.push([id,a,{directed: true, label: label}]);
-                            loadObject("event", a, ++numberInQ)
-                        });
+                        showEdges(result.events, "event", label);
                     }
+                    // resources
                     if (result.transcriptions) {
                         label = "is_embodied_by";
-                        jQuery(result.transcriptions).each(function(i,a){
-                            edges.push([id,a,{directed: true, label: label}]);
-                            loadObject("resource", a, ++numberInQ)
-                        });
+                        showEdges(result.transcriptions,"resource",label);
                     }
                     if (result.facsimiles) {
                         label = "has_digital_surrogate";
-                        jQuery(result.facsimiles).each(function(i,a){
-                            edges.push([id,a,{directed: true, label: label}]);
-                            loadObject("resource", a, ++numberInQ)
-                        });
+                        showEdges(result.facsimiles,"resource",label);
                     }
                     
                 }
