@@ -235,6 +235,7 @@ jQuery(document).ready(function(){
                 
              });
         } else if (apiType == "resource"){
+            numberInQ+=3;
             processInverseRelationships("versions","transcriptions",id, "is_digital_surrogate_for");
             processInverseRelationships("artefacts","facsimiles",id, "is_digital_surrogate_for");
             processInverseRelationships("agents","images",id, "is_image_for");
