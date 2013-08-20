@@ -8,7 +8,8 @@ jQuery(document).ready(function(){
                 (n.nodeType == "resource"? "#DECBE4" :
                     (n.nodeType == "artefact"? "#FED9A6": 
                         (n.nodeType == "agent"? "#CCEBC5" : 
-                            "#FFFFCC")))));
+                            (n.nodeType == "event"? "#CCCCCC" :
+                            "#FFFFCC"))))));
         
         var theText = n.label || n.id;
         var rectWidth = theText.length * 3.7 + 10;
