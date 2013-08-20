@@ -36,9 +36,10 @@ jQuery(document).ready(function(){
         jQuery(nodes).each(function(i,n){
             actualnodes.push(g.addNode(n[0],n[1]));
         });
-        // FIXME: fan or combine edges between the same nodes
-        jQuery(edges).each(function(i,e){
-            g.addEdge(e[0],e[1], e[2]);
+        jQuery.each(edges,function(fromId, arcs){
+            jQuery.each(arcs,function(toId, config){
+                g.addEdge(fromId,toId, config);
+            });
         });
         var layouter = new Graph.Layout.Spring(g);
         layouter.layout();
@@ -68,7 +69,12 @@ jQuery(document).ready(function(){
             }
             // only actually display edge where a label has been specified (this avoids displaying overlapping edges for inverse rels)
             if (label && (depth <= maxDepth || processed[toId])){ 
-                edges.push([fromId,toId,{directed: (label? true: false), label: label}]);
+                edges[fromId] = edges[fromId] || {};
+                if (edges[fromId][toId]) {
+                    edges[fromId][toId].label += ", " + label;
+                } else {
+                    edges[fromId][toId] = {directed: (label? true: false), label: label}
+                }
             }
         });
     }
@@ -243,9 +249,9 @@ jQuery(document).ready(function(){
              });
         } else if (apiType == "resource"){
             numberInQ+=3;
-            processInverseRelationships(d,"versions","transcriptions",id, "");
-            processInverseRelationships(d,"artefacts","facsimiles",id, "");
-            processInverseRelationships(d,"agents","images",id, "");
+            processInverseRelationships(d,"version","transcriptions",id, "");
+            processInverseRelationships(d,"artefact","facsimiles",id, "");
+            processInverseRelationships(d,"agent","images",id, "");
         } else if (apiType == "place"){
             numberInQ+=2;
             processInverseRelationships(d,"event","places",id, "");
@@ -266,7 +272,7 @@ jQuery(document).ready(function(){
     var id = metadata.data('existingid');
     var processed = {}; // keeps track of processed ids to avoid cycles
     var nodes = []; // collects nodes to be visualised
-    var edges = []; // collects edges connecting nodes to be visualised
+    var edges = {}; // collects edges connecting nodes to be visualised
     var maxDepth = 3;
     var numberInQ = 2; // used to determine when to draw graph - represents number of outstanding ajax requests
     loadObject(apiType, id, 0, true);
