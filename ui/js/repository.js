@@ -402,7 +402,7 @@ jQuery.fn.serializeObject = function() {
             url: '/' + modulePath + '/api/mvds/?q=' + id,
             success: function(d){
                 if (d.results.length > 0) {
-                    var result = "<h4>VIEW MVD:</h4><form class='form-inline' onsubmit='return false;'><select id='mvdselect'>";
+                    var result = "<h4>VIEW MVD:</h4><form onsubmit='return false;'><select id='mvdselect'>";
                     var res = "";
                     for (var i = 0; i < d.results.length; i++){
                         res = d.results[i];
@@ -416,10 +416,10 @@ jQuery.fn.serializeObject = function() {
                         
                     }
                     result+= '</select>'
-                        + '<button id="comparebtn" class="btn btn-small">Compare</button>'
-                        + '<button id="tablebtn" class="btn btn-small">Table</button>'
-                        + '<button id="refreshbtn" class="btn btn-small">Refresh</button>'
-                        + '</form>';
+                        + '<div><button id="comparebtn" class="btn btn-small">Compare</button>'
+                        + '&nbsp;<button id="tablebtn" class="btn btn-small">Table</button>'
+                        + '&nbsp;<button id="refreshbtn" class="btn btn-small">Refresh</button>'
+                        + '</div></form>';
                     jQuery('#viewmvd').append(result);
                     jQuery('#comparebtn').on('click',viewCompare);
                     jQuery('#tablebtn').on('click',viewTable);
