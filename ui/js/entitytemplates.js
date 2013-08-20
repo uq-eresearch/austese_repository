@@ -109,6 +109,12 @@ templates.versionSummary =
         {{#if hasEditPermission}}<p><a href="/{{modulePrefix}}/versions/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a></p>{{/if}}\
     </div>'
 ;
+templates.versionCompact = 
+    '<div class="obj">\
+      <h5><a href="/{{modulePrefix}}/versions/{{id}}{{projParam}}">{{ellipsis versionTitle 50}} {{#if name}}({{ellipsis name 20}}){{/if}}</a></h5>\
+      {{date}} {{publisher}}\
+    </div>'
+;
 templates.versionDetail = 
     '<div>\
         <table class="table">\
@@ -172,6 +178,13 @@ templates.agentDetail =
     </table></div>\
     </div>'
 ;
+templates.agentCompact = 
+    '<div class="obj">\
+    <h5><a title="{{lastName}}, {{firstName}}" data-content="{{biography}}" href="/{{modulePrefix}}/agents/{{id}}{{projParam}}">{{lastName}}, {{firstName}}</a></h5>\
+    {{#if birthDate}} b. {{birthDate}}, {{/if}}\
+    {{#if deathDate}} d. {{deathDate}}, {{/if}}\
+    </div>'
+;
 templates.eventToken = 
     '<li title="{{#if name}}{{name}}{{else}}Untitled{{/if}}{{#if eventType}} ({{eventType}}){{/if}}" \
     data-content="{{{description}}}">\
@@ -197,6 +210,12 @@ templates.eventSummary =
         {{#if hasEditPermission}}\
         <p><a href="/{{modulePrefix}}/events/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a></p>\
         {{/if}}\
+    </div>'
+;
+templates.eventCompact = 
+    '<div class="obj">\
+    <h5><a href="/{{modulePrefix}}/events/{{id}}{{projParam}}">\
+    {{#if name}}{{name}}{{else}}Untitled Event{{/if}}{{#if eventType}} ({{eventType}}){{/if}}</a></h5>\
     </div>'
 ;
 templates.eventTimelineSummary = 
@@ -356,6 +375,12 @@ templates.artefactDetail =
     {{/gt}}\
     </div>'
 ;
+templates.artefactCompact =
+    '<div class="obj">\
+    <h5><a href="/{{modulePrefix}}/artefacts/{{id}}{{projParam}}">{{source}}</a></h5>\
+    {{#if date}}{{date}}{{/if}}\
+    </div>'
+;
 templates.workSummary = 
     '<div class="obj">\
     <h4><a href="/{{modulePrefix}}/works/{{id}}{{projParam}}">{{workTitle}}{{#if name}} ({{name}}){{/if}}</a></h4>\
@@ -373,9 +398,14 @@ templates.workDetail =
     {{#if name}}<tr><td class="metadatalabel muted">Name</td><td>{{name}}</td></tr>{{/if}}\
     {{#if description}}<tr><td class="metadatalabel muted">Description</td><td>{{{description}}}</td></tr>{{/if}}\
     </table>\
-    <h3>Versions</h3><ul>\
+    <h3 class="muted">Versions</h3><ul>\
     {{#each versions}}<li class="version" data-versionid="{{.}}" data-template="summary"></li>{{/each}}\
     </ul>\
+    </div>'
+;
+templates.workCompact =
+    '<div class="obj">\
+    <h5><a href="/{{modulePrefix}}/works/{{id}}{{projParam}}">{{ellipsis workTitle 50}}{{#if name}} ({{name}}){{/if}}</a></h5>\
     </div>'
 ;
 templates.placeToken = '<li>{{name}}, {{state}}</li>';

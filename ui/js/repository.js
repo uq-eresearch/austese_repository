@@ -198,9 +198,76 @@ jQuery.fn.serializeObject = function() {
                     // transcription
                     loadRelatedMVDs(id);
                 }
+                loadInverseRelationships(id);
             }
         });
         
+    }
+    function loadInverseRelationships(id){
+        function processInverseRelationships(queryApiType, queryField, queryId, title){
+            
+            var defaultPageSize = 5;
+            jQuery.ajax({
+                type: 'GET',
+                url: '/' + modulePath + '/api/' + queryApiType + 's/',
+                data: {
+                    q: queryId,
+                    searchField: queryField,
+                    pageSize: defaultPageSize
+                },
+                dataType: "json",
+                headers: {
+                    'Accept': 'application/json'
+                },
+                success: function(result){
+                    var display = "";
+                    if (result.results.length > 0){
+                      display += "<strong class=\"muted\">" + title + "</strong><ul>";
+                      result.results.forEach(function(r){
+                          r.modulePrefix = modulePrefix;
+                          display += "<li>" + getTemplate(queryApiType + 'Compact')(r) +"</li>";
+                      })
+                      display += "</ul>";
+                      if (result.count > defaultPageSize) {
+                          // TODO: display link to search page to view all
+                          display += "<p><small class='muted'>plus " + (result.count - defaultPageSize) + " more</small></p>";
+                      }
+                      jQuery('#relatedObjects').append(display);
+                    }
+                }
+            });
+        }
+        
+        // FIXME: maintain consistent order of display
+        if (apiType == "artefact"){
+            // artefacts are linked to from versions, events and artefacts
+            processInverseRelationships("version","artefacts",id,"Related Versions");
+            processInverseRelationships("event","artefacts",id,"Related Events"); 
+            processInverseRelationships("artefact","artefacts",id, "Is Part Of");
+        } else if (apiType == "version") {
+            // versions are linked to from works and versions
+            processInverseRelationships("version","versions",id, "Is Part Of");
+            processInverseRelationships("work","versions", id, "Related Works");
+        } else if (apiType=="agent"){
+            ["agents", "authors", "amanuenses", "influencers", "editors", "publishers",
+             "printers", "compositors", "illustrators", "binders", "readers", "translators",
+             "booksellers"].forEach(function(key){
+                var elabel;
+                switch (key) {
+                  case "amanuenses": elabel = "Is amanuensis for"; break;
+                  default: elabel = "Participated as " + key.substr(0, key.length - 1) + " in:";
+                }
+                
+                processInverseRelationships("event", key, id, elabel);
+             });
+        } else if (apiType == "resource"){
+           processInverseRelationships("version","transcriptions",id, "Digital Surrogate For");
+           processInverseRelationships("artefact","facsimiles",id, "Digital Surrogate For");
+           processInverseRelationships("agent","images",id, "Image of");
+        } else if (apiType == "event"){
+            
+            processInverseRelationships("event","events",id,"Is Part Of");
+        }
     }
     function loadObjects(page, filterTerm){
         page = page || 0;

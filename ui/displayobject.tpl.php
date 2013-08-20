@@ -51,6 +51,7 @@ if (isset($_GET['project'])) {
  <?php if ($apiType=='resource'):?>
  <div style="margin-top:1em" id="viewmvd"></div>
  <?php endif; ?>
+ <div style="margin-top:1em" id="relatedObjects"></div>
 </div>
 
 <!--  h4>History:</h4>
