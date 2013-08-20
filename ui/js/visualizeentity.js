@@ -11,7 +11,7 @@ jQuery(document).ready(function(){
                             "#FFFFCC")))));
         
         var theText = n.label || n.id;
-        var rectWidth = theText.length * 3.7;
+        var rectWidth = theText.length * 3.7 + 10;
         var rectHeight = 40;
         var rounding = 5;
         frame = r.rect(0-rectWidth/2, 0 - rectHeight/2, rectWidth, rectHeight, rounding);
@@ -50,6 +50,7 @@ jQuery(document).ready(function(){
             actualnodes[0].shape.translate(200,100);
         }
         renderer.draw();
+        jQuery('#loadingvis').hide();
     };
     var showEdges = function(depth, fromId, coll, type, label, skipInverse){
         jQuery(coll).each(function(i,a){
