@@ -83,6 +83,7 @@ jQuery.fn.serializeObject = function() {
                 propertyToSearch: "description",
                 resultsFormatter: function(item){return "<li><b>" + item.description + "</b>, " + item.eventType + "</li>";},
                 tokenFormatter: function(item){return "<li>" + item.description + ", " + item.eventType + "</li>";}
+                propertyToSearch: "name",
             });
             jQuery("#agents, #authors, #editors, #publishers, #printers, #influencers, #compositors, #amanuenses, #illustrators, #binders, #readers, #translators, #booksellers").tokenInput("/" + modulePath + "/api/agents/" + projectParam, {
                 theme: "facebook",

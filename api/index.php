@@ -172,7 +172,7 @@ $app->get('/agents/', function(){
     listRecords('agents','lastName');
 });
 $app->get('/events/', function(){
-    listRecords('events','description');
+    listRecords('events','name');
 });
 $app->get('/places/', function(){
   listRecords('places','name');
