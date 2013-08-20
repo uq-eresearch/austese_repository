@@ -11,7 +11,10 @@ jQuery(document).ready(function(){
                             "#FFFFCC")))));
         
         var theText = n.label || n.id;
-        frame = r.ellipse(0, 0, theText.length * 3.5, 20);
+        var rectWidth = theText.length * 3.7;
+        var rectHeight = 40;
+        var rounding = 5;
+        frame = r.rect(0-rectWidth/2, 0 - rectHeight/2, rectWidth, rectHeight, rounding);
         text = r.text(0, 0, theText);
         text.data('nodeData',n);
         frame.attr({
@@ -47,28 +50,29 @@ jQuery(document).ready(function(){
         }
         renderer.draw();
     };
-    var showEdges = function(fromId, coll, type, label, skipInverse){
+    var showEdges = function(depth, fromId, coll, type, label, skipInverse){
         jQuery(coll).each(function(i,a){
             // allow a to be either an id or an object
             var toId = a;
             if (a.id){
                 toId = a.id;
             }
-            // only actually display edge where a label has been specified (this avoids displaying overlapping edges for inverse rels)
-            //if (label){ 
-                edges.push([fromId,toId,{directed: (label? true: false), label: label}]);
-            //}
-            if (!processed[toId]){
+            // don't add more nodes if we have reached maxDepth
+            if (!processed[toId] && depth <= maxDepth){
                 numberInQ++;
-                loadObject(type, toId);
+                loadObject(type, toId, depth + 1);
                 if (!skipInverse){
                     numberInQ++;
-                    getInverseRelationships(type, toId);
+                    getInverseRelationships(type, toId, depth + 1);
                 }
+            }
+            // only actually display edge where a label has been specified (this avoids displaying overlapping edges for inverse rels)
+            if (label && (depth <= maxDepth || processed[toId])){ 
+                edges.push([fromId,toId,{directed: (label? true: false), label: label}]);
             }
         });
     }
-    var loadObject = function(apiType, id, hilite){
+    var loadObject = function(apiType, id, depth, hilite){
         jQuery.ajax({
             type: 'GET',
             url: '/' + modulePath + '/api/' + apiType + 's/' + id,
@@ -78,34 +82,40 @@ jQuery(document).ready(function(){
             },
             error : function (r){
                 numberInQ--;
-                processed[id] = true;
-                nodes.push([id,{
-                    nodeType: apiType,
-                    label: "[" + apiType.toUpperCase() + "]\n" + r.statusText,
-                    render: renderFunc
-                }]);
+                if (!processed[id]){
+                    processed[id] = true;
+                    nodes.push([id,{
+                        nodeType: apiType,
+                        label: "[" + apiType.toUpperCase() + "]\n" + r.statusText,
+                        render: renderFunc
+                    }]);
+                }
                 if (numberInQ == 0) {
-                    console.log("drawing graph after error load object")
                     drawGraph();
                 }
             },
             success: function(result){
-                depth++;
                 var project = jQuery('#metadata').data('project');
                 if (project) {
                     result.projParam = "?project="+ project;
                 }
-                processed[id] = true;
-                var nodeData = {
-                    nodeType: apiType,
-                    label: "[" + apiType.toUpperCase() + "]\n" + (result.name || result.source || result.title || result.filename || result.eventType ||  result.versionTitle || result.workTitle || (result.lastName? result.lastName + ", " + result.firstName: undefined) || "Untitled"),
-                    render: renderFunc
-                };
-                if (hilite){
-                    nodeData.color = "#e7e7e7";
-                }
-                nodes.push([id,nodeData]);
-                if (depth <= maxDepth) { // keep processing
+                if (!processed[id]) {
+                    processed[id] = true;
+                    var nodeLabel = "[" + apiType.toUpperCase() + "]\n" 
+                        + (result.name || result.source || result.title || result.filename || result.eventType ||  result.versionTitle || result.workTitle || (result.lastName? result.lastName + ", " + result.firstName: undefined) || "Untitled");
+                    if (nodeLabel.length > 35){
+                        nodeLabel = nodeLabel.substr(0,32) + "...";
+                    } 
+                    var nodeData = {
+                        nodeType: apiType,
+                        label: nodeLabel,
+                        render: renderFunc
+                    };
+                    if (hilite){
+                        nodeData.color = "#FB8072";
+                    }
+                    nodes.push([id,nodeData]);
+                
                     var label;
                     if (result.versions){
                         switch (apiType) {
@@ -113,11 +123,11 @@ jQuery(document).ready(function(){
                             case "work": label = "realised_by"; break;
                             default: label = "has_version"; break;
                         }
-                        showEdges(id, result.versions,"version",label);
+                        showEdges(depth, id, result.versions,"version",label);
                     }
                     if (result.places) {
                         label = "has_place";
-                        showEdges(id, result.places,"place",label);
+                        showEdges(depth, id, result.places,"place",label);
                     }
                     // all of the different agent roles for events
                     ["agents", "authors", "amanuenses", "influencers", "editors", "publishers",
@@ -128,7 +138,7 @@ jQuery(document).ready(function(){
                                 case "amanuenses": label = "has_amanuensis"; break;
                                 default: label = "has_" + key.substr(0, key.length - 1);
                             }
-                            showEdges(id, result[key], "agent", label);
+                            showEdges(depth, id, result[key], "agent", label);
                         }
                     });
                     
@@ -139,7 +149,7 @@ jQuery(document).ready(function(){
                             case "version": label = "appears_in"; break;
                             default: label = "has_artefact";
                         }
-                        showEdges(id, result.artefacts,"artefact", label);
+                        showEdges(depth, id, result.artefacts,"artefact", label);
                     }
                     // events
                     if (result.events) {
@@ -148,35 +158,34 @@ jQuery(document).ready(function(){
                         } else {
                             label = "has_event";
                         }
-                        showEdges(id, result.events, "event", label);
+                        showEdges(depth, id, result.events, "event", label);
                     }
                     if (result.images){
                         label = "has_image";
-                        showEdges(id, result.images, "resource", label);
+                        showEdges(depth, id, result.images, "resource", label);
                     }
                     // resources
                     if (result.transcriptions) {
                         label = "is_embodied_by";
-                        showEdges(id, result.transcriptions,"resource",label);
+                        showEdges(depth, id, result.transcriptions,"resource",label);
                     }
                     if (result.facsimiles) {
                         label = "has_digital_surrogate";
-                        showEdges(id, result.facsimiles,"resource",label);
+                        showEdges(depth, id, result.facsimiles,"resource",label);
                     }
-                    
-                }
+                } 
+                
                
                 numberInQ--;
                 if (numberInQ == 0) {
-                    //console.log("drawing graph after load object")
                     drawGraph();
                 }
             }
         });
     };
     
-    function getInverseRelationships(apiType, id){
-        function processInverseRelationships(queryApiType, queryField, queryId, label) {
+    function getInverseRelationships(apiType, id, d){
+        function processInverseRelationships(depth,queryApiType, queryField, queryId, label) {
             jQuery.ajax({
                 type: 'GET',
                 url: '/' + modulePath + '/api/' + queryApiType + 's/',
@@ -191,7 +200,6 @@ jQuery(document).ready(function(){
                 error : function (r){
                     numberInQ--;
                     if (numberInQ == 0) {
-                        //console.log("drawing graph after error in get inverse rels")
                         drawGraph();
                     }
                 },
@@ -199,28 +207,27 @@ jQuery(document).ready(function(){
                     numberInQ--;
                     if (result.count > 0){
                         // don't display label otherwise it will overlap with existing label
-                        showEdges(queryId, result.results, queryApiType,"", true);
+                        showEdges(depth, queryId, result.results, queryApiType,"", true);
                     }
-                    //console.log("got inverse rels",result, numberInQ)
                     if (numberInQ == 0) {
-                        //console.log("drawing graph after success in get inverse rels")
                         drawGraph();
                     }
                 }
             });
         }
         numberInQ--;
+        // inverse label names aren't displayed, only used for linking to object to grow the network
         if (apiType == "artefact"){
             // artefacts are linked to from versions, events and artefacts
             numberInQ += 3;
-            processInverseRelationships("version","artefacts",id, "has_version");// FIXME label name
-            processInverseRelationships("event","artefacts",id,"produced_by"); // FIXME: label name
-            processInverseRelationships("artefact","artefacts",id, "is_part_of");
+            processInverseRelationships(d,"version","artefacts",id, "");
+            processInverseRelationships(d,"event","artefacts",id,""); 
+            processInverseRelationships(d,"artefact","artefacts",id, "");
         } else if (apiType == "version") {
             // versions are linked to from works and versions
             numberInQ+=2;
-            processInverseRelationships("version","versions",id, "is_part_of");
-            processInverseRelationships("work","versions", id, "has_work");//FIXME label name
+            processInverseRelationships(d,"version","versions",id, "");
+            processInverseRelationships(d,"work","versions", id, "");
         } else if (apiType=="agent"){
             ["agents", "authors", "amanuenses", "influencers", "editors", "publishers",
              "printers", "compositors", "illustrators", "binders", "readers", "translators",
@@ -231,24 +238,23 @@ jQuery(document).ready(function(){
                   default: elabel = "is_" + key.substr(0, key.length - 1) + "_for";
                 }
                 numberInQ++;
-                processInverseRelationships("event", key, id, elabel);
+                processInverseRelationships(d,"event", key, id, elabel);
                 
              });
         } else if (apiType == "resource"){
             numberInQ+=3;
-            processInverseRelationships("versions","transcriptions",id, "is_digital_surrogate_for");
-            processInverseRelationships("artefacts","facsimiles",id, "is_digital_surrogate_for");
-            processInverseRelationships("agents","images",id, "is_image_for");
+            processInverseRelationships(d,"versions","transcriptions",id, "");
+            processInverseRelationships(d,"artefacts","facsimiles",id, "");
+            processInverseRelationships(d,"agents","images",id, "");
         } else if (apiType == "place"){
             numberInQ+=2;
-            processInverseRelationships("event","places",id, "is_place_for");
-            processInverseRelationships("version","places",id,"is_place_for");
+            processInverseRelationships(d,"event","places",id, "");
+            processInverseRelationships(d,"version","places",id,"");
         } else if (apiType == "event"){
             numberInQ++;
-            processInverseRelationships("event","events",id,"has_sub_event");
+            processInverseRelationships(d,"event","events",id,"");
         }
         if (numberInQ == 0) {
-            //console.log("drawing graph from default case in get inverse rels")
             drawGraph();
         }
     }
@@ -261,9 +267,8 @@ jQuery(document).ready(function(){
     var processed = {}; // keeps track of processed ids to avoid cycles
     var nodes = []; // collects nodes to be visualised
     var edges = []; // collects edges connecting nodes to be visualised
-    var maxDepth = 5;
+    var maxDepth = 3;
     var numberInQ = 2; // used to determine when to draw graph - represents number of outstanding ajax requests
-    var depth = 0;
-    loadObject(apiType, id, true);
-    getInverseRelationships(apiType, id);
+    loadObject(apiType, id, 0, true);
+    getInverseRelationships(apiType, id, 0);
 });
