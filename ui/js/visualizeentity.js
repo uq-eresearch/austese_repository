@@ -18,9 +18,9 @@ jQuery(document).ready(function(){
         text = r.text(0, 0, theText);
         text.data('nodeData',n);
         frame.attr({
-            'fill': n.color || defaultColor,
-            'stroke-width' : '1px',
-            'stroke': n.color || defaultColor
+            'fill': defaultColor,
+            'stroke-width' : (n.hilite? '3px': '1px'),
+            'stroke': (n.hilite? "#F15311" :  defaultColor)
         });
         text.click(function(){
             var nodeData = this.data("nodeData");
@@ -119,7 +119,7 @@ jQuery(document).ready(function(){
                         render: renderFunc
                     };
                     if (hilite){
-                        nodeData.color = "#FB8072";
+                        nodeData.hilite = true;
                     }
                     nodes.push([id,nodeData]);
                 
@@ -274,7 +274,7 @@ jQuery(document).ready(function(){
     var processed = {}; // keeps track of processed ids to avoid cycles
     var nodes = []; // collects nodes to be visualised
     var edges = {}; // collects edges connecting nodes to be visualised
-    var maxDepth = 3;
+    var maxDepth = 2;
     var numberInQ = 2; // used to determine when to draw graph - represents number of outstanding ajax requests
     loadObject(apiType, id, 0, true);
     getInverseRelationships(apiType, id, 0);
