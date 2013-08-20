@@ -285,6 +285,8 @@ function repository_edit($template, $id=null){
         drupal_add_css($modulePath . '/ui/lib/codemirror/codemirror.css'); 
  
     } else {
+        drupal_add_js($modulePath . '/ui/lib/handlebars.js');
+        drupal_add_js($modulePath . '/ui/js/entitytemplates.js');
         drupal_add_js($modulePath . '/ui/js/repository.js');
     }
     // Add stylesheets
