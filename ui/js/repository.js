@@ -139,7 +139,7 @@ jQuery.fn.serializeObject = function() {
                 preventDuplicates: true,
                 propertyToSearch: "name",
                 resultsFormatter: function(item){return getTemplate('placeTokenResult')(item);},
-                tokenFormatter: function(item){return getTemplate('placeToken')(name);}
+                tokenFormatter: function(item){return getTemplate('placeToken')(item);}
             });
             jQuery("#versions").tokenInput("/" + modulePath + "/api/versions/" + projectParam, {
                 theme: "facebook",
