@@ -477,7 +477,7 @@ jQuery.fn.serializeObject = function() {
             url: '/' + modulePath + '/api/mvds/?q=' + id,
             success: function(d){
                 if (d.results.length > 0) {
-                    var result = "<h4>VIEW MVD:</h4><form onsubmit='return false;'><select id='mvdselect'>";
+                    var result = "<h4 class='muted'>VIEW MVD:</h4><form onsubmit='return false;'><select id='mvdselect'>";
                     var res = "";
                     for (var i = 0; i < d.results.length; i++){
                         res = d.results[i];
