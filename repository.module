@@ -279,6 +279,13 @@ function repository_edit($template, $id=null){
         drupal_add_js($modulePath. '/ui/lib/codemirror/xml-hint.js');
         drupal_add_css($modulePath. '/ui/lib/codemirror/show-hint.css');
         drupal_add_css($modulePath . '/ui/css/tei.css');
+        if ($multiParam) {
+            drupal_add_js($modulePath . '/ui/lib/codemirror/merge/dep/diff_match_patch.js');
+            drupal_add_js($modulePath . '/ui/lib/codemirror/merge/merge.js');
+            drupal_add_css($modulePath. '/ui/lib/codemirror/merge/merge.css');
+            drupal_add_js($modulePath . '/ui/lib/select2/select2.min.js');
+            drupal_add_css($modulePath . '/ui/lib/select2/select2.css');
+        }
         // xml edit
         drupal_add_js($modulePath . '/ui/lib/codemirror/xml.js');
         drupal_add_js($modulePath . '/ui/js/resourceedit.js');
