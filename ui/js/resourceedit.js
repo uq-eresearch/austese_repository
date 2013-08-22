@@ -1,8 +1,8 @@
 jQuery(function(){
      editor.init();
-     editor.loadResource(jQuery('#savebtn').data("resource"));
-     jQuery('#savebtn').click(editor.newResourceVersion);
-     jQuery('#previewbtn').click(editor.previewResource);
+     editor.loadResource(jQuery('.savebtn').eq(0).data("resource"));
+     jQuery('.savebtn').click(editor.newResourceVersion);
+
      jQuery.ajax({
          url:'/sites/all/modules/austese_repository/ui/xslt/formats.xsl',
          success: function(xsl){
@@ -95,26 +95,100 @@ var editor = {
      });
  },
  init : function(){
-     editor.cm = CodeMirror.fromTextArea(document.getElementById("editor"), {
-         mode: {
-             name: "xml", 
-             alignCDATA: true
-         },   
-         autoCloseTags: true,
-         lineWrapping: true,
-         lineNumbers: true,
-         matchTags: true,
-         extraKeys: {
-             "'<'": editor.completeAfter,
-             "'/'": editor.completeIfAfterLt,
-             "' '": editor.completeIfInTag,
-             "'='": editor.completeIfInTag,
-             "Ctrl-Space": function(cm) {
-               CodeMirror.showHint(cm, CodeMirror.hint.xml, {schemaInfo: tags});
+     var multi = jQuery('#metadata').data('multi');
+     var target;
+     var cmoptions = {
+             mode: {
+                 name: "xml", 
+                 alignCDATA: true
+             },   
+             autoCloseTags: true,
+             lineWrapping: true,
+             lineNumbers: true,
+             matchTags: true,
+             extraKeys: {
+                 "'<'": editor.completeAfter,
+                 "'/'": editor.completeIfAfterLt,
+                 "' '": editor.completeIfInTag,
+                 "'='": editor.completeIfInTag,
+                 "Ctrl-Space": function(cm) {
+                   CodeMirror.showHint(cm, CodeMirror.hint.xml, {schemaInfo: tags});
+                 }
              }
-         }
-     }); 
-     editor.cm.on("gutterClick", editor.foldXML);
+     };
+     if (!multi){
+         jQuery('#single-editor-ui').show();
+         target = document.getElementById("editor");
+         editor.cm = CodeMirror.fromTextArea(target, cmoptions);
+         // folding only enabled for single editor - doesn't play well with copy from other version
+         editor.cm.on("gutterClick", editor.foldXML);
+     } else {
+         jQuery('#multi-editor-ui').show();
+         target = document.getElementById("multieditor");
+         cmoptions.value = "";
+         cmoptions.origLeft = "";
+         
+         cmoptions.orig = null;
+         
+         editor.mergeView = CodeMirror.MergeView(target, cmoptions);
+         editor.cm = editor.mergeView.editor();
+         editor.left = editor.mergeView.left;
+         editor.right = editor.mergeView.right;
+         var modulePath = jQuery('#metadata').data('modulepath');
+         var project = jQuery('#metadata').data('project');
+         jQuery("#lhs-select, #rhs-select").select2({
+             placeholder: 'Search transcriptions by title or filename',
+             minimumInputLength: 0,
+             ajax: {
+                 dataType: 'json',
+                 url: '/' + modulePath + '/api/resources/',
+                 data: function(term,page){
+                     var searchParams = {
+                         q: term,
+                         type: 'text',
+                         pageSize: 10,
+                         page: page
+                     };
+                     if (project) {
+                         searchParams.project = project;
+                     }
+                     return searchParams;
+                 },
+                 results: function (data, page) { 
+                     var more = (page * 10) < data.count;
+                     data.more = more;
+                     return data;
+                 }
+             },
+             formatResult: function(transcription){
+                 return '<b>' + transcription.filename + "</b>" + (transcription.metadata.title? ", " + transcription.metadata.title : "");
+             },
+             formatSelection: function(transcription){
+                 return '<b>' + transcription.filename + "</b>" + (transcription.metadata.title? ", " + transcription.metadata.title : "");
+             },
+             escapeMarkup: function(m){return m;}
+         }).on("change", function(e) {
+             var origPanel = editor.left;
+             if (e.currentTarget.id == 'rhs-select') {
+                 origPanel = editor.right;
+             }
+            var transcriptionId = e.val; // json for transcription in e.added
+            // load the transcription into the side panel
+            jQuery.ajax({
+                url: '/' + modulePath + '/api/resources/' + e.val,
+                complete: function(xhr){
+                    origPanel.orig.setValue(xhr.responseText);
+                    origPanel.forceUpdate();
+                }
+            });
+            
+            
+         });
+     }
+     
+     editor.cm.on("update", editor.previewResource);
+     
+     
  },
  loadResource : function(uri) {
      if (uri){
@@ -122,6 +196,9 @@ var editor = {
              url: uri,
              context: document.body,
              success: function(data, status, xhr){
+                 
+                 jQuery('#metadata').data('contenttype', xhr.getResponseHeader('Content-Type'));
+                 
                  editor.cm.setValue(xhr.responseText);
              },
              error: function(xhr, textStatus, errorThrown){
@@ -141,7 +218,7 @@ var editor = {
      }
  },
  newResourceVersion : function(){
-     var uri = jQuery('#savebtn').data("resource");
+     var uri = jQuery('.savebtn').eq(0).data("resource");
      jQuery('.alert').hide();
      if (uri){
          // create a new resource version
@@ -161,7 +238,7 @@ var editor = {
      } 
  },
  previewResource: function(){
-     if (editor.xsl){
+     if (editor.xsl && jQuery('#metadata').data('contenttype') == 'text/xml'){
          var text = editor.cm.getValue();
          var result = "Preview unavailable: Your browser does not support XSLT";
          if (window.ActiveXObject) { // IE
@@ -179,8 +256,11 @@ var editor = {
              } catch (error){
                  result = error.message;
              }
-         } 
-         jQuery("#preview").html(result);
+         }
+         jQuery(".edit-preview").html(result);
+     } else {
+         // no preview, expand editor to fill page width
+         jQuery('#editorspan').removeClass('span6').addClass('span12');
      }
  }
 };
