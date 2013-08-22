@@ -687,6 +687,14 @@ Ext.define('austese_uploader.controller.Controller', {
                         document.location.href ='/repository/resources/edit/' + record.get('id');
                     }}
                 );
+                button.menu.add({
+                    text: 'Multi-Transcription editor',
+                    iconCls: 'transcriptionEditorIcon',
+                    tooltip: 'Edit selected transcription using multi-editor',
+                    handler: function(){
+                        document.location.href ='/repository/resources/edit/' + record.get('id') + '?multi=true';
+                    }}
+                );
                 var record = records[0];
                 button.menu.add({
                     text: 'Duplicate resource',
