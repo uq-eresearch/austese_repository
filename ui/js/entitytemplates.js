@@ -452,6 +452,15 @@ templates.resourceSummary =
     {{metadata.format}}\
     </div>'
 ;
+templates.resourceBareDetail = '<span>\
+    <b>{{#if metadata.title}}{{metadata.title}}, {{/if}}{{filename}}</b> ({{metadata.filetype}})\
+    </span>'
+;
+templates.resourceCompact = 
+    '<span>\
+    <b><a href="/{{modulePrefix}}/resources/{{id}}{{projParam}}">{{#if metadata.title}}{{metadata.title}}, {{/if}}{{filename}}</a></b> ({{metadata.filetype}})\
+    </span>'
+;
 templates.resourceDetail = 
     '<div>\
     <h3>Metadata</h3>\

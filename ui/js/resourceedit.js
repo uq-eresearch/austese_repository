@@ -1,6 +1,8 @@
 jQuery(function(){
      editor.init();
-     editor.loadResource(jQuery('.savebtn').eq(0).data("resource"));
+     var resourceId = jQuery('.savebtn').eq(0).data("resource");
+     editor.loadResource(resourceId);
+     editor.displayResourceMetadata(resourceId);
      jQuery('.savebtn').click(editor.newResourceVersion);
 
      jQuery.ajax({
@@ -126,9 +128,9 @@ var editor = {
          jQuery('#multi-editor-ui').show();
          target = document.getElementById("multieditor");
          cmoptions.value = "";
-         cmoptions.origLeft = "";
+         cmoptions.origLeft = null;
          
-         cmoptions.orig = null;
+         cmoptions.orig = "";
          
          editor.mergeView = CodeMirror.MergeView(target, cmoptions);
          editor.cm = editor.mergeView.editor();
@@ -161,10 +163,12 @@ var editor = {
                  }
              },
              formatResult: function(transcription){
-                 return '<b>' + transcription.filename + "</b>" + (transcription.metadata.title? ", " + transcription.metadata.title : "");
+                 return getTemplate('resourceBareDetail')(transcription);
+                // return '<b>' + transcription.filename + "</b>" + (transcription.metadata.title? ", " + transcription.metadata.title : "");
              },
              formatSelection: function(transcription){
-                 return '<b>' + transcription.filename + "</b>" + (transcription.metadata.title? ", " + transcription.metadata.title : "");
+                 return getTemplate('resourceBareDetail')(transcription);
+                 //return '<b>' + transcription.filename + "</b>" + (transcription.metadata.title? ", " + transcription.metadata.title : "");
              },
              escapeMarkup: function(m){return m;}
          }).on("change", function(e) {
@@ -190,15 +194,33 @@ var editor = {
      
      
  },
+ displayResourceMetadata : function(uri) {
+     jQuery.ajax({
+         url: uri,
+         dataType: 'json',
+         cache: false,
+         context: document.body,
+         headers: {
+             'Accept': 'application/json'
+         },
+         success: function(data){
+             data.modulePrefix = 'repository';
+             // todo add projParam
+             jQuery('#editInfo').html(getTemplate('resourceCompact')(data));
+         },
+         complete: function(xhr){
+             console.log("complete",xhr)
+         }
+     });
+ },
  loadResource : function(uri) {
      if (uri){
      jQuery.ajax({
              url: uri,
              context: document.body,
+             cache:false,
              success: function(data, status, xhr){
-                 
                  jQuery('#metadata').data('contenttype', xhr.getResponseHeader('Content-Type'));
-                 
                  editor.cm.setValue(xhr.responseText);
              },
              error: function(xhr, textStatus, errorThrown){

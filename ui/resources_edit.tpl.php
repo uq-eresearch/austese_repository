@@ -35,7 +35,7 @@ if (isset($_GET['multi'])) {
   <a href="#" data-dismiss="alert" class="close">x</a>
   <span id="failMessage"></span>
 </div>
-
+<div id="editInfo"></div>
 <!--  ui for multi/merge editor -->
 <div id="multi-editor-ui">
   <div class="row-fluid">
@@ -43,15 +43,15 @@ if (isset($_GET['multi'])) {
   </div>
   <div class="row-fluid">
     <div class="span12 form-actions form-center">
-       <div class="span6">
+       <!--div class="span6">
        <input type="hidden" class="span12" id="lhs-select"/>
-       </div>
+       </div-->
        <div class="span6">
         <button data-resource="/<?php print drupal_get_path('module', 'repository');?>/api/resources/<?php print arg(3); ?>" class="btn btn-primary savebtn" title="Save as new version">Save</button>
        </div>
-       <!--  div class="span4">
+       <div class="span6">
        <input type="hidden" class="span12" id="rhs-select"/>
-       </div-->
+       </div>
     </div>
   </div>
   <div class="row-fluid">

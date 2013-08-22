@@ -260,6 +260,8 @@ function repository_edit($template, $id=null){
     drupal_add_js($modulePath . '/ui/lib/wysihtml5-0.3.0.min.js');
     drupal_add_js($modulePath . '/ui/lib/bootstrap-wysihtml5.js');
     drupal_add_css($modulePath. '/ui/lib/bootstrap-wysihtml5.css',  array('group' => CSS_DEFAULT, 'every_page' => FALSE));
+    drupal_add_js($modulePath . '/ui/lib/handlebars.js');
+    drupal_add_js($modulePath . '/ui/js/entitytemplates.js');
     if ($template == "resources"){
         if (isset($_GET['multi'])) {
            $multiParam = true;
@@ -292,10 +294,9 @@ function repository_edit($template, $id=null){
         drupal_add_css($modulePath . '/ui/lib/codemirror/codemirror.css'); 
  
     } else {
-        drupal_add_js($modulePath . '/ui/lib/handlebars.js');
-        drupal_add_js($modulePath . '/ui/js/entitytemplates.js');
         drupal_add_js($modulePath . '/ui/js/repository.js');
     }
+
     // Add stylesheets
     drupal_add_css($modulePath . '/ui/css/repository.css',  array('group' => CSS_DEFAULT, 'every_page' => FALSE)); 
     drupal_add_css($modulePath . '/ui/lib/token-input.css', 
