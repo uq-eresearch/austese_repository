@@ -470,7 +470,10 @@ templates.resourceDetail =
         {{#if metadata.coverage}}<tr><td class="muted">Coverage</td><td>{{metadata.coverage}}</td></tr>{{/if}}\
         {{#if metadata.format}}<tr><td class="muted">Format</td><td>{{metadata.format}}</td></tr>{{/if}}\
         {{#if metadata.language}}<tr><td class="muted">Language</td><td>{{metadata.language}}</td></tr>{{/if}}\
+        {{#if metadata.license}}<tr><td class="muted">License</td><td>{{metadata.license}}</td></tr>{{/if}}\
         {{#if metadata.publisher}}<tr><td class="muted">Publisher</td><td>{{metadata.publisher}}</td></tr>{{/if}}\
+        {{#if metadata.rights}}<tr><td class="muted">Rights</td><td>{{metadata.rights}}</td></tr>{{/if}}\
+        {{#if metadata.source}}<tr><td class="muted">Source</td><td>{{metadata.source}}</td></tr>{{/if}}\
     </table>\
     <h3>File information</h3>\
     <table class="table">\

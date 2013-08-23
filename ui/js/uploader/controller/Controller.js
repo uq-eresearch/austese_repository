@@ -483,18 +483,24 @@ Ext.define('austese_uploader.controller.Controller', {
         var win = button.up('window');
         // read config values from window's form
         var config = win.down('form').getForm().getValues();
-        var metadataFieldSet = Ext.ComponentQuery.query('propertiespanel')[0] // the propertiespanel
+        var propertiespanel = Ext.ComponentQuery.query('propertiespanel')[0]
+        var metadataFieldSet =  propertiespanel
             .getLayout().getActiveItem(); // the active editor form
             //.down('fieldset'); // the first fieldset (i.e. metadata)
         var existingFields = win.existingFields;
+        var records = propertiespanel.loadedRecords;
+        if (records.length > 0){
+            var record = records[0];
+        }
         metadataFieldSet.items.each(
             function(f){
-                // remove deselected fields (title, description and project are always shown)
+                // remove deselected fields (title, description, shortname and project are always shown)
                 var fieldname = win.single? f.name : f.itemId;
                 
                 // for multi-form we look at field containers (itemId is appended with 'fc')
                 if (fieldname != ('description' + (win.single? '' : 'fc')) 
                         && fieldname != ('title' + (win.single? '' : 'fc')) 
+                        && fieldname != ('shortname' + (win.single? '' : 'fc'))
                         && fieldname != ('project' + (win.single? '' : 'fc'))
                         && !config.hasOwnProperty((win.single? fieldname : fieldname.substring(0,fieldname.length - 2)))){
                     metadataFieldSet.remove(f);
@@ -510,7 +516,8 @@ Ext.define('austese_uploader.controller.Controller', {
                     fld = Ext.create('Ext.form.field.Text',{
                         name: p,
                         labelAlign: 'top',
-                        fieldLabel: Ext.util.Format.capitalize(p)
+                        fieldLabel: Ext.util.Format.capitalize(p),
+                        value: (record? record.get(p): "")
                     });
                 } else {
                     // for multi-form we add fieldcontainer with checkbox
