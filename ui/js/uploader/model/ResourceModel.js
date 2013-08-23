@@ -64,6 +64,10 @@ Ext.define('austese_uploader.model.ResourceModel', {
             mapping: 'metadata.project'
         },
         {
+            name: 'locked',
+            mapping: 'metadata.locked'
+        },
+        {
             name: 'shortname',
             mapping: 'metadata.shortname'
         },
