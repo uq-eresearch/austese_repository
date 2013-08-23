@@ -279,6 +279,7 @@ var editor = {
                  result = error.message;
              }
          }
+         jQuery('#editorspan').removeClass('span12').addClass('span6');
          jQuery(".edit-preview").html(result);
      } else {
          // no preview, expand editor to fill page width
