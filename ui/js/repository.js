@@ -232,7 +232,9 @@ jQuery.fn.serializeObject = function() {
                           // TODO: display link to search page to view all
                           display += "<p><small class='muted'>plus " + (result.count - defaultPageSize) + " more</small></p>";
                       }
-                      jQuery('#relatedObjects').append(display);
+                      var div = jQuery('<div>' + display + '</div>');
+                      jQuery('#relatedObjects').append(div);
+                      enablePopups(div);
                     }
                 }
             });
@@ -654,7 +656,7 @@ jQuery.fn.serializeObject = function() {
         
     }
     function enablePopups(context){
-        context = (context? jQuery(context).find('.obj > h4 > a') : jQuery('.obj > h4 > a'));
+        context = (context? jQuery(context).find('.obj > h4,h5 >  a') : jQuery('.obj > h4,h5 > a'));
         context.popover({
             offset: 10,
             trigger: 'manual',
