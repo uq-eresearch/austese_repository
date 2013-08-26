@@ -487,7 +487,7 @@ templates.resourceCompact =
 ;
 templates.resourceDetail = 
     '<div>\
-    <h1>{{#if metadata.title}}{{upper metadata.title 80}}{{else}}UNTITLED RESOURCE{{/if}}</h1>\
+    <h1>{{#if metadata.title}}{{upper metadata.title 80}}{{else}}{{upper filename 100}}{{/if}}</h1>\
     <h3>Metadata</h3>\
     <table class="table">\
         {{#if metadata.title}}<tr><td class="metadatalabel muted">Title</td><td>{{metadata.title}}</td></tr>{{/if}}\
