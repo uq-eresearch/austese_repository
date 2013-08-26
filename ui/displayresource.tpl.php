@@ -27,6 +27,8 @@ if (isset($_GET['project'])) {
  data-servername="<?php print $_SERVER['SERVER_NAME']; ?>">
 </div>
 
+<div><p class="resource"></p></div>
+
 <div id="resourceContent" class="well" data-id="http://<?php print $_SERVER['SERVER_NAME']; ?>/repository/resources/<?php print $existingId; ?>/content">
 Rendering content...
 </div>
