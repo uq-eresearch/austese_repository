@@ -682,7 +682,8 @@ Ext.define('austese_uploader.controller.Controller', {
                 text: 'MVD',
                 iconCls: 'addMVDIcon',
                 tooltip: 'Add selected transcription(s) to MVD',
-                handler: this.sendToMVD
+                handler: this.sendToMVD,
+                scope: this
             });
             if (records.length == 1){
                 var record = records[0];
@@ -761,7 +762,8 @@ Ext.define('austese_uploader.controller.Controller', {
         // however could look up existing MVD with some of these resources and offer to replace it
         Ext.create('austese_uploader.view.SendToMVDWindow',{
             count: count,
-            ids: ids
+            ids: ids,
+            project: this.application.project
         }).show();
         
         // redirect to collation module sendtomvd page
@@ -775,10 +777,9 @@ Ext.define('austese_uploader.controller.Controller', {
       var docpath = mvdWin;
       var formValues = mvdWin.down('form').getForm().getValues();
       // TODO strip spaces and any other illegal characters
-      var docpath = (formValues.language? formValues.language : "")
-          + (formValues.author? '%2f' + formValues.author : "")
+      var docpath = (formValues.project? formValues.project : "")
           + (formValues.work? '%2f' + formValues.work : "")
-          + (formValues.section? '%@f' +  formValues.section : "")
+          + (formValues.section? '%2f' +  formValues.section : "")
           + (formValues.subsection? '%2f'+ formValues.subsection : "");
       mvdWin.close();
       var progressWin = Ext.create('Ext.window.Window',{

@@ -43,13 +43,9 @@ Ext.define('austese_uploader.view.SendToMVDWindow', {
                            text: ' The following information will be used to create the MVD document identifier. These values should not contain spaces.It is recommended to provide at least those values indicated by *. If you specify values identical to those used by an existing MVD, the MVD will be overwritten.'
                        },
                        {
-                           name: 'language',
-                           fieldLabel: '*Language',
-                           value: 'english'
-                       },
-                       {
-                           name: 'author',
-                           fieldLabel: '*Author',
+                           name: 'project',
+                           fieldLabel: '*Project',
+                           value: (this.project? this.project : "default")
                        },
                        {
                            name: 'work',
