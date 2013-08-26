@@ -426,8 +426,8 @@ jQuery.fn.serializeObject = function() {
                     if (data[fieldName] && data[fieldName].split){
                         var split = data[fieldName].split(",");
                         data[fieldName] = [];
-                        for (var i = 0; i < split.length; i++){
-                           data[fieldName].push(split[i]);
+                        for (var j = 0; j < split.length; j++){
+                           data[fieldName].push(split[j]);
                         }
                     }
                 }
