@@ -263,7 +263,8 @@ jQuery.fn.serializeObject = function() {
                 processInverseRelationships("event", key, id, elabel);
              });
         } else if (apiType == "resource"){
-           processInverseRelationships("version","transcriptions",id, "Digital Surrogate For");
+            processInverseRelationships("version","transcriptions",id, "Digital Surrogate For");
+            processInverseRelationships("artefact","transcriptions",id, "Digital Surrogate For");
            processInverseRelationships("artefact","facsimiles",id, "Digital Surrogate For");
            processInverseRelationships("agent","images",id, "Image of");
         } else if (apiType == "event"){

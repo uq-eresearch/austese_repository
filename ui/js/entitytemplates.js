@@ -346,6 +346,7 @@ templates.artefactSummary =
     {{#if date}}{{date}}, {{/if}}{{ellipsis bibDetails 80}}\
     {{#gt artefacts.length 0}}<br/>({{artefacts.length}} associated part{{#neq artefacts.length 1}}s{{/neq}}){{/gt}}\
     {{#gt facsimiles.length 0}}<br/>({{facsimiles.length}} associated facsimile{{#neq facsimiles.length 1}}s{{/neq}}){{/gt}}\
+    {{#gt transcriptions.length 0}}<br/>({{transcriptions.length}} associated transcription{{#neq transcriptions.length 1}}s{{/neq}}){{/gt}}\
     {{#if hasEditPermission}}\
         <p><a href="/{{modulePrefix}}/artefacts/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a></p>\
     {{/if}}\
@@ -372,6 +373,12 @@ templates.artefactDetail =
         <h3 class="muted">Facsimiles</h3><p>{{facsimiles.length}} facsimile{{#neq facsimiles.length 1}}s{{/neq}} associated with this artefact:</p>\
         <ul>\
         {{#each facsimiles}}<li class="resource" data-resourceid="{{.}}" data-template="summary"></li>{{/each}}\
+        </ul>\
+    {{/gt}}\
+    {{#gt transcriptions.length 0}}\
+        <h3 class="muted">Transcriptions</h3><p>{{transcriptions.length}} transcription{{#neq transcriptions.length 1}}s{{/neq}} associated with this artefact:</p>\
+        <ul>\
+        {{#each transcriptions}}<li class="resource" data-resourceid="{{.}}" data-template="summary"></li>{{/each}}\
         </ul>\
     {{/gt}}\
     </div>'

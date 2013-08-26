@@ -118,6 +118,16 @@ if (isset($_GET['project'])) {
         </a>
       </div>
     </div>
+    <div class="control-group">
+      <label class="control-label" for="transcriptions">Transcriptions</label>
+      <div class="controls">
+        <textarea rows="2" name="transcriptions" type="text" class="input-xlarge" id="transcriptions"></textarea>
+        <p class="help-block">Diplomatic transcriptions associated with this artefact</p>
+        <a target="_blank" href="/repository/resources<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
+        <button type="button" title="Upload new transcription resource in new tab" class="btn"><i class="icon-plus"></i> New transcription</button>
+        </a>
+      </div>
+    </div>
     </fieldset>
     </div>
     <div class="well">

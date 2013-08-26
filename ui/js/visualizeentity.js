@@ -174,7 +174,11 @@ jQuery(document).ready(function(){
                     }
                     // resources
                     if (result.transcriptions) {
-                        label = "is_embodied_by";
+                        if (apiType == "version") {
+                            label = "is_embodied_by";
+                        } else {
+                            label = "has_digital_surrogate"; 
+                        }
                         showEdges(depth, id, result.transcriptions,"resource",label);
                     }
                     if (result.facsimiles) {
@@ -253,6 +257,7 @@ jQuery(document).ready(function(){
             numberInQ+=3;
             processInverseRelationships(d,"version","transcriptions",id, "");
             processInverseRelationships(d,"artefact","facsimiles",id, "");
+            processInverseRelationships(d,"artefact","transcriptions",id, "");
             processInverseRelationships(d,"agent","images",id, "");
         } else if (apiType == "place"){
             numberInQ+=2;
