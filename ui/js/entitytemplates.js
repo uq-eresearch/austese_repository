@@ -466,7 +466,7 @@ templates.resourceBareDetail = '<span>\
 ;
 templates.resourceCompact = 
     '<span>\
-    <b><a href="/{{modulePrefix}}/resources/{{id}}{{projParam}}">{{#if metadata.title}}{{metadata.title}}, {{/if}}{{filename}}</a></b> ({{metadata.filetype}})\
+    <b><a data-content="{{metadata.description}}" href="/{{modulePrefix}}/resources/{{id}}{{projParam}}">{{#if metadata.title}}{{metadata.title}}, {{/if}}{{filename}}{{#if metadata.shortname}} ({{metadata.shortname}}){{/if}}</a></b> ({{metadata.filetype}})\
     </span>'
 ;
 templates.resourceDetail = 

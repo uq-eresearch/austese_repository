@@ -387,8 +387,11 @@ function repository_display_resource($id,$raw=null){
         repository_render_tei($id);
     } else {
         //too slow use ajax instead - return theme('resources_content',array('content'=>$result));
-        drupal_add_js(drupal_get_path('module', 'repository') . '/ui/js/displayresource.js');
-        drupal_add_css(drupal_get_path('module', 'repository') . '/ui/css/tei.css');
+        $modulePath = drupal_get_path('module', 'repository');
+        drupal_add_js($modulePath . '/ui/lib/handlebars.js');
+        drupal_add_js($modulePath . '/ui/js/entitytemplates.js');
+        drupal_add_js($modulePath . '/ui/js/displayresource.js');
+        drupal_add_css($modulePath . '/ui/css/tei.css');
         return theme('repository_resources_content',array());
     }
 }
