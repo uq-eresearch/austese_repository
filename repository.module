@@ -119,7 +119,7 @@ function repository_menu() {
     'type' => MENU_CALLBACK
   );
   $items['repository/resources/%/content'] = array(
-    'title' => 'View Resource Content',
+    'title' => "",
     'page callback' => 'repository_display_resource',
     'page arguments' => array(2,4),
     'access arguments' => array('view metadata'),
@@ -127,8 +127,7 @@ function repository_menu() {
   );
   // Record view for individual objects
   $items['repository/%/%'] = array(
-    'title arguments' => array('title'=>1),
-    'title callback' => 'repository_display_record_title',
+    'title' => "",
     'page callback' => 'repository_display_record',
     'page arguments' => array(1,3),
     'access arguments' => array('view metadata'),
@@ -199,8 +198,7 @@ function repository_display($template){
     $breadcrumb = array();
     $breadcrumb[] = l('Home', '<front>');
     $breadcrumb[] = l('Repository', 'repository',$projectParam);
-    //linkable version of current page: $breadcrumb[] = l(drupal_get_title(), base_path() . request_uri());
-    $breadcrumb[] = t(drupal_get_title()); 
+    $breadcrumb[] = t(ucfirst($template)); 
     drupal_set_breadcrumb($breadcrumb);
     
     $modulePath = drupal_get_path('module', 'repository');
@@ -250,7 +248,7 @@ function repository_edit($template, $id=null){
     if ($template != 'mvds'){
         $breadcrumb[] = l('View '. ucwords(substr($template,0,-1)),'repository/'.$template.'/'.$id,$projectParam);
     }
-    $breadcrumb[] = t(drupal_get_title()); 
+    $breadcrumb[] = t('Edit '. ucfirst(substr($template,0,-1))); 
     drupal_set_breadcrumb($breadcrumb);
     
     // Add scripts
@@ -432,7 +430,7 @@ function repository_display_record($template, $id=null){
     $breadcrumb[] = l('Home', '<front>');
     $breadcrumb[] = l('Repository', 'repository',$projectParam);
     $breadcrumb[] = l(ucwords($template),'repository/'.$template,$projectParam);
-    $breadcrumb[] = t(drupal_get_title()); 
+    $breadcrumb[] = t('View ' . ucfirst(substr($template,0,-1))); 
     drupal_set_breadcrumb($breadcrumb);
     
     // Add scripts

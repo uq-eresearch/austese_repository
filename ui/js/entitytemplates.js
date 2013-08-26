@@ -27,6 +27,14 @@ Handlebars.registerHelper('match', function(value, compare, options) {
       return options.inverse(this);
     }
 });
+Handlebars.registerHelper('upper', function(value, len, options) {
+    if(value && value.length > len){
+        result = value.substr(0,len) + "...";
+    } else {
+        result = value;
+    }
+    return new Handlebars.SafeString(result.toUpperCase());
+});
 Handlebars.registerHelper('ellipsis', function(value, len, options) {
     if(value && value.length > len){
         result = value.substr(0,len) + "...";
@@ -117,6 +125,7 @@ templates.versionCompact =
 ;
 templates.versionDetail = 
     '<div>\
+        <h1>{{#if versionTitle}}{{upper versionTitle 80}}{{else}}UNTITLED VERSION{{/if}}</h1>\
         <table class="table">\
         {{#if versionTitle}}<tr><td class="metadatalabel muted">Title</td><td>{{versionTitle}}</td></tr>{{/if}}\
         {{#if name}}<tr><td class="metadatalabel muted">Name</td><td>{{name}}</td></tr>{{/if}}\
@@ -168,6 +177,7 @@ templates.agentSummary =
 // Array access notation is obj.[index] (with a dot)
 templates.agentDetail = 
     '<div>\
+    <h1>{{#if lastName}}{{upper lastName 300}}{{/if}}{{#if firstName}}, {{upper firstName 300}}{{/if}}</h1>\
     {{#if images}}{{#gt images.length 0}}<div class="span2"><div class="resource" data-resourceid="{{images.[0]}}" data-template="image">Image</div></div>{{/gt}}{{/if}}\
     <div {{#if images}}{{#gt images.length 0}}class="span10"{{/gt}}{{/if}}><table class="table">\
     {{#if lastName}}<tr><td class="metadatalabel muted">Last Name</td><td>{{lastName}}</td></tr>{{/if}}\
@@ -234,11 +244,14 @@ templates.eventTimelineSummary =
 //{{#gt agents.length 0}}<br/>({{agents.length}} participant{{#neq agents.length 1}}s{{/neq}}){{/gt}}\
 templates.eventDetail = 
     '<div class="obj">\
-    <h4><a href="/{{modulePrefix}}/events/{{id}}{{projParam}}">{{#if name}}{{name}}{{else}}Untitled Event{{/if}}\
-    {{#if eventType}} ({{eventType}}){{/if}}</a></h4>\
-    {{#if startDate}}{{startDate}} &ndash; {{/if}}\
-    {{#if endDate}}{{endDate}}{{/if}}\
-    {{{description}}}\
+    <h1>{{#if name}}{{upper name 80}}{{else}}UNTITLED EVENT{{/if}}</h4>\
+    <table class="table">\
+    {{#if name}}<tr><td class="metadatalabel muted">Name</td><td>{{name}}</td></tr>{{/if}}\
+    {{#if eventType}}<tr><td class="metadatalabel muted">Event Type</td><td>{{eventType}}</td></tr>{{/if}}\
+    {{#if startDate}}<tr><td class="metadatalabel muted">Start Date</td><td>{{startDate}}</td></tr>{{/if}}\
+    {{#if endDate}}<tr><td class="metadatalabel muted">End Date</td><td>{{endDate}}</td></tr>{{/if}}\
+    {{#if description}}<tr><td class="metadatalabel muted">Description</td><td>{{description}}</td></tr>{{/if}}\
+    </table>\
     {{#if artefacts}}{{#gt artefacts.length 0}}\
     <h3 class="muted">Artefacts</h3><p>{{artefacts.length}} artefact{{#neq artefacts.length 1}}s{{/neq}} produced by this event:</p>\
     <ul>\
@@ -353,6 +366,7 @@ templates.artefactSummary =
     </div>';
 templates.artefactDetail = 
     '<div>\
+    <h1>{{#if source}}{{upper source 80}}{{else}}UNTITLED ARTEFACT{{/if}}</h1>\
     <table class="table">\
     {{#if source}}<tr><td class="metadatalabel muted">Source</td><td>{{source}}</td></tr>{{/if}}\
     {{#if date}}<tr><td class="metadatalabel muted">Date</td><td>{{date}}</td></tr>{{/if}}\
@@ -401,6 +415,7 @@ templates.workSummary =
 ;
 templates.workDetail = 
     '<div>\
+    <h1>{{#if workTitle}}{{upper workTitle 80}}{{else}}UNTITLED WORK{{/if}}</h1>\
     <table class="table">\
     {{#if workTitle}}<tr><td class="metadatalabel muted">Title</td><td>{{workTitle}}</td></tr>{{/if}}\
     {{#if name}}<tr><td class="metadatalabel muted">Name</td><td>{{name}}</td></tr>{{/if}}\
@@ -435,6 +450,7 @@ templates.placeSummary =
 ;
 templates.placeDetail = 
     '<div class="span6">\
+    <h1>{{#if name}}{{upper name 80}}{{else}}UNNAMED PLACE{{/if}}{{#if state}}, {{state}}{{/if}}</h1>\
         <table class="table">\
         <tr><td class="metadatalabel muted">Name</td><td>{{name}}</td></tr>\
         <tr><td class="muted">State</td><td>{{state}}</td></tr>\
@@ -471,6 +487,7 @@ templates.resourceCompact =
 ;
 templates.resourceDetail = 
     '<div>\
+    <h1>{{#if metadata.title}}{{upper metadata.title 80}}{{else}}UNTITLED RESOURCE{{/if}}</h1>\
     <h3>Metadata</h3>\
     <table class="table">\
         {{#if metadata.title}}<tr><td class="metadatalabel muted">Title</td><td>{{metadata.title}}</td></tr>{{/if}}\

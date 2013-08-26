@@ -58,6 +58,10 @@ jQuery.fn.serializeObject = function() {
             if (existingId){
                 loadObject(existingId);
             } 
+            if (apiType=='place'){
+                // no sidebar for places, adjust size
+                jQuery('#result').removeClass('span8').addClass('span12');
+            }
         } 
 
         // set up search fields
