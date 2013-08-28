@@ -262,6 +262,7 @@ var editor = {
              context: document.body,
              success: function(data, status, xhr){
                  jQuery('#successMessage').css('display','block');
+                 editor.isDirty = false;
              },
              error: function(jqXHR, textStatus, errorThrown){
                  jQuery('#failMessage').html("<span class='label label-important'>" + textStatus + "</span> " + errorThrown);
