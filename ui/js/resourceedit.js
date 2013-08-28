@@ -112,6 +112,7 @@ var editor = {
                  name: "xml", 
                  alignCDATA: true
              },   
+             smartIndent: false,
              autoCloseTags: true,
              lineWrapping: true,
              lineNumbers: true,
