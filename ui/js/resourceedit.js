@@ -12,6 +12,13 @@ jQuery(function(){
          }
      });
  });
+
+window.onbeforeunload = function() { 
+   if (editor.isDirty) { 
+      return "You have unsaved changes."; 
+   }
+};
+
 var generalElements = ["div","p","lb","l","pb","lg","hi","list","note"];
 var generalAttrs = {"xml:id":null,"n":null,"xml:lang":null,"rend":null};
 var divAttrs = generalAttrs;
@@ -70,6 +77,7 @@ var tags = {
    }
 };
 var editor = {
+ isDirty: false,
  foldXML: function(cm, where) { 
             cm.foldCode(where, CodeMirror.tagRangeFinder); 
  },
@@ -191,7 +199,7 @@ var editor = {
      }
      
      editor.cm.on("update", editor.previewResource);
-     
+     editor.cm.on("change", function(){editor.isDirty = true;})
      
  },
  displayResourceMetadata : function(uri) {
@@ -222,6 +230,7 @@ var editor = {
              success: function(data, status, xhr){
                  jQuery('#metadata').data('contenttype', xhr.getResponseHeader('Content-Type'));
                  editor.cm.setValue(xhr.responseText);
+                 editor.isDirty = false;
              },
              error: function(xhr, textStatus, errorThrown){
                  console.log(errorThrown);
@@ -233,6 +242,7 @@ var editor = {
                  jQuery('#failMessage').html("<span class='label label-important'>" + textStatus + "</span> " + errorMessage);
                  jQuery('#failureMessage').css('display','block');
                  editor.cm.setValue(xhr.responseText);
+                 editor.isDirty = false;
              }
          });
      } else {
