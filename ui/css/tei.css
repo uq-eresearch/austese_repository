@@ -97,3 +97,6 @@ a.child {
     color:black;
     border-bottom: 1px dashed purple; 
     -hrit-parentid: href }
+.resourceContent {
+    font-family: Arial, Helvetica, sans-serif;
+}
