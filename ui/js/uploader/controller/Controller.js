@@ -372,7 +372,7 @@ Ext.define('austese_uploader.controller.Controller', {
             ids += records[i].get("id") + ";";
         }
         document.location.href = document.location.href.split('#')[0] + "#" + ids;
-        
+        var aggregatedValues;
         if (l == 1){
             form.loadRecord(records[0]);
             // show file name field
@@ -381,7 +381,7 @@ Ext.define('austese_uploader.controller.Controller', {
             
         } else if (l > 0) {
             //  display values for upload date, size and type are aggregated
-            var aggregatedValues = {
+            aggregatedValues = {
                     description: records[0].get('description'), 
                     title: records[0].get('title'),
                     project: records[0].get('project'),
@@ -430,11 +430,12 @@ Ext.define('austese_uploader.controller.Controller', {
             // TODO file name field
             layout.getActiveItem().down('displayfield[name="filename"]').hide();
             layout.getActiveItem().down('displayfield[name="title"]').hide();
-            pp.aggregatedValues = aggregatedValues;
+            
         } else {
             // show no resources card
             layout.setActiveItem(pp.NONESELECTED);
         }
+        pp.aggregatedValues = aggregatedValues;
         
     },
     displayResource: function(dataview, record, item, index, e, eOpts){
