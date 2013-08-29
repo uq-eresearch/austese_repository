@@ -7,7 +7,15 @@ function repositoryapi_get_configuration() {
         "dbport" => "27017",
         "dbname" => "test",
         "uriprefix" => "/sites/all/modules/austese_repository/api",
-        "recordtypes" => array('artefacts', 'versions', 'works', 'agents', 'events', 'places', 'mvds'),
+        "recordtypes" => array('artefacts', 'versions', 'works', 'agents', 'events', 'places', 'mvds', 'collections'),
+        "labelfields" => array('artefacts' => 'source',
+            'versions' => 'versionTitle',
+            'works' => 'workTitle',
+            'agents' => 'lastName',
+            'events' => 'name',
+            'places' => 'name',
+            'mvds' => 'resources',
+            'collections' => 'collectionTitle'),
     );
 }
 
@@ -51,7 +59,7 @@ function resource_page_callback($resourcetype, $id=null, $revision=null) {
     }
     
     // Only allow defined record types
-    if (!in_array($resourcetype, $config[recordtypes])) {
+    if (!in_array($resourcetype, $config['recordtypes'])) {
       echo '404 Not found: No such resource type';
       drupal_add_http_header('Status', '404 Not found');
       exit;
@@ -74,7 +82,7 @@ function resource_page_callback($resourcetype, $id=null, $revision=null) {
             if (!empty($id)) {
                 getRecord($resourcetype, $id, $revision);
             } else {
-                listRecords($resourcetype, 'workTitle');
+                listRecords($resourcetype, $config['labelfields'][$resourcetype]);
             }
     }
 }
