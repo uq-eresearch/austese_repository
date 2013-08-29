@@ -191,14 +191,14 @@ jQuery.fn.serializeObject = function() {
                 loadReferencedObjects();
                 if (apiType == "place"){
                  jQuery('#result').append('<p class="muted" style="clear:both">Place names taken from <a href="http://www.ga.gov.au/">Geoscience Australia</a> Gazetteer of Australia. Data, imagery and map information provided by <a href="http://open.mapquest.co.uk" target="_blank">MapQuest</a>, <a href="http://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> and contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.</p>');
-                } if (result.metadata && result.metadata.filetype.match("image")){
+                } if (result.metadata && result.metadata.filetype && result.metadata.filetype.match("image")){
                     jQuery("#editlink").hide();
                     jQuery("#lightboxlink").show();
                     jQuery('#result').append('<script type="text/javascript">if (typeof enableAnnotations == \"function\"){enableAnnotations();}</script>');
                 } else {
                     jQuery("#editlink").show();
                 }
-                if (apiType == "resource" && result.metadata && (result.metadata.filetype.match("xml") || result.metadata.filetype.match("text"))) {
+                if (apiType == "resource" && result.metadata && result.metadata.filetype && (result.metadata.filetype.match("xml") || result.metadata.filetype.match("text"))) {
                     // transcription
                     loadRelatedMVDs(id);
                 }
@@ -355,6 +355,10 @@ jQuery.fn.serializeObject = function() {
     function loadObjectIntoEditor(id){
         jQuery.ajax({
            url: '/' + modulePath + '/api/' + apiType + 's/'+ id,
+           dataType: 'json',
+           headers: {
+               'Accept': 'application/json'
+           },
            success: function(d){
               js2form(document.getElementById('create-object'), d);
               if (d.readingVersion){
@@ -441,6 +445,9 @@ jQuery.fn.serializeObject = function() {
         jQuery.ajax({
           type: type,
           data: JSON.stringify(data),
+          headers: {
+              'Content-Type': 'application/json'
+          },
           url: url,
           success: function(d){
             var project = jQuery('#metadata').data('project');
