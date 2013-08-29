@@ -690,12 +690,15 @@ function deleteRecord($collection,$id){
 }
 function deleteResource($id){
   global $config;
+  $response = Slim::getInstance()->response();
   // add _deleted flag to resource (do not actually delete)
   $m = new Mongo($config['dbhost'].':'.$config['dbport']);
   $db = $m->selectDB($config['dbname']);
   $grid = $db->getGridFS();
   $grid->update(array('_resourceid'=> $id), array('$set' => array('_deleted' => true)), array('safe' => true));
+  $response-status(204);
 }
+
 $app->delete('/artefacts/:id', function ($id) {
     deleteRecord('artefacts',$id);
 });
