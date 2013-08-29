@@ -552,6 +552,42 @@ function repository_user_presave(&$edit, $account, $category) {
 }
 
 
+function repository_block_info() {
+    $blocks['project_links'] = array(
+        'info' => t('Project Links'),
+        'cache' => DRUPAL_NO_CACHE,
+    );
+    
+    return $blocks;
+}
+
+function repository_block_view($delta = '') {
+    $block = array();
+    
+    $node = menu_get_object();
+    
+    if ($node->type != 'project') {
+        return;
+    }
+    
+    $node_url = url('node/' . $node->nid, array('absolute' => TRUE));
+    
+    $project_id = $node->nid;
+    
+    switch ($delta) {
+        case 'project_links':
+            $block['subject'] = t('Project Links');
+            $block['content'] = "
+                <a href='/repository/works?project=$project_id'>Works</a><br>
+                <a href='/repository/versions?project=$project_id'>Versions</a><br>
+                <a href='/repository/artefacts?project=$project_id'>Artefacts</a><br>
+                <a href='/repository/resources?project=$project_id'>Digital Resources</a>
+                    ";
+            break;            
+    }
+    
+    return $block;
+}
 
 /**
  * @} End of "defgroup repository".

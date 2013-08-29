@@ -290,7 +290,7 @@ jQuery.fn.serializeObject = function() {
            data: {
                pageSize: pageSize,
                pageIndex: page,
-               q: (filterTerm?  filterTerm : ""),
+               query: (filterTerm?  filterTerm : ""),
                project: (project && !(apiType == 'place' || apiType == 'mvd') ? project : "")
            },
            success: function(result){
@@ -481,7 +481,7 @@ jQuery.fn.serializeObject = function() {
     }
     function loadRelatedMVDs(id){
         jQuery.ajax({
-            url: '/' + modulePath + '/api/mvds/?q=' + id,
+            url: '/' + modulePath + '/api/mvds/?query=' + id,
             success: function(d){
                 if (d.results.length > 0) {
                     var result = "<h4 class='muted'>VIEW MVD:</h4><form onsubmit='return false;'><select id='mvdselect'>";

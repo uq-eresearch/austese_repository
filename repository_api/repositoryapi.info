@@ -1,7 +1,17 @@
 name = AustESE Content Repository API
+<<<<<<< Updated upstream
 description = Content Repository API
+=======
+description = Content repository API
+>>>>>>> Stashed changes
 package = AustESE
 core = 7.x
 version = "7.x-1.x-dev"
 core = "7.x"
 project = "austese"
+<<<<<<< Updated upstream
+=======
+
+dependencies[] = restws
+dependencies[] = repository
+>>>>>>> Stashed changes
