@@ -1,9 +1,0 @@
-{
-	"require": {
-		   "slim/slim": "1.6.4"
-	},
-
-	"config": {
-		  "bin-dir": "bin/"
-	}
-}
