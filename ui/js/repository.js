@@ -85,7 +85,7 @@ jQuery.fn.serializeObject = function() {
                     url: '/' + modulePath + '/api/' + apiType + 's/',
                     data: function(term,page){
                         var searchParams = {
-                            q: term,
+                            query: term,
                             pageSize: 10,
                             page: page
                         };
@@ -185,7 +185,7 @@ jQuery.fn.serializeObject = function() {
                 type: 'GET',
                 url: '/' + modulePath + '/api/' + queryApiType + 's/',
                 data: {
-                    q: queryId,
+                    query: queryId,
                     searchField: queryField,
                     pageSize: defaultPageSize
                 },
