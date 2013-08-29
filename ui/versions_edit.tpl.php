@@ -32,7 +32,7 @@ if (isset($_GET['project'])) {
 <form id="create-object" class="form-horizontal">
   <div class="sticky-bottom well">
     <div class="pull-right">
-       <input type="button" class="save-btn btn" value="Save">
+       <input type="button" class="save-btn btn btn-primary" value="Save">
        <a href="/<?php print $modulePrefix; ?>/versions/<?php if ($existingId): print $existingId; endif; ?><?php if ($project): print "?project=".$project; endif; ?>">
        <input type="button" class="btn" value="Cancel"></a>
        <input style="display:none" type="button" class="dupe-btn btn" value="Duplicate">
@@ -154,11 +154,11 @@ if (isset($_GET['project'])) {
       
 <div class="control-group">
 <div class="controls">
-    <input id="save-btn" type="button" class="btn" value="Save">
+    <input type="button" class="btn btn-primary save-btn" value="Save">
     <a href="/<?php print $modulePrefix; ?>/versions/<?php if ($existingId): print $existingId; endif; ?><?php if ($project): print "?project=".$project; endif; ?>">
     <input type="button" class="btn" value="Cancel"></a>
-    <input id="dupe-btn" style="display:none" type="button" class="btn" value="Duplicate">
-    <input id="del-btn" style="display:none" type="button" class="btn btn-danger" value="Delete">
+    <input style="display:none" type="button" class="btn dupe-btn" value="Duplicate">
+    <input style="display:none" type="button" class="btn btn-danger del-btn" value="Delete">
 </div></div>
   </fieldset>
   </div>

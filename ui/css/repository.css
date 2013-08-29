@@ -86,3 +86,21 @@ div.sticky-bottom {
     padding:5px;
     z-index:1000;
 }
+#single-editor-ui, #multi-editor-ui {
+    display:none;
+}
+
+.form-center {
+    text-align: center;
+}
+.edit-preview {
+    overflow:auto;
+    height: 570px;
+    border: 1px solid #eeeeee;
+    padding:10px;
+}
+.CodeMirror {
+    border: 1px solid #eeeeee;
+    height:500px;
+}
+

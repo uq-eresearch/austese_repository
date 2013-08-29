@@ -647,7 +647,6 @@ $.TokenList = function (input, url_or_data, settings) {
         return $this_token;
     }
     function addDragFunctionality(token) {
-        console.log("add drag functionality",token)
         token.bind('mousedown',function(){ 
           var token = $(this)
           dragToken = token;
@@ -720,7 +719,6 @@ $.TokenList = function (input, url_or_data, settings) {
         });
         saved_tokens = tokens;
         hidden_input.val(ids.join(settings.tokenDelimiter));
-        console.log("new order is ",tokens, hidden_input.val())
         
       }
     // Add a token to the token list based on user input
@@ -922,7 +920,9 @@ $.TokenList = function (input, url_or_data, settings) {
     }
 
     function find_value_and_highlight_term(template, value, term) {
-        return template.replace(new RegExp("(?![^&;]+;)(?!<[^<>]*)(" + regexp_escape(value) + ")(?![^<>]*>)(?![^&;]+;)", "g"), highlight_term(value, term));
+        if (value) {
+          return template.replace(new RegExp("(?![^&;]+;)(?!<[^<>]*)(" + regexp_escape(value) + ")(?![^<>]*>)(?![^&;]+;)", "g"), highlight_term(value, term));
+        } else return template;
     }
 
     // Populate the results dropdown with some results
@@ -947,22 +947,23 @@ $.TokenList = function (input, url_or_data, settings) {
 
             $.each(results, function(index, value) {
                 var this_li = $(input).data("settings").resultsFormatter(value);
-
-                this_li = find_value_and_highlight_term(this_li ,value[$(input).data("settings").propertyToSearch], query);
-
-                this_li = $(this_li).appendTo(dropdown_ul);
-
-                if(index % 2) {
-                    this_li.addClass($(input).data("settings").classes.dropdownItem);
-                } else {
-                    this_li.addClass($(input).data("settings").classes.dropdownItem2);
+                if (this_li){
+                    this_li = find_value_and_highlight_term(this_li ,value[$(input).data("settings").propertyToSearch], query);
+    
+                    this_li = $(this_li).appendTo(dropdown_ul);
+    
+                    if(index % 2) {
+                        this_li.addClass($(input).data("settings").classes.dropdownItem);
+                    } else {
+                        this_li.addClass($(input).data("settings").classes.dropdownItem2);
+                    }
+    
+                    if(index === 0) {
+                        select_dropdown_item(this_li);
+                    }
+    
+                    $.data(this_li.get(0), "tokeninput", value);
                 }
-
-                if(index === 0) {
-                    select_dropdown_item(this_li);
-                }
-
-                $.data(this_li.get(0), "tokeninput", value);
             });
 
             show_dropdown();
@@ -1064,7 +1065,7 @@ $.TokenList = function (input, url_or_data, settings) {
                   if($.isFunction($(input).data("settings").onResult)) {
                       results = $(input).data("settings").onResult.call(hidden_input, results);
                   }
-
+                  
                   // only populate the dropdown if the results are associated with the active search query
                   if(input_box.val() === query) {
                       populate_dropdown(query, $(input).data("settings").jsonContainer ? results[$(input).data("settings").jsonContainer] : results);

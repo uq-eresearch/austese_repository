@@ -42,7 +42,7 @@ if (isset($_GET['project'])) {
       <div class="controls">
          <a href="/<?php print $modulePrefix; ?>/mvds/<?php if ($project): print "?project=".$project; endif; ?>">
          <input type="button" class="btn" value="Cancel"></a>
-         <input id="del-btn" style="display:none" type="button" class="btn btn-danger" value="Delete">
+         <input style="display:none" type="button" class="btn btn-danger del-btn" value="Delete">
       </div>
     </div>
   </fieldset>

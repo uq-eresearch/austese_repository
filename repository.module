@@ -119,7 +119,7 @@ function repository_menu() {
     'type' => MENU_CALLBACK
   );
   $items['repository/resources/%/content'] = array(
-    'title' => 'View Resource Content',
+    'title' => "",
     'page callback' => 'repository_display_resource',
     'page arguments' => array(2,4),
     'access arguments' => array('view metadata'),
@@ -127,8 +127,7 @@ function repository_menu() {
   );
   // Record view for individual objects
   $items['repository/%/%'] = array(
-    'title arguments' => array('title'=>1),
-    'title callback' => 'repository_display_record_title',
+    'title' => "",
     'page callback' => 'repository_display_record',
     'page arguments' => array(1,3),
     'access arguments' => array('view metadata'),
@@ -199,8 +198,7 @@ function repository_display($template){
     $breadcrumb = array();
     $breadcrumb[] = l('Home', '<front>');
     $breadcrumb[] = l('Repository', 'repository',$projectParam);
-    //linkable version of current page: $breadcrumb[] = l(drupal_get_title(), base_path() . request_uri());
-    $breadcrumb[] = t(drupal_get_title()); 
+    $breadcrumb[] = t(ucfirst($template)); 
     drupal_set_breadcrumb($breadcrumb);
     
     $modulePath = drupal_get_path('module', 'repository');
@@ -250,7 +248,7 @@ function repository_edit($template, $id=null){
     if ($template != 'mvds'){
         $breadcrumb[] = l('View '. ucwords(substr($template,0,-1)),'repository/'.$template.'/'.$id,$projectParam);
     }
-    $breadcrumb[] = t(drupal_get_title()); 
+    $breadcrumb[] = t('Edit '. ucfirst(substr($template,0,-1))); 
     drupal_set_breadcrumb($breadcrumb);
     
     // Add scripts
@@ -260,6 +258,8 @@ function repository_edit($template, $id=null){
     drupal_add_js($modulePath . '/ui/lib/wysihtml5-0.3.0.min.js');
     drupal_add_js($modulePath . '/ui/lib/bootstrap-wysihtml5.js');
     drupal_add_css($modulePath. '/ui/lib/bootstrap-wysihtml5.css',  array('group' => CSS_DEFAULT, 'every_page' => FALSE));
+    drupal_add_js($modulePath . '/ui/lib/handlebars.js');
+    drupal_add_js($modulePath . '/ui/js/entitytemplates.js');
     if ($template == "resources"){
         if (isset($_GET['multi'])) {
            $multiParam = true;
@@ -279,6 +279,13 @@ function repository_edit($template, $id=null){
         drupal_add_js($modulePath. '/ui/lib/codemirror/xml-hint.js');
         drupal_add_css($modulePath. '/ui/lib/codemirror/show-hint.css');
         drupal_add_css($modulePath . '/ui/css/tei.css');
+        if ($multiParam) {
+            drupal_add_js($modulePath . '/ui/lib/codemirror/merge/dep/diff_match_patch.js');
+            drupal_add_js($modulePath . '/ui/lib/codemirror/merge/merge.js');
+            drupal_add_css($modulePath. '/ui/lib/codemirror/merge/merge.css');
+            drupal_add_js($modulePath . '/ui/lib/select2/select2.min.js');
+            drupal_add_css($modulePath . '/ui/lib/select2/select2.css');
+        }
         // xml edit
         drupal_add_js($modulePath . '/ui/lib/codemirror/xml.js');
         drupal_add_js($modulePath . '/ui/js/resourceedit.js');
@@ -287,6 +294,7 @@ function repository_edit($template, $id=null){
     } else {
         drupal_add_js($modulePath . '/ui/js/repository.js');
     }
+
     // Add stylesheets
     drupal_add_css($modulePath . '/ui/css/repository.css',  array('group' => CSS_DEFAULT, 'every_page' => FALSE)); 
     drupal_add_css($modulePath . '/ui/lib/token-input.css', 
@@ -377,8 +385,11 @@ function repository_display_resource($id,$raw=null){
         repository_render_tei($id);
     } else {
         //too slow use ajax instead - return theme('resources_content',array('content'=>$result));
-        drupal_add_js(drupal_get_path('module', 'repository') . '/ui/js/displayresource.js');
-        drupal_add_css(drupal_get_path('module', 'repository') . '/ui/css/tei.css');
+        $modulePath = drupal_get_path('module', 'repository');
+        drupal_add_js($modulePath . '/ui/lib/handlebars.js');
+        drupal_add_js($modulePath . '/ui/js/entitytemplates.js');
+        drupal_add_js($modulePath . '/ui/js/displayresource.js');
+        drupal_add_css($modulePath . '/ui/css/tei.css');
         return theme('repository_resources_content',array());
     }
 }
@@ -419,7 +430,7 @@ function repository_display_record($template, $id=null){
     $breadcrumb[] = l('Home', '<front>');
     $breadcrumb[] = l('Repository', 'repository',$projectParam);
     $breadcrumb[] = l(ucwords($template),'repository/'.$template,$projectParam);
-    $breadcrumb[] = t(drupal_get_title()); 
+    $breadcrumb[] = t('View ' . ucfirst(substr($template,0,-1))); 
     drupal_set_breadcrumb($breadcrumb);
     
     // Add scripts

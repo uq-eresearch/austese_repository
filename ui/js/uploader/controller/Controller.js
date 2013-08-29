@@ -372,7 +372,7 @@ Ext.define('austese_uploader.controller.Controller', {
             ids += records[i].get("id") + ";";
         }
         document.location.href = document.location.href.split('#')[0] + "#" + ids;
-        
+        var aggregatedValues;
         if (l == 1){
             form.loadRecord(records[0]);
             // show file name field
@@ -381,7 +381,7 @@ Ext.define('austese_uploader.controller.Controller', {
             
         } else if (l > 0) {
             //  display values for upload date, size and type are aggregated
-            var aggregatedValues = {
+            aggregatedValues = {
                     description: records[0].get('description'), 
                     title: records[0].get('title'),
                     project: records[0].get('project'),
@@ -430,11 +430,12 @@ Ext.define('austese_uploader.controller.Controller', {
             // TODO file name field
             layout.getActiveItem().down('displayfield[name="filename"]').hide();
             layout.getActiveItem().down('displayfield[name="title"]').hide();
-            pp.aggregatedValues = aggregatedValues;
+            
         } else {
             // show no resources card
             layout.setActiveItem(pp.NONESELECTED);
         }
+        pp.aggregatedValues = aggregatedValues;
         
     },
     displayResource: function(dataview, record, item, index, e, eOpts){
@@ -483,18 +484,24 @@ Ext.define('austese_uploader.controller.Controller', {
         var win = button.up('window');
         // read config values from window's form
         var config = win.down('form').getForm().getValues();
-        var metadataFieldSet = Ext.ComponentQuery.query('propertiespanel')[0] // the propertiespanel
+        var propertiespanel = Ext.ComponentQuery.query('propertiespanel')[0]
+        var metadataFieldSet =  propertiespanel
             .getLayout().getActiveItem(); // the active editor form
             //.down('fieldset'); // the first fieldset (i.e. metadata)
         var existingFields = win.existingFields;
+        var records = propertiespanel.loadedRecords;
+        if (records.length > 0){
+            var record = records[0];
+        }
         metadataFieldSet.items.each(
             function(f){
-                // remove deselected fields (title, description and project are always shown)
+                // remove deselected fields (title, description, shortname and project are always shown)
                 var fieldname = win.single? f.name : f.itemId;
                 
                 // for multi-form we look at field containers (itemId is appended with 'fc')
                 if (fieldname != ('description' + (win.single? '' : 'fc')) 
                         && fieldname != ('title' + (win.single? '' : 'fc')) 
+                        && fieldname != ('shortname' + (win.single? '' : 'fc'))
                         && fieldname != ('project' + (win.single? '' : 'fc'))
                         && !config.hasOwnProperty((win.single? fieldname : fieldname.substring(0,fieldname.length - 2)))){
                     metadataFieldSet.remove(f);
@@ -510,7 +517,8 @@ Ext.define('austese_uploader.controller.Controller', {
                     fld = Ext.create('Ext.form.field.Text',{
                         name: p,
                         labelAlign: 'top',
-                        fieldLabel: Ext.util.Format.capitalize(p)
+                        fieldLabel: Ext.util.Format.capitalize(p),
+                        value: (record? record.get(p): "")
                     });
                 } else {
                     // for multi-form we add fieldcontainer with checkbox
@@ -675,7 +683,8 @@ Ext.define('austese_uploader.controller.Controller', {
                 text: 'MVD',
                 iconCls: 'addMVDIcon',
                 tooltip: 'Add selected transcription(s) to MVD',
-                handler: this.sendToMVD
+                handler: this.sendToMVD,
+                scope: this
             });
             if (records.length == 1){
                 var record = records[0];
@@ -685,6 +694,14 @@ Ext.define('austese_uploader.controller.Controller', {
                     tooltip: 'Edit selected transcription',
                     handler: function(){
                         document.location.href ='/repository/resources/edit/' + record.get('id');
+                    }}
+                );
+                button.menu.add({
+                    text: 'Multi-Transcription editor',
+                    iconCls: 'transcriptionEditorIcon',
+                    tooltip: 'Edit selected transcription using multi-editor',
+                    handler: function(){
+                        document.location.href ='/repository/resources/edit/' + record.get('id') + '?multi=true';
                     }}
                 );
                 var record = records[0];
@@ -746,7 +763,8 @@ Ext.define('austese_uploader.controller.Controller', {
         // however could look up existing MVD with some of these resources and offer to replace it
         Ext.create('austese_uploader.view.SendToMVDWindow',{
             count: count,
-            ids: ids
+            ids: ids,
+            project: this.application.project
         }).show();
         
         // redirect to collation module sendtomvd page
@@ -760,10 +778,9 @@ Ext.define('austese_uploader.controller.Controller', {
       var docpath = mvdWin;
       var formValues = mvdWin.down('form').getForm().getValues();
       // TODO strip spaces and any other illegal characters
-      var docpath = (formValues.language? formValues.language : "")
-          + (formValues.author? '%2f' + formValues.author : "")
+      var docpath = (formValues.project? formValues.project : "")
           + (formValues.work? '%2f' + formValues.work : "")
-          + (formValues.section? '%@f' +  formValues.section : "")
+          + (formValues.section? '%2f' +  formValues.section : "")
           + (formValues.subsection? '%2f'+ formValues.subsection : "");
       mvdWin.close();
       var progressWin = Ext.create('Ext.window.Window',{

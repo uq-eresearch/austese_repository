@@ -58,6 +58,10 @@ jQuery.fn.serializeObject = function() {
             if (existingId){
                 loadObject(existingId);
             } 
+            if (apiType=='place'){
+                // no sidebar for places, adjust size
+                jQuery('#result').removeClass('span8').addClass('span12');
+            }
         } 
 
         // set up search fields
@@ -70,19 +74,21 @@ jQuery.fn.serializeObject = function() {
                 allowTabOut: true,
                 hintText: "Start typing to search artefacts by source",
                 jsonContainer: "results",
+                preventDuplicates: true,
                 propertyToSearch: "source",
-                resultsFormatter: function(item){return "<li><b>" + item.source + "</b>, " + item.date + "</li>";},
-                tokenFormatter: function(item){return "<li>" + item.source + ", " + item.date + "</li>";}
+                resultsFormatter: function(item){return getTemplate('artefactTokenResult')(item);},
+                tokenFormatter: function(item){return getTemplate('artefactToken')(item);}
             });
             jQuery("#events").tokenInput("/" + modulePath + "/api/events/" + projectParam, {
                 theme: "facebook",
                 tokenValue: "id",
                 allowTabOut: true,
-                hintText: "Start typing to search events by description",
+                hintText: "Start typing to search events by name",
                 jsonContainer: "results",
-                propertyToSearch: "description",
-                resultsFormatter: function(item){return "<li><b>" + item.description + "</b>, " + item.eventType + "</li>";},
-                tokenFormatter: function(item){return "<li>" + item.description + ", " + item.eventType + "</li>";}
+                preventDuplicates: true,
+                propertyToSearch: "name",
+                resultsFormatter: function(item){return getTemplate('eventTokenResult')(item);},
+                tokenFormatter: function(item){return getTemplate('eventToken')(item);}
             });
             jQuery("#agents, #authors, #editors, #publishers, #printers, #influencers, #compositors, #amanuenses, #illustrators, #binders, #readers, #translators, #booksellers").tokenInput("/" + modulePath + "/api/agents/" + projectParam, {
                 theme: "facebook",
@@ -90,9 +96,10 @@ jQuery.fn.serializeObject = function() {
                 allowTabOut: true,
                 hintText: "Start typing to search agents by last name",
                 jsonContainer: "results",
+                preventDuplicates: true,
                 propertyToSearch: "lastName",
-                resultsFormatter: function(item){return "<li><b>" + item.firstName + " " + item.lastName + "</b></li>";},
-                tokenFormatter: function(item){return "<li>" + item.firstName + " " + item.lastName + "</li>";}
+                resultsFormatter: function(item){return getTemplate('agentTokenResult')(item);},
+                tokenFormatter: function(item){return getTemplate('agentToken')(item);}
             });
             jQuery("#transcriptions").tokenInput("/" + modulePath + "/api/resources/" + projectParam + (projectParam? "&" : "?") + "type=x", {
                 theme: "facebook",
@@ -100,9 +107,10 @@ jQuery.fn.serializeObject = function() {
                 allowTabOut: true,
                 hintText: "Start typing to search transcriptions by filename/title",
                 jsonContainer: "results",
+                preventDuplicates: true,
                 propertyToSearch: "filename",
-                resultsFormatter: function(item){return "<li><b>" + item.metadata.title + " (" + item.filename + ")</b></li>";},
-                tokenFormatter: function(item){return "<li title=\"" + item.metadata.title + "\">" + item.filename + "</li>";}
+                resultsFormatter: function(item){return getTemplate('resourceTokenResult')(item);},
+                tokenFormatter: function(item){return getTemplate('resourceToken')(item);}
             });
             jQuery("#facsimiles, #images").tokenInput("/" + modulePath + "/api/resources/" + projectParam + (projectParam? "&" : "?") + "type=image", {
                 theme: "facebook",
@@ -110,9 +118,10 @@ jQuery.fn.serializeObject = function() {
                 allowTabOut: true,
                 hintText: "Start typing to search images by filename/title",
                 jsonContainer: "results",
+                preventDuplicates: true,
                 propertyToSearch: "filename",
-                resultsFormatter: function(item){return "<li><b>" + item.metadata.title + " (" + item.filename + ")</b></li>";},
-                tokenFormatter: function(item){return "<li title=\"" + item.metadata.title + "\">" + item.filename + "</li>";}
+                resultsFormatter: function(item){return getTemplate('resourceTokenResult')(item);},
+                tokenFormatter: function(item){return getTemplate('resourceToken')(item);}
             });
             jQuery("#resources").tokenInput("/" + modulePath + "/api/resources/" + projectParam, {
                 theme: "facebook",
@@ -120,9 +129,10 @@ jQuery.fn.serializeObject = function() {
                 allowTabOut: true,
                 hintText: "Start typing to search resources by filename/title",
                 jsonContainer: "results",
+                preventDuplicates: true,
                 propertyToSearch: "filename",
-                resultsFormatter: function(item){return "<li><b>" + item.metadata.title + " ("  + item.filename + ")</b></li>";},
-                tokenFormatter: function(item){return "<li title=\"" + item.metadata.title + "\">" + item.filename + "</li>";}
+                resultsFormatter: function(item){return getTemplate('resourceTokenResult')(item);;},
+                tokenFormatter: function(item){return getTemplate('resourceToken')(item);}
             });
             jQuery('#places').tokenInput("/" + modulePath + "/api/places/", {
                 theme: "facebook",
@@ -130,9 +140,10 @@ jQuery.fn.serializeObject = function() {
                 allowTabOut: true,
                 hintText: "Start typing to search places by name",
                 jsonContainer: "results",
+                preventDuplicates: true,
                 propertyToSearch: "name",
-                resultsFormatter: function(item){return "<li><b>" + item.name + "</b>, " + item.state + "</li>";},
-                tokenFormatter: function(item){return "<li>" + item.name + ", " + item.state + "</li>";}
+                resultsFormatter: function(item){return getTemplate('placeTokenResult')(item);},
+                tokenFormatter: function(item){return getTemplate('placeToken')(item);}
             });
             jQuery("#versions").tokenInput("/" + modulePath + "/api/versions/" + projectParam, {
                 theme: "facebook",
@@ -140,9 +151,10 @@ jQuery.fn.serializeObject = function() {
                 allowTabOut: true,
                 hintText: "Start typing to search versions by title",
                 jsonContainer: "results",
+                preventDuplicates: true,
                 propertyToSearch: "versionTitle",
-                resultsFormatter: function(item){return "<li><b>"+item.versionTitle + "</b>, " + item.name + ", " + item.date + "</li>";},
-                tokenFormatter: function(item){return "<li>" + item.versionTitle + ", " + item.name + ", " + item.date + "</li>";}
+                resultsFormatter: function(item){return getTemplate('versionTokenResult')(item);},
+                tokenFormatter: function(item){return getTemplate('versionToken')(item);}
             });
             jQuery("#readingVersion").tokenInput("/" + modulePath + "/api/versions/" + projectParam, {
                 theme: "facebook",
@@ -152,8 +164,8 @@ jQuery.fn.serializeObject = function() {
                 hintText: "Start typing to search versions by title",
                 jsonContainer: "results",
                 propertyToSearch: "versionTitle",
-                resultsFormatter: function(item){return "<li><b>"+item.versionTitle + "</b>, " + item.name + ", " + item.date + "</li>";},
-                tokenFormatter: function(item){return "<li>" + item.versionTitle + ", " + item.name + ", " + item.date + "</li>";}
+                resultsFormatter: function(item){return getTemplate('versionTokenResult')(item);},
+                tokenFormatter: function(item){return getTemplate('versionToken')(item);}
             });
         }
         
@@ -190,9 +202,79 @@ jQuery.fn.serializeObject = function() {
                     // transcription
                     loadRelatedMVDs(id);
                 }
+                loadInverseRelationships(id);
             }
         });
         
+    }
+    function loadInverseRelationships(id){
+        function processInverseRelationships(queryApiType, queryField, queryId, title){
+            
+            var defaultPageSize = 5;
+            jQuery.ajax({
+                type: 'GET',
+                url: '/' + modulePath + '/api/' + queryApiType + 's/',
+                data: {
+                    q: queryId,
+                    searchField: queryField,
+                    pageSize: defaultPageSize
+                },
+                dataType: "json",
+                headers: {
+                    'Accept': 'application/json'
+                },
+                success: function(result){
+                    var display = "";
+                    if (result.results.length > 0){
+                      display += "<strong class=\"muted\">" + title + "</strong><ul>";
+                      result.results.forEach(function(r){
+                          r.modulePrefix = modulePrefix;
+                          display += "<li>" + getTemplate(queryApiType + 'Compact')(r) +"</li>";
+                      })
+                      display += "</ul>";
+                      if (result.count > defaultPageSize) {
+                          // TODO: display link to search page to view all
+                          display += "<p><small class='muted'>plus " + (result.count - defaultPageSize) + " more</small></p>";
+                      }
+                      var div = jQuery('<div>' + display + '</div>');
+                      jQuery('#relatedObjects').append(div);
+                      enablePopups(div);
+                    }
+                }
+            });
+        }
+        
+        // FIXME: maintain consistent order of display
+        if (apiType == "artefact"){
+            // artefacts are linked to from versions, events and artefacts
+            processInverseRelationships("version","artefacts",id,"Related Versions");
+            processInverseRelationships("event","artefacts",id,"Related Events"); 
+            processInverseRelationships("artefact","artefacts",id, "Is Part Of");
+        } else if (apiType == "version") {
+            // versions are linked to from works and versions
+            processInverseRelationships("version","versions",id, "Is Part Of");
+            processInverseRelationships("work","versions", id, "Related Works");
+        } else if (apiType=="agent"){
+            ["agents", "authors", "amanuenses", "influencers", "editors", "publishers",
+             "printers", "compositors", "illustrators", "binders", "readers", "translators",
+             "booksellers"].forEach(function(key){
+                var elabel;
+                switch (key) {
+                  case "amanuenses": elabel = "Is amanuensis for"; break;
+                  default: elabel = "Participated as " + key.substr(0, key.length - 1) + " in:";
+                }
+                
+                processInverseRelationships("event", key, id, elabel);
+             });
+        } else if (apiType == "resource"){
+            processInverseRelationships("version","transcriptions",id, "Digital Surrogate For");
+            processInverseRelationships("artefact","transcriptions",id, "Digital Surrogate For");
+           processInverseRelationships("artefact","facsimiles",id, "Digital Surrogate For");
+           processInverseRelationships("agent","images",id, "Image of");
+        } else if (apiType == "event"){
+            
+            processInverseRelationships("event","events",id,"Is Part Of");
+        }
     }
     function loadObjects(page, filterTerm){
         page = page || 0;
@@ -344,8 +426,8 @@ jQuery.fn.serializeObject = function() {
                     if (data[fieldName] && data[fieldName].split){
                         var split = data[fieldName].split(",");
                         data[fieldName] = [];
-                        for (var i = 0; i < split.length; i++){
-                           data[fieldName].push(split[i]);
+                        for (var j = 0; j < split.length; j++){
+                           data[fieldName].push(split[j]);
                         }
                     }
                 }
@@ -402,7 +484,7 @@ jQuery.fn.serializeObject = function() {
             url: '/' + modulePath + '/api/mvds/?q=' + id,
             success: function(d){
                 if (d.results.length > 0) {
-                    var result = "<h4>VIEW MVD:</h4><form class='form-inline' onsubmit='return false;'><select id='mvdselect'>";
+                    var result = "<h4 class='muted'>VIEW MVD:</h4><form onsubmit='return false;'><select id='mvdselect'>";
                     var res = "";
                     for (var i = 0; i < d.results.length; i++){
                         res = d.results[i];
@@ -416,10 +498,10 @@ jQuery.fn.serializeObject = function() {
                         
                     }
                     result+= '</select>'
-                        + '<button id="comparebtn" class="btn btn-small">Compare</button>'
-                        + '<button id="tablebtn" class="btn btn-small">Table</button>'
-                        + '<button id="refreshbtn" class="btn btn-small">Refresh</button>'
-                        + '</form>';
+                        + '<div><button id="comparebtn" class="btn btn-small">Compare</button>'
+                        + '&nbsp;<button id="tablebtn" class="btn btn-small">Table</button>'
+                        + '&nbsp;<button id="refreshbtn" class="btn btn-small">Refresh</button>'
+                        + '</div></form>';
                     jQuery('#viewmvd').append(result);
                     jQuery('#comparebtn').on('click',viewCompare);
                     jQuery('#tablebtn').on('click',viewTable);
@@ -579,7 +661,7 @@ jQuery.fn.serializeObject = function() {
         
     }
     function enablePopups(context){
-        context = (context? jQuery(context).find('.obj > h4 > a') : jQuery('.obj > h4 > a'));
+        context = (context? jQuery(context).find('.obj > h4,h5 >  a') : jQuery('.obj > h4,h5 > a'));
         context.popover({
             offset: 10,
             trigger: 'manual',

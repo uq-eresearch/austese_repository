@@ -172,7 +172,7 @@ $app->get('/agents/', function(){
     listRecords('agents','lastName');
 });
 $app->get('/events/', function(){
-    listRecords('events','description');
+    listRecords('events','name');
 });
 $app->get('/places/', function(){
   listRecords('places','name');
@@ -271,10 +271,15 @@ function listResources(){
   foreach ($cursor as $obj){
      try{
       $returnobj = $obj->file;
-      $id = $returnobj['_resourceid'];
+      $id = "";
       unset($returnobj['_id']);
-      unset($returnobj['_resourceid']);
-      unset($returnobj['_revisions']);
+      if (array_key_exists('_resourceid',$returnobj)){
+        $id = $returnobj['_resourceid'];
+        unset($returnobj['_resourceid']);
+      }
+      if (array_key_exists('_revisions', $returnobj)){
+        unset($returnobj['_revisions']);
+      }
       // generate uri
       $returnobj['uri'] = $config['uriprefix']  . '/resources/' . $id;
       $returnobj['id'] = $id;
@@ -283,6 +288,11 @@ function listResources(){
          echo ",\n";
       }
      } catch (Exception $e){
+       // make sure json is valid even if there was an exception
+       echo "{}";
+       if ($cursor->hasNext()){
+        echo ",\n";
+       }
      }
     }
   
@@ -342,7 +352,7 @@ function listRecords($collection, $labelField){
       $returnobj['id'] = $id->{'$id'};
       echo json_encode($returnobj);
       if ($cursor->hasNext()){
-	echo ",\n";
+	    echo ",\n";
       }
      } catch (Exception $e){
      }

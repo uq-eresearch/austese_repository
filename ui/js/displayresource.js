@@ -15,6 +15,34 @@ jQuery(document).ready(function(){
         }
         jQuery('#wordCount').html("Resource Total Word Count: " + wordCount);
     };
+    
+    jQuery.ajax({
+      type: 'GET',
+      url: resURI,
+      dataType: "json",
+      headers: {
+          'Accept': 'application/json'
+      },
+      success: function(d){
+        d.projParam = (project? '?project=' + project : '');
+        d.modulePrefix = modulePrefix;
+            jQuery('.resource').html(getTemplate("resourceCompact")(d))
+            .find('a').popover({
+                offset: 10,
+                trigger: 'manual',
+                html: true,
+                placement: 'right',
+                template: '<div class="popover" onmouseover="clearTimeout(timeoutObj);jQuery(this).mouseleave(function() {jQuery(this).hide();});"><div class="arrow"></div><div class="popover-inner"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
+            }).mouseenter(function(e) {
+                jQuery(this).popover('show');
+            }).mouseleave(function(e) {
+                var ref = jQuery(this);
+                timeoutObj = setTimeout(function(){
+                    ref.popover('hide');
+                }, 50);
+            });
+      }
+    });
     jQuery.ajax({
         type: 'GET',
         dataType: "json",

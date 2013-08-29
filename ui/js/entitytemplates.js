@@ -27,6 +27,14 @@ Handlebars.registerHelper('match', function(value, compare, options) {
       return options.inverse(this);
     }
 });
+Handlebars.registerHelper('upper', function(value, len, options) {
+    if(value && value.length > len){
+        result = value.substr(0,len) + "...";
+    } else {
+        result = value;
+    }
+    return new Handlebars.SafeString(result.toUpperCase());
+});
 Handlebars.registerHelper('ellipsis', function(value, len, options) {
     if(value && value.length > len){
         result = value.substr(0,len) + "...";
@@ -95,6 +103,8 @@ templates.mvdSummary =
         </p>\
     </div>'
 ;
+templates.versionToken = '<li>{{versionTitle}}, {{name}}, {{date}}</li>';
+templates.versionTokenResult = '{{#if id}}<li><b>{{versionTitle}}</b>, {{name}}, {{date}}</li>{{/if}}';
 templates.versionSummary = 
     '<div class="obj">\
         <h4><a href="/{{modulePrefix}}/versions/{{id}}{{projParam}}">{{versionTitle}} {{#if name}}({{name}}){{/if}}</a></h4>\
@@ -107,8 +117,15 @@ templates.versionSummary =
         {{#if hasEditPermission}}<p><a href="/{{modulePrefix}}/versions/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a></p>{{/if}}\
     </div>'
 ;
+templates.versionCompact = 
+    '<div class="obj">\
+      <h5><a data-content="{{#if firstLine}}<p>{{firstLine}}</p>{{/if}}{{{description}}}" href="/{{modulePrefix}}/versions/{{id}}{{projParam}}">{{ellipsis versionTitle 50}} {{#if name}}({{ellipsis name 20}}){{/if}}</a></h5>\
+      {{date}} {{publisher}}\
+    </div>'
+;
 templates.versionDetail = 
     '<div>\
+        <h1>{{#if versionTitle}}{{upper versionTitle 80}}{{else}}UNTITLED VERSION{{/if}}</h1>\
         <table class="table">\
         {{#if versionTitle}}<tr><td class="metadatalabel muted">Title</td><td>{{versionTitle}}</td></tr>{{/if}}\
         {{#if name}}<tr><td class="metadatalabel muted">Name</td><td>{{name}}</td></tr>{{/if}}\
@@ -144,6 +161,8 @@ templates.versionDetail =
         {{/gt}}\
     </div>'
 ;
+templates.agentToken = '<li title="{{lastName}}, {{firstName}}" data-content="{{biography}}">{{lastName}}, {{firstName}}</li>';
+templates.agentTokenResult = '{{#if id}}<li>{{lastName}}, {{firstName}} {{ellipsis biography 30}}</li>{{/if}}';
 templates.agentSummary =
     '<div class="obj">\
     <h4><a title="{{lastName}}, {{firstName}}" data-content="{{biography}}" href="/{{modulePrefix}}/agents/{{id}}{{projParam}}">{{lastName}}, {{firstName}}</a></h4>\
@@ -158,6 +177,7 @@ templates.agentSummary =
 // Array access notation is obj.[index] (with a dot)
 templates.agentDetail = 
     '<div>\
+    <h1>{{#if lastName}}{{upper lastName 300}}{{/if}}{{#if firstName}}, {{upper firstName 300}}{{/if}}</h1>\
     {{#if images}}{{#gt images.length 0}}<div class="span2"><div class="resource" data-resourceid="{{images.[0]}}" data-template="image">Image</div></div>{{/gt}}{{/if}}\
     <div {{#if images}}{{#gt images.length 0}}class="span10"{{/gt}}{{/if}}><table class="table">\
     {{#if lastName}}<tr><td class="metadatalabel muted">Last Name</td><td>{{lastName}}</td></tr>{{/if}}\
@@ -167,6 +187,26 @@ templates.agentDetail =
     {{#if biography}}<tr><td class="metadatalabel muted">Biography</td><td>{{{biography}}}</td></tr>{{/if}}\
     </table></div>\
     </div>'
+;
+templates.agentCompact = 
+    '<div class="obj">\
+    <h5><a title="{{lastName}}, {{firstName}}" data-content="{{biography}}" href="/{{modulePrefix}}/agents/{{id}}{{projParam}}">{{lastName}}, {{firstName}}</a></h5>\
+    {{#if birthDate}} b. {{birthDate}}, {{/if}}\
+    {{#if deathDate}} d. {{deathDate}}, {{/if}}\
+    </div>'
+;
+templates.eventToken = 
+    '<li title="{{#if name}}{{name}}{{else}}Untitled{{/if}}{{#if eventType}} ({{eventType}}){{/if}}" \
+    data-content="{{{description}}}">\
+    {{name}}{{#if eventType}} ({{eventType}}){{/if}} \
+    {{ellipsis description 20}}\
+    </li>'
+;
+templates.eventTokenResult = '{{#if id}}<li>\
+    {{name}}{{#if eventType}} ({{eventType}}){{/if}} \
+    {{startDate}} \
+    {{ellipsis description 40}}\
+    </li>{{/if}}'
 ;
 templates.eventSummary = 
     '<div class="obj">\
@@ -180,6 +220,13 @@ templates.eventSummary =
         {{#if hasEditPermission}}\
         <p><a href="/{{modulePrefix}}/events/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a></p>\
         {{/if}}\
+    </div>'
+;
+templates.eventCompact = 
+    '<div class="obj">\
+    <h5><a data-content="{{#if startDate}}{{startDate}} &ndash; {{/if}}\
+    {{#if endDate}}{{endDate}}{{/if}}<br/>{{{description}}}" href="/{{modulePrefix}}/events/{{id}}{{projParam}}">\
+    {{#if name}}{{name}}{{else}}Untitled Event{{/if}}{{#if eventType}} ({{eventType}}){{/if}}</a></h5>\
     </div>'
 ;
 templates.eventTimelineSummary = 
@@ -197,11 +244,14 @@ templates.eventTimelineSummary =
 //{{#gt agents.length 0}}<br/>({{agents.length}} participant{{#neq agents.length 1}}s{{/neq}}){{/gt}}\
 templates.eventDetail = 
     '<div class="obj">\
-    <h4><a href="/{{modulePrefix}}/events/{{id}}{{projParam}}">{{#if name}}{{name}}{{else}}Untitled Event{{/if}}\
-    {{#if eventType}} ({{eventType}}){{/if}}</a></h4>\
-    {{#if startDate}}{{startDate}} &ndash; {{/if}}\
-    {{#if endDate}}{{endDate}}{{/if}}\
-    {{{description}}}\
+    <h1>{{#if name}}{{upper name 80}}{{else}}UNTITLED EVENT{{/if}}</h4>\
+    <table class="table">\
+    {{#if name}}<tr><td class="metadatalabel muted">Name</td><td>{{name}}</td></tr>{{/if}}\
+    {{#if eventType}}<tr><td class="metadatalabel muted">Event Type</td><td>{{eventType}}</td></tr>{{/if}}\
+    {{#if startDate}}<tr><td class="metadatalabel muted">Start Date</td><td>{{startDate}}</td></tr>{{/if}}\
+    {{#if endDate}}<tr><td class="metadatalabel muted">End Date</td><td>{{endDate}}</td></tr>{{/if}}\
+    {{#if description}}<tr><td class="metadatalabel muted">Description</td><td>{{{description}}}</td></tr>{{/if}}\
+    </table>\
     {{#if artefacts}}{{#gt artefacts.length 0}}\
     <h3 class="muted">Artefacts</h3><p>{{artefacts.length}} artefact{{#neq artefacts.length 1}}s{{/neq}} produced by this event:</p>\
     <ul>\
@@ -301,18 +351,22 @@ templates.eventDetail =
     {{/gt}}{{/if}}\
     </div>'
 ;
+templates.artefactToken = '<li title="{{source}}, {{date}}" data-content="{{#if bibDetails}}{{ellipsis bibDetails}}{{/if}}">{{source}}, {{date}}</li>';
+templates.artefactTokenResult = '{{#if id}}<li><b>{{source}}</b>, {{date}}</li>{{/if}}';
 templates.artefactSummary = 
     '<div class="obj">\
     <h4><a href="/{{modulePrefix}}/artefacts/{{id}}{{projParam}}">{{source}}</a></h4>\
     {{#if date}}{{date}}, {{/if}}{{ellipsis bibDetails 80}}\
     {{#gt artefacts.length 0}}<br/>({{artefacts.length}} associated part{{#neq artefacts.length 1}}s{{/neq}}){{/gt}}\
     {{#gt facsimiles.length 0}}<br/>({{facsimiles.length}} associated facsimile{{#neq facsimiles.length 1}}s{{/neq}}){{/gt}}\
+    {{#gt transcriptions.length 0}}<br/>({{transcriptions.length}} associated transcription{{#neq transcriptions.length 1}}s{{/neq}}){{/gt}}\
     {{#if hasEditPermission}}\
         <p><a href="/{{modulePrefix}}/artefacts/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a></p>\
     {{/if}}\
     </div>';
 templates.artefactDetail = 
     '<div>\
+    <h1>{{#if source}}{{upper source 80}}{{else}}UNTITLED ARTEFACT{{/if}}</h1>\
     <table class="table">\
     {{#if source}}<tr><td class="metadatalabel muted">Source</td><td>{{source}}</td></tr>{{/if}}\
     {{#if date}}<tr><td class="metadatalabel muted">Date</td><td>{{date}}</td></tr>{{/if}}\
@@ -335,6 +389,18 @@ templates.artefactDetail =
         {{#each facsimiles}}<li class="resource" data-resourceid="{{.}}" data-template="summary"></li>{{/each}}\
         </ul>\
     {{/gt}}\
+    {{#gt transcriptions.length 0}}\
+        <h3 class="muted">Transcriptions</h3><p>{{transcriptions.length}} transcription{{#neq transcriptions.length 1}}s{{/neq}} associated with this artefact:</p>\
+        <ul>\
+        {{#each transcriptions}}<li class="resource" data-resourceid="{{.}}" data-template="summary"></li>{{/each}}\
+        </ul>\
+    {{/gt}}\
+    </div>'
+;
+templates.artefactCompact =
+    '<div class="obj">\
+    <h5><a data-content="{{bibDetails}}" href="/{{modulePrefix}}/artefacts/{{id}}{{projParam}}">{{source}}</a></h5>\
+    {{#if date}}{{date}}{{/if}}\
     </div>'
 ;
 templates.workSummary = 
@@ -349,16 +415,24 @@ templates.workSummary =
 ;
 templates.workDetail = 
     '<div>\
+    <h1>{{#if workTitle}}{{upper workTitle 80}}{{else}}UNTITLED WORK{{/if}}</h1>\
     <table class="table">\
     {{#if workTitle}}<tr><td class="metadatalabel muted">Title</td><td>{{workTitle}}</td></tr>{{/if}}\
     {{#if name}}<tr><td class="metadatalabel muted">Name</td><td>{{name}}</td></tr>{{/if}}\
     {{#if description}}<tr><td class="metadatalabel muted">Description</td><td>{{{description}}}</td></tr>{{/if}}\
     </table>\
-    <h3>Versions</h3><ul>\
+    <h3 class="muted">Versions</h3><ul>\
     {{#each versions}}<li class="version" data-versionid="{{.}}" data-template="summary"></li>{{/each}}\
     </ul>\
     </div>'
 ;
+templates.workCompact =
+    '<div class="obj">\
+    <h5><a data-content="{{{description}}}" href="/{{modulePrefix}}/works/{{id}}{{projParam}}">{{ellipsis workTitle 50}}{{#if name}} ({{name}}){{/if}}</a></h5>\
+    </div>'
+;
+templates.placeToken = '<li>{{name}}, {{state}}</li>';
+templates.placeTokenResult = '{{#if id}}<li><b>{{name}}, </b>{{state}}</li>{{/if}}';
 templates.placeCompact = 
     '<div>\
     <h4><a href="/{{modulePrefix}}/places/{{id}}{{projParam}}">{{name}}, {{state}}</a></h4>\
@@ -376,6 +450,7 @@ templates.placeSummary =
 ;
 templates.placeDetail = 
     '<div class="span6">\
+    <h1>{{#if name}}{{upper name 80}}{{else}}UNNAMED PLACE{{/if}}{{#if state}}, {{state}}{{/if}}</h1>\
         <table class="table">\
         <tr><td class="metadatalabel muted">Name</td><td>{{name}}</td></tr>\
         <tr><td class="muted">State</td><td>{{state}}</td></tr>\
@@ -389,14 +464,30 @@ templates.placeDetail =
 templates.imageEmbed = 
     '<img class="thumbnail" src="{{uri}}/content"/><br/><a style="font-size:smaller" href="/{{modulePrefix}}/resources/{{id}}{{projParam}}">Image details</a>'
 ;
+templates.resourceToken = 
+    '<li>\
+    {{#if metadata.title}}{{ellipsis metadata.title 25}}, {{/if}}{{#if filename}}{{ellipsis filename 25}}{{/if}}\
+    </li>'
+;
+templates.resourceTokenResult = '{{#if id}}<li><b>{{#if metadata.title}}{{metadata.title}}</b>, {{/if}}{{filename}}</li>{{/if}}';
 templates.resourceSummary = 
     '<div>\
     <h4><a href="/{{modulePrefix}}/resources/{{id}}{{projParam}}">{{#if metadata.title}}{{metadata.title}}, {{/if}}{{filename}}</a></h4>\
     {{metadata.format}}\
     </div>'
 ;
+templates.resourceBareDetail = '<span>\
+    <b>{{#if metadata.title}}{{metadata.title}}, {{/if}}{{filename}}</b> ({{metadata.filetype}})\
+    </span>'
+;
+templates.resourceCompact = 
+    '<span>\
+    <b><a data-content="{{{metadata.description}}}" href="/{{modulePrefix}}/resources/{{id}}{{projParam}}">{{#if metadata.title}}{{metadata.title}}, {{/if}}{{filename}}{{#if metadata.shortname}} ({{metadata.shortname}}){{/if}}</a></b> ({{metadata.filetype}})\
+    </span>'
+;
 templates.resourceDetail = 
     '<div>\
+    <h1>{{#if metadata.title}}{{upper metadata.title 80}}{{else}}{{upper filename 100}}{{/if}}</h1>\
     <h3>Metadata</h3>\
     <table class="table">\
         {{#if metadata.title}}<tr><td class="metadatalabel muted">Title</td><td>{{metadata.title}}</td></tr>{{/if}}\
@@ -404,7 +495,10 @@ templates.resourceDetail =
         {{#if metadata.coverage}}<tr><td class="muted">Coverage</td><td>{{metadata.coverage}}</td></tr>{{/if}}\
         {{#if metadata.format}}<tr><td class="muted">Format</td><td>{{metadata.format}}</td></tr>{{/if}}\
         {{#if metadata.language}}<tr><td class="muted">Language</td><td>{{metadata.language}}</td></tr>{{/if}}\
+        {{#if metadata.license}}<tr><td class="muted">License</td><td>{{metadata.license}}</td></tr>{{/if}}\
         {{#if metadata.publisher}}<tr><td class="muted">Publisher</td><td>{{metadata.publisher}}</td></tr>{{/if}}\
+        {{#if metadata.rights}}<tr><td class="muted">Rights</td><td>{{metadata.rights}}</td></tr>{{/if}}\
+        {{#if metadata.source}}<tr><td class="muted">Source</td><td>{{metadata.source}}</td></tr>{{/if}}\
     </table>\
     <h3>File information</h3>\
     <table class="table">\
