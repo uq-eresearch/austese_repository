@@ -76,6 +76,7 @@ jQuery.fn.serializeObject = function() {
                 jsonContainer: "results",
                 preventDuplicates: true,
                 propertyToSearch: "source",
+                queryParam: "query",
                 resultsFormatter: function(item){return getTemplate('artefactTokenResult')(item);},
                 tokenFormatter: function(item){return getTemplate('artefactToken')(item);}
             });
@@ -87,6 +88,7 @@ jQuery.fn.serializeObject = function() {
                 jsonContainer: "results",
                 preventDuplicates: true,
                 propertyToSearch: "name",
+                queryParam: "query",
                 resultsFormatter: function(item){return getTemplate('eventTokenResult')(item);},
                 tokenFormatter: function(item){return getTemplate('eventToken')(item);}
             });
@@ -98,6 +100,7 @@ jQuery.fn.serializeObject = function() {
                 jsonContainer: "results",
                 preventDuplicates: true,
                 propertyToSearch: "lastName",
+                queryParam: "query",
                 resultsFormatter: function(item){return getTemplate('agentTokenResult')(item);},
                 tokenFormatter: function(item){return getTemplate('agentToken')(item);}
             });
@@ -109,6 +112,7 @@ jQuery.fn.serializeObject = function() {
                 jsonContainer: "results",
                 preventDuplicates: true,
                 propertyToSearch: "filename",
+                queryParam: "query",
                 resultsFormatter: function(item){return getTemplate('resourceTokenResult')(item);},
                 tokenFormatter: function(item){return getTemplate('resourceToken')(item);}
             });
@@ -120,6 +124,7 @@ jQuery.fn.serializeObject = function() {
                 jsonContainer: "results",
                 preventDuplicates: true,
                 propertyToSearch: "filename",
+                queryParam: "query",
                 resultsFormatter: function(item){return getTemplate('resourceTokenResult')(item);},
                 tokenFormatter: function(item){return getTemplate('resourceToken')(item);}
             });
@@ -131,6 +136,7 @@ jQuery.fn.serializeObject = function() {
                 jsonContainer: "results",
                 preventDuplicates: true,
                 propertyToSearch: "filename",
+                queryParam: "query",
                 resultsFormatter: function(item){return getTemplate('resourceTokenResult')(item);;},
                 tokenFormatter: function(item){return getTemplate('resourceToken')(item);}
             });
@@ -142,6 +148,7 @@ jQuery.fn.serializeObject = function() {
                 jsonContainer: "results",
                 preventDuplicates: true,
                 propertyToSearch: "name",
+                queryParam: "query",
                 resultsFormatter: function(item){return getTemplate('placeTokenResult')(item);},
                 tokenFormatter: function(item){return getTemplate('placeToken')(item);}
             });
@@ -153,6 +160,7 @@ jQuery.fn.serializeObject = function() {
                 jsonContainer: "results",
                 preventDuplicates: true,
                 propertyToSearch: "versionTitle",
+                queryParam: "query",
                 resultsFormatter: function(item){return getTemplate('versionTokenResult')(item);},
                 tokenFormatter: function(item){return getTemplate('versionToken')(item);}
             });
@@ -164,6 +172,7 @@ jQuery.fn.serializeObject = function() {
                 hintText: "Start typing to search versions by title",
                 jsonContainer: "results",
                 propertyToSearch: "versionTitle",
+                queryParam: "query",
                 resultsFormatter: function(item){return getTemplate('versionTokenResult')(item);},
                 tokenFormatter: function(item){return getTemplate('versionToken')(item);}
             });
@@ -215,7 +224,7 @@ jQuery.fn.serializeObject = function() {
                 type: 'GET',
                 url: '/' + modulePath + '/api/' + queryApiType + 's/',
                 data: {
-                    q: queryId,
+                    query: queryId,
                     searchField: queryField,
                     pageSize: defaultPageSize
                 },
