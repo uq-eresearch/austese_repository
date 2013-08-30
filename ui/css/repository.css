@@ -103,4 +103,22 @@ div.sticky-bottom {
     border: 1px solid #eeeeee;
     height:500px;
 }
-
+.select2-chosen li {
+    list-style-type: none;
+}
+.select2-search-choice-close {
+    margin-top:3px;
+}
+.select2-choices {
+  
+  height: 20px;
+  padding: 4px 6px;
+  margin-bottom: 10px;
+  font-size: 14px;
+  line-height: 20px;
+  color: #555555;
+  vertical-align: middle;
+  -webkit-border-radius: 4px;
+     -moz-border-radius: 4px;
+          border-radius: 4px;
+}

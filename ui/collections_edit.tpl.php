@@ -35,14 +35,14 @@ if (isset($_GET['project'])) {
     <div class="control-group">
       <label class="control-label" for="name">Name</label>
       <div class="controls">
-        <textarea rows="1" name="name" type="text" class="input-xlarge" id="name"></textarea>
+        <textarea rows="1" name="name" type="text" class="input-xxlarge" id="name"></textarea>
         <p class="help-block">Name used to identify collection</p>
       </div>
     </div>
     <div class="control-group">
       <label class="control-label" for="resources">Resources</label>
       <div class="controls">
-        <textarea rows="2" name="resources" type="text" class="input-xlarge" id="resources"></textarea>
+        <textarea rows="2" name="resources" type="text" class="input-xxlarge" id="resources"></textarea>
         <p class="help-block">Resources that are part of this ResourceCollection</p>
       </div>
     </div>
@@ -53,7 +53,7 @@ if (isset($_GET['project'])) {
     <div class="control-group">
       <label class="control-label" for="project">Project</label>
       <div class="controls">
-        <input type="text" class="input-xlarge" name="project" id="project" value="<?php
+        <input type="text" class="input-xxlarge" name="project" id="project" value="<?php
         if (isset($_GET['project'])) {
          print $_GET['project'];
         } 

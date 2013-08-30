@@ -43,52 +43,40 @@ if (isset($_GET['project'])) {
     <div class="control-group">
       <label class="control-label" for="source">Source</label>
       <div class="controls">
-        <textarea autofocus="true" rows="1" name="source" type="text" class="input-xlarge" id="source"></textarea>
+        <textarea autofocus="true" rows="1" name="source" type="text" class="input-xxlarge" id="source"></textarea>
         <p class="help-block">Short title to identify artefact/source e.g. MS378</p>
       </div>
     </div>
     <div class="control-group">
       <label class="control-label" for="date">Date</label>
       <div class="controls">
-        <input name="date" type="text" class="input-xlarge" id="date">
+        <input name="date" type="text" class="input-xxlarge" id="date">
         <p class="help-block">e.g. 1875</p>
       </div>
     </div>
     <div class="control-group">
       <label class="control-label" for="bibDetails">Bibliographic Details</label>
       <div class="controls">
-        <textarea rows="1" name="bibDetails" type="text" class="input-xlarge" id="bibDetails"></textarea>
+        <textarea rows="1" name="bibDetails" type="text" class="input-xxlarge" id="bibDetails"></textarea>
         <p class="help-block">Additional bibliographic details e.g. '26 Apr., p. 5e'</p>
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="publisher">Publisher</label>
-      <div class="controls">
-        <textarea rows="1" name="publisher" type="text" class="input-xlarge" id="publisher"></textarea>
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="printer">Printer</label>
-      <div class="controls">
-        <textarea rows="1" name="printer" type="text" class="input-xlarge" id="printer"></textarea>
       </div>
     </div>
     <div class="control-group">
       <label class="control-label" for="format">Format</label>
       <div class="controls">
-        <textarea rows="1" name="format" type="text" class="input-xlarge" id="format"></textarea>
+        <textarea rows="1" name="format" type="text" class="input-xxlarge" id="format"></textarea>
       </div>
     </div>
     <div class="control-group">
       <label class="control-label" for="paperType">Paper Type</label>
       <div class="controls">
-        <textarea rows="1" name="paperType" type="text" class="input-xlarge" id="paperType"></textarea>
+        <textarea rows="1" name="paperType" type="text" class="input-xxlarge" id="paperType"></textarea>
       </div>
     </div>
     <div class="control-group">
       <label class="control-label" for="artefactSize">Size</label>
       <div class="controls">
-        <textarea rows="1" name="artefactSize" type="text" class="input-xlarge" id="artefactSize"></textarea>
+        <textarea rows="1" name="artefactSize" type="text" class="input-xxlarge" id="artefactSize"></textarea>
       </div>
     </div>
     </fieldset>
@@ -101,7 +89,7 @@ if (isset($_GET['project'])) {
       <label class="control-label" for="artefacts">Has Part(s)</label>
       <div class="controls ">
         
-        <input name="artefacts" type="text" id="artefacts" />
+        <input name="artefacts" type="text" id="artefacts" class="input-xxlarge" />
         <p class="help-block">ArtefactParts associated with this artefact</p>
         <a target="_blank" href="/repository/artefacts/edit<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
         <button type="button" title="Describe new artefact part in new tab" class="btn"><i class="icon-plus"></i> New artefact part</button>
@@ -111,7 +99,7 @@ if (isset($_GET['project'])) {
     <div class="control-group">
       <label class="control-label" for="facsimiles">Facsimiles</label>
       <div class="controls">
-        <textarea rows="2" name="facsimiles" type="text" class="input-xlarge" id="facsimiles"></textarea>
+        <textarea rows="2" name="facsimiles" type="text" class="input-xxlarge" id="facsimiles"></textarea>
         <p class="help-block">Facsimiles associated with this artefact</p>
         <a target="_blank" href="/repository/resources<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
         <button type="button" title="Upload new facsimile resource in new tab" class="btn"><i class="icon-plus"></i> New facsimile</button>
@@ -121,7 +109,7 @@ if (isset($_GET['project'])) {
     <div class="control-group">
       <label class="control-label" for="transcriptions">Transcriptions</label>
       <div class="controls">
-        <textarea rows="2" name="transcriptions" type="text" class="input-xlarge" id="transcriptions"></textarea>
+        <textarea rows="2" name="transcriptions" type="text" class="input-xxlarge" id="transcriptions"></textarea>
         <p class="help-block">Diplomatic transcriptions associated with this artefact</p>
         <a target="_blank" href="/repository/resources<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
         <button type="button" title="Upload new transcription resource in new tab" class="btn"><i class="icon-plus"></i> New transcription</button>
@@ -135,7 +123,7 @@ if (isset($_GET['project'])) {
     <div class="control-group">
       <label class="control-label" for="project">Project</label>
       <div class="controls">
-        <input type="text" class="input-xlarge" name="project" id="project" value="<?php
+        <input type="text" class="input-xxlarge" name="project" id="project" value="<?php
         if (isset($_GET['project'])) {
          print $_GET['project'];
         } 

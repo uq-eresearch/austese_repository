@@ -43,21 +43,21 @@ if (isset($_GET['project'])) {
     <div class="control-group">
       <label class="control-label" for="workTitle">Title</label>
       <div class="controls">
-        <textarea autofocus="true" rows="1" name="workTitle" type="text" class="input-xlarge" id="workTitle"></textarea>
+        <textarea autofocus="true" rows="1" name="workTitle" type="text" class="input-xxlarge" id="workTitle"></textarea>
         <p class="help-block">Full title of the work</p>
       </div>
     </div>
     <div class="control-group">
       <label class="control-label" for="name">Name</label>
       <div class="controls">
-        <textarea rows="1" name="name" type="text" class="input-xlarge" id="name"></textarea>
+        <textarea rows="1" name="name" type="text" class="input-xxlarge" id="name"></textarea>
         <p class="help-block">Short name for the work</p>
       </div>
     </div>
     <div class="control-group">
       <label class="control-label" for="description">Description</label>
       <div class="controls">
-        <textarea rows="2" name="description" type="text" class="input-xlarge" id="description"></textarea>
+        <textarea rows="2" name="description" type="text" class="input-xxlarge" id="description"></textarea>
         <p class="help-block">Description of this work</p>
       </div>
     </div>
@@ -68,7 +68,7 @@ if (isset($_GET['project'])) {
   <div class="control-group">
       <label class="control-label" for="versions">Versions</label>
       <div class="controls">
-        <textarea rows="2" name="versions" type="text" class="input-xlarge" id="versions"></textarea>
+        <textarea rows="2" name="versions" type="text" class="input-xxlarge" id="versions"></textarea>
         <p class="help-block">Versions of this work</p>
         <a target="_blank" href="/repository/versions/edit<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
         <button type="button" title="Describe new version in new tab" class="btn"><i class="icon-plus"></i> New version</button>
@@ -78,7 +78,7 @@ if (isset($_GET['project'])) {
     <div class="control-group">
       <label class="control-label" for="readingVersion">Reading Version</label>
       <div class="controls">
-        <textarea rows="2" name="readingVersion" type="text" class="input-xlarge" id="readingVersion"></textarea>
+        <textarea rows="2" name="readingVersion" type="text" class="input-xxlarge" id="readingVersion"></textarea>
         <p class="help-block">The default reading version</p>
       </div>
     </div>
@@ -89,7 +89,7 @@ if (isset($_GET['project'])) {
     <div class="control-group">
       <label class="control-label" for="project">Project</label>
       <div class="controls">
-        <input type="text" class="input-xlarge" name="project" id="project" value="<?php
+        <input type="text" class="input-xxlarge" name="project" id="project" value="<?php
         if (isset($_GET['project'])) {
          print $_GET['project'];
         } 

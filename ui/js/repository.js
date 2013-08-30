@@ -64,109 +64,78 @@ jQuery.fn.serializeObject = function() {
             }
         } 
 
+        var setUpTagField = function(elem, apiType, searchProperty, params, single){
+            var select2opts = {
+                placeholder: "Start typing to search " + apiType + "s by " + searchProperty,
+                minimumInputLength: 0,
+               
+                multiple:(single? false : true),
+                initSelection : function (element, callback) {
+                    var data = [];
+                    $(element.val().split(',')).each(function(i) {
+                        
+                        data.push({
+                            id: i
+                        });
+                    });
+                    callback(data);
+                },
+                ajax: {
+                    dataType: 'json',
+                    url: '/' + modulePath + '/api/' + apiType + 's/',
+                    data: function(term,page){
+                        var searchParams = {
+                            q: term,
+                            pageSize: 10,
+                            page: page
+                        };
+                        jQuery.each(params,function(k,v){
+                            searchParams[k] = v;
+                        });
+                        return searchParams;
+                    },
+                    results: function (data, page) { 
+                        var more = (page * 10) < data.count;
+                        data.more = more;
+                        return data;
+                    }
+                },
+                formatResult: function(res){
+                    return getTemplate(apiType + 'TokenResult')(res);
+                },
+                formatSelection: function(res){
+                    return getTemplate(apiType + 'Token')(res);
+                },
+                escapeMarkup: function(m){return m;}
+            };
+            if (!single){
+                select2opts.tags = [];
+            }
+            elem.select2(select2opts);
+            // add drag and drop reordering for tags
+            elem.each(function(i,e){
+                jQuery(e).select2("container").find("ul.select2-choices").sortable({
+                    containment: 'parent',
+                    start: function() { elem.select2("onSortStart"); },
+                    update: function() { elem.select2("onSortEnd"); }
+                });
+            });
+        };
         // set up search fields
-        if (typeof (jQuery().tokenInput) == 'function'){
+        
+        if (typeof (jQuery().select2) == 'function'){
             var project = jQuery('#metadata').data('project');
-            var projectParam = (project? "?project=" + project : "");
-            jQuery("#artefacts").tokenInput("/" + modulePath + "/api/artefacts/" + projectParam, {
-                theme: "facebook",
-                tokenValue: "id",
-                allowTabOut: true,
-                hintText: "Start typing to search artefacts by source",
-                jsonContainer: "results",
-                preventDuplicates: true,
-                propertyToSearch: "source",
-                resultsFormatter: function(item){return getTemplate('artefactTokenResult')(item);},
-                tokenFormatter: function(item){return getTemplate('artefactToken')(item);}
-            });
-            jQuery("#events").tokenInput("/" + modulePath + "/api/events/" + projectParam, {
-                theme: "facebook",
-                tokenValue: "id",
-                allowTabOut: true,
-                hintText: "Start typing to search events by name",
-                jsonContainer: "results",
-                preventDuplicates: true,
-                propertyToSearch: "name",
-                resultsFormatter: function(item){return getTemplate('eventTokenResult')(item);},
-                tokenFormatter: function(item){return getTemplate('eventToken')(item);}
-            });
-            jQuery("#agents, #authors, #editors, #publishers, #printers, #influencers, #compositors, #amanuenses, #illustrators, #binders, #readers, #translators, #booksellers").tokenInput("/" + modulePath + "/api/agents/" + projectParam, {
-                theme: "facebook",
-                tokenValue: "id",
-                allowTabOut: true,
-                hintText: "Start typing to search agents by last name",
-                jsonContainer: "results",
-                preventDuplicates: true,
-                propertyToSearch: "lastName",
-                resultsFormatter: function(item){return getTemplate('agentTokenResult')(item);},
-                tokenFormatter: function(item){return getTemplate('agentToken')(item);}
-            });
-            jQuery("#transcriptions").tokenInput("/" + modulePath + "/api/resources/" + projectParam + (projectParam? "&" : "?") + "type=x", {
-                theme: "facebook",
-                tokenValue: "id",
-                allowTabOut: true,
-                hintText: "Start typing to search transcriptions by filename/title",
-                jsonContainer: "results",
-                preventDuplicates: true,
-                propertyToSearch: "filename",
-                resultsFormatter: function(item){return getTemplate('resourceTokenResult')(item);},
-                tokenFormatter: function(item){return getTemplate('resourceToken')(item);}
-            });
-            jQuery("#facsimiles, #images").tokenInput("/" + modulePath + "/api/resources/" + projectParam + (projectParam? "&" : "?") + "type=image", {
-                theme: "facebook",
-                tokenValue: "id",
-                allowTabOut: true,
-                hintText: "Start typing to search images by filename/title",
-                jsonContainer: "results",
-                preventDuplicates: true,
-                propertyToSearch: "filename",
-                resultsFormatter: function(item){return getTemplate('resourceTokenResult')(item);},
-                tokenFormatter: function(item){return getTemplate('resourceToken')(item);}
-            });
-            jQuery("#resources").tokenInput("/" + modulePath + "/api/resources/" + projectParam, {
-                theme: "facebook",
-                tokenValue: "id",
-                allowTabOut: true,
-                hintText: "Start typing to search resources by filename/title",
-                jsonContainer: "results",
-                preventDuplicates: true,
-                propertyToSearch: "filename",
-                resultsFormatter: function(item){return getTemplate('resourceTokenResult')(item);;},
-                tokenFormatter: function(item){return getTemplate('resourceToken')(item);}
-            });
-            jQuery('#places').tokenInput("/" + modulePath + "/api/places/", {
-                theme: "facebook",
-                tokenValue: "id",
-                allowTabOut: true,
-                hintText: "Start typing to search places by name",
-                jsonContainer: "results",
-                preventDuplicates: true,
-                propertyToSearch: "name",
-                resultsFormatter: function(item){return getTemplate('placeTokenResult')(item);},
-                tokenFormatter: function(item){return getTemplate('placeToken')(item);}
-            });
-            jQuery("#versions").tokenInput("/" + modulePath + "/api/versions/" + projectParam, {
-                theme: "facebook",
-                tokenValue: "id",
-                allowTabOut: true,
-                hintText: "Start typing to search versions by title",
-                jsonContainer: "results",
-                preventDuplicates: true,
-                propertyToSearch: "versionTitle",
-                resultsFormatter: function(item){return getTemplate('versionTokenResult')(item);},
-                tokenFormatter: function(item){return getTemplate('versionToken')(item);}
-            });
-            jQuery("#readingVersion").tokenInput("/" + modulePath + "/api/versions/" + projectParam, {
-                theme: "facebook",
-                tokenValue: "id",
-                tokenLimit:1,
-                allowTabOut: true,
-                hintText: "Start typing to search versions by title",
-                jsonContainer: "results",
-                propertyToSearch: "versionTitle",
-                resultsFormatter: function(item){return getTemplate('versionTokenResult')(item);},
-                tokenFormatter: function(item){return getTemplate('versionToken')(item);}
-            });
+            var projectParam = {"project":project};
+            setUpTagField(jQuery('#artefacts'), "artefact", 'source', projectParam);
+            setUpTagField(jQuery('#events'),"event", "name", projectParam);
+            setUpTagField(jQuery("#agents, #authors, #editors, #publishers, #printers, #influencers, #compositors, #amanuenses, #illustrators, #binders, #readers, #translators, #booksellers")
+                    , "agent", "lastName", projectParam);
+            setUpTagField(jQuery("#resources"), "resource", "filename", projectParam);
+            setUpTagField(jQuery("#transcriptions"), "resource", "filename", {"project":project,"type":"text"});
+            setUpTagField(jQuery("#facsimiles, #images"), "resource", "filename", {"project":project,"type":"image"});
+            setUpTagField(jQuery('#places'), "place", "name", projectParam);
+            setUpTagField(jQuery("#versions"), "version","versionTitle", projectParam);
+            setUpTagField(jQuery('#readingVersion'),"version","versionTitle",projectParam, true);
         }
         
     });
@@ -340,7 +309,13 @@ jQuery.fn.serializeObject = function() {
                   },
                         url: '/' + modulePath + '/api/' + fieldType + '/' + field[index],
                   success: function(v){
-                    jQuery('#' + fieldName).tokenInput("add",v);
+                      var elem = jQuery('#' + fieldName);
+                      
+                      // add the new value to the list
+                      var existVal = elem.select2("data");
+                      existVal.push(v);
+                      elem.select2("data",existVal)
+                      
                           if (index < (fieldLength - 1)){
                               getToken(index+1);
                           }

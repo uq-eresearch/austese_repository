@@ -35,7 +35,7 @@ if (isset($_GET['project'])) {
     <div class="control-group">
       <label class="control-label" for="name">Name</label>
       <div class="controls">
-        <input readonly name="name" type="text" class="input-xlarge" id="name">
+        <input readonly name="name" type="text" class="input-xxlarge" id="name">
       </div>
     </div>
     <div class="control-group">

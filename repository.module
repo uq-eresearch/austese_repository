@@ -253,7 +253,10 @@ function repository_edit($template, $id=null){
     
     // Add scripts
     $modulePath = drupal_get_path('module', 'repository');
-    drupal_add_js($modulePath . '/ui/lib/jquery.tokeninput.js');
+    drupal_add_js($modulePath . '/ui/lib/select2/select2.min.js');
+    // NB: jQuery UI 1.10.x should be installed using jquery update module
+    drupal_add_js($modulePath . '/ui/lib/select2/jquery-ui-1.10.3.custom.js');
+    drupal_add_css($modulePath . '/ui/lib/select2/select2.css',  array('group' => CSS_DEFAULT, 'every_page' => FALSE));
     drupal_add_js($modulePath . '/ui/lib/js2form.js');
     drupal_add_js($modulePath . '/ui/lib/wysihtml5-0.3.0.min.js');
     drupal_add_js($modulePath . '/ui/lib/bootstrap-wysihtml5.js');
@@ -283,13 +286,11 @@ function repository_edit($template, $id=null){
             drupal_add_js($modulePath . '/ui/lib/codemirror/merge/dep/diff_match_patch.js');
             drupal_add_js($modulePath . '/ui/lib/codemirror/merge/merge.js');
             drupal_add_css($modulePath. '/ui/lib/codemirror/merge/merge.css');
-            drupal_add_js($modulePath . '/ui/lib/select2/select2.min.js');
-            drupal_add_css($modulePath . '/ui/lib/select2/select2.css');
         }
         // xml edit
         drupal_add_js($modulePath . '/ui/lib/codemirror/xml.js');
         drupal_add_js($modulePath . '/ui/js/resourceedit.js');
-        drupal_add_css($modulePath . '/ui/lib/codemirror/codemirror.css'); 
+        drupal_add_css($modulePath . '/ui/lib/codemirror/codemirror.css',  array('group' => CSS_DEFAULT, 'every_page' => FALSE)); 
  
     } else {
         drupal_add_js($modulePath . '/ui/js/repository.js');
@@ -297,10 +298,6 @@ function repository_edit($template, $id=null){
 
     // Add stylesheets
     drupal_add_css($modulePath . '/ui/css/repository.css',  array('group' => CSS_DEFAULT, 'every_page' => FALSE)); 
-    drupal_add_css($modulePath . '/ui/lib/token-input.css', 
-        array('group' => CSS_DEFAULT, 'every_page' => FALSE));
-    drupal_add_css($modulePath . '/ui/lib/token-input-facebook.css', 
-        array('group' => CSS_DEFAULT, 'every_page' => FALSE));
     return theme('repository_'.$template.'_edit',array());
 }
 function repository_timeline_events(){
@@ -316,7 +313,7 @@ function repository_timeline_events(){
     drupal_set_breadcrumb($breadcrumb);
     // Add scripts
     $modulePath = drupal_get_path('module', 'repository');
-    drupal_add_css($modulePath.'/ui/lib/timeline/css/timeline.css');
+    drupal_add_css($modulePath.'/ui/lib/timeline/css/timeline.css',  array('group' => CSS_DEFAULT, 'every_page' => FALSE));
     drupal_add_js($modulePath.'/ui/lib/timeline/js/storyjs-embed.js');
     drupal_add_js($modulePath . '/ui/lib/handlebars.js');
     drupal_add_js($modulePath . '/ui/js/entitytemplates.js'); 

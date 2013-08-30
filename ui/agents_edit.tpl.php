@@ -43,19 +43,19 @@ if (isset($_GET['project'])) {
     <div class="control-group">
       <label class="control-label" for="lastName">Last Name</label>
       <div class="controls">
-        <input autofocus="true" name="lastName" type="text" class="input-xlarge" id="lastName">
+        <input autofocus="true" name="lastName" type="text" class="input-xxlarge" id="lastName">
       </div>
     </div>
     <div class="control-group">
       <label class="control-label" for="firstName">First Name</label>
       <div class="controls">
-        <input name="firstName" type="text" class="input-xlarge" id="firstName">
+        <input name="firstName" type="text" class="input-xxlarge" id="firstName">
       </div>
     </div>
     <div class="control-group">
       <label class="control-label" for="biography">Biography</label>
       <div class="controls">
-        <textarea rows="10" class="input-xlarge" name="biography" id="biography"></textarea>
+        <textarea rows="10" class="input-xxlarge" name="biography" id="biography"></textarea>
       </div>
     </div>
     </fieldset>
@@ -65,7 +65,7 @@ if (isset($_GET['project'])) {
     <div class="control-group">
       <label class="control-label" for="images">Images</label>
       <div class="controls">
-        <textarea rows="2" name="images" type="text" class="input-xlarge" id="images"></textarea>
+        <textarea rows="2" name="images" type="text" class="input-xxlarge" id="images"></textarea>
         <p class="help-block">Images of this agent</p>
         <a target="_blank" href="/repository/resources<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
         <button type="button" title="Upload new image resource in new tab" class="btn"><i class="icon-plus"></i> New image</button>
@@ -79,7 +79,7 @@ if (isset($_GET['project'])) {
       <div class="control-group">
         <label class="control-label" for="project">Project</label>
         <div class="controls">
-          <input type="text" class="input-xlarge" name="project" id="project" value="<?php
+          <input type="text" class="input-xxlarge" name="project" id="project" value="<?php
           if (isset($_GET['project'])) {
            print $_GET['project'];
           } 

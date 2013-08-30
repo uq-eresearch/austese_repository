@@ -43,49 +43,49 @@ if (isset($_GET['project'])) {
     <div class="control-group">
       <label class="control-label" for="versionTitle">Title</label>
       <div class="controls">
-        <textarea autofocus="true" rows="1" name="versionTitle" type="text" class="input-xlarge" id="versionTitle"></textarea>
+        <textarea autofocus="true" rows="1" name="versionTitle" type="text" class="input-xxlarge" id="versionTitle"></textarea>
         <p class="help-block">Title of this version</p>
       </div>
     </div>
     <div class="control-group">
       <label class="control-label" for="date">Date</label>
       <div class="controls">
-        <input name="date" type="text" class="input-xlarge" id="date">
+        <input name="date" type="text" class="input-xxlarge" id="date">
         <p class="help-block">e.g. 1875</p>
       </div>
     </div>
     <div class="control-group">
       <label class="control-label" for="description">Description</label>
       <div class="controls">
-        <textarea rows="2" name="description" type="text" class="input-xlarge" id="description"></textarea>
+        <textarea rows="2" name="description" type="text" class="input-xxlarge" id="description"></textarea>
         <p class="help-block">Description of this version</p>
       </div>
     </div>
     <div class="control-group">
       <label class="control-label" for="firstLine">First Line</label>
       <div class="controls">
-        <textarea rows="1" name="firstLine" type="text" class="input-xlarge" id="firstLine"></textarea>
+        <textarea rows="1" name="firstLine" type="text" class="input-xxlarge" id="firstLine"></textarea>
         <p class="help-block">First line of this version (e.g. for poetry)</p>
       </div>
     </div>
     <div class="control-group">
       <label class="control-label" for="publisher">Publisher</label>
       <div class="controls">
-        <textarea rows="1" name="publisher" type="text" class="input-xlarge" id="publisher"></textarea>
+        <textarea rows="1" name="publisher" type="text" class="input-xxlarge" id="publisher"></textarea>
         <p class="help-block">Publisher of this version</p>
       </div>
     </div>
     <div class="control-group">
       <label class="control-label" for="name">Name</label>
       <div class="controls">
-        <textarea rows="1" name="name" type="text" class="input-xlarge" id="name"></textarea>
+        <textarea rows="1" name="name" type="text" class="input-xxlarge" id="name"></textarea>
         <p class="help-block">Short name of this version</p>
       </div>
     </div>
     <div class="control-group">
       <label class="control-label" for="illust">Illustrations</label>
       <div class="controls">
-        <textarea rows="2" name="illust" type="text" class="input-xlarge" id="illust"></textarea>
+        <textarea rows="2" name="illust" type="text" class="input-xxlarge" id="illust"></textarea>
         <p class="help-block">Describe illustrations for this version</p>
       </div>
     </div>
@@ -96,7 +96,7 @@ if (isset($_GET['project'])) {
     <div class="control-group">
       <label class="control-label" for="versions">Has Part(s)</label>
       <div class="controls">
-        <textarea rows="2" name="versions" type="text" class="input-xlarge" id="versions"></textarea>
+        <textarea rows="2" name="versions" type="text" class="input-xxlarge" id="versions"></textarea>
         <p class="help-block">VersionParts that are part of this version</p>
         <a target="_blank" href="/repository/versions/edit<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
         <button type="button" title="Describe new version part in new tab" class="btn"><i class="icon-plus"></i> New version part</button>
@@ -106,7 +106,8 @@ if (isset($_GET['project'])) {
     <div class="control-group">
       <label class="control-label" for="artefacts">Artefacts</label>
       <div class="controls">
-        <textarea rows="2" name="artefacts" type="text" class="input-xlarge" id="artefacts"></textarea>
+        <!--  textarea rows="2" name="artefacts" type="text" class="input-xxlarge" id="artefacts"></textarea-->
+        <input type="hidden" class="input-xxlarge" id="artefacts" name="artefacts"/>
         <p class="help-block">Artefacts associated with this version</p>
         <a target="_blank" href="/repository/artefacts/edit<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
         <button type="button" title="Describe new artefact in new tab" class="btn"><i class="icon-plus"></i> New artefact</button>
@@ -116,7 +117,7 @@ if (isset($_GET['project'])) {
     <div class="control-group">
       <label class="control-label" for="transcriptions">Transcriptions</label>
       <div class="controls">
-        <textarea rows="2" name="transcriptions" type="text" class="input-xlarge" id="transcriptions"></textarea>
+        <textarea rows="2" name="transcriptions" type="text" class="input-xxlarge" id="transcriptions"></textarea>
         <p class="help-block">Transcriptions associated with this version</p>
         <a target="_blank" href="/repository/resources<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
         <button type="button" title="Upload new transcription resource in new tab" class="btn"><i class="icon-plus"></i> New transcription</button>
@@ -126,7 +127,7 @@ if (isset($_GET['project'])) {
     <div class="control-group">
       <label class="control-label" for="places">Places</label>
       <div class="controls">
-        <textarea rows="2" name="places" type="text" class="input-xlarge" id="places"></textarea>
+        <textarea rows="2" name="places" type="text" class="input-xxlarge" id="places"></textarea>
         <p class="help-block">Places associated with this version e.g. place of publication</p>
       </div>
     </div>
@@ -137,7 +138,7 @@ if (isset($_GET['project'])) {
     <div class="control-group">
       <label class="control-label" for="project">Project</label>
       <div class="controls">
-        <input type="text" class="input-xlarge" name="project" id="project" value="<?php
+        <input type="text" class="input-xxlarge" name="project" id="project" value="<?php
         if (isset($_GET['project'])) {
          print $_GET['project'];
         } 
