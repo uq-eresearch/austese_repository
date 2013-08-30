@@ -313,7 +313,11 @@ jQuery.fn.serializeObject = function() {
                       
                       // add the new value to the list
                       var existVal = elem.select2("data");
+                      if (existVal instanceof Array){
                       existVal.push(v);
+                      } else {
+                          existVal = v;
+                      }
                       elem.select2("data",existVal)
                       
                           if (index < (fieldLength - 1)){

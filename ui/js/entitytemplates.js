@@ -103,8 +103,8 @@ templates.mvdSummary =
         </p>\
     </div>'
 ;
-templates.versionToken = '<li>{{versionTitle}}, {{name}}, {{date}}</li>';
-templates.versionTokenResult = '{{#if id}}<li><b>{{versionTitle}}</b>, {{name}}, {{date}}</li>{{/if}}';
+templates.versionToken = '<li>{{versionTitle}}{{#if name}}, {{name}}{{/if}}{{#if date}}, {{date}}{{/if}}</li>';
+templates.versionTokenResult = '{{#if id}}<li><b>{{versionTitle}}</b>{{#if name}}, {{name}}{{/if}}{{#if date}}, {{date}}{{/if}}</li>{{/if}}';
 templates.versionSummary = 
     '<div class="obj">\
         <h4><a href="/{{modulePrefix}}/versions/{{id}}{{projParam}}">{{versionTitle}} {{#if name}}({{name}}){{/if}}</a></h4>\
