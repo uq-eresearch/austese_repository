@@ -10,6 +10,10 @@ $project = null;
 if (isset($_GET['project'])) {
  $project = $_GET['project'];
 }
+$cloud = false;
+if (isset($_GET['cloud'])) {
+ $cloud = true;
+}
 ?>
 <div id="alerts"></div>
 <div id="metadata"
@@ -28,9 +32,13 @@ if (isset($_GET['project'])) {
 </div>
 
 <div><p class="resource"></p></div>
-
-<div id="resourceContent" class="well white-well" data-id="http://<?php print $_SERVER['SERVER_NAME']; ?>/repository/resources/<?php print $existingId; ?>/content">
+<div class="row-fluid">
+<div id="resourceContent" class="span<?php if ($cloud) print "9"; else print "12"; ?> well white-well" data-id="http://<?php print $_SERVER['SERVER_NAME']; ?>/repository/resources/<?php print $existingId; ?>/content">
 Rendering content...
+</div>
+<?php if ($cloud): ?>
+<div class="span3" id="wordcloud"></div>
+<?php endif; ?>
 </div>
 <div id="wordCount"></div>
 <div id="selectedWordCount"></div>

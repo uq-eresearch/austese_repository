@@ -5,6 +5,9 @@ jQuery(document).ready(function(){
     // get metadata
     var resURI = '/' + jQuery('#metadata').data('modulepath') + "/api/resources/" + existingId;
     function afterContentLoaded(){
+        if (wordCloud && typeof wordCloud.drawWordCloud == "function"){
+            wordCloud.drawWordCloud();
+        } 
         if (typeof enableAnnotations == "function"){
             enableAnnotations();
         }
@@ -15,7 +18,7 @@ jQuery(document).ready(function(){
         }
         jQuery('#wordCount').html("Resource Total Word Count: " + wordCount);
     };
-    
+    if (typeof (jQuery().popover) == 'function'){
     jQuery.ajax({
       type: 'GET',
       url: resURI,
@@ -43,6 +46,7 @@ jQuery(document).ready(function(){
             });
       }
     });
+    }
     jQuery.ajax({
         type: 'GET',
         dataType: "json",
