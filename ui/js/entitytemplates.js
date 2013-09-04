@@ -73,16 +73,23 @@ templates.collectionSummary = '\
         {{#if hasEditPermission}}<p><a href="/{{modulePrefix}}/collections/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a></p>{{/if}}\
     </div>'
 ;
+templates.collectionCompact = '\
+    <div class="obj">\
+        <h4><a href="/{{modulePrefix}}/collections/{{id}}{{projParam}}">{{name}}</a></h4>\
+    </div>'
+;
 templates.collectionDetail = 
     '<div class="obj">\
-        <h4><a href="/{{modulePrefix}}/collections/{{id}}{{projParam}}">{{name}}</a></h4>\
+        <h4><a href="/{{modulePrefix}}/collections/{{id}}{{projParam}}">{{upper name 80}}</a></h4>\
         {{#gt resources.length 0}}\
-          <p>{{resources.length}} Resource{{#neq resources.length 1}}s{{/neq}} associated with this ResourceCollection:</p></tpl>\
+          <p>{{resources.length}} Resource{{#neq resources.length 1}}s{{/neq}} associated with this ResourceCollection:</p>\
           <ul>\
            {{#each resources}}<li class="resource" data-resourceid="{{.}}" data-template="summary"></li>{{/each}}\
           </ul>\
-        {{\gt}}\
-        {{#if hasEditPermission}}<p><a href="/{{modulePrefix}}/collections/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a></p>{{/if}}\
+        {{/gt}}\
+        {{#if hasEditPermission}}\
+        <p><a href="/{{modulePrefix}}/collections/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a></p>\
+        {{/if}}\
     </div>'
 ;
 templates.mvdSummary = 

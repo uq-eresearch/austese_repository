@@ -237,6 +237,7 @@ jQuery.fn.serializeObject = function() {
              });
         } else if (apiType == "resource"){
             processInverseRelationships("version","transcriptions",id, "Digital Surrogate For");
+            processInverseRelationships("collection", "resources", id, "In Collection");
             processInverseRelationships("artefact","transcriptions",id, "Digital Surrogate For");
            processInverseRelationships("artefact","facsimiles",id, "Digital Surrogate For");
            processInverseRelationships("agent","images",id, "Image of");

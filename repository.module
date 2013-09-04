@@ -462,6 +462,7 @@ function repository_toc() {
   $list[] = l("Events","repository/events",$projectParam);
   $list[] = l("Places", "repository/places",$projectParam);
   $list[] = l("MVDs", "repository/mvds",$projectParam);
+  $list[] = l("Collections", "repository/collections",$projectParam);
   $render_array['repository_list'] = array(
     '#theme' => 'item_list',  
     '#items' => $list
