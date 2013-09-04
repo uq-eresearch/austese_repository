@@ -93,10 +93,13 @@ Ext.define('austese_uploader.controller.Controller', {
             'sendtomvdwindow button[text="OK"]':{
                 click: this.createMVD
             },
+            'newcollectionwindow button[text="OK"]':{
+                click: this.createCollection
+            },
             'newresourcewindow button[text="OK"], duperesourcewindow button[text="OK"]':{
                 click: this.createResource
             },
-            'newresourcewindow button[text="Cancel"], duperesourcewindow button[text="Cancel"]':{
+            'newresourcewindow button[text="Cancel"], duperesourcewindow button[text="Cancel"], newcollectionwindow button[text="Cancel"]':{
                 click: this.cancelWindow
             }
         });
@@ -721,6 +724,13 @@ Ext.define('austese_uploader.controller.Controller', {
                 handler: this.sendToLightBox
             });
         }
+        button.menu.add({
+            text: 'Create Collection',
+            
+            tooltip: 'Create collection to group records',
+            scope: this,
+            handler: this.sendToCreateCollection
+        });
         if (records.length == 1){
             var record = records[0];
             button.menu.add({
@@ -814,5 +824,45 @@ Ext.define('austese_uploader.controller.Controller', {
                 ids += "/" + records[i].get("id") ;
         }
         document.location.href ='/alignment/edit' + ids;
+    },
+    sendToCreateCollection: function(button){
+        var pp = button.up('propertiespanel');
+        var records = pp.loadedRecords;
+        var ids=[];
+        for (var i = 0; i < records.length; i++){
+            ids.push(records[i].get("id"));
+        }
+        Ext.create('austese_uploader.view.NewCollectionWindow',{
+            ids: ids,
+            project: this.application.project
+        }).show();
+    },
+    createCollection: function(button){
+        var collWin = button.up('window');
+        var collectionData = {
+                resources : collWin.ids,
+                name : collWin.down('form').getForm().getValues().name
+        };
+        collWin.close();
+        // save collection
+        var modulePath = this.application.modulePath;
+        jQuery.ajax({
+          type: 'POST',
+          data: JSON.stringify(collectionData),
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          url: modulePath + "/api/collections/",
+          success: function(d){
+              window.location.href = "/repository/collections/" + d.id;
+          }, 
+          failure: function(response){
+              Ext.ComponentQuery.query('statusbar')[0].setStatus({
+                  iconCls: 'x-status-error',
+                  text: "Unable to create collection: " + response.responseText,
+                  clear: true
+              });
+          }
+        });
     }
 });
