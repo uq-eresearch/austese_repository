@@ -508,6 +508,7 @@ templates.resourceDetail =
     <tr><td class="muted">MD5 checksum</td><td>{{md5}}</td></tr>\
     </table>\
     <p><a href="./{{id}}/content{{projParam}}"><i class="icon-eye-open"></i> View resource content</a></p>\
+    {{#match metadata.filetype "text"}}<p><a href="./{{id}}/content{{projParam}}{{#if projParam}}&{{else}}?{{/if}}cloud=true"><i class="icon-eye-open"></i> View word frequency cloud</a></p>{{/match}}\
     <p><a href="{{uri}}"><i class="icon-download"></i> Download resource</a></p>\
     {{#match metadata.filetype "image"}}\
         <h3>Image Preview</h3>\
