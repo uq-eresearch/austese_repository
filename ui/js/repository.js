@@ -198,6 +198,20 @@ jQuery.fn.serializeObject = function() {
                       display += "<strong class=\"muted\">" + title + "</strong><ul>";
                       result.results.forEach(function(r){
                           r.modulePrefix = modulePrefix;
+                          if (queryApiType == "collection" && r.resources){
+                              var resourceIndex = jQuery.inArray(queryId,r.resources);
+                              if (resourceIndex >= 0){
+                                  r.resourceIndex = resourceIndex + 1;
+                              }
+                              r.collectionLength = r.resources.length;
+                              if (resourceIndex != 0) {
+                                  r.prev = r.resources[resourceIndex-1];
+                              }
+                              if ((resourceIndex + 1) != r.resources.length){
+                                  r.next = r.resources[resourceIndex+1];
+                              }
+                          }
+                          
                           display += "<li>" + getTemplate(queryApiType + 'Compact')(r) +"</li>";
                       })
                       display += "</ul>";

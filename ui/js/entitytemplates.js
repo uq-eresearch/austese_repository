@@ -76,6 +76,9 @@ templates.collectionSummary = '\
 templates.collectionCompact = '\
     <div class="obj">\
         <h4><a href="/{{modulePrefix}}/collections/{{id}}{{projParam}}">{{name}}</a></h4>\
+        Item {{resourceIndex}} of {{collectionLength}} \
+        {{#if prev}}<a href="{{prev}}">Previous</a> {{/if}}\
+        {{#if next}}<a href="{{next}}">Next</a>{{/if}}\
     </div>'
 ;
 templates.collectionDetail = 
