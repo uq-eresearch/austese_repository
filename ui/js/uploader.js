@@ -34,7 +34,8 @@ Ext.application({
         'ThumbnailView',
         'ResourceGrid',
         'SelectPropertiesWindow',
-        'SendToMVDWindow'
+        'SendToMVDWindow',
+        'NewCollectionWindow'
     ],
     autoCreateViewport: false,
     name: 'austese_uploader',
