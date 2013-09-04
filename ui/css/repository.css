@@ -122,3 +122,9 @@ div.sticky-bottom {
      -moz-border-radius: 4px;
           border-radius: 4px;
 }
+#concordance {
+    overflow: auto;
+}
+.concordance {
+   white-space: nowrap;
+}

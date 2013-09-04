@@ -384,6 +384,7 @@ function repository_display_resource($id,$raw=null){
         //too slow use ajax instead - return theme('resources_content',array('content'=>$result));
         $modulePath = drupal_get_path('module', 'repository');
         if (isset($_GET['cloud'])) {
+            drupal_add_css($modulePath . '/ui/css/repository.css');
             drupal_add_js($modulePath . '/ui/lib/d3cloud/d3.js');
             drupal_add_js($modulePath . '/ui/lib/d3cloud/d3.layout.cloud.js');
             drupal_add_js($modulePath . '/ui/js/wordcloud.js');

@@ -37,7 +37,14 @@ if (isset($_GET['cloud'])) {
 Rendering content...
 </div>
 <?php if ($cloud): ?>
-<div class="span3" id="wordcloud"></div>
+<div class="span3">
+  <div class="row-fluid">
+    <div id="wordcloud"></div>
+  </div>
+  <div class="row-fluid">
+    <div id="concordance"></div>
+  </div>
+</div>
 <?php endif; ?>
 </div>
 <div id="wordCount"></div>
