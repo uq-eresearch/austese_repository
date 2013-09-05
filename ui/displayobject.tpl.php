@@ -11,6 +11,7 @@ $project = null;
 if (isset($_GET['project'])) {
  $project = $_GET['project'];
 }
+$modulePath =  drupal_get_path('module', 'repository');
 ?>
 <div id="alerts"></div>
 <div id="metadata"
@@ -24,7 +25,7 @@ if (isset($_GET['project'])) {
    data-existingid="<?php print $existingId; ?>"
  <?php endif; ?>
  data-moduleprefix="<?php print $modulePrefix; ?>"
- data-modulepath="<?php print drupal_get_path('module', 'repository'); ?>"
+ data-modulepath="<?php print $modulePath; ?>"
  data-servername="<?php print $_SERVER['SERVER_NAME']; ?>"
  data-apitype="<?php print $apiType;?>">
 </div>
@@ -37,17 +38,28 @@ if (isset($_GET['project'])) {
 <?php if ($apiType!='place'):?>
 <div class="actionsidebar span4 filler">
 <div>
-   <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/visualize/<?php print $existingId; ?><?php if ($project): print "?project=".$project; endif; ?>">VISUALIZE</a><br/>
-   <?php if (user_access('edit metadata')): ?>
+<ul class="actionLinks">
+
    <?php if ($apiType=='resource'):?>
-   <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s#<?php print $existingId; ?>">VIEW IN RESOURCE ORGANISER</a><br/>
+   <li><i class="icon-download-alt"></i> <a href="/<?php print $modulePath; ?>/api/<?php print $apiType; ?>s/<?php print $existingId; ?>">DOWNLOAD</a></li>
+   <li><i class="icon-eye-open"></i> <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/<?php print $existingId; ?>/content<?php if ($project): print '?project='.$project; endif; ?>">VIEW CONTENT</a></li>
+   <li style="display:none" id="wordcloudlink"><i class="icon-eye-open"></i> <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/<?php print $existingId; ?>/content?cloud=true<?php if ($project): print '&project='.$project; endif; ?>">VIEW WORD CLOUD</a></li>
+   <li style="display:none" id="lightboxlink"><i class="icon-eye-open"></i> <a  href="/lightbox#<?php if ($project): print '?project='.$project; endif; ?><?php print $existingId; ?>">VIEW IN LIGHTBOX</a></li>
    <?php endif; ?>
-   <a id="editlink" href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/edit/<?php print $existingId; ?><?php if ($project): print "?project=".$project; endif; ?>">EDIT
-   <?php if ($apiType=='resource'):?> CONTENT<?php endif; ?>
-   </a>
+  
+   <?php if (user_access('edit metadata')): ?>
+      <?php if ($apiType=='resource'):?>
+        <li><i class="icon-th"></i> <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s#<?php print $existingId; ?>">SHOW IN ORGANISER</a></li>
+        
+      <?php endif; ?>
+      <li id="editlink" ><i class="icon-edit"></i> <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/edit/<?php print $existingId; ?><?php if ($project): print "?project=".$project; endif; ?>">EDIT
+      <?php if ($apiType=='resource'):?> CONTENT<?php endif; ?>
+      </a></li>
    <?php endif; ?>
-   <a style="display:none" id="lightboxlink" href="/lightbox#<?php if ($project): print '?project='.$project; endif; ?><?php print $existingId; ?>">VIEW IN LIGHTBOX</a>
- <?php if ($apiType=='work'):?><br/><a href="/reading/<?php print $existingId; ?>">VIEW IN READING INTERFACE</a><?php endif; ?>
+   
+   <?php if ($apiType=='work'):?><li><i class="icon-book"></i> <a href="/reading/<?php print $existingId; ?>">READ</a></li><?php endif; ?>
+ <li><i class="icon-asterisk"></i> <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/visualize/<?php print $existingId; ?><?php if ($project): print "?project=".$project; endif; ?>">VISUALIZE CONNECTIONS</a></li>
+ </ul>
  <?php if ($apiType=='resource'):?>
  <div style="margin-top:1em" id="viewmvd"></div>
  <?php endif; ?>

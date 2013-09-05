@@ -165,6 +165,7 @@ jQuery.fn.serializeObject = function() {
                     jQuery("#lightboxlink").show();
                     jQuery('#result').append('<script type="text/javascript">if (typeof enableAnnotations == \"function\"){enableAnnotations();}</script>');
                 } else {
+                    jQuery('#wordcloudlink').show();
                     jQuery("#editlink").show();
                 }
                 if (apiType == "resource" && result.metadata && result.metadata.filetype && (result.metadata.filetype.match("xml") || result.metadata.filetype.match("text"))) {
