@@ -150,7 +150,7 @@ function createRecord($collection){
     $invalidkeys = array('_deleted', 'uri', 'id');
     foreach ($invalidkeys as $key) {
       if (array_key_exists($key,$obj)){
-	echo 'JSON data for new object contains invalid field: $key';
+	      echo 'JSON data for new object contains invalid field: $key';
         drupal_add_http_header('Status', '400 Bad Request');
         drupal_page_footer();
         exit;
@@ -226,15 +226,9 @@ function createResource(){
   $resid = gen_uuid();
   // return metadata
   $storedfile = $grid->storeUpload('data', array('metadata' => array('filetype' => $filetype, 'project' => $project)));
-  //, '_resourceid'=>$resid
+
   $id = $storedfile->{'$id'};
   $url = $config['uriprefix'] . '/resources/' . $resid;
-  // $grid->update(array('_id'=> new MongoId($id)),
-  //  array('$set' => array('thumb' => "/sites/default/files/thumbs/".$id)), array('safe' => true));
-  //$_ENV['id'] = $id;
-  //$_ENV['filetype'] = $filetype;
-  //var_dump($storedfile);
-  //return uri
   $query = array('_id'=>new MongoId($id));
   $file = $grid->findOne($query);
   // store generated id
@@ -242,7 +236,6 @@ function createResource(){
 
   drupal_add_http_header('Content-Type', 'application/json');
   echo "{\"uri\":\"". $url 
-     //."\",\"thumb\":\"/sites/default/files/thumbs/".$id
      ."\",\"id\":\"".$resid
      ."\",\"filename\":\"".$file->file['filename']
      ."\",\"length\":".$file->file['length']."}";
@@ -595,8 +588,6 @@ function updateResource($id) {
  
  $input = @file_get_contents('php://input');
  
-//$parts = explode(';', $_SERVER['CONTENT_TYPE'], 2);
-//$contenttype = restws_format_mimetype($parts[0]);
  $contenttype = $_SERVER['CONTENT_TYPE'];
  try {
   // only update the most recent version of this resource (i.e. superseded not true)
