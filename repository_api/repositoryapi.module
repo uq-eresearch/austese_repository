@@ -137,6 +137,12 @@ function handle_resource($id, $revision) {
 function createRecord($collection){
   $config = repositoryapi_get_configuration();
   $input = @file_get_contents('php://input');
+
+  // Check project and permissions
+  $project = get_get_parameter('project');
+  _check_project_exists($project);
+  _check_permission_on_project($project, 'edit metadata');
+
   try {
     $obj = drupal_json_decode($input);
     // check supplied data was valid
@@ -204,41 +210,52 @@ function makeThumbnail($srcpath,$destpath,$filetype) {
   imagepng($virtImage,$destpath);
  }
 }
-function createResource(){
+
+function createResource() {
   $config = repositoryapi_get_configuration();
+
+  // Check permissions and project
+  $project = get_get_parameter('project');
+  _check_project_exists($project);
+  _check_permission_on_project($project, 'edit metadata');
+
   try{
-  $m = new Mongo($config['dbhost'].':'.$config['dbport']);
-  $db = $m->selectDB($config['dbname']);
-  $grid = $db->getGridFS();
-  $filename=$_FILES["data"]["name"];
-  $filetype=$_FILES["data"]["type"];
-  $tmp = $_FILES["data"]["tmp_name"];
-  $project = '';
-  if (isset($_POST["project"])){
-   $project = $_POST["project"];
-  }
-  if ($_FILES["data"]["error"]!=0){
-    drupal_add_http_header('Status', '500 Internal server error');
-    echo "Error uploading file";
-    exit;
-  }
-  // generate an id for the resource (the mongo generated id is for the specific version of the resource only)
-  $resid = gen_uuid();
-  // return metadata
-  $storedfile = $grid->storeUpload('data', array('metadata' => array('filetype' => $filetype, 'project' => $project)));
+    $m = new Mongo($config['dbhost'].':'.$config['dbport']);
+    $db = $m->selectDB($config['dbname']);
+    $grid = $db->getGridFS();
+    $filename=$_FILES["data"]["name"];
+    $filetype=$_FILES["data"]["type"];
+    $tmp = $_FILES["data"]["tmp_name"];
+    $project = '';
+    if (isset($_POST["project"])) {
+      $project = $_POST["project"];
+    }
+    if ($_FILES["data"]["error"]!=0){
+      drupal_add_http_header('Status', '500 Internal server error');
+      echo "Error uploading file";
+      exit;
+    }
+    // generate an id for the resource (the mongo generated id is for the specific version of the resource only)
+    $resid = gen_uuid();
+    // return metadata
+    $storedfile = $grid->storeUpload('data',
+            array('metadata' => array('filetype' => $filetype, 'project' => $project)));
 
-  $id = $storedfile->{'$id'};
-  $url = $config['uriprefix'] . '/resources/' . $resid;
-  $query = array('_id'=>new MongoId($id));
-  $file = $grid->findOne($query);
-  // store generated id
-  $grid->update(array('_id'=>new MongoId($id)), array('$set' => array('_resourceid' => $resid)), array('safe' => true));
+    $id = $storedfile->{'$id'};
+    $url = $config['uriprefix'] . '/resources/' . $resid;
+    $query = array('_id'=>new MongoId($id));
+    $file = $grid->findOne($query);
+    // store generated id
+    $grid->update(
+            array('_id'=>new MongoId($id)),
+            array('$set' => array('_resourceid' => $resid)),
+            array('safe' => true));
 
-  drupal_add_http_header('Content-Type', 'application/json');
-  echo "{\"uri\":\"". $url 
-     ."\",\"id\":\"".$resid
-     ."\",\"filename\":\"".$file->file['filename']
-     ."\",\"length\":".$file->file['length']."}";
+    drupal_add_http_header('Content-Type', 'application/json');
+    echo "{\"uri\":\"". $url 
+       ."\",\"id\":\"".$resid
+       ."\",\"filename\":\"".$file->file['filename']
+       ."\",\"length\":".$file->file['length']."}";
   
  } catch (Exception $e){
     drupal_add_http_header('Status', '500 Internal server error');
@@ -315,6 +332,28 @@ function listResources(){
   drupal_add_http_header('Content-Type', 'application/json');
 }
 
+function _check_project_exists($project) {
+  if ($project && !node_load($project)) {
+    echo "Project does not exist";
+    drupal_add_http_header('Status', '404 Not Found');
+    drupal_page_footer();
+    exit;
+  }
+}
+function _check_permission_on_project($project, $permission) {
+  if ($project && !og_user_access('node', $project, $permission)) {
+    echo 'Permission denied';
+    drupal_add_http_header('Status', '403 Forbidden');
+    drupal_page_footer();
+    exit;
+  }
+  if (!$project && !user_access($permission)) {
+    echo 'Permission denied';
+    drupal_add_http_header('Status', '403 Forbidden');
+    drupal_page_footer();
+    exit;
+  }
+}
 /**
  * List records in a mongo collection
  * 
@@ -341,6 +380,13 @@ function listRecords($collection, $labelField) {
     if (!$searchField) {
       $searchField = $labelField;
     }
+
+    // check project and permissions
+    $project = get_get_parameter('project');
+    _check_project_exists($project);
+    _check_permission_on_project($project, 'view metadata');
+
+
     $findopts = array('_deleted'=>array('$exists'=>false));
     if ($filterTerm != null){
       $regex = new MongoRegex("/".$filterTerm."/i");
@@ -402,6 +448,12 @@ function getRecord($collection,$id,$revision) {
       echo 'The requested object does not exist';
       exit;
     }
+
+    // check project and permissions
+    $project = get_get_parameter('project');
+    _check_project_exists($project);
+    _check_permission_on_project($project, 'view metadata');
+
     if (array_key_exists('_deleted',$obj)){
       drupal_add_http_header('Status', '410 Gone');
       echo 'The requested object has been deleted';
@@ -438,6 +490,12 @@ function getResource($id){
 //    }
   $requesttype = $_SERVER['HTTP_ACCEPT'];
   $scale = get_get_parameter('scale');
+
+  // check project and permissions
+  $project = get_get_parameter('project');
+  _check_project_exists($project);
+  _check_permission_on_project($project, 'view metadata');
+
   $m = new Mongo($config['dbhost'].':'.$config['dbport']);
   $db = $m->selectDB($config['dbname']);
   $grid = $db->getGridFS();
@@ -528,6 +586,12 @@ function getResource($id){
 function updateRecord($collection,$id){
   $config = repositoryapi_get_configuration();
   $input = @file_get_contents('php://input');
+
+  // TODO, this is WRONG, need to load the record, and check it's project from there
+  $project = get_get_parameter('project');
+  _check_project_exists($project);
+  _check_permission_on_project($project, 'edit metadata');
+
   try {
     $obj = drupal_json_decode($input);
     // check supplied data was valid - either json or file must have been supplied
@@ -582,6 +646,11 @@ function updateRecord($collection,$id){
 function updateResource($id) {
  $config = repositoryapi_get_configuration();
  
+  // TODO: THIS is wrong, need to load resource and check project there
+  $project = get_get_parameter('project');
+  _check_project_exists($project);
+  _check_permission_on_project($project, 'edit metadata');
+
  $m = new Mongo($config['dbhost'].':'.$config['dbport']);
  $db = $m->selectDB($config['dbname']);
  $grid = $db->getGridFS();
@@ -673,6 +742,10 @@ function deleteRecord($collection,$id){
   // TODO: provide admin functions to completely remove deleted objects
   $config = repositoryapi_get_configuration();
   
+  // TODO: Wrong, load record and check project from that
+  $project = get_get_parameter('project');
+  _check_project_exists($project);
+  _check_permission_on_project($project, 'delete metadata');
   try {
     $m = new Mongo($config['dbhost'].':'.$config['dbport']);
     $db = $m->selectDB($config['dbname']);
@@ -701,6 +774,11 @@ function deleteRecord($collection,$id){
  */
 function deleteResource($id){
   $config = repositoryapi_get_configuration();
+
+  // TODO: wrong, load project and check resource there.
+  $project = get_get_parameter('project');
+  _check_project_exists($project);
+  _check_permission_on_project($project, 'delete metadata');
   $m = new Mongo($config['dbhost'].':'.$config['dbport']);
   $db = $m->selectDB($config['dbname']);
   $grid = $db->getGridFS();
