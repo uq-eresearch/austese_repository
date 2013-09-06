@@ -578,12 +578,16 @@ function repository_block_view($delta = '') {
         case 'project_links':
             $block['subject'] = t('Project Links');
             $block['content'] = "
-                <a href='/repository/works?project=$project_id'>Works</a><br>
-                <a href='/repository/versions?project=$project_id'>Versions</a><br>
                 <a href='/repository/artefacts?project=$project_id'>Artefacts</a><br>
+                <a href='/repository/versions?project=$project_id'>Versions</a><br>
+                <a href='/repository/works?project=$project_id'>Works</a><br>
                 <a href='/repository/resources?project=$project_id'>Digital Resources</a>
+                <a href='/repository/agents?project=$project_id'>Agents</a><br>
+                <a href='/repository/events?project=$project_id'>Events</a><br>
+                <a href='/repository/places?project=$project_id'>Places</a><br>
+                <a href='/repository/mvds?project=$project_id'>MVDs</a><br>
                     ";
-            break;            
+            break;
     }
     
     return $block;
