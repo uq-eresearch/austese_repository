@@ -186,18 +186,27 @@ function repository_description() {
   return array('#markup' => t('The austese content repository module'));
 }
 
+function _add_project_or_repository(&$breadcrumb) {
+    $projectParam = array();
+    if (isset($_GET['project'])) {
+      $projectParam = array('query' => array('project' => $_GET['project']));
+    }
+    if (isset($_GET['project'])) {
+        $project = node_load($_GET['project']);
+        $breadcrumb[] = l($project->title, 'node/' . $project->nid, $projectParam);
+    } else {
+        $breadcrumb[] = l('Repository', 'repository',$projectParam);
+    }
+}
+
 function repository_display($template){
     if (!in_array($template,array("agents","artefacts","versions","works","resources", "places", "events", "mvds", "collections"))) {
         drupal_access_denied();
         return;
     }
-    $projectParam = array();
-    if (isset($_GET['project'])) {
-      $projectParam = array('query' => array('project' => $_GET['project']));
-    }
     $breadcrumb = array();
     $breadcrumb[] = l('Home', '<front>');
-    $breadcrumb[] = l('Repository', 'repository',$projectParam);
+    _add_project_or_repository($breadcrumb);
     $breadcrumb[] = t(ucfirst($template)); 
     drupal_set_breadcrumb($breadcrumb);
     
@@ -243,7 +252,7 @@ function repository_edit($template, $id=null){
     }
     $breadcrumb = array();
     $breadcrumb[] = l('Home', '<front>');
-    $breadcrumb[] = l('Repository', 'repository',$projectParam);
+    _add_project_or_repository($breadcrumb);
     $breadcrumb[] = l(ucwords($template),'repository/'.$template,$projectParam);
     if ($template != 'mvds'){
         $breadcrumb[] = l('View '. ucwords(substr($template,0,-1)),'repository/'.$template.'/'.$id,$projectParam);
@@ -307,7 +316,7 @@ function repository_timeline_events(){
     }
     $breadcrumb = array();
     $breadcrumb[] = l('Home', '<front>');
-    $breadcrumb[] = l('Repository', 'repository',$projectParam);
+    _add_project_or_repository($breadcrumb);
     $breadcrumb[] = l('Events','repository/events',$projectParam);
     $breadcrumb[] = t(drupal_get_title()); 
     drupal_set_breadcrumb($breadcrumb);
@@ -327,7 +336,7 @@ function repository_map_events($id=null){
     }
     $breadcrumb = array();
     $breadcrumb[] = l('Home', '<front>');
-    $breadcrumb[] = l('Repository', 'repository',$projectParam);
+    _add_project_or_repository($breadcrumb);
     $breadcrumb[] = l('Events','repository/events',$projectParam);
     $breadcrumb[] = t(drupal_get_title()); 
     drupal_set_breadcrumb($breadcrumb);
@@ -353,7 +362,7 @@ function repository_visualize($template, $id=null){
     }
     $breadcrumb = array();
     $breadcrumb[] = l('Home', '<front>');
-    $breadcrumb[] = l('Repository', 'repository',$projectParam);
+    _add_project_or_repository($breadcrumb);
     $breadcrumb[] = l(ucwords($template),'repository/'.$template,$projectParam);
     $breadcrumb[] = t(drupal_get_title()); 
     drupal_set_breadcrumb($breadcrumb);
@@ -373,7 +382,7 @@ function repository_display_resource($id,$raw=null){
     }
     $breadcrumb = array();
     $breadcrumb[] = l('Home', '<front>');
-    $breadcrumb[] = l('Repository', 'repository',$projectParam);
+    _add_project_or_repository($breadcrumb);
     $breadcrumb[] = l('Resources','repository/resources',$projectParam);
     $breadcrumb[] = l('View Resource','repository/resources/'.$id,$projectParam);
     $breadcrumb[] = t('View Resource Content'); 
@@ -426,7 +435,7 @@ function repository_display_record($template, $id=null){
     }
     $breadcrumb = array();
     $breadcrumb[] = l('Home', '<front>');
-    $breadcrumb[] = l('Repository', 'repository',$projectParam);
+    _add_project_or_repository($breadcrumb);
     $breadcrumb[] = l(ucwords($template),'repository/'.$template,$projectParam);
     $breadcrumb[] = t('View ' . ucfirst(substr($template,0,-1))); 
     drupal_set_breadcrumb($breadcrumb);
