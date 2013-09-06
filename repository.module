@@ -401,16 +401,11 @@ function repository_render_tei($id){
     $modulePath = drupal_get_path('module', 'repository');
     $resurl = 'http://' . $_SERVER['HTTP_HOST'] . "/" . drupal_get_path('module', 'repository') . "/api/resources/" . $id;
     $xslurl = $modulePath . '/ui/xslt/formats.xsl';
-    /*$xml = file_get_contents($resurl);
-    if (!$xml) {
-        watchdog('Content', "Empty resource content", array(), WATCHDOG_WARNING);
-        echo $xml;
-    }*/
     $dom = new DomDocument();
     @$valid = $dom->load($resurl);
     if (!$valid) {
-        watchdog('TEI Content', "Invalid XML/TEI Content", array(), WATCHDOG_WARNING);
-        return $xml;
+        //watchdog('TEI Content', "Invalid XML/TEI Content", array(), WATCHDOG_WARNING);
+        echo "<pre>".file_get_contents($resurl)."</pre>";
     }
     $xslDoc = new DomDocument();
     $xslDoc->load($xslurl);
