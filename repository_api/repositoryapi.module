@@ -20,16 +20,34 @@ function repositoryapi_get_configuration() {
 }
 
 /**
+ * Implements hook_og_permission
+ */
+function repositoryapi_og_permission() {
+  return array(
+    'edit metadata' => array(
+      'title' => t('Edit metadata'),
+      'description' => t('Allow users to create and edit metadata in the content repository')
+    ),
+    'view metadata' => array(
+      'title' => t('View metadata'),
+      'description' => t('Allow users to view metadata in the content repository')
+    ),
+    'delete metadata' => array(
+      'title' => t('Delete metadata'),
+      'description' => t('Allow users to delete metadata in the content repository')
+    ),
+  );
+}
+
+/**
  * Implements hook_menu()
  */
 function repositoryapi_menu() {    
     // cannot include leading or trailing slashes
     $items['sites/all/modules/austese_repository/api'] = array(
-//    $items['repositoryapi'] = array(
         'page callback' => 'resource_page_callback',
         'access callback' => 'user_access',
         'access arguments' => array('access content'),
-//        'access callback' => 'user_is_logged_in',
         'type' => MENU_CALLBACK, // hidden, used for API
     );
     

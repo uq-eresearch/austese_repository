@@ -46,11 +46,11 @@ function repository_permission() {
   return array(
     'edit metadata' => array(
       'title' => t('Edit metadata'),
-      'description' => t('Allow users to create and edit metadata in the content repository')
+      'description' => t('Allow users to create and edit ALL metadata in the content repository')
     ),
     'view metadata' => array(
       'title' => t('View metadata'),
-      'description' => t('Allow users to view metadata in the content repository')
+      'description' => t('Allow users to view ALL metadata in the content repository')
     ),
     'view visualizations' => array(
       'title' => t('View visualizations'),
