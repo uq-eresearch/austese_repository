@@ -186,11 +186,15 @@ function repository_description() {
   return array('#markup' => t('The austese content repository module'));
 }
 
-function _add_project_or_repository(&$breadcrumb) {
+function _get_projectParam() {
     $projectParam = array();
     if (isset($_GET['project'])) {
       $projectParam = array('query' => array('project' => $_GET['project']));
     }
+    return $projectParam;
+}
+function _add_project_or_repository(&$breadcrumb) {
+    $projectParam = _get_projectParam();
     if (isset($_GET['project'])) {
         $project = node_load($_GET['project']);
         $breadcrumb[] = l($project->title, 'node/' . $project->nid, $projectParam);
