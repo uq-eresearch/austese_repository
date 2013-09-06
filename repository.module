@@ -246,10 +246,7 @@ function repository_edit($template, $id=null){
         drupal_access_denied();
         return;
     }
-    $projectParam = array();
-    if (isset($_GET['project'])) {
-       $projectParam = array('query' => array('project' => $_GET['project']));
-    }
+    $projectParam = _get_projectParam();
     $breadcrumb = array();
     $breadcrumb[] = l('Home', '<front>');
     _add_project_or_repository($breadcrumb);
@@ -310,10 +307,7 @@ function repository_edit($template, $id=null){
     return theme('repository_'.$template.'_edit',array());
 }
 function repository_timeline_events(){
-    $projectParam = array();
-    if (isset($_GET['project'])) {
-       $projectParam = array('query' => array('project' => $_GET['project']));
-    }
+    $projectParam = _get_projectParam();
     $breadcrumb = array();
     $breadcrumb[] = l('Home', '<front>');
     _add_project_or_repository($breadcrumb);
@@ -330,10 +324,7 @@ function repository_timeline_events(){
     return theme('repository_visualize',array());
 }
 function repository_map_events($id=null){
-    $projectParam = array();
-    if (isset($_GET['project'])) {
-       $projectParam = array('query' => array('project' => $_GET['project']));
-    }
+    $projectParam = _get_projectParam();
     $breadcrumb = array();
     $breadcrumb[] = l('Home', '<front>');
     _add_project_or_repository($breadcrumb);
@@ -356,10 +347,7 @@ function repository_visualize($template, $id=null){
         drupal_access_denied();
         return;
     }
-    $projectParam = array();
-    if (isset($_GET['project'])) {
-       $projectParam = array('query' => array('project' => $_GET['project']));
-    }
+    $projectParam = _get_projectParam();
     $breadcrumb = array();
     $breadcrumb[] = l('Home', '<front>');
     _add_project_or_repository($breadcrumb);
@@ -376,10 +364,7 @@ function repository_visualize($template, $id=null){
     return theme('repository_visualize',array());
 }
 function repository_display_resource($id,$raw=null){
-    $projectParam = array();
-    if (isset($_GET['project'])) {
-     $projectParam = array('query' => array('project' => $_GET['project']));
-    }
+    $projectParam = _get_projectParam();
     $breadcrumb = array();
     $breadcrumb[] = l('Home', '<front>');
     _add_project_or_repository($breadcrumb);
@@ -429,10 +414,7 @@ function repository_display_record($template, $id=null){
         drupal_access_denied();
         return;
     }
-    $projectParam = array();
-    if (isset($_GET['project'])) {
-     $projectParam = array('query' => array('project' => $_GET['project']));
-    }
+    $projectParam = _get_projectParam();
     $breadcrumb = array();
     $breadcrumb[] = l('Home', '<front>');
     _add_project_or_repository($breadcrumb);
@@ -454,10 +436,7 @@ function repository_display_record($template, $id=null){
     return theme('repository_display_record',array());
 }
 function repository_toc() {
-  $projectParam = array();
-  if (isset($_GET['project'])) {
-     $projectParam = array('query' => array('project' => $_GET['project']));
-  }
+  $projectParam = _get_projectParam();
   $list[] = l("Artefacts","repository/artefacts",$projectParam);
   $list[] = l("Versions","repository/versions",$projectParam);
   $list[] = l("Works","repository/works",$projectParam);
