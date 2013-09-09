@@ -186,6 +186,17 @@ function repository_description() {
   return array('#markup' => t('The austese content repository module'));
 }
 
+function _get_projectParam() {
+    $projectParam = array();
+    if (isset($_GET['project'])) {
+        $project = node_load($_GET['project']);
+        $breadcrumb[] = l($project->title, 'node/' . $project->nid, $projectParam);
+    } else {
+        $breadcrumb[] = l('Repository', 'repository',$projectParam);
+    }
+    return $projectParam;
+}
+
 /**
  * Adds the current project to the breadcrumb trail.
  * 

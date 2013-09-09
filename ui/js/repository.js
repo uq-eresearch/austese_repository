@@ -136,6 +136,7 @@ jQuery.fn.serializeObject = function() {
             setUpTagField(jQuery('#places'), "place", "name", projectParam);
             setUpTagField(jQuery("#versions"), "version","versionTitle", projectParam);
             setUpTagField(jQuery('#readingVersion'),"version","versionTitle",projectParam, true);
+
         }
         
     });
