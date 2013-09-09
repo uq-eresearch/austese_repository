@@ -44,6 +44,7 @@ if (isset($_GET['project'])) {
       <label class="control-label" for="name">Name</label>
       <div class="controls">
         <input autofocus="true" name="name" type="text" class="input-xxlarge" id="name">
+        <div id="existingOutput"></div>
       </div>
     </div>
     <div class="control-group">

@@ -37,6 +37,7 @@ if (isset($_GET['project'])) {
       <div class="controls">
         <textarea rows="1" name="name" type="text" class="input-xxlarge" id="name"></textarea>
         <p class="help-block">Name used to identify collection</p>
+        <div id="existingOutput"></div>
       </div>
     </div>
     <div class="control-group">

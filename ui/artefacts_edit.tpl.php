@@ -45,6 +45,7 @@ if (isset($_GET['project'])) {
       <div class="controls">
         <textarea autofocus="true" rows="1" name="source" type="text" class="input-xxlarge" id="source"></textarea>
         <p class="help-block">Short title to identify artefact/source e.g. MS378</p>
+        <div id="existingOutput"></div>
       </div>
     </div>
     <div class="control-group">

@@ -46,13 +46,60 @@ jQuery.fn.serializeObject = function() {
         } else if (apiOperation == "edit"){
             jQuery('#save-btn, .save-btn').on('click',onSave);
             if (existingId) {
-             loadObjectIntoEditor(existingId);
-             jQuery('#dupe-btn, .dupe-btn').css('display','inline').on('click',onDuplicate);
-             jQuery('#del-btn, .del-btn').css('display','inline').on('click',onDelete);
+                 loadObjectIntoEditor(existingId);
+                 jQuery('#dupe-btn, .dupe-btn').css('display','inline').on('click',onDuplicate);
+                 jQuery('#del-btn, .del-btn').css('display','inline').on('click',onDelete);
+                 if (apiType=="resource"){
+                     loadReferencedObjects();
+                 }
             } else {
+                // these are also called after load object
                 wysiEditors.push(jQuery('#description').wysihtml5());
                 wysiEditors.push(jQuery('#biography').wysihtml5());
-            }
+           }
+            jQuery('[autofocus=true]').on("change, blur", function(e){
+               var fieldName = e.currentTarget.name;
+               var searchTerm = jQuery(e.currentTarget).val();
+               if (searchTerm && searchTerm.length >= 3){
+                   jQuery.ajax({
+                        type: 'GET',
+                        url: '/' + modulePath + '/api/' + apiType + 's/',
+                        dataType: "json",
+                        headers: {
+                            'Accept': 'application/json'
+                        },
+                        data: {
+                            searchField: fieldName, 
+                            q: searchTerm, 
+                            pageSize: 10
+                        },
+                        failure: function(xhr){
+                            console.log("failed to look up similar records",xhr)
+                        },
+                        success: function(result){
+                            var display = "";
+                            var matching = result.count;
+                            jQuery.each(result.results,function(i,rec){
+                                rec.modulePrefix = modulePrefix;
+                                rec.newTab = true;
+                                if (existingId != rec.id){
+                                    display += getTemplate(apiType + 'Compact')(rec) + "; ";
+                                } else {
+                                    matching--;
+                                }
+                            });
+                            if (matching){
+                                jQuery('#existingOutput').html("Records with similar " + fieldName + ": " 
+                                        + display + (result.count > 10? " and " + (result.count - 10) + " more": ""));
+                            } else {
+                                jQuery('#existingOutput').empty();
+                            }
+                        }
+                    });
+               } else {
+                   jQuery('#existingOutput').empty();
+               }
+            });
         
         } else {
             if (existingId){

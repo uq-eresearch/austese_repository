@@ -75,7 +75,7 @@ templates.collectionSummary = '\
 ;
 templates.collectionCompact = '\
     <div class="obj">\
-        <h4><a href="/{{modulePrefix}}/collections/{{id}}{{projParam}}">{{name}}</a></h4>\
+        <h4><a {{#if newTab}}target="_blank"{{/if}} href="/{{modulePrefix}}/collections/{{id}}{{projParam}}">{{name}}</a></h4>\
         Item {{resourceIndex}} of {{collectionLength}} \
         {{#if prev}}<a href="{{prev}}">Previous</a> {{/if}}\
         {{#if next}}<a href="{{next}}">Next</a>{{/if}}\
@@ -129,7 +129,7 @@ templates.versionSummary =
 ;
 templates.versionCompact = 
     '<div class="obj">\
-      <h5><a data-content="{{#if firstLine}}<p>{{firstLine}}</p>{{/if}}{{{description}}}" href="/{{modulePrefix}}/versions/{{id}}{{projParam}}">{{ellipsis versionTitle 50}} {{#if name}}({{ellipsis name 20}}){{/if}}</a></h5>\
+      <h5><a {{#if newTab}}target="_blank"{{/if}} data-content="{{#if firstLine}}<p>{{firstLine}}</p>{{/if}}{{{description}}}" href="/{{modulePrefix}}/versions/{{id}}{{projParam}}">{{ellipsis versionTitle 50}} {{#if name}}({{ellipsis name 20}}){{/if}}</a></h5>\
       {{date}} {{publisher}}\
     </div>'
 ;
@@ -200,7 +200,7 @@ templates.agentDetail =
 ;
 templates.agentCompact = 
     '<div class="obj">\
-    <h5><a title="{{lastName}}, {{firstName}}" data-content="{{biography}}" href="/{{modulePrefix}}/agents/{{id}}{{projParam}}">{{lastName}}, {{firstName}}</a></h5>\
+    <h5><a {{#if newTab}}target="_blank"{{/if}} title="{{lastName}}, {{firstName}}" data-content="{{biography}}" href="/{{modulePrefix}}/agents/{{id}}{{projParam}}">{{lastName}}, {{firstName}}</a></h5>\
     {{#if birthDate}} b. {{birthDate}}, {{/if}}\
     {{#if deathDate}} d. {{deathDate}}, {{/if}}\
     </div>'
@@ -234,7 +234,7 @@ templates.eventSummary =
 ;
 templates.eventCompact = 
     '<div class="obj">\
-    <h5><a data-content="{{#if startDate}}{{startDate}} &ndash; {{/if}}\
+    <h5><a {{#if newTab}}target="_blank"{{/if}} data-content="{{#if startDate}}{{startDate}} &ndash; {{/if}}\
     {{#if endDate}}{{endDate}}{{/if}}<br/>{{{description}}}" href="/{{modulePrefix}}/events/{{id}}{{projParam}}">\
     {{#if name}}{{name}}{{else}}Untitled Event{{/if}}{{#if eventType}} ({{eventType}}){{/if}}</a></h5>\
     </div>'
@@ -409,7 +409,7 @@ templates.artefactDetail =
 ;
 templates.artefactCompact =
     '<div class="obj">\
-    <h5><a data-content="{{bibDetails}}" href="/{{modulePrefix}}/artefacts/{{id}}{{projParam}}">{{source}}</a></h5>\
+    <h5><a {{#if newTab}}target="_blank"{{/if}} data-content="{{bibDetails}}" href="/{{modulePrefix}}/artefacts/{{id}}{{projParam}}">{{source}}</a></h5>\
     {{#if date}}{{date}}{{/if}}\
     </div>'
 ;
@@ -438,14 +438,14 @@ templates.workDetail =
 ;
 templates.workCompact =
     '<div class="obj">\
-    <h5><a data-content="{{{description}}}" href="/{{modulePrefix}}/works/{{id}}{{projParam}}">{{ellipsis workTitle 50}}{{#if name}} ({{name}}){{/if}}</a></h5>\
+    <h5><a {{#if newTab}}target="_blank"{{/if}} data-content="{{{description}}}" href="/{{modulePrefix}}/works/{{id}}{{projParam}}">{{ellipsis workTitle 50}}{{#if name}} ({{name}}){{/if}}</a></h5>\
     </div>'
 ;
 templates.placeToken = '<li>{{name}}, {{state}}</li>';
 templates.placeTokenResult = '{{#if id}}<li><b>{{name}}, </b>{{state}}</li>{{/if}}';
 templates.placeCompact = 
     '<div>\
-    <h4><a href="/{{modulePrefix}}/places/{{id}}{{projParam}}">{{name}}, {{state}}</a></h4>\
+    <h4><a {{#if newTab}}target="_blank"{{/if}} href="/{{modulePrefix}}/places/{{id}}{{projParam}}">{{name}}, {{state}}</a></h4>\
     <p>Feature Type: <span class="featureCode">{{featureCode }}</span></p>\
     </div>'
 ;
@@ -492,7 +492,7 @@ templates.resourceBareDetail = '<span>\
 ;
 templates.resourceCompact = 
     '<span>\
-    <b><a data-content="{{{metadata.description}}}" href="/{{modulePrefix}}/resources/{{id}}{{projParam}}">{{#if metadata.title}}{{metadata.title}}, {{/if}}{{filename}}{{#if metadata.shortname}} ({{metadata.shortname}}){{/if}}</a></b> ({{metadata.filetype}})\
+    <b><a {{#if newTab}}target="_blank"{{/if}} data-content="{{{metadata.description}}}" href="/{{modulePrefix}}/resources/{{id}}{{projParam}}">{{#if metadata.title}}{{metadata.title}}, {{/if}}{{filename}}{{#if metadata.shortname}} ({{metadata.shortname}}){{/if}}</a></b> ({{metadata.filetype}})\
     </span>'
 ;
 templates.resourceDetail = 

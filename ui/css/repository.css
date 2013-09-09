@@ -139,3 +139,6 @@ div.sticky-bottom {
 .concordance {
    white-space: nowrap;
 }
+#existingOutput .obj, #existingOutput .obj h5 {
+    display:inline;
+}
