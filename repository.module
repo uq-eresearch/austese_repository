@@ -193,6 +193,12 @@ function _get_projectParam() {
     }
     return $projectParam;
 }
+
+/**
+ * Adds the current project to the breadcrumb trail.
+ * 
+ * @param type $breadcrumb An existing breadcrumb array to modify
+ */
 function _add_project_or_repository(&$breadcrumb) {
     $projectParam = _get_projectParam();
     if (isset($_GET['project'])) {
@@ -203,16 +209,25 @@ function _add_project_or_repository(&$breadcrumb) {
     }
 }
 
-function repository_display($template){
-    if (!in_array($template,array("agents","artefacts","versions","works","resources", "places", "events", "mvds", "collections"))) {
+function _assert_valid_record_type($record_type) {
+    if (!in_array($record_type,array("agents","artefacts","versions","works","resources", "places", "events", "mvds", "collections"))) {
         drupal_access_denied();
-        return;
+        exit;
     }
+}
+
+function repository_display($template) {
+    _assert_valid_record_type($template);
     $breadcrumb = array();
     $breadcrumb[] = l('Home', '<front>');
     _add_project_or_repository($breadcrumb);
     $breadcrumb[] = t(ucfirst($template)); 
     drupal_set_breadcrumb($breadcrumb);
+    
+    // check project and permissions
+    $project = get_get_parameter('project');
+    _check_project_exists($project);
+    _check_permission_on_project($project, 'view metadata');
     
     $modulePath = drupal_get_path('module', 'repository');
     drupal_add_js($modulePath . '/ui/lib/handlebars.js');
@@ -246,10 +261,7 @@ function repository_edit($template, $id=null){
         drupal_access_denied();
         return;
     }
-    if (!user_access('edit metadata')){
-        drupal_access_denied();
-        return;
-    }
+    
     $projectParam = _get_projectParam();
     $breadcrumb = array();
     $breadcrumb[] = l('Home', '<front>');
@@ -260,6 +272,11 @@ function repository_edit($template, $id=null){
     }
     $breadcrumb[] = t('Edit '. ucfirst(substr($template,0,-1))); 
     drupal_set_breadcrumb($breadcrumb);
+    
+    // check project and permissions
+    $project = get_get_parameter('project');
+    _check_project_exists($project);
+    _check_permission_on_project($project, 'edit metadata');
     
     // Add scripts
     $modulePath = drupal_get_path('module', 'repository');
@@ -321,6 +338,12 @@ function repository_timeline_events(){
     $breadcrumb[] = l('Events','repository/events',$projectParam);
     $breadcrumb[] = t(drupal_get_title()); 
     drupal_set_breadcrumb($breadcrumb);
+    
+    // check project and permissions
+    $project = get_get_parameter('project');
+    _check_project_exists($project);
+    _check_permission_on_project($project, 'view metadata');
+    
     // Add scripts
     $modulePath = drupal_get_path('module', 'repository');
     drupal_add_css($modulePath.'/ui/lib/timeline/css/timeline.css');
@@ -338,6 +361,12 @@ function repository_map_events($id=null){
     $breadcrumb[] = l('Events','repository/events',$projectParam);
     $breadcrumb[] = t(drupal_get_title()); 
     drupal_set_breadcrumb($breadcrumb);
+    
+    // check project and permissions
+    $project = get_get_parameter('project');
+    _check_project_exists($project);
+    _check_permission_on_project($project, 'view metadata');
+    
     // Add scripts
     $modulePath = drupal_get_path('module', 'repository'); 
     drupal_add_css('http://cdn.leafletjs.com/leaflet-0.4/leaflet.css',array('type' => 'external'));
@@ -361,6 +390,12 @@ function repository_visualize($template, $id=null){
     $breadcrumb[] = l(ucwords($template),'repository/'.$template,$projectParam);
     $breadcrumb[] = t(drupal_get_title()); 
     drupal_set_breadcrumb($breadcrumb);
+    
+    // check project and permissions
+    $project = get_get_parameter('project');
+    _check_project_exists($project);
+    _check_permission_on_project($project, 'view metadata');
+    
     // Add scripts
     $modulePath = drupal_get_path('module', 'repository');
     drupal_add_js($modulePath . '/ui/lib/graphdracula/raphael.js');
@@ -377,8 +412,14 @@ function repository_display_resource($id,$raw=null){
     _add_project_or_repository($breadcrumb);
     $breadcrumb[] = l('Resources','repository/resources',$projectParam);
     $breadcrumb[] = l('View Resource','repository/resources/'.$id,$projectParam);
-    $breadcrumb[] = t('View Resource Content'); 
+    $breadcrumb[] = t('View Resource Content');
     drupal_set_breadcrumb($breadcrumb);
+    
+    // check project and permissions
+    $project = get_get_parameter('project');
+    _check_project_exists($project);
+    _check_permission_on_project($project, 'view metadata');
+    
     if ($raw == 'raw'){
         repository_render_tei($id);
     } else {
@@ -391,6 +432,13 @@ function repository_display_resource($id,$raw=null){
         return theme('repository_resources_content',array());
     }
 }
+
+/**
+ * Only called from `repository_display_resource()`
+ * 
+ * @param type $id
+ * @return type
+ */
 // shift to repository api
 function repository_render_tei($id){
     $modulePath = drupal_get_path('module', 'repository');
@@ -427,6 +475,11 @@ function repository_display_record($template, $id=null){
     $breadcrumb[] = l(ucwords($template),'repository/'.$template,$projectParam);
     $breadcrumb[] = t('View ' . ucfirst(substr($template,0,-1))); 
     drupal_set_breadcrumb($breadcrumb);
+    
+    // check project and permissions
+    $project = get_get_parameter('project');
+    _check_project_exists($project);
+    _check_permission_on_project($project, 'view metadata');
     
     // Add scripts
     $modulePath = drupal_get_path('module', 'repository');
