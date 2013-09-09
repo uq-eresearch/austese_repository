@@ -288,6 +288,11 @@ function listResources(){
   // provide a default for page Index. Default for pagesize is null (all results will be returned)
   $pagenum = get_get_paramter_int('pageIndex');
   
+  // check project and permissions
+  $project = get_get_parameter('project');
+  _check_project_exists($project);
+  _check_permission_on_project($project, 'view metadata');
+    
   $findopts = array('_superseded'=>array('$exists'=>false));
   
   $findopts = array('$and'=>array($findopts,
