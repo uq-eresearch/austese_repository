@@ -575,6 +575,8 @@ jQuery.fn.serializeObject = function() {
                 d.modulePrefix = modulePrefix;
                 if (template && template == "summary"){
                     elem.html(getTemplate("resourceSummary")(d));
+                } else if (template && template == "compact") {
+                    elem.html(getTemplate("resourceCompact")(d));
                 } else if (template == "image"){
                     elem.html(getTemplate("imageEmbed")(d));
                 }
