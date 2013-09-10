@@ -132,7 +132,7 @@ jQuery.fn.serializeObject = function() {
                 multiple: false,
                 ajax: {
                     dataType: 'json',
-                    url: "/node.json?type=project",
+                    url: "/sites/all/modules/austese_repository/api/projects",
                     results: function (data) {
                         return {results: data.list};
                     },

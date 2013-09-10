@@ -51,9 +51,38 @@ function repositoryapi_menu() {
         'type' => MENU_CALLBACK, // hidden, used for API
     );
     
+    $items['sites/all/modules/austese_repository/api/projects'] = array(
+        'page callback' => 'projects_list_callback',
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK, // hidden, used for API
+    );
+    
     return $items;
 }
-
+function node_load_by_type($type, $limit = 15, $offset = 0) {
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', 'node')
+    ->entityCondition('bundle', $type)
+    ->range($offset, $limit);
+  $results = $query->execute();
+  return node_load_multiple(array_keys($results['node']));
+}
+function projects_list_callback() {
+    $nodes = node_load_multiple(array(), array('type' => 'project'));
+    
+    $projects = array('list' => array(), 'count' => count($nodes));
+    foreach ($nodes as $node) {
+        $projects['list'][] = array(
+            'title' => $node->title,
+            'nid' => $node->nid
+        );
+    }
+    drupal_add_http_header('Content-Type', 'application/json');
+    
+    echo json_encode($projects);
+    
+}
 
 function resource_page_callback($resourcetype, $id=null, $revision=null) {
     $config = repositoryapi_get_configuration();
