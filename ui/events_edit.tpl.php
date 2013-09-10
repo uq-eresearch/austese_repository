@@ -222,11 +222,7 @@ if (isset($_GET['project'])) {
     <div class="control-group">
       <label class="control-label" for="project">Project</label>
       <div class="controls">
-        <input type="text" class="input-xxlarge" name="project" id="project" value="<?php
-        if (isset($_GET['project'])) {
-         print $_GET['project'];
-        } 
-        ?>"/>
+        <input type="text" class="input-xxlarge" name="project" id="project"/>
       </div>
     </div>
     <div class="control-group">

@@ -68,18 +68,7 @@ jQuery.fn.serializeObject = function() {
             var select2opts = {
                 placeholder: "Start typing to search " + apiType + "s by " + searchProperty,
                 minimumInputLength: 0,
-               
-                multiple:(single? false : true),
-                initSelection : function (element, callback) {
-                    var data = [];
-                    $(element.val().split(',')).each(function(i) {
-                        
-                        data.push({
-                            id: i
-                        });
-                    });
-                    callback(data);
-                },
+                multiple: (single ? false : true),
                 ajax: {
                     dataType: 'json',
                     url: '/' + modulePath + '/api/' + apiType + 's/',
@@ -137,6 +126,29 @@ jQuery.fn.serializeObject = function() {
             setUpTagField(jQuery("#versions"), "version","versionTitle", projectParam);
             setUpTagField(jQuery('#readingVersion'),"version","versionTitle",projectParam, true);
 
+            jQuery('#project').select2({
+                placeholder: "Select a project",
+                minimumInputLength: 0,
+                multiple: false,
+                ajax: {
+                    dataType: 'json',
+                    url: "/node.json?type=project",
+                    results: function (data) {
+                        return {results: data.list};
+                    },
+                    cache: true
+                },
+                id: function(object) {
+                    if (object) return object.nid;
+                },
+                formatResult: function(project) {
+                    return project.title;
+                },
+                formatSelection: function(project) {
+                    return project.title;
+                },
+                escapeMarkup: function(m) {return m;}
+            });
         }
         
     });
@@ -310,8 +322,7 @@ jQuery.fn.serializeObject = function() {
            }
         });
     }
-    function tokenizeListField(data, fieldType, fieldName){
-        
+    function tokenizeListField(data, fieldType, fieldName) {
         fieldName = fieldName || fieldType;
         var field = data[fieldName];
         if (field){
@@ -324,28 +335,36 @@ jQuery.fn.serializeObject = function() {
                   headers: {
                        'Accept': 'application/json'
                   },
-                        url: '/' + modulePath + '/api/' + fieldType + '/' + field[index],
+                  url: '/' + modulePath + '/api/' + fieldType + '/' + field[index],
                   success: function(v){
                       var elem = jQuery('#' + fieldName);
                       
                       // add the new value to the list
                       var existVal = elem.select2("data");
                       if (existVal instanceof Array){
-                      existVal.push(v);
+                          existVal.push(v);
                       } else {
                           existVal = v;
                       }
-                      elem.select2("data",existVal)
+                      elem.select2("data",existVal);
                       
-                          if (index < (fieldLength - 1)){
-                              getToken(index+1);
-                          }
-                          
+                      if (index < (fieldLength - 1)){
+                          getToken(index+1);
+                      } 
                   }
                 });
             }
                 getToken(0);
             }
+        }
+    }
+    function loadProjectData() {
+        var elem = jQuery('#project');
+        var id = elem.val();
+        if (id) {
+            jQuery.ajax("/node/" + id + ".json").done(function(data) {
+                elem.select2("data", data);
+            });
         }
     }
     function loadObjectIntoEditor(id){
@@ -386,6 +405,8 @@ jQuery.fn.serializeObject = function() {
               wysiEditors.push(jQuery('#description').wysihtml5());
               wysiEditors.push(jQuery('#biography').wysihtml5());
               updateUILocked(d.locked || false);
+              //
+              loadProjectData();
            }
         });
     }
