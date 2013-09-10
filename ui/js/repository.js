@@ -52,6 +52,7 @@ jQuery.fn.serializeObject = function() {
             } else {
                 wysiEditors.push(jQuery('#description').wysihtml5());
                 wysiEditors.push(jQuery('#biography').wysihtml5());
+                setInitialProject();
             }
         
         } else {
@@ -356,6 +357,17 @@ jQuery.fn.serializeObject = function() {
             }
                 getToken(0);
             }
+        }
+    }
+    function setInitialProject() {
+        var elem = jQuery('#project');
+        var project = jQuery('#metadata').data('project');
+        
+        if (project) {
+            jQuery.ajax("/node/" + project + ".json").done(function(data) {
+                elem.select2("data", data);
+                elem.select2("readonly", true);
+            });
         }
     }
     function loadProjectData() {
