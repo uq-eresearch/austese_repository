@@ -307,8 +307,7 @@ function listResources(){
       $findopts = array('$and'=>array($findopts, array('metadata.filetype'=>$regex)));
   }
   if ($project != null && $project != ''){
-      $regex = new MongoRegex("/".$project."/i");
-      $findopts = array('$and'=>array($findopts, array('metadata.project'=>$regex)));
+      $findopts = array('$and'=>array($findopts, array('metadata.project'=>$project)));
   }
   // sort by reverse id (newest objects should be listed first)
   $cursor = $grid->find($findopts)->sort(array('_id'=>-1))->limit($pagesize)->skip($pagenum * $pagesize);
@@ -402,9 +401,8 @@ function listRecords($collection, $labelField) {
       }
       $findopts = array('$and'=>array($findopts,$searchQueryOpts));
     }
-    if ($project != null && $project != ''){
-     $regex = new MongoRegex("/".$project."/i");
-     $findopts = array('$and'=>array($findopts, array('metadata.project'=>$regex)));
+    if ($project != null && $project != '') {
+      $findopts = array('$and'=>array($findopts, array('metadata.project'=>$project)));
     }
     // sort by reverse id (newest objects should be listed first)
     $cursor = $coll->find($findopts)->sort(array('_id'=>-1))->limit($pagesize)->skip($pagenum * $pagesize);
