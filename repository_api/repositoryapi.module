@@ -690,11 +690,6 @@ function updateRecord($collection,$id){
  */
 function updateResource($id) {
  $config = repositoryapi_get_configuration();
- 
-  // TODO: THIS is wrong, need to load resource and check project there
-  $project = get_get_parameter('project');
-  _check_project_exists($project);
-  _check_permission_on_project($project, 'edit metadata');
 
  $m = new Mongo($config['dbhost'].':'.$config['dbport']);
  $db = $m->selectDB($config['dbname']);
@@ -718,6 +713,13 @@ function updateResource($id) {
       exit;
   }
   $existobj = $file->file;
+  
+  // Check permissions on existing resource
+  $orig_project = $file->file['metadata']['project'];
+  _check_project_exists($orig_project);
+  _check_permission_on_project($orig_project, 'edit metadata');
+  
+  
   $existid = $existobj['_id'];
   // if content type is json update metadata, if something else, create new resource version
   if ($contenttype == 'application/json'){
@@ -728,6 +730,12 @@ function updateResource($id) {
       echo 'Missing or invalid JSON data';
       exit;
     }
+    
+    // Check permissions on updated resource
+    $project = $obj['project'];
+    _check_project_exists($project);
+    _check_permission_on_project($project, 'edit metadata');
+    
     // remove uri field as we generate this
     if (array_key_exists('uri', $obj)){
      unset($obj['uri']);
@@ -750,25 +758,25 @@ function updateResource($id) {
      exit;
     }
   } else {
-   // create a new resource using the uploaded body, copying the filename, metadata etc from the existing resource
-   // TODO add existing resource id to list of previous versions for the new resource?
-   
-   $metadata = $existobj['metadata'];
-   if (array_key_exists('_previousversions',$existobj)){
-    $revindex = count($existobj['_previousversions']);
-   } else {
-    $revindex = 0;
-   }
-   $storedfile = $grid->storeBytes($input, array(//'_revisions.'.$revindex => $existobj['_id'], 
-     'metadata' => $metadata));
-   // set superseded to be true on the existing resource
-   $grid->update(array('_id'=>new MongoId($existid)),
-     array('$set' => array('_superseded' => true)), array('safe' => true));
-   // set filename and resource id on new resource
-   $grid->update(array('_id'=>new MongoId($storedfile->{'$id'})), array('$set' => array('filename' => $existobj['filename'], '_resourceid'=>$id)), array('safe' => true));
+    // create a new resource using the uploaded body, copying the filename, metadata etc from the existing resource
+    // TODO add existing resource id to list of previous versions for the new resource?
 
-  }
-  drupal_add_http_header('Status', '204 No Content');
+    $metadata = $existobj['metadata'];
+    if (array_key_exists('_previousversions',$existobj)){
+     $revindex = count($existobj['_previousversions']);
+    } else {
+     $revindex = 0;
+    }
+    $storedfile = $grid->storeBytes($input, array(//'_revisions.'.$revindex => $existobj['_id'], 
+      'metadata' => $metadata));
+    // set superseded to be true on the existing resource
+    $grid->update(array('_id'=>new MongoId($existid)),
+      array('$set' => array('_superseded' => true)), array('safe' => true));
+    // set filename and resource id on new resource
+    $grid->update(array('_id'=>new MongoId($storedfile->{'$id'})), array('$set' => array('filename' => $existobj['filename'], '_resourceid'=>$id)), array('safe' => true));
+
+    }
+    drupal_add_http_header('Status', '204 No Content');
  } catch (Exception $e) {
     drupal_add_http_header('Status', '500 Internal server error');
     echo $e->getMessage();
