@@ -493,6 +493,14 @@ jQuery.fn.serializeObject = function() {
                 if (newObject){
                    document.location.href= '/' + modulePrefix + "/" + apiType + 's/edit/'  + existingId;
                 }
+          },
+          error: function(jqXHR, textStatus, errorThrown) {
+            console.log('Error saving record: ', jqXHR);
+            jQuery('#alerts').append(
+                jQuery('<div class="alert alert-error alert-block"><button type="button" class="close" data-dismiss="alert">x</button>'
+                    + '<h4>Error saving ' + apiType + '</h4>'
+                    + '<p>' + textStatus + ': ' + errorThrown + '</p></div>').alert());
+      
           }
         });
     }
