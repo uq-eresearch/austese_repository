@@ -71,8 +71,8 @@ function node_load_by_type($type, $limit = 15, $offset = 0) {
   return node_load_multiple(array_keys($results['node']));
 }
 function projects_list_callback() {
-//    $nodes = node_load_multiple(array(), array('type' => 'project'));
-    $nodes = og_get_groups_by_user();
+    $node_ids = og_get_groups_by_user();
+    $nodes = node_load_multiple(array_keys($node_ids['node']));
     
     $projects = array('list' => array(), 'count' => count($nodes));
     foreach ($nodes as $node) {
