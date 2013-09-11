@@ -189,10 +189,7 @@ function repository_description() {
 function _get_projectParam() {
     $projectParam = array();
     if (isset($_GET['project'])) {
-        $project = node_load($_GET['project']);
-        $breadcrumb[] = l($project->title, 'node/' . $project->nid, $projectParam);
-    } else {
-        $breadcrumb[] = l('Repository', 'repository',$projectParam);
+        $projectParam = array('query' => array('project' => $_GET['project']));
     }
     return $projectParam;
 }
