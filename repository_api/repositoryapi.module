@@ -62,14 +62,17 @@ function repositoryapi_menu() {
 }
 function node_load_by_type($type, $limit = 15, $offset = 0) {
   $query = new EntityFieldQuery();
-  $query->entityCondition('entity_type', 'node')
+  $query
+    ->entityCondition('entity_type', 'node')
     ->entityCondition('bundle', $type)
+    ->propertyCondition('status', 1)
     ->range($offset, $limit);
   $results = $query->execute();
   return node_load_multiple(array_keys($results['node']));
 }
 function projects_list_callback() {
-    $nodes = node_load_multiple(array(), array('type' => 'project'));
+//    $nodes = node_load_multiple(array(), array('type' => 'project'));
+    $nodes = og_get_groups_by_user();
     
     $projects = array('list' => array(), 'count' => count($nodes));
     foreach ($nodes as $node) {
@@ -167,13 +170,9 @@ function createRecord($collection){
   $config = repositoryapi_get_configuration();
   $input = @file_get_contents('php://input');
 
-  // Check project and permissions
-  $project = get_get_parameter('project');
-  _check_project_exists($project);
-  _check_permission_on_project($project, 'edit metadata');
-
   try {
     $obj = drupal_json_decode($input);
+    
     // check supplied data was valid
     if (count($obj)==0){
         drupal_add_http_header('Status', '400 Bad Request');
@@ -181,6 +180,13 @@ function createRecord($collection){
         drupal_page_footer();
         exit;
     }
+    
+    // Check project and permissions
+    $project = $obj['project'];
+    _check_project_exists($project);
+    _check_permission_on_project($project, 'edit metadata');
+    
+    
     // add _deleted to the invalid list in case we want to support deleting specific revisions in future
     $invalidkeys = array('_deleted', 'uri', 'id');
     foreach ($invalidkeys as $key) {
@@ -244,21 +250,18 @@ function createResource() {
   $config = repositoryapi_get_configuration();
 
   // Check permissions and project
-  $project = get_get_parameter('project');
+  $project = '';
+  if (isset($_POST["project"])) {
+    $project = $_POST["project"];
+  }
   _check_project_exists($project);
   _check_permission_on_project($project, 'edit metadata');
 
-  try{
+  try {
     $m = new Mongo($config['dbhost'].':'.$config['dbport']);
     $db = $m->selectDB($config['dbname']);
     $grid = $db->getGridFS();
-    $filename=$_FILES["data"]["name"];
     $filetype=$_FILES["data"]["type"];
-    $tmp = $_FILES["data"]["tmp_name"];
-    $project = '';
-    if (isset($_POST["project"])) {
-      $project = $_POST["project"];
-    }
     if ($_FILES["data"]["error"]!=0){
       drupal_add_http_header('Status', '500 Internal server error');
       echo "Error uploading file";
@@ -286,7 +289,7 @@ function createResource() {
        ."\",\"filename\":\"".$file->file['filename']
        ."\",\"length\":".$file->file['length']."}";
   
- } catch (Exception $e){
+  } catch (Exception $e){
     drupal_add_http_header('Status', '500 Internal server error');
     echo $e->getMessage();
     exit;
@@ -311,7 +314,6 @@ function listResources(){
   $grid = $db->getGridFS();
 
   $pagesize = get_get_parameter('pageSize');
-  $project = get_get_parameter('project');
   $filterTerm = get_get_parameter('query');
   $typeFilter = get_get_parameter('type');
   // provide a default for page Index. Default for pagesize is null (all results will be returned)
@@ -322,9 +324,9 @@ function listResources(){
   _check_project_exists($project);
   _check_permission_on_project($project, 'view metadata');
     
-  $findopts = array('_superseded'=>array('$exists'=>false));
+  $not_superseded = array('_superseded'=>array('$exists'=>false));
   
-  $findopts = array('$and'=>array($findopts,
+  $findopts = array('$and'=>array($not_superseded,
       array('_deleted'=>array('$exists'=>false))));
   if ($filterTerm != null){
       $regex = new MongoRegex("/".$filterTerm."/i");
@@ -344,7 +346,7 @@ function listResources(){
 
   echo "{\"count\":" . $cursor->count(0) . ", \"pageSize\": \"". $pagesize . "\", \"pageIndex\": \"". $pagenum . "\", \"results\": [";
   foreach ($cursor as $obj){
-     try{
+    try {
       $returnobj = $obj->file;
       $id = $returnobj['_resourceid'];
       unset($returnobj['_id']);
@@ -357,9 +359,9 @@ function listResources(){
       if ($cursor->hasNext()){
          echo ",\n";
       }
-     } catch (Exception $e){
-     }
+    } catch (Exception $e){
     }
+  }
   
   echo "]}";
   drupal_add_http_header('Content-Type', 'application/json');
@@ -403,7 +405,6 @@ function listRecords($collection, $labelField) {
     $coll = $db->selectCollection($collection);
 
     $pagesize = get_get_parameter('pageSize');
-    $project = get_get_parameter('project');
     // provide a default for page Index. Default for pagesize is null (all results will be returned)
     $pagenum = get_get_paramter_int('pageIndex');
     // TODO: allow param to sort results by custom fields?
@@ -482,7 +483,7 @@ function getRecord($collection,$id,$revision) {
     }
 
     // check project and permissions
-    $project = get_get_parameter('project');
+    $project = $obj['metadata'][0]['project'];
     _check_project_exists($project);
     _check_permission_on_project($project, 'view metadata');
 
@@ -523,11 +524,6 @@ function getResource($id){
   $requesttype = $_SERVER['HTTP_ACCEPT'];
   $scale = get_get_parameter('scale');
 
-  // check project and permissions
-  $project = get_get_parameter('project');
-  _check_project_exists($project);
-  _check_permission_on_project($project, 'view metadata');
-
   $m = new Mongo($config['dbhost'].':'.$config['dbport']);
   $db = $m->selectDB($config['dbname']);
   $grid = $db->getGridFS();
@@ -549,6 +545,13 @@ function getResource($id){
    echo 'The requested resource has been deleted';
    exit;
   }
+
+  // check project and permissions
+  $project = $file->file['metadata']['project'];
+  _check_project_exists($project);
+  _check_permission_on_project($project, 'view metadata');
+  
+  
   // Tell any cache the different resources are served
   // depending on content type
   drupal_add_http_header('Vary', 'Accept');
@@ -608,6 +611,7 @@ function getResource($id){
 }
 
 /**
+ * Requires permission on both the 'from' and 'to' projects, if project is changing
  * 
  * @global type $config
  * @param type $collection
@@ -619,11 +623,6 @@ function updateRecord($collection,$id){
   $config = repositoryapi_get_configuration();
   $input = @file_get_contents('php://input');
 
-  // TODO, this is WRONG, need to load the record, and check it's project from there
-  $project = get_get_parameter('project');
-  _check_project_exists($project);
-  _check_permission_on_project($project, 'edit metadata');
-
   try {
     $obj = drupal_json_decode($input);
     // check supplied data was valid - either json or file must have been supplied
@@ -632,6 +631,12 @@ function updateRecord($collection,$id){
       echo 'Missing or invalid JSON data or file data input';
       exit;
     }
+
+    // TODO, this is WRONG, need to load the record, and check it's project from there
+    $to_project = $obj['project'];
+    _check_project_exists($to_project);
+    _check_permission_on_project($to_project, 'edit metadata');
+    
     // remove uri field as we generate this
     if (array_key_exists('uri', $obj)){
       unset($obj['uri']);
@@ -653,6 +658,14 @@ function updateRecord($collection,$id){
       echo 'The requested object does not exist';
       exit;
     }
+
+    // TODO, this is WRONG, need to load the record, and check it's project from there
+    $orig_project = $existobj['metadata'][0]['project'];
+    _check_project_exists($orig_project);
+    _check_permission_on_project($orig_project, 'edit metadata');
+    
+    
+    
     $revindex = count($existobj['_revisions']);
     // add revision, and if object was flagged as deleted, remove flag (this allows undeletion)
     $inserted = $coll->update(array('_id'=>$id), array('$set' => array('_revisions.'.$revindex => $obj, 'metadata'=>$obj), '$unset'=> array('_deleted'=>1)), array('safe' => true));
@@ -774,14 +787,25 @@ function deleteRecord($collection,$id){
   // TODO: provide admin functions to completely remove deleted objects
   $config = repositoryapi_get_configuration();
   
-  // TODO: Wrong, load record and check project from that
-  $project = get_get_parameter('project');
-  _check_project_exists($project);
-  _check_permission_on_project($project, 'delete metadata');
   try {
     $m = new Mongo($config['dbhost'].':'.$config['dbport']);
     $db = $m->selectDB($config['dbname']);
     $coll = $db->selectCollection($collection);
+    // lookup existing object to find revision number
+    $id = new MongoId($id);
+    $query = array('_id'=>$id);
+    $existobj = $coll->findOne($query);
+    if ($existobj == null){
+      drupal_add_http_header('Status', '404 Not found');
+      echo 'The requested object does not exist';
+      exit;
+    }
+    
+    // Check permission to delete record
+    $project = $existobj['metadata'][0]['project'];
+    _check_project_exists($project);
+    _check_permission_on_project($project, 'delete metadata');
+    
     $inserted = $coll->update(array('_id'=> new MongoId($id)),  array('$set' => array('_deleted' => true)), array('safe' => true));
     // check whether there were any errors during update
     if ($inserted['ok'] != 1 || $inserted['err'] != NULL) {
@@ -807,13 +831,29 @@ function deleteRecord($collection,$id){
 function deleteResource($id){
   $config = repositoryapi_get_configuration();
 
-  // TODO: wrong, load project and check resource there.
-  $project = get_get_parameter('project');
-  _check_project_exists($project);
-  _check_permission_on_project($project, 'delete metadata');
   $m = new Mongo($config['dbhost'].':'.$config['dbport']);
   $db = $m->selectDB($config['dbname']);
   $grid = $db->getGridFS();
+  $query = array('$and'=>
+    array(
+      array('_resourceid'=>$id),
+      array('_superseded'=>array('$exists'=>false))
+    )
+  );
+  $file = $grid->findOne($query);
+  if ($file == null){
+      drupal_add_http_header('Status', '404 Not found');
+      echo 'The requested resource does not exist';
+      exit;
+  }
+  
+  // Check permission before deleting
+  $project = $file->file['metadata']['project'];
+  _check_project_exists($project);
+  _check_permission_on_project($project, 'delete metadata');
+  
+  
+  
   $grid->update(array('_resourceid'=> $id), array('$set' => array('_deleted' => true)), array('safe' => true));
   drupal_add_http_header('Status', '204 No Content');
 }
