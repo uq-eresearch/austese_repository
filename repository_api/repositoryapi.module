@@ -632,7 +632,7 @@ function updateRecord($collection,$id){
       exit;
     }
 
-    // TODO, this is WRONG, need to load the record, and check it's project from there
+    // Check permission to add records to the new project
     $to_project = $obj['project'];
     _check_project_exists($to_project);
     _check_permission_on_project($to_project, 'edit metadata');
@@ -659,8 +659,8 @@ function updateRecord($collection,$id){
       exit;
     }
 
-    // TODO, this is WRONG, need to load the record, and check it's project from there
-    $orig_project = $existobj['metadata'][0]['project'];
+    // Check we're allowed to edit records in the original project
+    $orig_project = $existobj['metadata']['project'];
     _check_project_exists($orig_project);
     _check_permission_on_project($orig_project, 'edit metadata');
     
