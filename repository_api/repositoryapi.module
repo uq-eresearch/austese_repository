@@ -483,7 +483,7 @@ function getRecord($collection,$id,$revision) {
     }
 
     // check project and permissions
-    $project = $obj['metadata'][0]['project'];
+    $project = $obj['metadata']['project'];
     _check_project_exists($project);
     _check_permission_on_project($project, 'view metadata');
 
@@ -810,7 +810,7 @@ function deleteRecord($collection,$id){
     }
     
     // Check permission to delete record
-    $project = $existobj['metadata'][0]['project'];
+    $project = $existobj['metadata']['project'];
     _check_project_exists($project);
     _check_permission_on_project($project, 'delete metadata');
     
