@@ -491,7 +491,7 @@ jQuery.fn.serializeObject = function() {
                 updateUILocked(locked);
                 // load new page URI (because we have an id for the new object)
                 if (newObject){
-                   document.location.href= '/' + modulePrefix + "/" + apiType + 's/edit/'  + existingId;
+                   document.location.href= '/' + modulePrefix + "/" + apiType + 's/edit/'  + existingId + (project? '?project='+project : '');
                 }
           },
           error: function(jqXHR, textStatus, errorThrown) {
