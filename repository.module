@@ -608,7 +608,14 @@ function repository_block_info() {
 function repository_block_view($delta = '') {
     $block = array();
     
-    $node = menu_get_object();
+    $context = og_context();
+    if (isset($context['group_type']) && $context['group_type'] === 'node') {
+        $node = node_load($context['gid']);
+    }
+    if (!isset($node)) {
+        return;
+    }
+//    $node = menu_get_object();
     
     if ($node->type != 'project') {
         return;
