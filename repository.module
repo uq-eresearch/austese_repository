@@ -637,6 +637,39 @@ function repository_block_view($delta = '') {
     return $block;
 }
 
+
+function repository_og_context_negotiation_info() {
+  $providers = array();
+
+  $providers['austese_get_param'] = array(
+    'name' => t('AustESE GET Parameter'),
+    'description' => t("AustESE: Determine context by checking 'project' GET parameter."),
+    'callback' => 'repository_og_context_handler',
+  );
+
+  return $providers;
+}
+
+/**
+ * Evaluates and return group IDs to provide group context.
+ *
+ * Callback for repository_og_context_negotiation_info().
+ *
+ * @return
+ *  A nested array of group IDs, grouped first by entity type. Each value is
+ *  a flat array of group IDs.
+ */
+function repository_og_context_handler() {
+  if (isset($_GET['project']) && is_numeric($_GET['project'])) {
+    return array(
+        'node' => array($_GET['project'])
+    );
+  } else {
+      return array();
+  }
+}
+
+
 /**
  * @} End of "defgroup repository".
  */
