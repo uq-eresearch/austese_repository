@@ -301,8 +301,8 @@ jQuery.fn.serializeObject = function() {
             processInverseRelationships("version","transcriptions",id, "Digital Surrogate For");
             processInverseRelationships("collection", "resources", id, "In Collection");
             processInverseRelationships("artefact","transcriptions",id, "Digital Surrogate For");
-           processInverseRelationships("artefact","facsimiles",id, "Digital Surrogate For");
-           processInverseRelationships("agent","images",id, "Image of");
+            processInverseRelationships("artefact","facsimiles",id, "Digital Surrogate For");
+            processInverseRelationships("agent","images",id, "Image of");
         } else if (apiType == "event"){
             
             processInverseRelationships("event","events",id,"Is Part Of");
@@ -377,15 +377,15 @@ jQuery.fn.serializeObject = function() {
                       // add the new value to the list
                       var existVal = elem.select2("data");
                       if (existVal instanceof Array){
-                      existVal.push(v);
+                          existVal.push(v);
                       } else {
                           existVal = v;
                       }
                       elem.select2("data",existVal)
                       
-                          if (index < (fieldLength - 1)){
-                              getToken(index+1);
-                          }
+                      if (index < (fieldLength - 1)){
+                          getToken(index+1);
+                      }
                           
                   }
                 });
