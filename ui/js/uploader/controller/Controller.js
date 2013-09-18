@@ -132,8 +132,8 @@ Ext.define('austese_uploader.controller.Controller', {
         // force resize and repositioning of app when window resizes
         var uiPanel = Ext.ComponentQuery.query("mainpanel")[0];
         var placeholder = Ext.get('uploaderui');
-        var newHeight = h - (placeholder.getY());
-        var newWidth = w - placeholder.getX()*2;
+        var newHeight = h - placeholder.getY();
+        var newWidth = w - placeholder.getX() - 20;
         placeholder.setHeight(newHeight);
         uiPanel.setHeight(newHeight);
         placeholder.setWidth(newWidth);
