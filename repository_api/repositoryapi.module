@@ -548,7 +548,7 @@ function getResource($id){
 
   // check project and permissions
   $project = '';
-  if (isset($file->file['metadata'])) {
+  if (isset($file->file['metadata']) && isset($file->file['metadata']['project'])) {
     $project = $file->file['metadata']['project'];
   }
   _check_project_exists($project);
