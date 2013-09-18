@@ -218,7 +218,7 @@ var editor = {
              jQuery('#editInfo').html(getTemplate('resourceCompact')(data));
          },
          complete: function(xhr){
-             console.log("complete",xhr)
+             console.log("complete",xhr);
          }
      });
  },
