@@ -183,8 +183,12 @@ function createRecord($collection){
     
     // Check project and permissions
     $project = $obj['project'];
-    _check_project_exists($project);
-    _check_permission_on_project($project, 'edit metadata');
+    if ($_SERVER['SERVER_ADDR'] == $_SERVER['REMOTE_ADDR']) {
+      // Allow access from local server for api calls
+    } else {
+      _check_project_exists($project);
+      _check_permission_on_project($project, 'edit metadata');
+    }
     
     
     // add _deleted to the invalid list in case we want to support deleting specific revisions in future
@@ -321,8 +325,13 @@ function listResources(){
   
   // check project and permissions
   $project = get_get_parameter('project');
-  _check_project_exists($project);
-  _check_permission_on_project($project, 'view metadata');
+  if ($_SERVER['SERVER_ADDR'] == $_SERVER['REMOTE_ADDR']) {
+      // Allow access from local server for api calls
+  } else {
+      // Check logged in user has permission to access resource
+      _check_project_exists($project);
+      _check_permission_on_project($project, 'view metadata');
+  }
     
   $not_superseded = array('_superseded'=>array('$exists'=>false));
   
@@ -551,8 +560,13 @@ function getResource($id){
   if (isset($file->file['metadata']) && isset($file->file['metadata']['project'])) {
     $project = $file->file['metadata']['project'];
   }
-  _check_project_exists($project);
-  _check_permission_on_project($project, 'view metadata');
+  if ($_SERVER['SERVER_ADDR'] == $_SERVER['REMOTE_ADDR']) {
+      // Allow access from local server for api calls
+  } else {
+      // Check logged in user has permission to access resource
+      _check_project_exists($project);
+      _check_permission_on_project($project, 'view metadata');
+  }
   
   
   // Tell any cache the different resources are served
