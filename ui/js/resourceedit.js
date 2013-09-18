@@ -214,7 +214,9 @@ var editor = {
          },
          success: function(data){
              data.modulePrefix = 'repository';
-             // todo add projParam
+             if (data.metadata.project) {
+                 data.projParam = "?project=" + data.metadata.project;
+             }
              jQuery('#editInfo').html(getTemplate('resourceCompact')(data));
          },
          complete: function(xhr){

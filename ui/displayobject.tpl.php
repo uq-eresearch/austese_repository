@@ -44,12 +44,12 @@ $modulePath =  drupal_get_path('module', 'repository');
    <li><i class="icon-download-alt"></i> <a href="/<?php print $modulePath; ?>/api/<?php print $apiType; ?>s/<?php print $existingId; ?>">DOWNLOAD</a></li>
    <li><i class="icon-eye-open"></i> <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/<?php print $existingId; ?>/content<?php if ($project): print '?project='.$project; endif; ?>">VIEW CONTENT</a></li>
    <li style="display:none" id="wordcloudlink"><i class="icon-eye-open"></i> <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/<?php print $existingId; ?>/content?cloud=true<?php if ($project): print '&project='.$project; endif; ?>">VIEW WORD CLOUD</a></li>
-   <li style="display:none" id="lightboxlink"><i class="icon-eye-open"></i> <a  href="/lightbox#<?php if ($project): print '?project='.$project; endif; ?><?php print $existingId; ?>">VIEW IN LIGHTBOX</a></li>
+   <li style="display:none" id="lightboxlink"><i class="icon-eye-open"></i> <a  href="/lightbox<?php if ($project): print '?project='.$project; endif; ?>#<?php print $existingId; ?>">VIEW IN LIGHTBOX</a></li>
    <?php endif; ?>
   
    <?php if (user_access('edit metadata')): ?>
       <?php if ($apiType=='resource'):?>
-        <li><i class="icon-th"></i> <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s#<?php print $existingId; ?>">SHOW IN ORGANISER</a></li>
+        <li><i class="icon-th"></i> <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s<?php if ($project): print '?project='.$project; endif; ?>#<?php print $existingId; ?>">SHOW IN ORGANISER</a></li>
         
       <?php endif; ?>
       <li id="editlink" ><i class="icon-edit"></i> <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/edit/<?php print $existingId; ?><?php if ($project): print "?project=".$project; endif; ?>">EDIT

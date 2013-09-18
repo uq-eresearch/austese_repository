@@ -10,6 +10,10 @@ if (isset($_GET['multi'])) {
 } else {
  $multi = false;
 }
+$projectparam = '';
+if (isset($project)) {
+    $projectparam = '?project=' . $project;
+}
 
 ?>
 <div id="metadata"
@@ -29,7 +33,7 @@ if (isset($_GET['multi'])) {
 </div>
 <div id="successMessage" style="display:none" class="alert alert-success">
   <a href="#" data-dismiss="alert"class="close">x</a>
-  <span class="label label-success">Success</span> Resource has been updated. Return to <a href="/repository/resources/<?php print arg(3); ?>">View Resource</a> page.
+  <span class="label label-success">Success</span> Resource has been updated. Return to <a href="/repository/resources/<?php print arg(3) . $projectparam; ?>">View Resource</a> page.
 </div>
 <div id="failureMessage" style="display:none" class="alert alert-error">
   <a href="#" data-dismiss="alert" class="close">x</a>
