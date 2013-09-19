@@ -310,6 +310,7 @@ jQuery.fn.serializeObject = function() {
                     obj.modulePrefix = modulePrefix;
                     if (project) {
                         obj.projParam = "?project=" + project;
+                        obj.projAndParam = "&project=" + project;
                     }
                     try {
                       jQuery('#result').append(getTemplate(template)(obj));
@@ -564,23 +565,29 @@ jQuery.fn.serializeObject = function() {
     }
     function viewCompare(){
         var docpath = jQuery('#mvdselect').val();
+        var project = jQuery('#metadata').data('project');
+        var projParam = (project? '?project=' + project : '');
         if (docpath) {
             // TODO actually select this resource
-            document.location.href = "/collationtools/compare#" + encodeURIComponent(docpath);
+            document.location.href = "/collationtools/compare" + projParam + "#" + encodeURIComponent(docpath);
         }
     }
     function viewTable(){
         var docpath = jQuery('#mvdselect').val();
+        var project = jQuery('#metadata').data('project');
+        var projParam = (project? '?project=' + project : '');
         if (docpath) {
             // TODO actually select this resource
-            document.location.href = "/collationtools/apparatus#" + encodeURIComponent(docpath);
+            document.location.href = "/collationtools/apparatus" + projParam + "#" + encodeURIComponent(docpath);
         }
     }
     function refreshMVD(){
+        var project = jQuery('#metadata').data('project');
+        var projParam = (project? '&project=' + project : '');
         var refreshURL = jQuery('#mvdselect').find('option:selected').data('refresh');
         if (refreshURL) {
             jQuery('#viewmvd').append("Refreshing MVD, please wait...");
-            document.location.href = refreshURL;
+            document.location.href = refreshURL + projParam;
         }
     }
     function loadReferencedObjects(){
