@@ -828,8 +828,13 @@ function deleteRecord($collection,$id){
     
     // Check permission to delete record
     $project = $existobj['metadata']['project'];
-    _check_project_exists($project);
-    _check_permission_on_project($project, 'delete metadata');
+    if ($_SERVER['SERVER_ADDR'] == $_SERVER['REMOTE_ADDR']) {
+        // Allow access from local server for api calls
+    } else {
+        // Check logged in user has permission to access resource
+        _check_project_exists($project);
+        _check_permission_on_project($project, 'delete metadata');
+    }
     
     $inserted = $coll->update(array('_id'=> new MongoId($id)),  array('$set' => array('_deleted' => true)), array('safe' => true));
     // check whether there were any errors during update
