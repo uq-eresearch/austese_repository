@@ -134,16 +134,11 @@ function repository_menu() {
     'type' => MENU_CALLBACK
   );
   $items['project/%node/projectstatus'] = array(
-    'title' => "",
-//    'page callback' => 'repository_display_record',
+    'title' => "Project Status",
     'page callback' => 'repository_projectstatus',
     'page arguments' => array(1),
     'access arguments' => array('view metadata'),
-    'type' => MENU_CALLBACK,
-//    'access arguments' => array('view metadata'),
-    'access arguments' => array('access content'),
-//    'access callback' => 'user_access',
-//    'type' => MENU_CALLBACK
+    'type' => MENU_CALLBACK
   );
   return $items;
 }
