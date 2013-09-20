@@ -679,7 +679,9 @@ function repository_projectstatus($node) {
     
     foreach ($config['recordtypes'] as $recordtype) {
         $coll = $db->selectCollection($recordtype);
-        $counts[$recordtype] = $coll->count(array('metadata.project' => $node->nid));
+        $counts[$recordtype] = array();
+        $counts[$recordtype]['total'] = $coll->count(array('metadata.project' => $node->nid));
+        $counts[$recordtype]['locked'] = $coll->count(array('metadata.project' => $node->nid, 'metadata.locked' => 'on'));
     }
     return theme("repository_projectstatus",array('counts' => $counts));
   } catch (Exception $e){

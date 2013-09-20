@@ -39,7 +39,7 @@ $modulePath =  drupal_get_path('module', 'repository');
 
     <?php 
     foreach ($counts as $recordtype => $count) {
-        print "$recordtype: $count<br>";
+        print "$recordtype: Locked: ".$count['locked']." Total: ".$count['total']."<br>";
     }
     ?>
     
