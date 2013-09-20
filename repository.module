@@ -690,7 +690,8 @@ function repository_projectstatus($node) {
 }
 
 function repository_workflow($node) {
-    return theme('repository_workflow', array('node' => $node));
+    $projParam = "?project=" . $node->nid;
+    return theme('repository_workflow', array('node' => $node, 'projParam' => $projParam));
 }
 
 function repository_og_context_negotiation_info() {
