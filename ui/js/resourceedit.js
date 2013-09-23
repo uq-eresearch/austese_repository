@@ -215,8 +215,10 @@ var editor = {
      jQuery(editor.cm.getWrapperElement()).on("paste", function(e){
          setTimeout(function() {
              var cursor = editor.cm.getCursor();
+             var scrollInfo = editor.cm.getScrollInfo();
              editor.cm.setValue(editor.cleanContent(editor.cm.getValue()));
              editor.cm.setCursor(cursor);
+             editor.cm.scrollTo(scrollInfo.left, scrollInfo.top);
          }, 200);
      });
      
