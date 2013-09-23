@@ -104,6 +104,17 @@ var editor = {
        return inner.tagName;
      });
  },
+ swapCodes: new Array(8211, 8212, 8216, 8217, 8220, 8221, 8226, 8230),
+ swapStrings:  new Array("--", "--", "'",  "'",  "\"",  "\"",  "*",  "..."),
+ cleanContent: function(input) {
+     // from http://jhy.io/tools/convert-word-to-plain-text
+     var output = input;
+     for (var i = 0; i < this.swapCodes.length; i++) {
+         var swapper = new RegExp("\\u" + this.swapCodes[i].toString(16), "g");
+         output = output.replace(swapper, this.swapStrings[i]);
+     }
+     return output;
+ },
  init : function(){
      var multi = jQuery('#metadata').data('multi');
      var target;
@@ -200,7 +211,14 @@ var editor = {
      }
      
      editor.cm.on("update", editor.previewResource);
-     editor.cm.on("change", function(){editor.isDirty = true;})
+     editor.cm.on("change", function(){editor.isDirty = true;});
+     jQuery(editor.cm.getWrapperElement()).on("paste", function(e){
+         setTimeout(function() {
+             var cursor = editor.cm.getCursor();
+             editor.cm.setValue(editor.cleanContent(editor.cm.getValue()));
+             editor.cm.setCursor(cursor);
+         }, 200);
+     });
      
  },
  displayResourceMetadata : function(uri) {
