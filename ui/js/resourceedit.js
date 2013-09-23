@@ -219,6 +219,7 @@ var editor = {
              editor.cm.setValue(editor.cleanContent(editor.cm.getValue()));
              editor.cm.setCursor(cursor);
              editor.cm.scrollTo(scrollInfo.left, scrollInfo.top);
+             editor.cm.refresh();
          }, 200);
      });
      
@@ -253,6 +254,7 @@ var editor = {
              success: function(data, status, xhr){
                  jQuery('#metadata').data('contenttype', xhr.getResponseHeader('Content-Type'));
                  editor.cm.setValue(xhr.responseText);
+                 editor.cm.refresh();
                  editor.isDirty = false;
              },
              error: function(xhr, textStatus, errorThrown){
@@ -265,6 +267,7 @@ var editor = {
                  jQuery('#failMessage').html("<span class='label label-important'>" + textStatus + "</span> " + errorMessage);
                  jQuery('#failureMessage').css('display','block');
                  editor.cm.setValue(xhr.responseText);
+                 editor.cm.refresh();
                  editor.isDirty = false;
              }
          });
