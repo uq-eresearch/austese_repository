@@ -317,10 +317,11 @@ var editor = {
              }
          }
          jQuery('#editorspan').removeClass('span12').addClass('span6');
-         jQuery(".edit-preview").html(result);
+         jQuery(".edit-preview").show().html(result);
      } else {
          // no preview, expand editor to fill page width
          jQuery('#editorspan').removeClass('span6').addClass('span12');
+         jQuery(".edit-preview").hide();
      }
  }
 };
