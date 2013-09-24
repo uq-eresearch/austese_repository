@@ -65,7 +65,8 @@ jQuery.fn.serializeObject = function() {
             }
         } 
 
-        var setUpTagField = function(elem, apiType, searchProperty, params, single){
+        var setUpTagField = function(elem, apiType, searchProperty, params, single) {
+            params = params || {};
             var select2opts = {
                 placeholder: "Start typing to search " + apiType + "s by " + searchProperty,
                 minimumInputLength: 0,
@@ -123,7 +124,7 @@ jQuery.fn.serializeObject = function() {
             setUpTagField(jQuery("#resources"), "resource", "filename", projectParam);
             setUpTagField(jQuery("#transcriptions"), "resource", "filename", {"project":project,"type":"text"});
             setUpTagField(jQuery("#facsimiles, #images"), "resource", "filename", {"project":project,"type":"image"});
-            setUpTagField(jQuery('#places'), "place", "name", projectParam);
+            setUpTagField(jQuery('#places'), "place", "name");
             setUpTagField(jQuery("#versions"), "version","versionTitle", projectParam);
             setUpTagField(jQuery('#readingVersion'),"version","versionTitle",projectParam, true);
 
