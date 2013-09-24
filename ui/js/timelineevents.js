@@ -42,6 +42,7 @@ jQuery(document).ready(function() {
             'Accept': 'application/json'
         },
         success: function(result){
+            jQuery('#loadingvis').hide();
             jQuery(result.results).each(function(i,e){
                 e.modulePrefix = 'repository';
                 e.hasEditPermission = editable;
