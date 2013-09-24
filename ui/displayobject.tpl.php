@@ -57,7 +57,7 @@ $modulePath =  drupal_get_path('module', 'repository');
       </a></li>
    <?php endif; ?>
    
-   <?php if ($apiType=='work'):?><li><i class="icon-book"></i> <a href="/reading/<?php print $existingId; ?>">READ</a></li><?php endif; ?>
+   <?php if ($apiType=='work'):?><li><i class="icon-book"></i> <a href="/reading/<?php print $existingId; ?><?php if ($project): print "?project=".$project; endif; ?>">READ</a></li><?php endif; ?>
  <li><i class="icon-asterisk"></i> <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/visualize/<?php print $existingId; ?><?php if ($project): print "?project=".$project; endif; ?>">VISUALIZE CONNECTIONS</a></li>
  </ul>
  <?php if ($apiType=='resource'):?>
