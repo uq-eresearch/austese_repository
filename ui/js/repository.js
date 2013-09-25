@@ -101,7 +101,6 @@ jQuery.fn.serializeObject = function() {
                }
             });
                 setInitialProject();
-            }
         
         } else {
             if (existingId){
@@ -401,12 +400,7 @@ jQuery.fn.serializeObject = function() {
                       
                       if (index < (fieldLength - 1)){
                           getToken(index+1);
-<<<<<<< HEAD
-                      }
-                          
-=======
                       } 
->>>>>>> projects
                   }
                 });
             }
