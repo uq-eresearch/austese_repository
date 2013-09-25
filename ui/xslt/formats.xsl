@@ -1,22 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-This file is part of MVD_GUI.
 
-MVD_GUI is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-MVD_GUI is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with MVD_GUI. If not, see <http://www.gnu.org/licenses/>.
--->
-
-<!-- This stylesheet contains the formats used on all pages -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 <xsl:output method="html" encoding="utf-8"/>
 <xsl:key name="respKey" match="//respStmt" use="@xml:id"/>
@@ -209,7 +192,7 @@ along with MVD_GUI. If not, see <http://www.gnu.org/licenses/>.
 </xsl:template>
 
 <xsl:template match="//head">
-<h3><xsl:apply-templates/></h3>
+<h3 id="{generate-id()}"><xsl:apply-templates/></h3>
 </xsl:template>
 
 <xsl:template match="//stage">
@@ -231,33 +214,6 @@ along with MVD_GUI. If not, see <http://www.gnu.org/licenses/>.
 
 <xsl:template match="//castList">
 <p class="cast"><b>Attori: </b><xsl:apply-templates/></p>
-</xsl:template>
-
-<!-- sylesheet rules from the Digital Variants Website-->
-<xsl:template match="seg">
-    <xsl:choose>
-        <xsl:when test="@type='ripetizione'">
-            <font color="green" size="4">
-                <u>
-                    <xsl:apply-templates/>
-                </u>
-            </font>
-        </xsl:when>
-        <xsl:when test="@type='individuazione sequenza narrativa'">
-            <font color="green" size="5">
-                <h3>
-                    <xsl:value-of select="@type"/>
-                </h3> [ <xsl:apply-templates/> ] </font>
-        </xsl:when>
-        <xsl:when test="@type='rivedere'">
-            <font color="fuchsia"> [ <xsl:apply-templates/> ] </font>
-        </xsl:when>
-        <xsl:otherwise>
-            <font color="blue">
-                <xsl:apply-templates/>
-            </font>
-        </xsl:otherwise>
-    </xsl:choose>
 </xsl:template>
 
 
