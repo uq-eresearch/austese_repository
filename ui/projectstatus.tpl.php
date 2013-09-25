@@ -37,11 +37,28 @@ $modulePath =  drupal_get_path('module', 'repository');
 <div id="result" class="span8">
     <h1>Project Status</h1>
 
+    <table class="table">
+        <tr>
+            <th></th>
+            <th>Locked</th>
+            <th>Total</th>
+            <th>Percent complete</th>
+        </tr>
     <?php 
     foreach ($counts as $recordtype => $count) {
-        print "$recordtype: Locked: ".$count['locked']." Total: ".$count['total']."<br>";
+    ?>
+        <tr><td><?= $recordtype ?></td><td colspan="3"></td></tr>
+        <tr>
+            <td></td>
+            <td><?= $count['locked'] ?></td>
+            <td><?= $count['total'] ?></td>
+            <td><?= $count['locked'] / $count['total'] ?></td>
+        </tr>
+    <?php
+//        print "$recordtype: Locked: ".$count['locked']." Total: ".$count['total']."<br>";
     }
     ?>
+    </table>
     
 </div>
 <div class="actionsidebar span4 filler">
