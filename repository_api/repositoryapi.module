@@ -1,0 +1,955 @@
+<?php
+
+function repositoryapi_get_configuration() {
+    // Could later store these using drupals variable_get/variable_set
+    return array(
+        "dbhost" => "localhost",
+        "dbport" => "27017",
+        "dbname" => "test",
+        "uriprefix" => "/sites/all/modules/austese_repository/api",
+        "recordtypes" => array('artefacts', 'versions', 'works', 'agents', 'events', 'places', 'mvds', 'collections'),
+        "labelfields" => array('artefacts' => 'source',
+            'versions' => 'versionTitle',
+            'works' => 'workTitle',
+            'agents' => 'lastName',
+            'events' => 'name',
+            'places' => 'name',
+            'mvds' => 'resources',
+            'collections' => 'collectionTitle'),
+    );
+}
+
+/**
+ * Implements hook_og_permission
+ */
+function repositoryapi_og_permission() {
+  return array(
+    'edit metadata' => array(
+      'title' => t('Edit metadata'),
+      'description' => t('Allow users to create and edit metadata in the content repository')
+    ),
+    'view metadata' => array(
+      'title' => t('View metadata'),
+      'description' => t('Allow users to view metadata in the content repository')
+    ),
+    'delete metadata' => array(
+      'title' => t('Delete metadata'),
+      'description' => t('Allow users to delete metadata in the content repository')
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu()
+ */
+function repositoryapi_menu() {    
+    // cannot include leading or trailing slashes
+    $items['sites/all/modules/austese_repository/api'] = array(
+        'page callback' => 'resource_page_callback',
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK, // hidden, used for API
+    );
+    
+    $items['sites/all/modules/austese_repository/api/projects'] = array(
+        'page callback' => 'projects_list_callback',
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK, // hidden, used for API
+    );
+    
+    return $items;
+}
+function node_load_by_type($type, $limit = 15, $offset = 0) {
+  $query = new EntityFieldQuery();
+  $query
+    ->entityCondition('entity_type', 'node')
+    ->entityCondition('bundle', $type)
+    ->propertyCondition('status', 1)
+    ->range($offset, $limit);
+  $results = $query->execute();
+  return node_load_multiple(array_keys($results['node']));
+}
+function projects_list_callback() {
+    $node_ids = og_get_groups_by_user();
+    $nodes = node_load_multiple(array_keys($node_ids['node']));
+    
+    $projects = array('list' => array(), 'count' => count($nodes));
+    foreach ($nodes as $node) {
+        $projects['list'][] = array(
+            'title' => $node->title,
+            'nid' => $node->nid
+        );
+    }
+    drupal_add_http_header('Content-Type', 'application/json');
+    
+    echo json_encode($projects);
+    
+}
+
+function resource_page_callback($resourcetype, $id=null, $revision=null) {
+    $config = repositoryapi_get_configuration();
+//    // CSRF protection on write operations.
+//    if (!in_array($_SERVER['REQUEST_METHOD'], array('GET', 'HEAD', 'OPTIONS', 'TRACE')) && !restws_csrf_validation()) {
+//      echo '403 Access Denied: CSRF validation failed';
+//      drupal_add_http_header('Status', '403 Forbidden');
+//      drupal_page_footer();
+//      exit;
+//    }
+    
+    if ($resourcetype == 'resources') {
+        if (!isset($revision))
+            $revision = null;
+        handle_resource($id, $revision);
+        exit;
+    }
+    if ($resourcetype == 'featurecodes') {
+        getFeatureCodes();
+        exit;
+    }
+    
+    // Only allow defined record types
+    if (!in_array($resourcetype, $config['recordtypes'])) {
+      echo '404 Not found: No such resource type';
+      drupal_add_http_header('Status', '404 Not found');
+      exit;
+    }
+        
+    switch ($_SERVER['REQUEST_METHOD']) {
+        case 'POST':
+            createRecord($resourcetype);
+            break;
+
+        case 'PUT':
+            updateRecord($resourcetype, $id);
+            break;
+
+        case 'DELETE':
+            deleteRecord($resourcetype, $id);
+            break;
+
+        default:
+            if (!empty($id)) {
+                getRecord($resourcetype, $id, $revision);
+            } else {
+                listRecords($resourcetype, $config['labelfields'][$resourcetype]);
+            }
+    }
+}
+
+function handle_resource($id, $revision) {
+    switch ($_SERVER['REQUEST_METHOD']) {
+        case 'POST':
+            createResource();
+            break;
+
+        case 'PUT':
+            updateResource($id);
+            break;
+
+        case 'DELETE':
+            deleteResource($id);
+            break;
+
+        default:
+            if (!empty($id)) {
+                getResource($id, $revision);
+            } else {
+                listResources();
+            }
+    }
+}
+
+
+/**
+ * Create a metadata record in the mongo db
+ * 
+ * @param string $collection The type of record to create
+ */
+function createRecord($collection){
+  $config = repositoryapi_get_configuration();
+  $input = @file_get_contents('php://input');
+
+  try {
+    $obj = drupal_json_decode($input);
+    
+    // check supplied data was valid
+    if (count($obj)==0){
+        drupal_add_http_header('Status', '400 Bad Request');
+        echo 'Missing or invalid JSON data';
+        drupal_page_footer();
+        exit;
+    }
+    
+    // Check project and permissions
+    $project = $obj['project'];
+    if ($_SERVER['SERVER_ADDR'] == $_SERVER['REMOTE_ADDR']) {
+      // Allow access from local server for api calls
+    } else {
+      _check_project_exists($project);
+      _check_permission_on_project($project, 'edit metadata');
+    }
+    
+    
+    // add _deleted to the invalid list in case we want to support deleting specific revisions in future
+    $invalidkeys = array('_deleted', 'uri', 'id');
+    foreach ($invalidkeys as $key) {
+      if (array_key_exists($key,$obj)){
+	      echo 'JSON data for new object contains invalid field: $key';
+        drupal_add_http_header('Status', '400 Bad Request');
+        drupal_page_footer();
+        exit;
+      }
+    }
+    // Insert new object with one revision
+    $newobj = array('_revisions' => array($obj), 'metadata'=>array($obj));
+    $m = new Mongo($config['dbhost'].':'.$config['dbport']);
+    $db = $m->selectDB($config['dbname']);
+    $coll = $db->selectCollection($collection);
+    $inserted = $coll->insert($newobj, array('safe' => true));
+    // check whether there were any errors during insert
+    if ($inserted['ok'] != 1 || $inserted['err'] != NULL) {
+        drupal_add_http_header('Status', '500 Internal server error');
+        echo $inserted['err'];
+        drupal_page_footer();
+        exit;
+    }
+    
+    drupal_add_http_header('Status', '201 Created');
+    // respond with the new object
+    // insert passes newobj by reference, so new _id will have been added
+    // use _id to generate uri
+    $id = $newobj['_id'];
+    $obj['uri'] = $config['uriprefix'] . '/' . $collection . '/' . $id->{'$id'};
+    $obj['id'] = $id->{'$id'};
+    drupal_add_http_header('Content-Type', 'application/json');
+    echo json_encode($obj);
+  } catch (Exception $e) {
+      drupal_add_http_header('Status', '500 Internal server error');
+      echo $e->getMessage();
+      drupal_page_footer();
+      exit;
+  }
+}
+function makeThumbnail($srcpath,$destpath,$filetype) {
+ $newWidth = 100;
+ if($filetype=='image/jpeg'){
+    $image = imagecreatefromjpeg($srcpath);
+ } else {
+    $image = imagecreatefrompng($srcpath);
+ }
+ $width = imagesx($image);
+ $height = imagesy($image);
+ $newHeight = floor($height * ($newWidth / $width));
+ $virtImage = imagecreatetruecolor($newWidth, $newHeight);
+ imagecopyresampled($virtImage, $image, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+ if($filetype=='image/jpeg'){
+  imagejpeg($virtImage,$destpath);
+ } else {
+  imagepng($virtImage,$destpath);
+ }
+}
+
+function createResource() {
+  $config = repositoryapi_get_configuration();
+
+  // Check permissions and project
+  $project = '';
+  if (isset($_POST["project"])) {
+    $project = $_POST["project"];
+  }
+  _check_project_exists($project);
+  _check_permission_on_project($project, 'edit metadata');
+
+  try {
+    $m = new Mongo($config['dbhost'].':'.$config['dbport']);
+    $db = $m->selectDB($config['dbname']);
+    $grid = $db->getGridFS();
+    $filetype=$_FILES["data"]["type"];
+    if ($_FILES["data"]["error"]!=0){
+      drupal_add_http_header('Status', '500 Internal server error');
+      echo "Error uploading file";
+      exit;
+    }
+    // generate an id for the resource (the mongo generated id is for the specific version of the resource only)
+    $resid = gen_uuid();
+    // return metadata
+    $storedfile = $grid->storeUpload('data',
+            array('metadata' => array('filetype' => $filetype, 'project' => $project)));
+
+    $id = $storedfile->{'$id'};
+    $url = $config['uriprefix'] . '/resources/' . $resid;
+    $query = array('_id'=>new MongoId($id));
+    $file = $grid->findOne($query);
+    // store generated id
+    $grid->update(
+            array('_id'=>new MongoId($id)),
+            array('$set' => array('_resourceid' => $resid)),
+            array('safe' => true));
+
+    drupal_add_http_header('Content-Type', 'application/json');
+    echo "{\"uri\":\"". $url 
+       ."\",\"id\":\"".$resid
+       ."\",\"filename\":\"".$file->file['filename']
+       ."\",\"length\":".$file->file['length']."}";
+  
+  } catch (Exception $e){
+    drupal_add_http_header('Status', '500 Internal server error');
+    echo $e->getMessage();
+    exit;
+  }
+}
+
+function get_get_parameter($name) {
+    if (isset($_GET[$name]))
+        return $_GET[$name];
+    return null;
+}
+function get_get_paramter_int($name) {
+    if (isset($_GET[$name]))
+        return $_GET[$name];
+    return 0;
+}
+function listResources(){
+  $config = repositoryapi_get_configuration();
+  
+  $m = new Mongo($config['dbhost'].':'.$config['dbport']);
+  $db = $m->selectDB($config['dbname']);
+  $grid = $db->getGridFS();
+
+  $pagesize = get_get_parameter('pageSize');
+  $filterTerm = get_get_parameter('query');
+  $typeFilter = get_get_parameter('type');
+  // provide a default for page Index. Default for pagesize is null (all results will be returned)
+  $pagenum = get_get_paramter_int('pageIndex');
+  
+  // check project and permissions
+  $project = get_get_parameter('project');
+  if ($_SERVER['SERVER_ADDR'] == $_SERVER['REMOTE_ADDR']) {
+      // Allow access from local server for api calls
+  } else {
+      // Check logged in user has permission to access resource
+      _check_project_exists($project);
+      _check_permission_on_project($project, 'view metadata');
+  }
+    
+  $not_superseded = array('_superseded'=>array('$exists'=>false));
+  
+  $findopts = array('$and'=>array($not_superseded,
+      array('_deleted'=>array('$exists'=>false))));
+  if ($filterTerm != null){
+      $regex = new MongoRegex("/".$filterTerm."/i");
+      $findopts = array('$and'=>array($findopts,
+          array('$or'=>array(array('filename'=>$regex),array('metadata.title'=>$regex)))));
+  }
+  if ($typeFilter != null){
+      $regex = new MongoRegex("/".$typeFilter."/i");
+      $findopts = array('$and'=>array($findopts, array('metadata.filetype'=>$regex)));
+  }
+  if ($project != null && $project != ''){
+      $findopts = array('$and'=>array($findopts, array('metadata.project'=>$project)));
+  }
+  // sort by reverse id (newest objects should be listed first)
+  $cursor = $grid->find($findopts)->sort(array('_id'=>-1))->limit($pagesize)->skip($pagenum * $pagesize);
+
+
+  echo "{\"count\":" . $cursor->count(0) . ", \"pageSize\": \"". $pagesize . "\", \"pageIndex\": \"". $pagenum . "\", \"results\": [";
+  foreach ($cursor as $obj){
+    try {
+      $returnobj = $obj->file;
+      $id = $returnobj['_resourceid'];
+      unset($returnobj['_id']);
+      unset($returnobj['_resourceid']);
+      unset($returnobj['_revisions']);
+      // generate uri
+      $returnobj['uri'] = $config['uriprefix']  . '/resources/' . $id;
+      $returnobj['id'] = $id;
+      echo json_encode($returnobj);
+      if ($cursor->hasNext()){
+         echo ",\n";
+      }
+    } catch (Exception $e){
+    }
+  }
+  
+  echo "]}";
+  drupal_add_http_header('Content-Type', 'application/json');
+}
+
+function _check_project_exists($project) {
+  if ($project && !node_load($project)) {
+    echo "Project does not exist";
+    drupal_add_http_header('Status', '404 Not Found');
+    drupal_page_footer();
+    exit;
+  }
+}
+function _check_permission_on_project($project, $permission) {
+  if ($project && !og_user_access('node', $project, $permission)) {
+    echo 'Permission denied';
+    drupal_add_http_header('Status', '403 Forbidden');
+    drupal_page_footer();
+    exit;
+  }
+  if (!$project && !user_access($permission)) {
+    echo 'Permission denied';
+    drupal_add_http_header('Status', '403 Forbidden');
+    drupal_page_footer();
+    exit;
+  }
+}
+/**
+ * List records in a mongo collection
+ * 
+ * Responds with JSON. Supports pagination, searching and listing all.
+ *
+ * @param string $collection Type of records, eg work/agent
+ * @param string $labelField Which field of the record to search on
+ */
+function listRecords($collection, $labelField) {
+    $config = repositoryapi_get_configuration();
+    
+    $m = new Mongo($config['dbhost'].':'.$config['dbport']);
+    $db = $m->selectDB($config['dbname']);
+    $coll = $db->selectCollection($collection);
+
+    $pagesize = get_get_parameter('pageSize');
+    // provide a default for page Index. Default for pagesize is null (all results will be returned)
+    $pagenum = get_get_paramter_int('pageIndex');
+    // TODO: allow param to sort results by custom fields?
+    // allow param to filter results
+    $filterTerm = get_get_parameter('query');
+    $searchField = get_get_parameter('searchField');
+    if (!$searchField) {
+      $searchField = $labelField;
+    }
+
+    // check project and permissions
+    $project = get_get_parameter('project');
+    _check_project_exists($project);
+    _check_permission_on_project($project, 'view metadata');
+
+
+    $findopts = array('_deleted'=>array('$exists'=>false));
+    if ($filterTerm != null){
+      $regex = new MongoRegex("/".$filterTerm."/i");
+      $searchQueryOpts = array('metadata.'.$searchField=> $regex);
+      // Quick fix to search MVD resource arrays for optional internal id property
+      if ($searchField == "resources"){
+       $searchQueryOpts = array ('$or'=>array($searchQueryOpts,array('metadata.resources.id'=> $regex)));
+      }
+      $findopts = array('$and'=>array($findopts,$searchQueryOpts));
+    }
+    if ($project != null && $project != '') {
+      $findopts = array('$and'=>array($findopts, array('metadata.project'=>$project)));
+    }
+    // sort by reverse id (newest objects should be listed first)
+    $cursor = $coll->find($findopts)->sort(array('_id'=>-1))->limit($pagesize)->skip($pagenum * $pagesize);
+
+    // return metadata for results
+    echo "{\"collection\": \"$collection\", \"count\":" . $cursor->count(0) . ", \"pageSize\": \"". $pagesize . "\", \"pageIndex\": \"" . $pagenum . "\", \"results\": [";
+    
+    foreach ($cursor as $obj){
+     try{
+      $numrev = count($obj['_revisions']) - 1;
+
+      $id = $obj['_id'];
+      $returnobj = $obj['_revisions'][$numrev];
+      // generate uri
+      $returnobj['uri'] = $config['uriprefix'] . '/'. $collection . '/' . $id->{'$id'};
+      $returnobj['id'] = $id->{'$id'};
+      echo json_encode($returnobj);
+      if ($cursor->hasNext()){
+	echo ",\n";
+      }
+     } catch (Exception $e){
+     }
+    }
+    echo "]}";
+    drupal_add_http_header('Content-Type', 'application/json');
+}
+
+/**
+ * Read a record (work/artefact/version/agent/etc) from the mongo db
+ * In JSON form.
+ *
+ * @param string $collection Type of record eg. work
+ * @param string $id Record identifier
+ * @param string $revision Optional. Retrieve a specific revision
+ */
+function getRecord($collection,$id,$revision) {
+    $config = repositoryapi_get_configuration();
+    
+    $m = new Mongo($config['dbhost'].':'.$config['dbport']);
+    $db = $m->selectDB($config['dbname']);
+    $coll = $db->selectCollection($collection);
+    $query = array('_id'=>new MongoId($id));
+    $obj = $coll->findOne($query);
+    if ($obj == NULL){
+      drupal_add_http_header('Status', '404 Not found');
+      echo 'The requested object does not exist';
+      exit;
+    }
+
+    // check project and permissions
+    $project = $obj['metadata']['project'];
+    _check_project_exists($project);
+    _check_permission_on_project($project, 'view metadata');
+
+    if (array_key_exists('_deleted',$obj)){
+      drupal_add_http_header('Status', '410 Gone');
+      echo 'The requested object has been deleted';
+      exit;
+    }
+    // lookup specified revision, or get latest
+    $numrev = count($obj['_revisions']) - 1;
+    if ($revision == NULL || $revision > $numrev){
+      $revision = $numrev;
+    }
+    $id = $obj['_id'];
+    $returnobj = $obj['_revisions'][$revision];
+
+    // generate uri
+    $returnobj['uri'] = $config['uriprefix'] . '/'. $collection . '/' . $id->{'$id'};
+    $returnobj['id'] = $id->{'$id'};
+    drupal_add_http_header('Content-Type', 'application/json');
+    echo json_encode($returnobj);
+}
+
+/**
+ * Get a file from the mongo collection.
+ * 
+ * Can return the file, or it's metadata, or a resized version
+ * in the case of an image.
+ * 
+ * @param String $id the resource identifier
+ */
+function getResource($id){
+  $config = repositoryapi_get_configuration();
+//    if (isset($_SERVER['HTTP_ACCEPT'])) {
+//      $parts = explode(',', $_SERVER['HTTP_ACCEPT'], 2);
+//      $requesttype = restws_format_mimetype($parts[0]);
+//    }
+  $requesttype = $_SERVER['HTTP_ACCEPT'];
+  $scale = get_get_parameter('scale');
+
+  $m = new Mongo($config['dbhost'].':'.$config['dbport']);
+  $db = $m->selectDB($config['dbname']);
+  $grid = $db->getGridFS();
+  // todo and superseded is false
+  $query = array('$and'=>
+    array(
+      array('_resourceid'=>$id),
+      array('_superseded'=>array('$exists'=>false))
+    )
+  );
+  $file = $grid->findOne($query);
+  if ($file == null){
+   drupal_add_http_header('Status', '404 Not found');
+   echo 'The requested resource does not exist';
+   exit;
+  }
+  if (array_key_exists('_deleted',$file->file)){
+   drupal_add_http_header('Status', '410 Gone');
+   echo 'The requested resource has been deleted';
+   exit;
+  }
+
+  // check project and permissions
+  $project = '';
+  if (isset($file->file['metadata']) && isset($file->file['metadata']['project'])) {
+    $project = $file->file['metadata']['project'];
+  }
+  if ($_SERVER['SERVER_ADDR'] == $_SERVER['REMOTE_ADDR']) {
+      // Allow access from local server for api calls
+  } else {
+      // Check logged in user has permission to access resource
+      _check_project_exists($project);
+      _check_permission_on_project($project, 'view metadata');
+  }
+  
+  
+  // Tell any cache the different resources are served
+  // depending on content type
+  drupal_add_http_header('Vary', 'Accept');
+  if ($requesttype === 'application/json'){
+      // return json metadata
+      $returnobj = $file->file;
+      $id = $returnobj['_resourceid'];
+      // unset revision
+      unset($returnobj['_revisions']);
+      unset($returnobj['_id']);
+      unset($returnobj['_resourceid']);
+      // generate uri
+      $returnobj['uri'] = $config['uriprefix']  . '/resources/' . $id;
+      $returnobj['id'] = $id;
+      drupal_add_http_header('Content-Type', 'application/json');
+      echo json_encode($returnobj);
+  } else {
+      // return file content
+      $filename = $file->file['filename'];
+      try {
+       $filetype = $file->file['metadata']['filetype'];
+       drupal_add_http_header('Content-Type', $filetype);
+      } catch (Exception $e){
+      }
+      drupal_add_http_header('Content-Description', 'File Transfer');
+      drupal_add_http_header('Content-Disposition', 'attachment; filename='.$filename);
+      // set 10 minute expires header for file content
+      $expires = (60*10);
+      header("Pragma: public");
+      header("Cache-Control: maxage=".$expires);
+      header('Expires: ' . gmdate('D, d M Y H:i:s', time()+$expires) . ' GMT');
+      // generate a thumbnail
+      if ($scale == true && preg_match('/image/',$filetype) && class_exists('Imagick')){
+        try{
+          $img = new Imagick();
+          $img->readImageBlob($file->getBytes());
+          $height = get_get_parameter('height');
+          if ($height == null) {
+            $height = 120;
+          } else {
+          // check that supplied height is not greater than original image dimension
+            $d = $img->getImageGeometry();
+            $h = $d['height'];
+            if ($h < $height){
+              $height = $h;
+            }
+          }
+          $img->thumbnailImage(0,$height);
+          echo $img;
+        } catch (Exception $e){
+         echo $file->getBytes();
+        }
+      } else {
+         echo $file->getBytes();
+      }
+  }
+}
+
+/**
+ * Requires permission on both the 'from' and 'to' projects, if project is changing
+ * 
+ * @global type $config
+ * @param type $collection
+ * @param MongoId $id
+ * @return type
+ */
+// TODO support patch for incremental update?
+function updateRecord($collection,$id){
+  $config = repositoryapi_get_configuration();
+  $input = @file_get_contents('php://input');
+
+  try {
+    $obj = drupal_json_decode($input);
+    // check supplied data was valid - either json or file must have been supplied
+    if (count($obj)==0){
+      drupal_add_http_header('Status', '400 Bad Request');
+      echo 'Missing or invalid JSON data or file data input';
+      exit;
+    }
+
+    // Check permission to add records to the new project
+    $to_project = $obj['project'];
+    _check_project_exists($to_project);
+    _check_permission_on_project($to_project, 'edit metadata');
+    
+    // remove uri field as we generate this
+    if (array_key_exists('uri', $obj)){
+      unset($obj['uri']);
+    }
+    if (array_key_exists('id',$obj)){
+      unset($obj['id']);
+    }
+    $obj['updated'] = date("Y-m-d H:i:s");
+    // TOD0 check for provenance fields, add date if required
+    $m = new Mongo($config['dbhost'].':'.$config['dbport']);
+    $db = $m->selectDB($config['dbname']);
+    $coll = $db->selectCollection($collection);
+    // lookup existing object to find revision number
+    $id = new MongoId($id);
+    $query = array('_id'=>$id);
+    $existobj = $coll->findOne($query);
+    if ($existobj == null){
+      drupal_add_http_header('Status', '404 Not found');
+      echo 'The requested object does not exist';
+      exit;
+    }
+
+    // Check we're allowed to edit records in the original project
+    $orig_project = $existobj['metadata']['project'];
+    _check_project_exists($orig_project);
+    _check_permission_on_project($orig_project, 'edit metadata');
+    
+    
+    
+    $revindex = count($existobj['_revisions']);
+    // add revision, and if object was flagged as deleted, remove flag (this allows undeletion)
+    $inserted = $coll->update(array('_id'=>$id), array('$set' => array('_revisions.'.$revindex => $obj, 'metadata'=>$obj), '$unset'=> array('_deleted'=>1)), array('safe' => true));
+    // check whether there were any errors during update
+    if ($inserted['ok'] != 1 || $inserted['err'] != NULL) {
+      drupal_add_http_header('Status', '500 Internal server error');
+      echo $inserted['err'];
+      exit;
+    }
+    drupal_add_http_header('Status', '204 No Content');
+  } catch (Exception $e) {
+    drupal_add_http_header('Status', '500 Internal server error');
+    echo $e->getMessage();
+    exit;
+  }
+}
+
+/**
+ * Upload a new file resource to the mongo db
+ * 
+ * @param string $id the resource identifier
+ */
+function updateResource($id) {
+ $config = repositoryapi_get_configuration();
+
+ $m = new Mongo($config['dbhost'].':'.$config['dbport']);
+ $db = $m->selectDB($config['dbname']);
+ $grid = $db->getGridFS();
+ 
+ $input = @file_get_contents('php://input');
+ 
+ $contenttype = $_SERVER['CONTENT_TYPE'];
+ try {
+  // only update the most recent version of this resource (i.e. superseded not true)
+  $query = array('$and'=>
+    array(
+      array('_resourceid'=>$id),
+      array('_superseded'=>array('$exists'=>false))
+    )
+  );
+  $file = $grid->findOne($query);
+  if ($file == null){
+      drupal_add_http_header('Status', '404 Not found');
+      echo 'The requested resource does not exist';
+      exit;
+  }
+  $existobj = $file->file;
+  
+  // Check permissions on existing resource
+  $orig_project = $file->file['metadata']['project'];
+  _check_project_exists($orig_project);
+  _check_permission_on_project($orig_project, 'edit metadata');
+  
+  
+  $existid = $existobj['_id'];
+  // if content type is json update metadata, if something else, create new resource version
+  if ($contenttype == 'application/json'){
+    $obj = drupal_json_decode($input);
+    // check supplied data was valid
+    if (count($obj)==0){
+      drupal_add_http_header('Status', '400 Bad Request');
+      echo 'Missing or invalid JSON data';
+      exit;
+    }
+    
+    // Check permissions on updated resource
+    $project = $obj['project'];
+    _check_project_exists($project);
+    _check_permission_on_project($project, 'edit metadata');
+    
+    // remove uri field as we generate this
+    if (array_key_exists('uri', $obj)){
+     unset($obj['uri']);
+    }
+    if (array_key_exists('id',$obj)){
+     unset($obj['id']);
+    }
+    if (array_key_exists('_revisions',$existobj)){
+     $revindex = count($existobj['_revisions']);
+    } else {
+     $revindex = 0;
+    }
+    $obj['updated'] = date("Y-m-d H:i:s");
+    $inserted = $grid->update($query,
+      array('$set' => array('_revisions.'.$revindex => $obj, 'metadata'=>$obj), 
+      '$unset'=> array('_deleted'=>1)), array('safe' => true));
+    if ($inserted['ok'] != 1 || $inserted['err'] != NULL) {
+     drupal_add_http_header('Status', '500 Internal server error');
+     echo $inserted['err'];
+     exit;
+    }
+  } else {
+    // create a new resource using the uploaded body, copying the filename, metadata etc from the existing resource
+    // TODO add existing resource id to list of previous versions for the new resource?
+
+    $metadata = $existobj['metadata'];
+    if (array_key_exists('_previousversions',$existobj)){
+     $revindex = count($existobj['_previousversions']);
+    } else {
+     $revindex = 0;
+    }
+    $storedfile = $grid->storeBytes($input, array(//'_revisions.'.$revindex => $existobj['_id'], 
+      'metadata' => $metadata));
+    // set superseded to be true on the existing resource
+    $grid->update(array('_id'=>new MongoId($existid)),
+      array('$set' => array('_superseded' => true)), array('safe' => true));
+    // set filename and resource id on new resource
+    $grid->update(array('_id'=>new MongoId($storedfile->{'$id'})), array('$set' => array('filename' => $existobj['filename'], '_resourceid'=>$id)), array('safe' => true));
+
+    }
+    drupal_add_http_header('Status', '204 No Content');
+ } catch (Exception $e) {
+    drupal_add_http_header('Status', '500 Internal server error');
+    echo $e->getMessage();
+  }
+}
+
+/**
+ * Delete Record from Mongo DB
+ * 
+ * Functions by adding a _deleted flag to the object (doesn't actually delete)
+ * 
+ * @param string $collection which type of object
+ * @param string $id object identifier
+ */
+function deleteRecord($collection,$id){
+  // TODO: provide admin functions to completely remove deleted objects
+  $config = repositoryapi_get_configuration();
+  
+  try {
+    $m = new Mongo($config['dbhost'].':'.$config['dbport']);
+    $db = $m->selectDB($config['dbname']);
+    $coll = $db->selectCollection($collection);
+    // lookup existing object to find revision number
+    $id = new MongoId($id);
+    $query = array('_id'=>$id);
+    $existobj = $coll->findOne($query);
+    if ($existobj == null){
+      drupal_add_http_header('Status', '404 Not found');
+      echo 'The requested object does not exist';
+      exit;
+    }
+    
+    // Check permission to delete record
+    $project = $existobj['metadata']['project'];
+    if ($_SERVER['SERVER_ADDR'] == $_SERVER['REMOTE_ADDR']) {
+        // Allow access from local server for api calls
+    } else {
+        // Check logged in user has permission to access resource
+        _check_project_exists($project);
+        _check_permission_on_project($project, 'delete metadata');
+    }
+    
+    $inserted = $coll->update(array('_id'=> new MongoId($id)),  array('$set' => array('_deleted' => true)), array('safe' => true));
+    // check whether there were any errors during update
+    if ($inserted['ok'] != 1 || $inserted['err'] != NULL) {
+      drupal_add_http_header('Status', '500 Internal server error');
+      echo $inserted['err'];
+      exit;
+    }
+    drupal_add_http_header('Status', '204 No Content');
+  } catch (Exception $e){
+    drupal_add_http_header('Status', '500 Internal server error'); 
+    echo $e->getMessage();
+    exit;
+  }
+}
+
+/**
+ * Delete File Resource from Mongo DB
+ * 
+ * Adds a _deleted flag to the resource, doesn't actually delete it
+ * 
+ * @param string $id
+ */
+function deleteResource($id){
+  $config = repositoryapi_get_configuration();
+
+  $m = new Mongo($config['dbhost'].':'.$config['dbport']);
+  $db = $m->selectDB($config['dbname']);
+  $grid = $db->getGridFS();
+  $query = array('$and'=>
+    array(
+      array('_resourceid'=>$id),
+      array('_superseded'=>array('$exists'=>false))
+    )
+  );
+  $file = $grid->findOne($query);
+  if ($file == null){
+      drupal_add_http_header('Status', '404 Not found');
+      echo 'The requested resource does not exist';
+      exit;
+  }
+  
+  // Check permission before deleting
+  $project = $file->file['metadata']['project'];
+  _check_project_exists($project);
+  _check_permission_on_project($project, 'delete metadata');
+  
+  
+  
+  $grid->update(array('_resourceid'=> $id), array('$set' => array('_deleted' => true)), array('safe' => true));
+  drupal_add_http_header('Status', '204 No Content');
+}
+
+/**
+ * Get featurecodes for Places
+ */
+function getFeatureCodes() {
+  $config = repositoryapi_get_configuration();
+ $collection = 'featureCodes';
+ $labelField = 'description';
+ $m = new Mongo($config['dbhost'].':'.$config['dbport']);
+ $db = $m->selectDB($config['dbname']);
+ $coll = $db->selectCollection($collection);
+ 
+ 
+  $pagesize = get_get_parameter('pageSize');
+  // provide a default for page Index. Default for pagesize is null (all results will be returned)
+  $pagenum = get_get_paramter_int('pageIndex');
+ 
+
+ // TODO: allow param to sort results by custom fields?
+ // allow param to filter results
+  $filterTerm = get_get_parameter('query');
+ $findopts = array();
+ if ($filterTerm != null){
+  $regex = new MongoRegex("/".$filterTerm."/i");
+  $findopts = array($labelField=>$regex);
+ }
+ // sort by id
+ $cursor = $coll->find($findopts)->sort(array('_id'=>1))->limit($pagesize)->skip($pagenum * $pagesize);
+ 
+ // return metadata for results
+ echo "{\"count\":" . $cursor->count(0) . ", \"pageSize\": \"". $pagesize . "\", \"pageIndex\": \"" . $pagenum . "\", \"results\": {";
+ 
+ foreach ($cursor as $obj){
+  try{
+   echo '"'. $obj['_id'] . '":"' . $obj['description'] . '"';
+   if ($cursor->hasNext()){
+    echo ",\n";
+   }
+  } catch (Exception $e){
+  }
+ }
+ echo "}}";
+ drupal_add_http_header('Content-Type', 'application/json');
+}
+
+function gen_uuid() {
+ return sprintf( '%04x%04x%04x%04x%04x%04x%04x%04x',
+   // 32 bits for "time_low"
+   mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ),
+
+   // 16 bits for "time_mid"
+   mt_rand( 0, 0xffff ),
+
+   // 16 bits for "time_hi_and_version",
+   // four most significant bits holds version number 4
+   mt_rand( 0, 0x0fff ) | 0x4000,
+
+   // 16 bits, 8 bits for "clk_seq_hi_res",
+   // 8 bits for "clk_seq_low",
+   // two most significant bits holds zero and one for variant DCE1.1
+   mt_rand( 0, 0x3fff ) | 0x8000,
+
+   // 48 bits for "node"
+   mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff )
+ );
+}

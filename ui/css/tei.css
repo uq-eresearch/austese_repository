@@ -23,7 +23,7 @@ span.bold {
     font-weight: bold;
 }
 span.deleted {
-   background-color:#FFDFDF;
+   color:#B02528;
    border-radius: 3px;
 }
 .founddeleted-default, .overstrike {
@@ -60,7 +60,7 @@ span.deleted {
   content: "\\";
 }
 span.added, span.inserted {
-    background-color:#E0EAF8;
+    color:#000AEE;
     border-radius: 3px;
     position: relative;
 }
@@ -78,13 +78,13 @@ span.right {
 span.inserted-left {
     position: relative;
     float: left;
-    background-color: #E0EAF8;
+    color: #000AEE;
     border-radius: 3px;
 }
 span.inserted-right {
     position: relative;
     float: right;
-    background-color: #E0EAF8;
+    color: #000AEE;
     border-radius: 3px;
 }
 span.merged { -hrit-mergeid: id }

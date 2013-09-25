@@ -47,7 +47,8 @@ Ext.define('austese_uploader.controller.Controller', {
                 click: this.displaySendToMenu
             },
             'resourcegrid':{
-                selectionchange: this.displayResourceMetadata
+                selectionchange: this.displayResourceMetadata,
+                itemdblclick: this.displayResource
             },
             '#rotateleft': {
                 click: function(button, e, options){
@@ -132,8 +133,8 @@ Ext.define('austese_uploader.controller.Controller', {
         // force resize and repositioning of app when window resizes
         var uiPanel = Ext.ComponentQuery.query("mainpanel")[0];
         var placeholder = Ext.get('uploaderui');
-        var newHeight = h - (placeholder.getY());
-        var newWidth = w - placeholder.getX()*2;
+        var newHeight = h - placeholder.getY();
+        var newWidth = w - placeholder.getX() - 20;
         placeholder.setHeight(newHeight);
         uiPanel.setHeight(newHeight);
         placeholder.setWidth(newWidth);
@@ -443,7 +444,7 @@ Ext.define('austese_uploader.controller.Controller', {
     },
     displayResource: function(dataview, record, item, index, e, eOpts){
         var uri = record.get('uri');
-        document.location.href = 'resources/' + record.get('id');
+        document.location.href = 'resources/' + record.get('id') + this._getProjectParam({isFirstParam: true});
     },
     rotateImages: function(clockwise) {
         // for all selected records
@@ -695,16 +696,18 @@ Ext.define('austese_uploader.controller.Controller', {
                     text: 'Transcription editor',
                     iconCls: 'transcriptionEditorIcon',
                     tooltip: 'Edit selected transcription',
+                    scope: this,
                     handler: function(){
-                        document.location.href ='/repository/resources/edit/' + record.get('id');
+                        document.location.href ='/repository/resources/edit/' + record.get('id') + this._getProjectParam({isFirstParam: true});
                     }}
                 );
                 button.menu.add({
                     text: 'Multi-Transcription editor',
                     iconCls: 'transcriptionEditorIcon',
                     tooltip: 'Edit selected transcription using multi-editor',
+                    scope: this,
                     handler: function(){
-                        document.location.href ='/repository/resources/edit/' + record.get('id') + '?multi=true';
+                        document.location.href ='/repository/resources/edit/' + record.get('id') + '?multi=true' + this._getProjectParam({isFirstParam: false});;
                     }}
                 );
                 var record = records[0];
@@ -737,8 +740,9 @@ Ext.define('austese_uploader.controller.Controller', {
                 text: 'View resource record',
                 //iconCls: 'transcriptionEditorIcon',
                 tooltip: 'View resource metadata record',
+                scope: this,
                 handler: function(){
-                    document.location.href ='/repository/resources/' + record.get('id');
+                    document.location.href ='/repository/resources/' + record.get('id') + this._getProjectParam({isFirstParam: true});
                 }}
             );
         }
@@ -802,7 +806,7 @@ Ext.define('austese_uploader.controller.Controller', {
       }).show();
       // show progress window so user knows something is happening (sendtomvd page takes awhile to load)
       progressWin.down('progressbar').wait();
-      document.location.href='/collationtools/sendtomvd/' + ids + "?docpath=" + docpath;
+      document.location.href='/collationtools/sendtomvd/' + ids + "?docpath=" + docpath  + this._getProjectParam({isFirstParam: false});
     },
     sendToLightBox: function(button){
         var pp = button.up('propertiespanel');
@@ -814,7 +818,7 @@ Ext.define('austese_uploader.controller.Controller', {
             }
         }
         // TODO: use HTML 5 postMessage to send to lightbox if already open
-        document.location.href ='/lightbox' + (this.application.project? '?project='+ this.application.project: '') +'#' + ids;
+        document.location.href ='/lightbox' + this._getProjectParam({isFirstParam: true}) +'#' + ids;
     },
     sendToAlignmentTool: function(button){
         var pp = button.up('propertiespanel');
@@ -823,7 +827,7 @@ Ext.define('austese_uploader.controller.Controller', {
         for (var i = 0; i < records.length; i++){
                 ids += "/" + records[i].get("id") ;
         }
-        document.location.href ='/alignment/edit' + ids;
+        document.location.href ='/alignment/edit' + ids + this._getProjectParam({isFirstParam: true});
     },
     sendToCreateCollection: function(button){
         var pp = button.up('propertiespanel');
@@ -849,12 +853,13 @@ Ext.define('austese_uploader.controller.Controller', {
         jQuery.ajax({
           type: 'POST',
           data: JSON.stringify(collectionData),
+          context: this,
           headers: {
               'Content-Type': 'application/json'
           },
           url: modulePath + "/api/collections/",
           success: function(d){
-              window.location.href = "/repository/collections/" + d.id;
+              window.location.href = "/repository/collections/" + d.id + this._getProjectParam({isFirstParam: true});
           }, 
           failure: function(response){
               Ext.ComponentQuery.query('statusbar')[0].setStatus({
@@ -864,5 +869,18 @@ Ext.define('austese_uploader.controller.Controller', {
               });
           }
         });
+    },
+    _getProjectParam: function(obj) {
+        if (this.application.project) {
+            var firstChar = '';
+            if (obj && obj.isFirstParam) {
+                firstChar = '?';
+            } else {
+                firstChar = '&';
+            }
+            return firstChar + 'project='+ this.application.project;
+        } else {
+            return '';
+        }
     }
 });

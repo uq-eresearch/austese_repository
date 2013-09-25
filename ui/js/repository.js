@@ -100,6 +100,8 @@ jQuery.fn.serializeObject = function() {
                    jQuery('#existingOutput').empty();
                }
             });
+                setInitialProject();
+            }
         
         } else {
             if (existingId){
@@ -111,28 +113,18 @@ jQuery.fn.serializeObject = function() {
             }
         } 
 
-        var setUpTagField = function(elem, apiType, searchProperty, params, single){
+        var setUpTagField = function(elem, apiType, searchProperty, params, single) {
+            params = params || {};
             var select2opts = {
                 placeholder: "Start typing to search " + apiType + "s by " + searchProperty,
                 minimumInputLength: 0,
-               
-                multiple:(single? false : true),
-                initSelection : function (element, callback) {
-                    var data = [];
-                    $(element.val().split(',')).each(function(i) {
-                        
-                        data.push({
-                            id: i
-                        });
-                    });
-                    callback(data);
-                },
+                multiple: (single ? false : true),
                 ajax: {
                     dataType: 'json',
                     url: '/' + modulePath + '/api/' + apiType + 's/',
                     data: function(term,page){
                         var searchParams = {
-                            q: term,
+                            query: term,
                             pageSize: 10,
                             page: page
                         };
@@ -180,9 +172,33 @@ jQuery.fn.serializeObject = function() {
             setUpTagField(jQuery("#resources"), "resource", "filename", projectParam);
             setUpTagField(jQuery("#transcriptions"), "resource", "filename", {"project":project,"type":"text"});
             setUpTagField(jQuery("#facsimiles, #images"), "resource", "filename", {"project":project,"type":"image"});
-            setUpTagField(jQuery('#places'), "place", "name", projectParam);
+            setUpTagField(jQuery('#places'), "place", "name");
             setUpTagField(jQuery("#versions"), "version","versionTitle", projectParam);
             setUpTagField(jQuery('#readingVersion'),"version","versionTitle",projectParam, true);
+
+            jQuery('#project').select2({
+                placeholder: "Select a project",
+                minimumInputLength: 0,
+                multiple: false,
+                ajax: {
+                    dataType: 'json',
+                    url: "/sites/all/modules/austese_repository/api/projects",
+                    results: function (data) {
+                        return {results: data.list};
+                    },
+                    cache: true
+                },
+                id: function(object) {
+                    if (object) return object.nid;
+                },
+                formatResult: function(project) {
+                    return project.title;
+                },
+                formatSelection: function(project) {
+                    return project.title;
+                },
+                escapeMarkup: function(m) {return m;}
+            });
         }
         
     });
@@ -232,7 +248,7 @@ jQuery.fn.serializeObject = function() {
                 type: 'GET',
                 url: '/' + modulePath + '/api/' + queryApiType + 's/',
                 data: {
-                    q: queryId,
+                    query: queryId,
                     searchField: queryField,
                     pageSize: defaultPageSize
                 },
@@ -322,7 +338,7 @@ jQuery.fn.serializeObject = function() {
            data: {
                pageSize: pageSize,
                pageIndex: page,
-               q: (filterTerm?  filterTerm : ""),
+               query: (filterTerm?  filterTerm : ""),
                project: (project && !(apiType == 'place' || apiType == 'mvd') ? project : "")
            },
            success: function(result){
@@ -343,6 +359,7 @@ jQuery.fn.serializeObject = function() {
                     obj.modulePrefix = modulePrefix;
                     if (project) {
                         obj.projParam = "?project=" + project;
+                        obj.projAndParam = "&project=" + project;
                     }
                     try {
                       jQuery('#result').append(getTemplate(template)(obj));
@@ -356,8 +373,7 @@ jQuery.fn.serializeObject = function() {
            }
         });
     }
-    function tokenizeListField(data, fieldType, fieldName){
-        
+    function tokenizeListField(data, fieldType, fieldName) {
         fieldName = fieldName || fieldType;
         var field = data[fieldName];
         if (field){
@@ -370,7 +386,7 @@ jQuery.fn.serializeObject = function() {
                   headers: {
                        'Accept': 'application/json'
                   },
-                        url: '/' + modulePath + '/api/' + fieldType + '/' + field[index],
+                  url: '/' + modulePath + '/api/' + fieldType + '/' + field[index],
                   success: function(v){
                       var elem = jQuery('#' + fieldName);
                       
@@ -381,17 +397,41 @@ jQuery.fn.serializeObject = function() {
                       } else {
                           existVal = v;
                       }
-                      elem.select2("data",existVal)
+                      elem.select2("data",existVal);
                       
                       if (index < (fieldLength - 1)){
                           getToken(index+1);
+<<<<<<< HEAD
                       }
                           
+=======
+                      } 
+>>>>>>> projects
                   }
                 });
             }
                 getToken(0);
             }
+        }
+    }
+    function setInitialProject() {
+        var elem = jQuery('#project');
+        var project = jQuery('#metadata').data('project');
+        
+        if (project) {
+            jQuery.ajax("/node/" + project + ".json").done(function(data) {
+                elem.select2("data", data);
+                elem.select2("readonly", true);
+            });
+        }
+    }
+    function loadProjectData() {
+        var elem = jQuery('#project');
+        var id = elem.val();
+        if (id) {
+            jQuery.ajax("/node/" + id + ".json").done(function(data) {
+                elem.select2("data", data);
+            });
         }
     }
     function loadObjectIntoEditor(id){
@@ -432,6 +472,8 @@ jQuery.fn.serializeObject = function() {
               wysiEditors.push(jQuery('#description').wysihtml5());
               wysiEditors.push(jQuery('#biography').wysihtml5());
               updateUILocked(d.locked || false);
+              //
+              loadProjectData();
            }
         });
     }
@@ -504,8 +546,16 @@ jQuery.fn.serializeObject = function() {
                 updateUILocked(locked);
                 // load new page URI (because we have an id for the new object)
                 if (newObject){
-                   document.location.href= '/' + modulePrefix + "/" + apiType + 's/edit/'  + existingId;
+                   document.location.href= '/' + modulePrefix + "/" + apiType + 's/edit/'  + existingId + (project? '?project='+project : '');
                 }
+          },
+          error: function(jqXHR, textStatus, errorThrown) {
+            console.log('Error saving record: ', jqXHR);
+            jQuery('#alerts').append(
+                jQuery('<div class="alert alert-error alert-block"><button type="button" class="close" data-dismiss="alert">x</button>'
+                    + '<h4>Error saving ' + apiType + '</h4>'
+                    + '<p>' + textStatus + ': ' + errorThrown + '</p></div>').alert());
+      
           }
         });
     }
@@ -530,7 +580,7 @@ jQuery.fn.serializeObject = function() {
     }
     function loadRelatedMVDs(id){
         jQuery.ajax({
-            url: '/' + modulePath + '/api/mvds/?q=' + id,
+            url: '/' + modulePath + '/api/mvds/?query=' + id,
             success: function(d){
                 if (d.results.length > 0) {
                     var result = "<h4 class='muted'>VIEW MVD:</h4><form onsubmit='return false;'><select id='mvdselect'>";
@@ -569,23 +619,29 @@ jQuery.fn.serializeObject = function() {
     }
     function viewCompare(){
         var docpath = jQuery('#mvdselect').val();
+        var project = jQuery('#metadata').data('project');
+        var projParam = (project? '?project=' + project : '');
         if (docpath) {
             // TODO actually select this resource
-            document.location.href = "/collationtools/compare#" + encodeURIComponent(docpath);
+            document.location.href = "/collationtools/compare" + projParam + "#" + encodeURIComponent(docpath);
         }
     }
     function viewTable(){
         var docpath = jQuery('#mvdselect').val();
+        var project = jQuery('#metadata').data('project');
+        var projParam = (project? '?project=' + project : '');
         if (docpath) {
             // TODO actually select this resource
-            document.location.href = "/collationtools/apparatus#" + encodeURIComponent(docpath);
+            document.location.href = "/collationtools/apparatus" + projParam + "#" + encodeURIComponent(docpath);
         }
     }
     function refreshMVD(){
+        var project = jQuery('#metadata').data('project');
+        var projParam = (project? '&project=' + project : '');
         var refreshURL = jQuery('#mvdselect').find('option:selected').data('refresh');
         if (refreshURL) {
             jQuery('#viewmvd').append("Refreshing MVD, please wait...");
-            document.location.href = refreshURL;
+            document.location.href = refreshURL + projParam;
         }
     }
     function loadReferencedObjects(){

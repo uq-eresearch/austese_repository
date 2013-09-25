@@ -106,10 +106,10 @@ templates.mvdSummary =
         <p>\
         {{#if hasEditPermission}}\
         <a href="/{{modulePrefix}}/mvds/edit/{{id}}{{projParam}}" style="font-size:smaller">DELETE</a>&nbsp;&nbsp;\
-        <a href="/collationtools/sendtomvd/{{#each resources}}{{#if id}}{{id}}{{else}}{{.}}{{/if}};{{/each}}?docpath={{name}}" style="font-size:smaller">REFRESH</a>&nbsp;&nbsp;\
+        <a href="/collationtools/sendtomvd/{{#each resources}}{{#if id}}{{id}}{{else}}{{.}}{{/if}};{{/each}}?docpath={{name}}{{projAndParam}}" style="font-size:smaller">REFRESH</a>&nbsp;&nbsp;\
         {{/if}}\
-        <a href="/collationtools/compare#{{encode name}}" style="font-size:smaller">COMPARE</a>&nbsp;&nbsp;\
-        <a href="/collationtools/apparatus#{{encode name}}" style="font-size:smaller">TABLE</a>\
+        <a href="/collationtools/compare{{projParam}}#{{encode name}}" style="font-size:smaller">COMPARE</a>&nbsp;&nbsp;\
+        <a href="/collationtools/apparatus{{projParam}}#{{encode name}}" style="font-size:smaller">TABLE</a>\
         </p>\
     </div>'
 ;

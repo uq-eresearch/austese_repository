@@ -46,11 +46,11 @@ function repository_permission() {
   return array(
     'edit metadata' => array(
       'title' => t('Edit metadata'),
-      'description' => t('Allow users to create and edit metadata in the content repository')
+      'description' => t('Allow users to create and edit ALL metadata in the content repository')
     ),
     'view metadata' => array(
       'title' => t('View metadata'),
-      'description' => t('Allow users to view metadata in the content repository')
+      'description' => t('Allow users to view ALL metadata in the content repository')
     ),
     'view visualizations' => array(
       'title' => t('View visualizations'),
@@ -133,6 +133,19 @@ function repository_menu() {
     'access arguments' => array('view metadata'),
     'type' => MENU_CALLBACK
   );
+  $items['project/%node/projectstatus'] = array(
+    'title' => "Project Status",
+    'page callback' => 'repository_projectstatus',
+    'page arguments' => array(1),
+    'access arguments' => array('view metadata'),
+    'type' => MENU_CALLBACK
+  );
+  $items['project/%node/workflow'] = array(
+      'title' => 'Project Workflow',
+      'page callback' => 'repository_workflow',
+      'page arguments' => array(1),
+      'access arguments' => array('view metadata')
+  );
   return $items;
 }
 function repository_xmlrpc() {
@@ -186,20 +199,48 @@ function repository_description() {
   return array('#markup' => t('The austese content repository module'));
 }
 
-function repository_display($template){
-    if (!in_array($template,array("agents","artefacts","versions","works","resources", "places", "events", "mvds", "collections"))) {
-        drupal_access_denied();
-        return;
-    }
+function _get_projectParam() {
     $projectParam = array();
     if (isset($_GET['project'])) {
-      $projectParam = array('query' => array('project' => $_GET['project']));
+        $projectParam = array('query' => array('project' => $_GET['project']));
     }
+    return $projectParam;
+}
+
+/**
+ * Adds the current project to the breadcrumb trail.
+ * 
+ * @param type $breadcrumb An existing breadcrumb array to modify
+ */
+function _add_project_or_repository(&$breadcrumb) {
+    $projectParam = _get_projectParam();
+    if (isset($_GET['project'])) {
+        $project = node_load($_GET['project']);
+        $breadcrumb[] = l($project->title, 'node/' . $project->nid, $projectParam);
+    } else {
+        $breadcrumb[] = l('Repository', 'repository',$projectParam);
+    }
+}
+
+function _assert_valid_record_type($record_type) {
+    if (!in_array($record_type,array("agents","artefacts","versions","works","resources", "places", "events", "mvds", "collections"))) {
+        drupal_access_denied();
+        exit;
+    }
+}
+
+function repository_display($template) {
+    _assert_valid_record_type($template);
     $breadcrumb = array();
     $breadcrumb[] = l('Home', '<front>');
-    $breadcrumb[] = l('Repository', 'repository',$projectParam);
+    _add_project_or_repository($breadcrumb);
     $breadcrumb[] = t(ucfirst($template)); 
     drupal_set_breadcrumb($breadcrumb);
+    
+    // check project and permissions
+    $project = get_get_parameter('project');
+    _check_project_exists($project);
+    _check_permission_on_project($project, 'view metadata');
     
     $modulePath = drupal_get_path('module', 'repository');
     drupal_add_js($modulePath . '/ui/lib/handlebars.js');
@@ -233,23 +274,22 @@ function repository_edit($template, $id=null){
         drupal_access_denied();
         return;
     }
-    if (!user_access('edit metadata')){
-        drupal_access_denied();
-        return;
-    }
-    $projectParam = array();
-    if (isset($_GET['project'])) {
-       $projectParam = array('query' => array('project' => $_GET['project']));
-    }
+    
+    $projectParam = _get_projectParam();
     $breadcrumb = array();
     $breadcrumb[] = l('Home', '<front>');
-    $breadcrumb[] = l('Repository', 'repository',$projectParam);
+    _add_project_or_repository($breadcrumb);
     $breadcrumb[] = l(ucwords($template),'repository/'.$template,$projectParam);
     if ($template != 'mvds'){
         $breadcrumb[] = l('View '. ucwords(substr($template,0,-1)),'repository/'.$template.'/'.$id,$projectParam);
     }
     $breadcrumb[] = t('Edit '. ucfirst(substr($template,0,-1))); 
     drupal_set_breadcrumb($breadcrumb);
+    
+    // check project and permissions
+    $project = get_get_parameter('project');
+    _check_project_exists($project);
+    _check_permission_on_project($project, 'edit metadata');
     
     // Add scripts
     $modulePath = drupal_get_path('module', 'repository');
@@ -301,16 +341,19 @@ function repository_edit($template, $id=null){
     return theme('repository_'.$template.'_edit',array());
 }
 function repository_timeline_events(){
-    $projectParam = array();
-    if (isset($_GET['project'])) {
-       $projectParam = array('query' => array('project' => $_GET['project']));
-    }
+    $projectParam = _get_projectParam();
     $breadcrumb = array();
     $breadcrumb[] = l('Home', '<front>');
-    $breadcrumb[] = l('Repository', 'repository',$projectParam);
+    _add_project_or_repository($breadcrumb);
     $breadcrumb[] = l('Events','repository/events',$projectParam);
     $breadcrumb[] = t(drupal_get_title()); 
     drupal_set_breadcrumb($breadcrumb);
+    
+    // check project and permissions
+    $project = get_get_parameter('project');
+    _check_project_exists($project);
+    _check_permission_on_project($project, 'view metadata');
+    
     // Add scripts
     $modulePath = drupal_get_path('module', 'repository');
     drupal_add_css($modulePath.'/ui/lib/timeline/css/timeline.css',  array('group' => CSS_DEFAULT, 'every_page' => FALSE));
@@ -321,16 +364,19 @@ function repository_timeline_events(){
     return theme('repository_visualize',array());
 }
 function repository_map_events($id=null){
-    $projectParam = array();
-    if (isset($_GET['project'])) {
-       $projectParam = array('query' => array('project' => $_GET['project']));
-    }
+    $projectParam = _get_projectParam();
     $breadcrumb = array();
     $breadcrumb[] = l('Home', '<front>');
-    $breadcrumb[] = l('Repository', 'repository',$projectParam);
+    _add_project_or_repository($breadcrumb);
     $breadcrumb[] = l('Events','repository/events',$projectParam);
     $breadcrumb[] = t(drupal_get_title()); 
     drupal_set_breadcrumb($breadcrumb);
+    
+    // check project and permissions
+    $project = get_get_parameter('project');
+    _check_project_exists($project);
+    _check_permission_on_project($project, 'view metadata');
+    
     // Add scripts
     $modulePath = drupal_get_path('module', 'repository'); 
     drupal_add_css('http://cdn.leafletjs.com/leaflet-0.4/leaflet.css',array('type' => 'external'));
@@ -347,16 +393,19 @@ function repository_visualize($template, $id=null){
         drupal_access_denied();
         return;
     }
-    $projectParam = array();
-    if (isset($_GET['project'])) {
-       $projectParam = array('query' => array('project' => $_GET['project']));
-    }
+    $projectParam = _get_projectParam();
     $breadcrumb = array();
     $breadcrumb[] = l('Home', '<front>');
-    $breadcrumb[] = l('Repository', 'repository',$projectParam);
+    _add_project_or_repository($breadcrumb);
     $breadcrumb[] = l(ucwords($template),'repository/'.$template,$projectParam);
     $breadcrumb[] = t(drupal_get_title()); 
     drupal_set_breadcrumb($breadcrumb);
+    
+    // check project and permissions
+    $project = get_get_parameter('project');
+    _check_project_exists($project);
+    _check_permission_on_project($project, 'view metadata');
+    
     // Add scripts
     $modulePath = drupal_get_path('module', 'repository');
     drupal_add_js($modulePath . '/ui/lib/graphdracula/raphael.js');
@@ -367,17 +416,20 @@ function repository_visualize($template, $id=null){
     return theme('repository_visualize',array());
 }
 function repository_display_resource($id,$raw=null){
-    $projectParam = array();
-    if (isset($_GET['project'])) {
-     $projectParam = array('query' => array('project' => $_GET['project']));
-    }
+    $projectParam = _get_projectParam();
     $breadcrumb = array();
     $breadcrumb[] = l('Home', '<front>');
-    $breadcrumb[] = l('Repository', 'repository',$projectParam);
+    _add_project_or_repository($breadcrumb);
     $breadcrumb[] = l('Resources','repository/resources',$projectParam);
     $breadcrumb[] = l('View Resource','repository/resources/'.$id,$projectParam);
-    $breadcrumb[] = t('View Resource Content'); 
+    $breadcrumb[] = t('View Resource Content');
     drupal_set_breadcrumb($breadcrumb);
+    
+    // check project and permissions
+    $project = get_get_parameter('project');
+    _check_project_exists($project);
+    _check_permission_on_project($project, 'view metadata');
+    
     if ($raw == 'raw'){
         repository_render_tei($id);
     } else {
@@ -396,6 +448,13 @@ function repository_display_resource($id,$raw=null){
         return theme('repository_resources_content',array());
     }
 }
+
+/**
+ * Only called from `repository_display_resource()`
+ * 
+ * @param type $id
+ * @return type
+ */
 // shift to repository api
 function repository_render_tei($id){
     $modulePath = drupal_get_path('module', 'repository');
@@ -420,16 +479,18 @@ function repository_display_record($template, $id=null){
         drupal_access_denied();
         return;
     }
-    $projectParam = array();
-    if (isset($_GET['project'])) {
-     $projectParam = array('query' => array('project' => $_GET['project']));
-    }
+    $projectParam = _get_projectParam();
     $breadcrumb = array();
     $breadcrumb[] = l('Home', '<front>');
-    $breadcrumb[] = l('Repository', 'repository',$projectParam);
+    _add_project_or_repository($breadcrumb);
     $breadcrumb[] = l(ucwords($template),'repository/'.$template,$projectParam);
     $breadcrumb[] = t('View ' . ucfirst(substr($template,0,-1))); 
     drupal_set_breadcrumb($breadcrumb);
+    
+    // check project and permissions
+    $project = get_get_parameter('project');
+    _check_project_exists($project);
+    _check_permission_on_project($project, 'view metadata');
     
     // Add scripts
     $modulePath = drupal_get_path('module', 'repository');
@@ -445,10 +506,7 @@ function repository_display_record($template, $id=null){
     return theme('repository_display_record',array());
 }
 function repository_toc() {
-  $projectParam = array();
-  if (isset($_GET['project'])) {
-     $projectParam = array('query' => array('project' => $_GET['project']));
-  }
+  $projectParam = _get_projectParam();
   $list[] = l("Artefacts","repository/artefacts",$projectParam);
   $list[] = l("Versions","repository/versions",$projectParam);
   $list[] = l("Works","repository/works",$projectParam);
@@ -521,6 +579,14 @@ function repository_theme(){
     'repository_version_toc_block' => array(
         'template' => 'ui/toc_block',
         'variables'=>  array('versionid' => null)
+    ),
+    'repository_projectstatus' => array(
+        'template' => 'ui/projectstatus',
+        'variables' => array()
+    ),
+    'repository_workflow' => array(
+        'template' => 'ui/workflow',
+        'variables' => array()
     )
  );
 }
@@ -550,6 +616,116 @@ function repository_user_presave(&$edit, $account, $category) {
   $edit['data']['fullscreen'] = isset($edit['fullscreen']) ? $edit['fullscreen'] : 0;
 }
 
+
+function repository_block_info() {
+    $blocks['project_links'] = array(
+        'info' => t('Project Links'),
+        'cache' => DRUPAL_NO_CACHE,
+    );
+    
+    return $blocks;
+}
+
+function repository_block_view($delta = '') {
+    $block = array();
+    
+    $context = og_context();
+    if (isset($context['group_type']) && $context['group_type'] === 'node') {
+        $node = node_load($context['gid']);
+    }
+    if (!isset($node)) {
+        return;
+    }
+//    $node = menu_get_object();
+    
+    if ($node->type != 'project') {
+        return;
+    }
+    
+    $node_url = url('node/' . $node->nid, array('absolute' => TRUE));
+    
+    $project_id = $node->nid;
+    
+    switch ($delta) {
+        case 'project_links':
+            $block['subject'] = t('Project Links');
+            $block['content'] = "
+                <a href='/repository/artefacts?project=$project_id'>Artefacts</a><br>
+                <a href='/repository/versions?project=$project_id'>Versions</a><br>
+                <a href='/repository/works?project=$project_id'>Works</a><br>
+                <a href='/repository/resources?project=$project_id'>Digital Resources</a><br>
+                <a href='/repository/agents?project=$project_id'>Agents</a><br>
+                <a href='/repository/events?project=$project_id'>Events</a><br>
+                <a href='/repository/places?project=$project_id'>Places</a><br>
+                <a href='/repository/mvds?project=$project_id'>MVDs</a><br>
+                <br>
+                <a href='/project/$project_id/projectstatus?project=$project_id'>Project Status</a><br>
+                <a href='/project/$project_id/workflow?project=$project_id'>Workflow</a><br>
+                    ";
+            break;
+    }
+    
+    return $block;
+}
+
+function repository_projectstatus($node) {
+  $config = repositoryapi_get_configuration();
+  
+  try {
+    $m = new Mongo($config['dbhost'].':'.$config['dbport']);
+    $db = $m->selectDB($config['dbname']);
+    
+    $counts = array();
+    
+    foreach ($config['recordtypes'] as $recordtype) {
+        $coll = $db->selectCollection($recordtype);
+        $counts[$recordtype] = array();
+        $counts[$recordtype]['total'] = $coll->count(array('metadata.project' => $node->nid));
+        $counts[$recordtype]['locked'] = $coll->count(array('metadata.project' => $node->nid, 'metadata.locked' => 'on'));
+    }
+    return theme("repository_projectstatus",array('counts' => $counts));
+  } catch (Exception $e){
+    drupal_add_http_header('Status', '500 Internal server error'); 
+    echo $e->getMessage();
+    exit;
+  }
+}
+
+function repository_workflow($node) {
+    $projParam = "?project=" . $node->nid;
+    return theme('repository_workflow', array('node' => $node, 'projParam' => $projParam));
+}
+
+function repository_og_context_negotiation_info() {
+  $providers = array();
+
+  $providers['austese_get_param'] = array(
+    'name' => t('AustESE GET Parameter'),
+    'description' => t("AustESE: Determine context by checking 'project' GET parameter."),
+    'callback' => 'repository_og_context_handler',
+  );
+
+  return $providers;
+}
+
+/**
+ * Evaluates and return group IDs to provide group context.
+ *
+ * Callback for repository_og_context_negotiation_info().
+ *
+ * @return
+ *  A nested array of group IDs, grouped first by entity type. Each value is
+ *  a flat array of group IDs.
+ */
+function repository_og_context_handler() {
+  if (isset($_GET['project']) && is_numeric($_GET['project'])) {
+    return array(
+        'node' => array($_GET['project'])
+    );
+  } else {
+      return array();
+  }
+}
 
 
 /**
