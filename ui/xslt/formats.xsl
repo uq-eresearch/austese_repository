@@ -293,16 +293,6 @@
 
 <xsl:template match="del">
     <xsl:choose>
-        <xsl:when test="@rend='tratto a matita'">
-            <strike style="color: red">
-                <xsl:apply-templates/>
-            </strike>   
-        </xsl:when>
-            <xsl:when test="@rend='lettera sovrascritta a matita'">
-            <font color="brown" size="5">
-               {<xsl:apply-templates/>} 
-            </font>
-        </xsl:when>
         <xsl:when test="@rend='overstrike'">
            <span class="founddeleted overstrike">
               <xsl:apply-templates/>
