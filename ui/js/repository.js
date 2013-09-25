@@ -338,7 +338,7 @@ jQuery.fn.serializeObject = function() {
                pageSize: pageSize,
                pageIndex: page,
                query: (filterTerm?  filterTerm : ""),
-               project: (project && !(apiType == 'place' || apiType == 'mvd') ? project : "")
+               project: (project && !(apiType == 'place') ? project : "")
            },
            success: function(result){
              var rescount = parseInt(result.count);
