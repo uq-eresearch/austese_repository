@@ -40,6 +40,15 @@ if (isset($project)) {
   <span id="failMessage"></span>
 </div>
 <div id="editInfo"></div>
+<div class="form-horizontal">
+<div class="sticky-bottom well">
+    <div class="pull-right">
+       <button data-resource="/<?php print drupal_get_path('module', 'repository');?>/api/resources/<?php print arg(3); ?>" class="btn btn-primary savebtn" title="Save as new version">Save</button>
+       <a href="/<?php print $modulePrefix; ?>/resources/<?php if ($existingId): print $existingId; endif; ?><?php if ($project): print "?project=".$project; endif; ?>">
+       <input type="button" class="btn" value="Cancel"></a>
+     </div>
+  </div>
+  </div>
 <!--  ui for multi/merge editor -->
 <div id="multi-editor-ui">
   <div class="row-fluid">
