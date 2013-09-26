@@ -5,7 +5,7 @@ jQuery(document).ready(function(){
     // get metadata
     var resURI = '/' + jQuery('#metadata').data('modulepath') + "/api/resources/" + existingId;
     function afterContentLoaded(){
-        if (wordCloud && typeof wordCloud.drawWordCloud == "function"){
+        if (typeof wordCloud != 'undefined' && typeof wordCloud.drawWordCloud == "function"){
             wordCloud.drawWordCloud();
         } 
         if (typeof enableAnnotations == "function"){
