@@ -671,18 +671,51 @@ function repository_block_view($delta = '') {
 function repository_projectstatus($node) {
   $config = repositoryapi_get_configuration();
   
+  $counts = array(
+      'artefacts' => array('title' => 'Artefacts'),
+      'versions' => array('title' => 'Versions'),
+      'works' => array('title' => 'Works'),
+      'agents' => array('title' => 'Agents'),
+      'events' => array('title' => 'Events'),
+      'mvds' => array('title' => 'MVDs'),
+      'collections' => array('title' => 'Collections'),
+      'fs.files' => array('title' => 'Digital Resources'),
+  );
+  
   try {
     $m = new Mongo($config['dbhost'].':'.$config['dbport']);
     $db = $m->selectDB($config['dbname']);
-    
-    $counts = array();
-    
-    foreach ($config['recordtypes'] as $recordtype) {
+        
+    foreach (array_keys($counts) as $recordtype) {
         $coll = $db->selectCollection($recordtype);
-        $counts[$recordtype] = array();
-        $counts[$recordtype]['total'] = $coll->count(array('metadata.project' => $node->nid));
-        $counts[$recordtype]['locked'] = $coll->count(array('metadata.project' => $node->nid, 'metadata.locked' => 'on'));
+        $total = $coll->count(array(
+                            'metadata.project' => $node->nid,
+                            '_superseded' => array('$exists' => false),
+                            '_deleted' => array('$exists' => false)));
+        $locked = $coll->count(array(
+                            'metadata.project' => $node->nid,
+                            '_deleted' => array('$exists' => false),
+                            '_superseded' => array('$exists' => false),
+                            'metadata.locked' => 'on'));
+        $counts[$recordtype]['total'] = $total;
+        $counts[$recordtype]['locked'] = $locked;
+        $counts[$recordtype]['percent'] = $total < 1 ? "N/A" : sprintf('%01d%%', ($locked / $total)*100);
     }
+    
+    // Extra checks
+    $files = $db->selectCollection('fs.files');
+    $numWithRights = $files->count(array(
+                                    array('metadata.rights' => array('$exists' => true)),
+                                    array('metadata.rights' => array('$ne' => '')),
+                                    array('_superseded' => array('$exists' => false)),
+                                    '_deleted' => array('$exists' => false)));
+    $counts['filesrights'] = array();
+    $counts['filesrights']['title'] = 'Digital resources rights';
+    $counts['filesrights']['total'] = $counts['fs.files']['total'];
+    $counts['filesrights']['locked'] = $numWithRights;
+    $counts['filesrights']['percent'] = '%';
+    
+    
     return theme("repository_projectstatus",array('counts' => $counts));
   } catch (Exception $e){
     drupal_add_http_header('Status', '500 Internal server error'); 
