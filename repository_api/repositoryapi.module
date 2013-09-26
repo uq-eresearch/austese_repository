@@ -884,7 +884,7 @@ function deleteResource($id){
   
   
   
-  $grid->update(array('_resourceid'=> $id), array('$set' => array('_deleted' => true)), array('safe' => true));
+  $grid->update($query, array('$set' => array('_deleted' => true)), array('safe' => true));
   drupal_add_http_header('Status', '204 No Content');
 }
 
