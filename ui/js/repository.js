@@ -242,6 +242,8 @@ jQuery.fn.serializeObject = function() {
     function loadInverseRelationships(id){
         function processInverseRelationships(queryApiType, queryField, queryId, title){
             
+            var project = jQuery('#metadata').data('project');
+            var projParam = (project? '?project=' + project : '');
             var defaultPageSize = 5;
             jQuery.ajax({
                 type: 'GET',
@@ -261,6 +263,7 @@ jQuery.fn.serializeObject = function() {
                       display += "<strong class=\"muted\">" + title + "</strong><ul>";
                       result.results.forEach(function(r){
                           r.modulePrefix = modulePrefix;
+                          r.projParam = projParam;
                           if (queryApiType == "collection" && r.resources){
                               var resourceIndex = jQuery.inArray(queryId,r.resources);
                               if (resourceIndex >= 0){
@@ -276,7 +279,7 @@ jQuery.fn.serializeObject = function() {
                           }
                           
                           display += "<li>" + getTemplate(queryApiType + 'Compact')(r) +"</li>";
-                      })
+                      });
                       display += "</ul>";
                       if (result.count > defaultPageSize) {
                           // TODO: display link to search page to view all
