@@ -671,6 +671,12 @@ function repository_block_view($delta = '') {
 }
 
 function repository_projectstatus($node) {
+  $breadcrumb = array();
+  $breadcrumb[] = l('Home', '<front>');
+  _add_project_or_repository($breadcrumb);
+  $breadcrumb[] = t("Project status"); 
+  drupal_set_breadcrumb($breadcrumb);
+  
   $config = repositoryapi_get_configuration();
   
   $counts = array(
@@ -727,6 +733,12 @@ function repository_projectstatus($node) {
 }
 
 function repository_workflow($node) {
+    $breadcrumb = array();
+    $breadcrumb[] = l('Home', '<front>');
+    _add_project_or_repository($breadcrumb);
+    $breadcrumb[] = t("Project workflow"); 
+    drupal_set_breadcrumb($breadcrumb);
+    
     $projParam = "?project=" . $node->nid;
     return theme('repository_workflow', array('node' => $node, 'projParam' => $projParam));
 }
