@@ -17,6 +17,7 @@ Ext.WindowMgr.zseed = 1040;
 Ext.application({
     modulePath: modulePath,
     project: project,
+    projectShortName: jQuery('#metadata').data('projectshortname'),
     enableCollation: jQuery('#metadata').data('enablecollation'),
     enableLightBox: jQuery('#metadata').data('enablelightbox'),
     enableAlignment: jQuery('#metadata').data('enablealignment'),

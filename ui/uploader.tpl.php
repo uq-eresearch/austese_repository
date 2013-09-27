@@ -31,6 +31,7 @@ if (isset($_GET['project'])) {
  <?php endif; ?>
  <?php if ($project):?>
  data-project="<?php print $project; ?>"
+ data-projectshortname="<?= $projectshortname ?>"
  <?php endif; ?>
  data-moduleprefix="<?php print $modulePrefix; ?>"
  data-modulepath="<?php print drupal_get_path('module', 'repository'); ?>"

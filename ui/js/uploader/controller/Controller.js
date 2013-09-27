@@ -778,7 +778,7 @@ Ext.define('austese_uploader.controller.Controller', {
         Ext.create('austese_uploader.view.SendToMVDWindow',{
             count: count,
             ids: ids,
-            project: this.application.project
+            project: this.application.projectShortName
         }).show();
         
         // redirect to collation module sendtomvd page
