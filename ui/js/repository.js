@@ -264,17 +264,31 @@ jQuery.fn.serializeObject = function() {
                       result.results.forEach(function(r){
                           r.modulePrefix = modulePrefix;
                           r.projParam = projParam;
-                          if (queryApiType == "collection" && r.resources){
+                          if (queryApiType === "collection" && r.resources) {
                               var resourceIndex = jQuery.inArray(queryId,r.resources);
                               if (resourceIndex >= 0){
                                   r.resourceIndex = resourceIndex + 1;
                               }
                               r.collectionLength = r.resources.length;
-                              if (resourceIndex != 0) {
+                              if (resourceIndex !== 0) {
                                   r.prev = r.resources[resourceIndex-1];
                               }
-                              if ((resourceIndex + 1) != r.resources.length){
+                              if ((resourceIndex + 1) !== r.resources.length){
                                   r.next = r.resources[resourceIndex+1];
+                              }
+                          }
+                          
+                          if (queryField === "facsimiles" && r.facsimiles) {
+                              var resourceIndex = jQuery.inArray(queryId ,r.facsimiles);
+                              if (resourceIndex >= 0){
+                                  r.resourceIndex = resourceIndex + 1;
+                              }
+                              r.collectionLength = r.facsimiles.length;
+                              if (resourceIndex !== 0) {
+                                  r.prev = r.facsimiles[resourceIndex-1];
+                              }
+                              if ((resourceIndex + 1) !== r.facsimiles.length){
+                                  r.next = r.facsimiles[resourceIndex+1];
                               }
                           }
                           

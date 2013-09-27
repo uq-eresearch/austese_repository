@@ -77,8 +77,8 @@ templates.collectionCompact = '\
     <div class="obj">\
         <h4><a {{#if newTab}}target="_blank"{{/if}} href="/{{modulePrefix}}/collections/{{id}}{{projParam}}">{{name}}</a></h4>\
         Item {{resourceIndex}} of {{collectionLength}} \
-        {{#if prev}}<a href="{{prev}}">Previous</a> {{/if}}\
-        {{#if next}}<a href="{{next}}">Next</a>{{/if}}\
+        {{#if prev}}<a href="{{prev}}{{projParam}}">Previous</a> {{/if}}\
+        {{#if next}}<a href="{{next}}{{projParam}}">Next</a>{{/if}}\
     </div>'
 ;
 templates.collectionDetail = 
