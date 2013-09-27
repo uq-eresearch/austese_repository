@@ -717,15 +717,28 @@ function repository_projectstatus($node) {
     // Extra checks
     $files = $db->selectCollection('fs.files');
     $numWithRights = $files->count(array(
-                                    array('metadata.rights' => array('$exists' => true)),
-                                    array('metadata.rights' => array('$ne' => '')),
-                                    array('_superseded' => array('$exists' => false)),
+                                    'metadata.rights' => array('$exists' => true),
+                                    'metadata.rights' => array('$ne' => ''),
+                                    '_superseded' => array('$exists' => false),
                                     '_deleted' => array('$exists' => false)));
     $counts['filesrights'] = array();
     $counts['filesrights']['title'] = 'Digital resources rights';
     $counts['filesrights']['total'] = $counts['fs.files']['total'];
     $counts['filesrights']['locked'] = $numWithRights;
     $counts['filesrights']['percent'] = '%';
+    
+    
+    $coll = $db->selectCollection('artefacts');
+    $coll->count(array(
+                    'metadata.project' => $node->nid,
+                    '_deleted' => array('$exists' => false),
+                    '_superseded' => array('$exists' => false),
+                    
+                    
+    ));
+//    $match = array("metadata.project"=>)
+    // db.events.aggregate([{$match: {"metadata.project":"22", "metadata.artefacts.0":{$exists:1}}}, {$project: {_id:0, "artefacts":"$metadata.artefacts"}},  {$unwind: "$artefacts"}, {$group: {_id: "artefacts", artefacts: {$addToSet:"$artefacts"}}} ])
+    
     
     
     return theme("repository_projectstatus",array('counts' => $counts));

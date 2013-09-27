@@ -816,8 +816,8 @@ function deleteRecord($collection,$id){
     $m = new Mongo($config['dbhost'].':'.$config['dbport']);
     $db = $m->selectDB($config['dbname']);
     $coll = $db->selectCollection($collection);
-    // lookup existing object to find revision number
-    $id = new MongoId($id);
+    // lookup existing object to find revision number 
+   $id = new MongoId($id);
     $query = array('_id'=>$id);
     $existobj = $coll->findOne($query);
     if ($existobj == null){
