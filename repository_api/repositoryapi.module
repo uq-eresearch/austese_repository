@@ -202,7 +202,7 @@ function createRecord($collection){
       }
     }
     // Insert new object with one revision
-    $newobj = array('_revisions' => array($obj), 'metadata'=>array($obj));
+    $newobj = array('_revisions' => array($obj), 'metadata'=>$obj);
     $m = new Mongo($config['dbhost'].':'.$config['dbport']);
     $db = $m->selectDB($config['dbname']);
     $coll = $db->selectCollection($collection);
