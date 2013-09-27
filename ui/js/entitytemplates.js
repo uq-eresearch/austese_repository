@@ -418,9 +418,12 @@ templates.workSummary =
     <h4><a href="/{{modulePrefix}}/works/{{id}}{{projParam}}">{{workTitle}}{{#if name}} ({{name}}){{/if}}</a></h4>\
     {{#if description}}{{{ellipsis description 80}}}<br/>{{/if}}\
     {{#gt versions.length 0}}({{versions.length}} associated version{{#neq versions.length 1}}s{{/neq}}){{/gt}}\
+    <p>\
     {{#if hasEditPermission}}\
-        <p><a href="/{{modulePrefix}}/works/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a></p>\
+    <a href="/{{modulePrefix}}/works/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a>&nbsp;\
     {{/if}}\
+    <a href="/reading/{{id}}{{projParam}}" style="font-size:smaller">READ</a>\
+    </p>\
     </div>'
 ;
 templates.workDetail = 
