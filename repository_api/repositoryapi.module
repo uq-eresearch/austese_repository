@@ -386,15 +386,11 @@ function _check_project_exists($project) {
 }
 function _check_permission_on_project($project, $permission) {
   if ($project && !og_user_access('node', $project, $permission)) {
-    echo 'Permission denied';
-    drupal_add_http_header('Status', '403 Forbidden');
-    drupal_page_footer();
+    drupal_access_denied();
     exit;
   }
   if (!$project && !user_access($permission)) {
-    echo 'Permission denied';
-    drupal_add_http_header('Status', '403 Forbidden');
-    drupal_page_footer();
+    drupal_access_denied();
     exit;
   }
 }
