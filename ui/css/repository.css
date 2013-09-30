@@ -45,8 +45,11 @@ li .obj {
     margin-top:-1px;
     margin-right:3px;
 }
-.btn-highlight{
-    color:blue
+.btn.btn-highlight{
+    color:blue;
+}
+.btn.btn-highlight:hover {
+    color:blue;
 }
 .artefact, .version {
     margin-right:3px;
