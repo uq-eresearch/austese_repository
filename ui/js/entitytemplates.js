@@ -378,7 +378,7 @@ templates.artefactDetail =
     '<div>\
     <h1>{{#if source}}{{upper source 80}}{{else}}UNTITLED ARTEFACT{{/if}}</h1>\
     <table class="table">\
-    {{#if source}}<tr><td class="metadatalabel muted">Source</td><td>{{source}}</td></tr>{{/if}}\
+    {{#if source}}<tr><td class="metadatalabel muted">Title</td><td>{{source}}</td></tr>{{/if}}\
     {{#if date}}<tr><td class="metadatalabel muted">Date</td><td>{{date}}</td></tr>{{/if}}\
     {{#if bibDetails}}<tr><td class="metadatalabel muted">Bibliographic Details</td><td>{{bibDetails}}</td></tr>{{/if}}\
     {{#if publisher}}<tr><td class="metadatalabel muted">Publisher</td><td>{{publisher}}</td></tr>{{/if}}\

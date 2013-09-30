@@ -41,7 +41,7 @@ if (isset($_GET['project'])) {
   <div class="invisi-well">
   <fieldset>
     <div class="control-group">
-      <label class="control-label" for="source">Source</label>
+      <label class="control-label" for="source">Title</label>
       <div class="controls">
         <textarea autofocus="true" rows="1" name="source" type="text" class="input-xxlarge" id="source"></textarea>
         <p class="help-block">Short title to identify artefact/source e.g. MS378</p>
