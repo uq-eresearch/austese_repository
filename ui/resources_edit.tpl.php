@@ -21,6 +21,7 @@ if (isset($project)) {
   data-editable="true"
  <?php endif; ?>
  <?php if ($project):?>
+ data-editurl="<?php print $GLOBALS['base_url'] . '/' . arg(0) . '/resources/edit/' . arg(3);?>"
  data-project="<?php print $project; ?>"
  <?php endif; ?>
  <?php if ($existingId):?>
@@ -39,7 +40,12 @@ if (isset($project)) {
   <a href="#" data-dismiss="alert" class="close">x</a>
   <span id="failMessage"></span>
 </div>
+<div class="pull-right"><a id="toggleMulti" href="#">
+<!--  // FIXME: if user cancels navigation due to unsaved changes, multi toggle will get out of sync -->
+<!--  input style="margin-top:-4px" <?php if($multi): print 'checked'; endif; ?> type="checkbox"/--> 
+Compare while editing</a></div>
 <div id="editInfo"></div>
+
 <div class="form-horizontal">
 <div class="sticky-bottom well">
     <div class="pull-right">

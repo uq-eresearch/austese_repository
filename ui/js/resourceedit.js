@@ -4,7 +4,7 @@ jQuery(function(){
      editor.loadResource(resourceId);
      editor.displayResourceMetadata(resourceId);
      jQuery('.savebtn').click(editor.newResourceVersion);
-
+     jQuery('#toggleMulti').click(editor.toggleMulti);
      jQuery.ajax({
          url:'/sites/all/modules/austese_repository/ui/xslt/formats.xsl',
          success: function(xsl){
@@ -323,5 +323,20 @@ var editor = {
          jQuery('#editorspan').removeClass('span6').addClass('span12');
          jQuery(".edit-preview").hide();
      }
+ }, 
+ toggleMulti: function(){
+     var multi = jQuery('#metadata').data('multi');
+     var project = jQuery('#metadata').data('project');
+     var params = "";
+     if (project) {
+         params = "project=" + project;
+     }
+     if (!multi) {
+         if (project) {
+             params += "&";
+         }
+         params += "multi=true";
+     }
+     document.location.href = jQuery('#metadata').data('editurl') + '?' + params;
  }
 };
