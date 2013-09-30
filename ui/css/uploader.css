@@ -48,7 +48,19 @@ img.dataExportIcon {
     background-image:url(../img/doc_export_icon_16.png);
 }
 img.transcriptionEditorIcon {
-    background-image:url(../img/doc_lines_stright_icon_16.png);
+    background-image:url(../img/doc_edit_icon_16.png);
+}
+.viewResourceRecordIcon {
+    background-image:url(../img/info_icon_16.png);
+}
+.viewResourceIcon {
+    background-image:url(../img/eye_icon_16.png)
+}
+img.duplicateResourceIcon {
+    background-image:url(../img/doc_plus_icon_16.png);
+}
+img.multiTranscriptionEditorIcon {
+    background-image:url(../img/doc_edit_icon_16.png);
 }
 img.lightBoxIcon {
     background-image:url(../img/lightbulb_icon_16.png);

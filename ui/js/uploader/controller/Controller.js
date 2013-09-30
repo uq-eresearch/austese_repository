@@ -682,14 +682,26 @@ Ext.define('austese_uploader.controller.Controller', {
         
         button.menu.removeAll();
         var filetype = (aggregatedValues && aggregatedValues.filetype) || records[0].get('filetype');
-        if (filetype && (filetype.match('xml') ||  filetype.match('text')) && this.application.enableCollation==1){
+        if (filetype && filetype.match('image') && this.application.enableLightBox==1){
             button.menu.add({
-                text: 'MVD',
-                iconCls: 'addMVDIcon',
-                tooltip: 'Add selected transcription(s) to MVD',
-                handler: this.sendToMVD,
-                scope: this
+                text: 'Light Box',
+                iconCls: 'lightBoxIcon',
+                tooltip: 'Add selected images(s) to Light Box',
+                scope: this,
+                handler: this.sendToLightBox
             });
+        }
+        if (filetype && (filetype.match('xml') ||  filetype.match('text'))){
+            if(this.application.enableCollation==1){
+                button.menu.add({
+                    text: 'MVD',
+                    iconCls: 'addMVDIcon',
+                    tooltip: 'Add selected transcription(s) to MVD',
+                    handler: this.sendToMVD,
+                    scope: this
+                });
+            }
+            // single text or xml resource selected
             if (records.length == 1){
                 var record = records[0];
                 button.menu.add({
@@ -710,22 +722,56 @@ Ext.define('austese_uploader.controller.Controller', {
                         document.location.href ='/repository/resources/edit/' + record.get('id') + '?multi=true' + this._getProjectParam({isFirstParam: false});;
                     }}
                 );
-                var record = records[0];
+                record = records[0];
                 button.menu.add({
                     text: 'Duplicate resource',
+                    iconCls: 'duplicateResourceIcon',
                     tooltip: 'Create an exact duplicate of this resource',
                     handler: this.duplicateResource
                 });
             }
-        }
-        if (filetype && filetype.match('image') && this.application.enableLightBox==1){
-            button.menu.add({
-                text: 'Light Box',
-                iconCls: 'lightBoxIcon',
-                tooltip: 'Add selected images(s) to Light Box',
+            // any number of text or xml resources selected
+           /* button.menu.add({
+                    text: 'Create Version' + (records.length == 1? "":"s"),
+                    //iconCls: 'lightBoxIcon',
+                    tooltip: 'Create VersionPart / Version records',
                 scope: this,
-                handler: this.sendToLightBox
-            });
+                    handler: this.createVersionRecords
+            });*/
+        }
+
+        
+        
+
+        // any number of generic resources selected
+       /* button.menu.add({
+            text: 'Create Artefact' + (records.length == 1? "":"s"),
+            tooltip: 'Create ArtefactPart / Artefact records',
+            scope: this,
+            handler: this.createArtefactRecords
+        });*/
+        
+        // generic single resource selected
+        if (records.length == 1){
+            var record = records[0];
+            button.menu.add({
+                text: 'View resource record',
+                tooltip: 'View resource metadata',
+                iconCls: 'viewResourceRecordIcon',
+                scope: this,
+                handler: function(){
+                    document.location.href ='/repository/resources/' + record.get('id') + this._getProjectParam({isFirstParam: true});
+                }}
+            );
+            button.menu.add({
+                text: 'View resource content',
+                iconCls: 'viewResourceIcon',
+                tooltip: 'View resource content',
+                handler: function(){
+                    document.location.href ='/repository/resources/' + record.get('id') + "/content";
+                }}
+            );
+
         }
         button.menu.add({
             text: 'Create Collection',
@@ -734,18 +780,6 @@ Ext.define('austese_uploader.controller.Controller', {
             scope: this,
             handler: this.sendToCreateCollection
         });
-        if (records.length == 1){
-            var record = records[0];
-            button.menu.add({
-                text: 'View resource record',
-                //iconCls: 'transcriptionEditorIcon',
-                tooltip: 'View resource metadata record',
-                scope: this,
-                handler: function(){
-                    document.location.href ='/repository/resources/' + record.get('id') + this._getProjectParam({isFirstParam: true});
-                }}
-            );
-        }
         // if a transcription and an image are selected, add align tool as an option
        /* FIXME: alignment module needs to be fixed first
         * if (this.application.enableAlignment==1 && records.length == 2 
@@ -882,5 +916,15 @@ Ext.define('austese_uploader.controller.Controller', {
         } else {
             return '';
         }
+    },
+    createArtefactRecords: function(button){
+        // pop up a dialog box to configure whether to create an artefact part for each, a single artefact to group (or both - will group artefact parts in this case)
+        // display info : selected x facsimiles, y diplomatic transcriptions
+        
+    }, 
+    createVersionRecords: function(button){
+        // pop up dialog box to configure whether to create version part for each, single version with multiple transcriptions, or both (single version with multiple parts)
+        // display info: selected x transcriptions
+        
     }
 });
