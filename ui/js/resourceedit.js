@@ -166,7 +166,7 @@ var editor = {
                  url: '/' + modulePath + '/api/resources/',
                  data: function(term,page){
                      var searchParams = {
-                         q: term,
+                         query: term,
                          type: 'text',
                          pageSize: 10,
                          page: page
