@@ -43,6 +43,10 @@ jQuery(document).ready(function() {
         },
         success: function(result){
             jQuery('#loadingvis').hide();
+            if (result.count == 0){
+                jQuery('#canvas').html("No Events found");
+                return;
+            }
             jQuery(result.results).each(function(i,e){
                 e.modulePrefix = 'repository';
                 e.hasEditPermission = editable;
