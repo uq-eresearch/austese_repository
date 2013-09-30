@@ -70,7 +70,7 @@ jQuery.fn.serializeObject = function() {
                         },
                         data: {
                             searchField: fieldName, 
-                            q: searchTerm, 
+                            query: searchTerm, 
                             pageSize: 10
                         },
                         failure: function(xhr){
