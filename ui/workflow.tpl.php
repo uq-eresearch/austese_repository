@@ -32,14 +32,14 @@ $modulePath = drupal_get_path('module', 'repository');
 <div class="row-fluid">
     <div class="span12 well well-large">
         <h3>Scholarly Editing Workflow</h3>
-        <p>This page collects the components currently being developed and prepared for integration into the AustESE Workbench. Each component is designed to satisfy a fundamental need in the scholarly editing workflow. New components will be added as they become available. These components can be tested here in the sandbox environment, providing an opportunity for users to provide comments and suggestions. This will greatly assist the refinement of these components and inform the way the workflow is supported in the final design of the user interface. Please remember that this infrastructure is under constant development and data might be cleared from time to time. </p>
+        <p>This page collects the components integrated into the AustESE Workbench. Each component is designed to satisfy a fundamental need in the scholarly editing workflow. </p>
     </div>
 </div>
 <div class="row-fluid">
     <div class="well well-large span6">
         <h3>Describe Entities</h3>
         <p>Create metadata to describe original materials and associated entities.</p>
-        <p>The AustESE Workbench will support full descriptions of the bibliographical material and associated text. The adoption of well-established principles of bibliographical description will be extended by enabling relationships between entities to be asserted. The primary entities in the AustESE Workbench are Artefacts, Versions, Works, Agents, Places and Events. By extending fundamental bibliographical description with temporal and spatial contexts, alternative and innovative pathways can be created with network visualisations, timelines and maps.
+        <p>The AustESE Workbench support full descriptions of the bibliographical material and associated text. The adoption of well-established principles of bibliographical description is extended by enabling relationships between entities to be asserted. The primary entities in the AustESE Workbench are Artefacts, Versions, Works, Agents, Places and Events. By extending fundamental bibliographical description with temporal and spatial contexts, alternative and innovative pathways can be created with network visualisations, timelines and maps.
         <ul>
             <li><a href="/repository/artefacts/edit<?= $projParam ?>">Describe new artefact</a></li>
             <li><a href="/repository/versions/edit<?= $projParam ?>">Describe new version</a></li>
@@ -68,7 +68,7 @@ $modulePath = drupal_get_path('module', 'repository');
 <div class="row-fluid">
     <div class="span12 well well-large">
         <h3>Compare and Collate</h3>
-        <p>Textual and material variation provides important clues about the transmission of text from one version to another. The AustESE Workbench will contain a variety of comparison tools.</p>
+        <p>Textual and material variation provides important clues about the transmission of text from one version to another. The AustESE Workbench contains a variety of comparison tools.</p>
         <p>Compare images using the <a href="/lightbox<?= $projParam ?>">Light Box</a>.</p>
         <p>To compare textual variation, create an MVD from selected transcription resources via the Send To menu in the <a href="/repository/resources<?= $projParam ?>">Digital Resource Organiser</a>.</p>
         <p>View existing MVDs as a <a href="/collationtools/compare<?= $projParam ?>">side-by-side</a> view or <a href="/collationtools/apparatus<?= $projParam ?>">table apparatus</a> <!--via the same menu or from individual resource metadata record pages.--></p>
@@ -84,7 +84,7 @@ $modulePath = drupal_get_path('module', 'repository');
 <div class="row-fluid">
     <div class="span12 well well-large">
         <h3>The AustESE Workbench</h3>
-        <p>During 2013, these components will be integrated into the AustESE Workbench, an environment where projects can be created and managed as solitary or collaborative endeavours. A project creator will be able to invite collaborators, assign roles and manage access privileges. This will enable the tasks of scholarly editing to be conducted in an environment that is as open or closed to wider scrutiny as the project creator desires.</p>
+        <p>Throughout 2013, these components have been integrated into the AustESE Workbench, an environment where projects can be created and managed as solitary or collaborative endeavours. A project creator can invite collaborators, assign roles and manage access privileges. This enables the tasks of scholarly editing to be conducted in an environment that is as open or closed to wider scrutiny as the project creator desires.</p>
         <p>With the ability to manage levels of access, the AustESE Workbench can serve as a publication platform, or it can provide a conduit to other publication formats with various export options such as .DOC, EPUB, TEI/XML, PDF. These functions will be implemented in the second half of 2013.</p> 
     </div>
 </div>
