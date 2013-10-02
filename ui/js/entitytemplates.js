@@ -257,9 +257,9 @@ templates.eventTimelineSummary =
         {{#gt artefacts.length 0}}<br/>(Produced {{artefacts.length}} artefact{{#neq artefacts.length 1}}s{{/neq}}){{/gt}}\
         {{#gt events.length 0}}<br/>({{events.length}} sub-event{{#neq events.length 1}}s{{/neq}}){{/gt}}\
         {{#if description}}<br/>{{ellipsis description 80}}{{/if}}\
-        <p><a style="font-size:smaller" href="/{{modulePrefix}}/events/{{id}}{{projParam}}">VIEW</a> \
+        <p><a target="_blank" style="font-size:smaller" href="/{{modulePrefix}}/events/{{id}}{{projParam}}">VIEW</a> \
         {{#if hasEditPermission}}\
-        <a href="/{{modulePrefix}}/events/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a>\
+        <a target="_blank" href="/{{modulePrefix}}/events/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a>\
         {{/if}}\
         <p>\
     </div>'
