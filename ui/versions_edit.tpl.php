@@ -49,6 +49,13 @@ if (isset($_GET['project'])) {
       </div>
     </div>
     <div class="control-group">
+      <label class="control-label" for="name">Name</label>
+      <div class="controls">
+        <textarea rows="1" name="name" type="text" class="input-xxlarge" id="name"></textarea>
+        <p class="help-block">Short name of this version</p>
+      </div>
+    </div>
+    <div class="control-group">
       <label class="control-label" for="date">Date</label>
       <div class="controls">
         <input name="date" type="text" class="input-xxlarge" id="date">
@@ -77,12 +84,13 @@ if (isset($_GET['project'])) {
       </div>
     </div>
     <div class="control-group">
-      <label class="control-label" for="name">Name</label>
+      <label class="control-label" for="lines">Lines</label>
       <div class="controls">
-        <textarea rows="1" name="name" type="text" class="input-xxlarge" id="name"></textarea>
-        <p class="help-block">Short name of this version</p>
+        <textarea rows="1" name="lines" type="text" class="input-xxlarge" id="lines"></textarea>
+        <p class="help-block">Number of lines in this version (e.g. for poetry)</p>
       </div>
     </div>
+
     <div class="control-group">
       <label class="control-label" for="illust">Illustrations</label>
       <div class="controls">

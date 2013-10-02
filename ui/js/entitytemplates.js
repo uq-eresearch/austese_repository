@@ -153,6 +153,7 @@ templates.versionDetail =
         {{#if name}}<tr><td class="metadatalabel muted">Name</td><td>{{name}}</td></tr>{{/if}}\
         {{#if date}}<tr><td class="metadatalabel muted">Date</td><td>{{date}}</td></tr>{{/if}}\
         {{#if publisher}}<tr><td class="metadatalabel muted">Publisher</td><td>{{publisher}}</td></tr>{{/if}}\
+        {{#if lines}}<tr><td class="metadatalabel muted">Lines</td><td>{{lines}}</td></tr>{{/if}}\
         {{#if description}}<tr><td class="metadatalabel muted">Description</td><td>{{{description}}}</td></tr>{{/if}}\
         {{#if illust}}<tr><td class="metadatalabel muted">Illustrations</td><td>{{illust}}</td></tr>{{/if}}\
         {{#if firstLine}}<tr><td class="metadatalabel muted">First Line</td><td>{{firstLine}}</td></tr>{{/if}}\
@@ -379,6 +380,7 @@ templates.artefactSummary =
     '<div class="obj">\
     <h4><a href="/{{modulePrefix}}/artefacts/{{id}}{{projParam}}">{{source}}</a></h4>\
     {{#if date}}{{date}}, {{/if}}{{ellipsis bibDetails 80}}\
+    {{#if description}}<br/>{{{ellipsis description 80}}}{{/if}}\
     {{#gt artefacts.length 0}}<br/>({{artefacts.length}} associated part{{#neq artefacts.length 1}}s{{/neq}}){{/gt}}\
     {{#gt facsimiles.length 0}}<br/>({{facsimiles.length}} associated facsimile{{#neq facsimiles.length 1}}s{{/neq}}){{/gt}}\
     {{#gt transcriptions.length 0}}<br/>({{transcriptions.length}} associated transcription{{#neq transcriptions.length 1}}s{{/neq}}){{/gt}}\
@@ -391,8 +393,11 @@ templates.artefactDetail =
     <h1>{{#if source}}{{upper source 80}}{{else}}UNTITLED ARTEFACT{{/if}}</h1>\
     <table class="table">\
     {{#if source}}<tr><td class="metadatalabel muted">Title</td><td>{{source}}</td></tr>{{/if}}\
+    {{#if pageNumbers}}<tr><td class="metadatalabel muted">Page Number(s)</td><td>{{pageNumbers}}</td></tr>{{/if}}\
     {{#if date}}<tr><td class="metadatalabel muted">Date</td><td>{{date}}</td></tr>{{/if}}\
+    {{#if description}}<tr><td class="metadatalabel muted">Description</td><td>{{{description}}}</td></tr>{{/if}}\
     {{#if bibDetails}}<tr><td class="metadatalabel muted">Bibliographic Details</td><td>{{bibDetails}}</td></tr>{{/if}}\
+    {{#if series}}<tr><td class="metadatalabel muted">Series</td><td>{{series}}</td></tr>{{/if}}\
     {{#if publisher}}<tr><td class="metadatalabel muted">Publisher</td><td>{{publisher}}</td></tr>{{/if}}\
     {{#if printer}}<tr><td class="metadatalabel muted">Printer</td><td>{{printer}}</td></tr>{{/if}}\
     {{#if format}}<tr><td class="metadatalabel muted">Format</td><td>{{format}}</td></tr>{{/if}}\

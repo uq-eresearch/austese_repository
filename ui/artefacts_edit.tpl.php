@@ -44,7 +44,7 @@ if (isset($_GET['project'])) {
       <label class="control-label" for="source">Title</label>
       <div class="controls">
         <textarea autofocus="true" rows="1" name="source" type="text" class="input-xxlarge" id="source"></textarea>
-        <p class="help-block">Short title to identify artefact/source e.g. MS378</p>
+        <p class="help-block">Short title to identify artefact source (or artefact part) e.g. MS378</p>
         <div id="existingOutput"></div>
       </div>
     </div>
@@ -56,10 +56,29 @@ if (isset($_GET['project'])) {
       </div>
     </div>
     <div class="control-group">
+      <label class="control-label" for="description">Description</label>
+      <div class="controls">
+        <textarea rows="1" name="description" type="text" class="input-xxlarge" id="description"></textarea>
+      </div>
+    </div>
+    <div class="control-group">
       <label class="control-label" for="bibDetails">Bibliographic Details</label>
       <div class="controls">
         <textarea rows="1" name="bibDetails" type="text" class="input-xxlarge" id="bibDetails"></textarea>
-        <p class="help-block">Additional bibliographic details e.g. '26 Apr., p. 5e'</p>
+        <p class="help-block">Additional bibliographic details</p>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="pageNumbers">Page Numbers(s)</label>
+      <div class="controls">
+        <textarea rows="1" name="pageNumbers" type="text" class="input-xxlarge" id="pageNumbers"></textarea>
+        <p class="help-block">Page numbers e.g. 4, 8</p>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="series">Series</label>
+      <div class="controls">
+        <textarea rows="1" name="series" type="text" class="input-xxlarge" id="series"></textarea>
       </div>
     </div>
     <div class="control-group">
