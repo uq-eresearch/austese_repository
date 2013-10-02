@@ -33,17 +33,29 @@ Handlebars.registerHelper('upper', function(value, len, options) {
     } else {
         result = value;
     }
-    return new Handlebars.SafeString(result.toUpperCase());
+    if (result){
+        result = result.toUpperCase();
+    }
+    if (!result){
+        result = "";
+    }
+    return new Handlebars.SafeString(result);
 });
 Handlebars.registerHelper('ellipsis', function(value, len, options) {
     if(value && value.length > len){
-        result = value.substr(0,len) + "...";
+        result = jQuery("<div>" + value + "</div>").text().substr(0,len) + "...";
     } else {
         result = value;
+    }
+    if (!result) {
+        result="";
     }
     return new Handlebars.SafeString(result);
 });
 Handlebars.registerHelper('encode', function(value, options) {
+    if (!value){
+        return;
+    }
     return new Handlebars.SafeString(encodeURIComponent(value));
 }); 
 Handlebars.registerHelper('filesize', function(len, options) {
