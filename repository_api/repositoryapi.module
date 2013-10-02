@@ -414,6 +414,17 @@ function listRecords($collection, $labelField) {
     $pagenum = get_get_paramter_int('pageIndex');
     // TODO: allow param to sort results by custom fields?
     // allow param to filter results
+    $sort = get_get_parameter('sort');
+    $sortDirection = 1;
+    if (!$sort) {
+        $sort = "_id";
+    }
+    if ($sort == "_id"){
+        $sortDirection = -1;
+    } else {
+        $sort = "metadata." . $labelField;
+    }
+    
     $filterTerm = get_get_parameter('query');
     $searchField = get_get_parameter('searchField');
     if (!$searchField) {
@@ -440,7 +451,7 @@ function listRecords($collection, $labelField) {
       $findopts = array('$and'=>array($findopts, array('metadata.project'=>$project)));
     }
     // sort by reverse id (newest objects should be listed first)
-    $cursor = $coll->find($findopts)->sort(array('_id'=>-1))->limit($pagesize)->skip($pagenum * $pagesize);
+    $cursor = $coll->find($findopts)->sort(array($sort=>$sortDirection))->limit($pagesize)->skip($pagenum * $pagesize);
 
     // return metadata for results
     echo "{\"collection\": \"$collection\", \"count\":" . $cursor->count(0) . ", \"pageSize\": \"". $pagesize . "\", \"pageIndex\": \"" . $pagenum . "\", \"results\": [";

@@ -347,6 +347,8 @@ jQuery.fn.serializeObject = function() {
         if (apiType == 'place'){
             pageSize = 15;
         }
+        var sort = jQuery('#sort').val()
+        console.log("sort by " + sort);
         jQuery.ajax({
            type: 'GET',
            url: '/' + modulePath + '/api/' + apiType + 's/',
@@ -355,7 +357,8 @@ jQuery.fn.serializeObject = function() {
                pageSize: pageSize,
                pageIndex: page,
                query: (filterTerm?  filterTerm : ""),
-               project: (project && !(apiType == 'place') ? project : "")
+               project: (project && !(apiType == 'place') ? project : ""),
+               sort: sort
            },
            success: function(result){
              var rescount = parseInt(result.count);
@@ -855,6 +858,15 @@ jQuery.fn.serializeObject = function() {
        jQuery('.pagebtn').click(function(){
            var pageNum = parseInt(jQuery(this).html() - 1);
            loadObjects(pageNum,filterTerm);
+       });
+       jQuery('#sort').on('change',function(){
+           //try {
+           //var page = parseInt(jQuery('#pager').find('.btn-highlight').text()) - 1;
+           //    loadObjects(page,filterTerm);
+           //} catch (e){
+               loadObjects(0,filterTerm);
+           //}
+           
        });
        if(numPages > endIndex){
            jQuery('#pager').append(jQuery("<button class='btn'><i class='icon-chevron-right'></i></button>").click(function(){

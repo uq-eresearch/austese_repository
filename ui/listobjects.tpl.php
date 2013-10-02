@@ -35,7 +35,7 @@ if (isset($_GET['project'])) {
  data-apitype="<?php print $apiType;?>">
 </div>
 <div class="row-fluid">
-    <div class="span10" id="newobject">
+    <div class="span8" id="newobject">
      <?php if (user_access('edit metadata') && $apiType != 'mvd' && $apiType != 'place'): ?>
        <a href="<?php print $apiType; ?>s/edit<?php if ($project) print '?project='.$project; ?>"><button type="button" class="btn"><i class="icon-plus"></i> New <?php print $apiType; ?></button></a>
      <?php endif; ?>
@@ -45,6 +45,11 @@ if (isset($_GET['project'])) {
      <?php endif;?>
      </div>
     <?php if ($apiType != "mvd"):?>
+    <div class="span2">Sort by: <select  name="sort" id="sort">
+       <option selected="true" value="_id">created</option>
+       <option value="label"><?php print $filterField; ?></option>
+    </select>
+    </div>
     <input title="Type filter terms and then hit enter" type="text" placeholder="Filter on <?php print $filterField; ?>" class="span2" id="filter"/>
     <?php endif; ?>
 </div>
