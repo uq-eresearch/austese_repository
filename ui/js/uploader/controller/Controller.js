@@ -781,15 +781,15 @@ Ext.define('austese_uploader.controller.Controller', {
             handler: this.sendToCreateCollection
         });
         // if a transcription and an image are selected, add align tool as an option
-       /* FIXME: alignment module needs to be fixed first
-        * if (this.application.enableAlignment==1 && records.length == 2 
+         if (this.application.enableAlignment==1 && records.length == 2 
                 && filetype && filetype.match('image') && (filetype.match('text')|| filetype.match('xml'))) {
             button.menu.add({
                 text: 'Alignment tool',
                 tooltip: 'Align sections of selected image and transcription',
-                handler: this.sendToAlignmentTool
+                handler: this.sendToAlignmentTool,
+                scope:this
             });
-        }*/
+        }
         // force menu to show
         button.showMenu(e);
     },
@@ -857,11 +857,15 @@ Ext.define('austese_uploader.controller.Controller', {
     sendToAlignmentTool: function(button){
         var pp = button.up('propertiespanel');
         var records = pp.loadedRecords;
-        var ids="";
+        var imageId="", textId="";
         for (var i = 0; i < records.length; i++){
-                ids += "/" + records[i].get("id") ;
+            if (records[i].get('filetype').match("image")) {
+                imageId = records[i].get("id") ;
+            } else {
+                textId = records[i].get("id");
+            }
         }
-        document.location.href ='/alignment/edit' + ids + this._getProjectParam({isFirstParam: true});
+        document.location.href ='/alignment/edit/' + imageId + "/" + textId + this._getProjectParam({isFirstParam: true});
     },
     sendToCreateCollection: function(button){
         var pp = button.up('propertiespanel');
