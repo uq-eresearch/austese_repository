@@ -202,7 +202,7 @@ jQuery(document).ready(function(){
                 type: 'GET',
                 url: '/' + modulePath + '/api/' + queryApiType + 's/',
                 data: {
-                    q: queryId,
+                    query: queryId,
                     searchField: queryField
                 },
                 dataType: "json",
