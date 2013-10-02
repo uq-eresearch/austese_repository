@@ -497,17 +497,6 @@ function getRecord($collection,$id,$revision) {
       echo 'The requested object does not exist';
       exit;
     }
-
-    // check project and permissions
-    $project = $obj['metadata']['project'];
-    _check_project_exists($project);
-    _check_permission_on_project($project, 'view metadata');
-
-    if (array_key_exists('_deleted',$obj)){
-      drupal_add_http_header('Status', '410 Gone');
-      echo 'The requested object has been deleted';
-      exit;
-    }
     // lookup specified revision, or get latest
     $numrev = count($obj['_revisions']) - 1;
     if ($revision == NULL || $revision > $numrev){
@@ -519,8 +508,24 @@ function getRecord($collection,$id,$revision) {
     // generate uri
     $returnobj['uri'] = $config['uriprefix'] . '/'. $collection . '/' . $id->{'$id'};
     $returnobj['id'] = $id->{'$id'};
+
+    // check project and permissions
+    $project = $obj['metadata']['project'];
+    _check_project_exists($project);
+    _check_permission_on_project($project, 'view metadata');
+
+    if (array_key_exists('_deleted',$obj)){
+      drupal_add_http_header('Status', '410 Gone');
+      echo 'The requested object has been deleted';
+      exit;
+    }
     drupal_add_http_header('Content-Type', 'application/json');
     echo json_encode($returnobj);
+}
+
+function _loadRecord($collection, $id, $revision) {
+
+  
 }
 
 /**
