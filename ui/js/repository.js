@@ -310,13 +310,13 @@ jQuery.fn.serializeObject = function() {
         // FIXME: maintain consistent order of display
         if (apiType == "artefact"){
             // artefacts are linked to from versions, events and artefacts
-            processInverseRelationships("version","artefacts",id,"Related Versions");
-            processInverseRelationships("event","artefacts",id,"Related Events"); 
-            processInverseRelationships("artefact","artefacts",id, "Is Part Of");
+            processInverseRelationships("version","artefacts",id,"Contains Version");
+            processInverseRelationships("event","artefacts",id,"Produced by Event"); 
+            processInverseRelationships("artefact","artefacts",id, "Part Of Artefact");
         } else if (apiType == "version") {
             // versions are linked to from works and versions
-            processInverseRelationships("version","versions",id, "Is Part Of");
-            processInverseRelationships("work","versions", id, "Related Works");
+            processInverseRelationships("version","versions",id, "Part Of Version");
+            processInverseRelationships("work","versions", id, "Version of Work");
         } else if (apiType=="agent"){
             ["agents", "authors", "amanuenses", "influencers", "editors", "publishers",
              "printers", "compositors", "illustrators", "binders", "readers", "translators",
@@ -330,14 +330,14 @@ jQuery.fn.serializeObject = function() {
                 processInverseRelationships("event", key, id, elabel);
              });
         } else if (apiType == "resource"){
-            processInverseRelationships("version","transcriptions",id, "Digital Surrogate For");
+            processInverseRelationships("version","transcriptions",id, "Transcription of Version");
             processInverseRelationships("collection", "resources", id, "In Collection");
-            processInverseRelationships("artefact","transcriptions",id, "Digital Surrogate For");
-            processInverseRelationships("artefact","facsimiles",id, "Digital Surrogate For");
+            processInverseRelationships("artefact","transcriptions",id, "Diplomatic Transcription of Artefact");
+            processInverseRelationships("artefact","facsimiles",id, "Facsimile of Artefact");
             processInverseRelationships("agent","images",id, "Image of");
         } else if (apiType == "event"){
             
-            processInverseRelationships("event","events",id,"Is Part Of");
+            processInverseRelationships("event","events",id,"Part Of");
         }
     }
     function loadObjects(page, filterTerm){
