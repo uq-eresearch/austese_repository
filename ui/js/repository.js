@@ -174,6 +174,7 @@ jQuery.fn.serializeObject = function() {
             setUpTagField(jQuery('#places'), "place", "name");
             setUpTagField(jQuery("#versions"), "version","versionTitle", projectParam);
             setUpTagField(jQuery('#readingVersion'),"version","versionTitle",projectParam, true);
+            setUpTagField(jQuery('#coverImage'),"resource","coverImage",projectParam, true);
 
             jQuery('#project').select2({
                 placeholder: "Select a project",
@@ -460,6 +461,10 @@ jQuery.fn.serializeObject = function() {
               if (d.readingVersion){
                   d.readingVersion = [d.readingVersion];
                   tokenizeListField(d,'versions','readingVersion');
+              }
+              if (d.coverImage){
+                  d.coverImage = [d.coverImage];
+                  tokenizeListField(d,'resources','coverImage');
               }
               tokenizeListField(d,'versions');
               tokenizeListField(d,'artefacts');
