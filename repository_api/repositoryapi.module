@@ -15,7 +15,7 @@ function repositoryapi_get_configuration() {
             'events' => 'name',
             'places' => 'name',
             'mvds' => 'resources',
-            'collections' => 'collectionTitle'),
+            'collections' => 'name'),
     );
 }
 
