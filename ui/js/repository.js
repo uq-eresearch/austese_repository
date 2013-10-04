@@ -549,10 +549,10 @@ jQuery.fn.serializeObject = function() {
           url: url,
           success: function(d){
             var project = jQuery('#metadata').data('project');
-            jQuery('#alerts').append(
+            jQuery('#alerts').html(
                 jQuery('<div class="alert alert-block"><button type="button" class="close" data-dismiss="alert">x</button>'
                     + '<h4>Successfully saved ' + apiType + '</h4>'
-                    + '<p><a href="/' + modulePrefix + '/' + apiType + 's' + (project? '?project='+project : '') +'">View ' + apiType + 's</a></p></div>').alert());
+                    + '<p><a href="/' + modulePrefix + '/' + apiType + 's/' + existingId + (project? '?project='+project : '') +'">View ' + apiType + '</a></p></div>').alert());
                 if (d){
                     existingId = d.id;
                     jQuery('#metadata').data('existingid',d.id);
