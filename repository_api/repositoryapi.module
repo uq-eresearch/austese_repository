@@ -485,47 +485,85 @@ function listRecords($collection, $labelField) {
  * @param string $revision Optional. Retrieve a specific revision
  */
 function getRecord($collection,$id,$revision) {
+    global $mongo_requests, $mongo_time;
+    $returnobj = _loadRecord($collection, $id, $revision, true);
+
+    drupal_add_http_header('Content-Type', 'application/json');
+    drupal_add_http_header('Num-Mongo-Requests', count($mongo_requests));
+    drupal_add_http_header('Mongo-Requests', implode(';', $mongo_requests));
+    drupal_add_http_header('Mongo-Time', number_format($mongo_time, 4) . " sec");
+
+    $json_params = 0;
+    if (isset($_GET['pretty'])) {
+      $json_params |= JSON_PRETTY_PRINT;
+    }
+    echo json_encode($returnobj, $json_params);
+}
+$mongo_requests = array();
+$mongo_time = 0;
+function _loadRecord($collection, $id, $revision, $checkperms) {
+    global $mongo_requests, $mongo_time;
     $config = repositoryapi_get_configuration();
     
+    $start = microtime(true);
     $m = new Mongo($config['dbhost'].':'.$config['dbport']);
     $db = $m->selectDB($config['dbname']);
     $coll = $db->selectCollection($collection);
     $query = array('_id'=>new MongoId($id));
-    $obj = $coll->findOne($query);
-    if ($obj == NULL){
+
+    $dbobj = $coll->findOne($query);
+    $time = ( microtime(true) - $start);
+    $mongo_requests[] = number_format($time, 4) . " sec";
+    $mongo_time += $time;
+
+    if ($dbobj == NULL){
       drupal_add_http_header('Status', '404 Not found');
       echo 'The requested object does not exist';
       exit;
     }
     // lookup specified revision, or get latest
-    $numrev = count($obj['_revisions']) - 1;
+    $numrev = count($dbobj['_revisions']) - 1;
     if ($revision == NULL || $revision > $numrev){
       $revision = $numrev;
     }
-    $id = $obj['_id'];
-    $returnobj = $obj['_revisions'][$revision];
+    $id = $dbobj['_id'];
+    $returnobj = $dbobj['_revisions'][$revision];
 
     // generate uri
     $returnobj['uri'] = $config['uriprefix'] . '/'. $collection . '/' . $id->{'$id'};
     $returnobj['id'] = $id->{'$id'};
 
     // check project and permissions
-    $project = $obj['metadata']['project'];
-    _check_project_exists($project);
-    _check_permission_on_project($project, 'view metadata');
+    if ($checkperms) {
+      $project = $dbobj['metadata']['project'];
+      _check_project_exists($project);
+      _check_permission_on_project($project, 'view metadata');
+    }
 
-    if (array_key_exists('_deleted',$obj)){
+    if (array_key_exists('_deleted',$dbobj)){
       drupal_add_http_header('Status', '410 Gone');
       echo 'The requested object has been deleted';
       exit;
     }
-    drupal_add_http_header('Content-Type', 'application/json');
-    echo json_encode($returnobj);
-}
 
-function _loadRecord($collection, $id, $revision) {
+    if (isset($_GET['recurse'])) {
+      if (!empty($returnobj['versions'])) {
+        $returnobj['hazsomeversions'] = true;
 
-  
+        foreach ($returnobj['versions'] as $pos => $id) {
+          $returnobj['versions'][$pos] = _loadRecord('versions', $id, NULL, false);
+        }
+      }
+
+      if (!empty($returnobj['artefacts'])) {
+        foreach ($returnobj['artefacts'] as $pos => $id) {
+          $returnobj['artefacts'][$pos] = _loadRecord('artefacts', $id, NULL, false);
+        }
+      }
+    }
+
+    
+    return $returnobj;
 }
 
 /**
@@ -548,7 +586,7 @@ function getResource($id){
   $m = new Mongo($config['dbhost'].':'.$config['dbport']);
   $db = $m->selectDB($config['dbname']);
   $grid = $db->getGridFS();
-  // todo and superseded is false
+
   $query = array('$and'=>
     array(
       array('_resourceid'=>$id),
