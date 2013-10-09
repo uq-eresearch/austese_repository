@@ -560,9 +560,19 @@ function _loadRecord($collection, $id, $revision, $checkperms) {
           $returnobj['artefacts'][$pos] = _loadRecord('artefacts', $id, NULL, false);
         }
       }
-    }
 
-    
+      if (!empty($returnobj['facsimiles'])) {
+        foreach ($returnobj['facsimiles'] as $pos => $id) {
+          $returnobj['facsimiles'][$pos] = _processResource(_loadResource($id, true));
+        }
+      }
+
+      if (!empty($returnobj['transcriptions'])) {
+        foreach ($returnobj['transcriptions'] as $pos => $id) {
+          $returnobj['transcriptions'][$pos] = _processResource(_loadResource($id, true));
+        }
+      }
+    }
     return $returnobj;
 }
 
@@ -575,64 +585,17 @@ function _loadRecord($collection, $id, $revision, $checkperms) {
  * @param String $id the resource identifier
  */
 function getResource($id){
-  $config = repositoryapi_get_configuration();
-//    if (isset($_SERVER['HTTP_ACCEPT'])) {
-//      $parts = explode(',', $_SERVER['HTTP_ACCEPT'], 2);
-//      $requesttype = restws_format_mimetype($parts[0]);
-//    }
+  $file = _loadResource($id);
+  
   $requesttype = $_SERVER['HTTP_ACCEPT'];
   $scale = get_get_parameter('scale');
-
-  $m = new Mongo($config['dbhost'].':'.$config['dbport']);
-  $db = $m->selectDB($config['dbname']);
-  $grid = $db->getGridFS();
-
-  $query = array('$and'=>
-    array(
-      array('_resourceid'=>$id),
-      array('_superseded'=>array('$exists'=>false))
-    )
-  );
-  $file = $grid->findOne($query);
-  if ($file == null){
-   drupal_add_http_header('Status', '404 Not found');
-   echo 'The requested resource does not exist';
-   exit;
-  }
-  if (array_key_exists('_deleted',$file->file)){
-   drupal_add_http_header('Status', '410 Gone');
-   echo 'The requested resource has been deleted';
-   exit;
-  }
-
-  // check project and permissions
-  $project = '';
-  if (isset($file->file['metadata']) && isset($file->file['metadata']['project'])) {
-    $project = $file->file['metadata']['project'];
-  }
-  if ($_SERVER['SERVER_ADDR'] == $_SERVER['REMOTE_ADDR']) {
-      // Allow access from local server for api calls
-  } else {
-      // Check logged in user has permission to access resource
-      _check_project_exists($project);
-      _check_permission_on_project($project, 'view metadata');
-  }
-  
   
   // Tell any cache the different resources are served
   // depending on content type
   drupal_add_http_header('Vary', 'Accept');
   if ($requesttype === 'application/json'){
       // return json metadata
-      $returnobj = $file->file;
-      $id = $returnobj['_resourceid'];
-      // unset revision
-      unset($returnobj['_revisions']);
-      unset($returnobj['_id']);
-      unset($returnobj['_resourceid']);
-      // generate uri
-      $returnobj['uri'] = $config['uriprefix']  . '/resources/' . $id;
-      $returnobj['id'] = $id;
+      $returnobj = _processResource($file);
       drupal_add_http_header('Content-Type', 'application/json');
       echo json_encode($returnobj);
   } else {
@@ -650,7 +613,7 @@ function getResource($id){
       header("Pragma: public");
       header("Cache-Control: maxage=".$expires);
       header('Expires: ' . gmdate('D, d M Y H:i:s', time()+$expires) . ' GMT');
-      // generate a thumbnail
+      // generate a thumbnail if required
       if ($scale == true && preg_match('/image/',$filetype) && class_exists('Imagick')){
         try{
           $img = new Imagick();
@@ -671,10 +634,84 @@ function getResource($id){
         } catch (Exception $e){
          echo $file->getBytes();
         }
-      } else {
+      } else { // otherwise return the full original resource
          echo $file->getBytes();
       }
   }
+}
+
+function getResourceContent($id) {
+
+}
+
+
+function _loadResource($id, $skip_perm_check) {
+  global $mongo_requests, $mongo_time;
+  $config = repositoryapi_get_configuration();
+
+  $start = microtime(true);
+  $m = new Mongo($config['dbhost'].':'.$config['dbport']);
+  $db = $m->selectDB($config['dbname']);
+  $grid = $db->getGridFS();
+
+  $query = array('$and'=>
+    array(
+      array('_resourceid'=>$id),
+      array('_superseded'=>array('$exists'=>false))
+    )
+  );
+  $file = $grid->findOne($query);
+
+  $time = ( microtime(true) - $start);
+  $mongo_requests[] = number_format($time, 4) . " sec";
+  $mongo_time += $time;
+
+  if ($file == null){
+   drupal_add_http_header('Status', '404 Not found');
+   echo 'The requested resource does not exist';
+   exit;
+  }
+  if (array_key_exists('_deleted',$file->file)){
+   drupal_add_http_header('Status', '410 Gone');
+   echo 'The requested resource has been deleted';
+   exit;
+  }
+
+  // check project and permissions
+  $project = '';
+  if (isset($file->file['metadata']) && isset($file->file['metadata']['project'])) {
+    $project = $file->file['metadata']['project'];
+  }
+  if ($_SERVER['SERVER_ADDR'] == $_SERVER['REMOTE_ADDR'] || $skip_perm_check == true) {
+      // Allow access from local server for api calls
+  } else {
+      // Check logged in user has permission to access resource
+      _check_project_exists($project);
+      _check_permission_on_project($project, 'view metadata');
+  }
+  return $file;
+}
+
+/**
+ * Take a resource record retrieved from mongo, and prepare it for returning
+ * to an API client.
+ *
+ * This includes adding some generated values, and stripping some private ones
+ * 
+ * @param  MongoResource $file As returned from _loadResource
+ * @return object       plain public resource record
+ */
+function _processResource($file) {
+  $returnobj = $file->file;
+  $id = $returnobj['_resourceid'];
+  // unset revision
+  unset($returnobj['_revisions']);
+  unset($returnobj['_id']);
+  unset($returnobj['_resourceid']);
+  // generate uri
+  $returnobj['uri'] = $config['uriprefix']  . '/resources/' . $id;
+  $returnobj['id'] = $id;
+  return $returnobj;
 }
 
 /**
