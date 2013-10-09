@@ -127,7 +127,7 @@ if (isset($_GET['project'])) {
       <label class="control-label" for="transcriptions">Transcriptions</label>
       <div class="controls">
         <textarea rows="2" name="transcriptions" type="text" class="input-xxlarge" id="transcriptions"></textarea>
-        <p class="help-block">Transcriptions associated with this version</p>
+        <p class="help-block">Version transcriptions associated with this version</p>
         <a target="_blank" href="/repository/resources<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
         <button type="button" title="Upload new transcription resource in new tab" class="btn"><i class="icon-plus"></i> New transcription</button>
         </a>

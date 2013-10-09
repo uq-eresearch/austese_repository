@@ -137,10 +137,10 @@ if (isset($_GET['project'])) {
       </div>
     </div>
     <div class="control-group">
-      <label class="control-label" for="transcriptions">Transcriptions</label>
+      <label class="control-label" for="transcriptions">Diplomatic Transcriptions</label>
       <div class="controls">
         <textarea rows="2" name="transcriptions" type="text" class="input-xxlarge" id="transcriptions"></textarea>
-        <p class="help-block">Diplomatic transcriptions associated with this artefact</p>
+        <p class="help-block">This field is only used to link DIPLOMATIC Transcriptions to Artefacts. Version Transcriptions should be linked to Versions only</p>
         <a target="_blank" href="/repository/resources<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
         <button type="button" title="Upload new transcription resource in new tab" class="btn"><i class="icon-plus"></i> Create transcription</button>
         </a>

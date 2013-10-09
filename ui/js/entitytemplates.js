@@ -135,7 +135,7 @@ templates.versionSummary =
         {{#if firstLine}}<br/><em>{{firstLine}}</em>{{/if}}\
         {{#gt artefacts.length 0}}<br/>({{artefacts.length}} associated artefact{{#neq artefacts.length 1}}s{{/neq}}){{/gt}}\
         {{#gt versions.length 0}}<tpl if="xindex == 1"><br/>({{versions.length}} associated part{{#neq versions.length 1}}s{{/neq}}){{/gt}}\
-        {{#gt transcriptions.length 0}}<tpl if="xindex == 1"><br/>({{transcriptions.length}} associated transcription{{#neq transcriptions.length 1}}s{{/neq}}){{/gt}}\
+        {{#gt transcriptions.length 0}}<tpl if="xindex == 1"><br/>({{transcriptions.length}} associated version transcription{{#neq transcriptions.length 1}}s{{/neq}}){{/gt}}\
         {{#if hasEditPermission}}<p><a href="/{{modulePrefix}}/versions/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a></p>{{/if}}\
     </div>'
 ;
@@ -171,7 +171,7 @@ templates.versionDetail =
             </ul>\
         {{/gt}}\
         {{#gt transcriptions.length 0}}\
-           <h3 class="muted">Transcriptions</h3><p>{{transcriptions.length}} transcription{{#neq transcriptions.length 1}}s{{/neq}} associated with this version:</p>\
+           <h3 class="muted">Version Transcriptions</h3><p>{{transcriptions.length}} transcription{{#neq transcriptions.length 1}}s{{/neq}} associated with this version:</p>\
             <ul>\
             {{#each transcriptions}}<li class="resource" data-resourceid="{{.}}" data-template="summary"></li>{{/each}}\
             </ul>\
@@ -383,7 +383,7 @@ templates.artefactSummary =
     {{#if description}}{{{ellipsis description 80}}}<br/>{{/if}}\
     {{#gt artefacts.length 0}}({{artefacts.length}} associated part{{#neq artefacts.length 1}}s{{/neq}})<br/>{{/gt}}\
     {{#gt facsimiles.length 0}}({{facsimiles.length}} associated facsimile{{#neq facsimiles.length 1}}s{{/neq}})<br/>{{/gt}}\
-    {{#gt transcriptions.length 0}}({{transcriptions.length}} associated transcription{{#neq transcriptions.length 1}}s{{/neq}}){{/gt}}\
+    {{#gt transcriptions.length 0}}({{transcriptions.length}} associated diplomatic transcription{{#neq transcriptions.length 1}}s{{/neq}}){{/gt}}\
     {{#if hasEditPermission}}\
         <p><a href="/{{modulePrefix}}/artefacts/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a></p>\
     {{/if}}\
@@ -417,7 +417,7 @@ templates.artefactDetail =
         </ul>\
     {{/gt}}\
     {{#gt transcriptions.length 0}}\
-        <h3 class="muted">Transcriptions</h3><p>{{transcriptions.length}} transcription{{#neq transcriptions.length 1}}s{{/neq}} associated with this artefact:</p>\
+        <h3 class="muted">Diplomatic Transcriptions</h3><p>{{transcriptions.length}} transcription{{#neq transcriptions.length 1}}s{{/neq}} associated with this artefact:</p>\
         <ul>\
         {{#each transcriptions}}<li class="resource" data-resourceid="{{.}}" data-template="summary"></li>{{/each}}\
         </ul>\
