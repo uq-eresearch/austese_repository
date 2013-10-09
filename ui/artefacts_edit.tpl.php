@@ -112,7 +112,7 @@ if (isset($_GET['project'])) {
         <input name="artefacts" type="text" id="artefacts" class="input-xxlarge" />
         <p class="help-block">ArtefactParts associated with this artefact</p>
         <a target="_blank" href="/repository/artefacts/edit<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
-        <button type="button" title="Describe new artefact part in new tab" class="btn"><i class="icon-plus"></i> Create artefact part</button>
+        <button type="button" title="Describe new artefact part in new tab" class="btn"><i class="icon-plus"></i> Create new artefact part</button>
         </a>
       </div>
     </div>
@@ -122,7 +122,7 @@ if (isset($_GET['project'])) {
         <textarea rows="2" name="facsimiles" type="text" class="input-xxlarge" id="facsimiles"></textarea>
         <p class="help-block">Facsimiles associated with this artefact</p>
         <a target="_blank" href="/repository/resources<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
-        <button type="button" title="Upload new facsimile resource in new tab" class="btn"><i class="icon-plus"></i> Create facsimile</button>
+        <button type="button" title="Upload new facsimile resource in new tab" class="btn"><i class="icon-plus"></i> Create new facsimile</button>
         </a>
       </div>
     </div>
@@ -132,7 +132,7 @@ if (isset($_GET['project'])) {
         <textarea rows="2" name="coverImage" type="text" class="input-xxlarge" id="coverImage"></textarea>
         <p class="help-block">Image to display as cover for this artefact (if not specified, first image in facsimiles field will be used by default)</p>
         <a target="_blank" href="/repository/resources<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
-        <button type="button" title="Upload new image resource in new tab" class="btn"><i class="icon-plus"></i> Create image</button>
+        <button type="button" title="Upload new image resource in new tab" class="btn"><i class="icon-plus"></i> Create new image</button>
         </a>
       </div>
     </div>
@@ -142,7 +142,7 @@ if (isset($_GET['project'])) {
         <textarea rows="2" name="transcriptions" type="text" class="input-xxlarge" id="transcriptions"></textarea>
         <p class="help-block">This field is only used to link DIPLOMATIC Transcriptions to Artefacts. Version Transcriptions should be linked to Versions only</p>
         <a target="_blank" href="/repository/resources<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
-        <button type="button" title="Upload new transcription resource in new tab" class="btn"><i class="icon-plus"></i> Create transcription</button>
+        <button type="button" title="Upload new transcription resource in new tab" class="btn"><i class="icon-plus"></i> Create new transcription</button>
         </a>
       </div>
     </div>

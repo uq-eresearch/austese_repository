@@ -88,7 +88,7 @@ if (isset($_GET['project'])) {
         <textarea rows="2" name="artefacts" type="text" class="input-xxlarge" id="artefacts"></textarea>
         <p class="help-block">Artefacts produced by or impacted on by this event</p>
         <a target="_blank" href="/repository/artefacts/edit<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
-        <button type="button" title="Describe new artefact in new tab" class="btn"><i class="icon-plus"></i> New artefact</button>
+        <button type="button" title="Describe new artefact in new tab" class="btn"><i class="icon-plus"></i> Create new artefact</button>
         </a>
       </div>
     </div>
@@ -105,7 +105,7 @@ if (isset($_GET['project'])) {
     <h4>Agent Roles</h4>
     
     <a target="_blank" href="/repository/agents/edit<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
-        <button type="button" title="Describe new agent in new tab" class="btn"><i class="icon-plus"></i> New agent</button>
+        <button type="button" title="Describe new agent in new tab" class="btn"><i class="icon-plus"></i> Create new agent</button>
     </a>
     </div>
     </div>
@@ -212,7 +212,7 @@ if (isset($_GET['project'])) {
         <textarea rows="2" name="events" type="text" class="input-xxlarge" id="events"></textarea>
         <p class="help-block">Sub-events associated with this event</p>
         <a target="_blank" href="/repository/events/edit<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
-        <button type="button" title="Describe new event in new tab" class="btn"><i class="icon-plus"></i> New event</button>
+        <button type="button" title="Describe new event in new tab" class="btn"><i class="icon-plus"></i> Create new event</button>
         </a>
       </div>
     </div>

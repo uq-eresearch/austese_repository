@@ -72,7 +72,7 @@ if (isset($_GET['project'])) {
         <textarea rows="2" name="versions" type="text" class="input-xxlarge" id="versions"></textarea>
         <p class="help-block">Versions of this work</p>
         <a target="_blank" href="/repository/versions/edit<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
-        <button type="button" title="Describe new version in new tab" class="btn"><i class="icon-plus"></i> New version</button>
+        <button type="button" title="Describe new version in new tab" class="btn"><i class="icon-plus"></i> Create new version</button>
         </a>
       </div>
     </div>

@@ -108,7 +108,7 @@ if (isset($_GET['project'])) {
         <textarea rows="2" name="versions" type="text" class="input-xxlarge" id="versions"></textarea>
         <p class="help-block">VersionParts that are part of this version</p>
         <a target="_blank" href="/repository/versions/edit<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
-        <button type="button" title="Describe new version part in new tab" class="btn"><i class="icon-plus"></i> New version part</button>
+        <button type="button" title="Describe new version part in new tab" class="btn"><i class="icon-plus"></i> Create new version part</button>
         </a>
       </div>
     </div>
@@ -119,7 +119,7 @@ if (isset($_GET['project'])) {
         <input type="hidden" class="input-xxlarge" id="artefacts" name="artefacts"/>
         <p class="help-block">Artefacts associated with this version</p>
         <a target="_blank" href="/repository/artefacts/edit<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
-        <button type="button" title="Describe new artefact in new tab" class="btn"><i class="icon-plus"></i> New artefact</button>
+        <button type="button" title="Describe new artefact in new tab" class="btn"><i class="icon-plus"></i> Create new artefact</button>
         </a>
       </div>
     </div>
@@ -129,7 +129,7 @@ if (isset($_GET['project'])) {
         <textarea rows="2" name="transcriptions" type="text" class="input-xxlarge" id="transcriptions"></textarea>
         <p class="help-block">Version transcriptions associated with this version</p>
         <a target="_blank" href="/repository/resources<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
-        <button type="button" title="Upload new transcription resource in new tab" class="btn"><i class="icon-plus"></i> New transcription</button>
+        <button type="button" title="Upload new transcription resource in new tab" class="btn"><i class="icon-plus"></i> Create new transcription</button>
         </a>
       </div>
     </div>
