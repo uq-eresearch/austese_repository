@@ -203,8 +203,6 @@ templates.agentDetail =
     <h1>{{#if lastName}}{{upper lastName 300}}{{/if}}{{#if firstName}}, {{upper firstName 300}}{{/if}}</h1>\
     {{#if images}}{{#gt images.length 0}}<div class="span2"><div class="resource" data-resourceid="{{images.[0]}}" data-template="image">Image</div></div>{{/gt}}{{/if}}\
     <div {{#if images}}{{#gt images.length 0}}class="span10"{{/gt}}{{/if}}><table class="table">\
-    {{#if lastName}}<tr><td class="metadatalabel muted">Last Name</td><td>{{lastName}}</td></tr>{{/if}}\
-    {{#if firstName}}<tr><td class="metadatalabel muted">Given Name(s)</td><td>{{firstName}}</td></tr>{{/if}}\
     {{#if birthDate}}<tr><td class="metadatalabel muted">Born</td><td>{{birthDate}}</td></tr>{{/if}}\
     {{#if deathDate}}<tr><td class="metadatalabel muted">Died</td><td>{{deathDate}}</td></tr>{{/if}}\
     {{#if biography}}<tr><td class="metadatalabel muted">Biography</td><td>{{{biography}}}</td></tr>{{/if}}\
