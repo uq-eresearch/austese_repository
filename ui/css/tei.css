@@ -87,16 +87,14 @@ span.inserted-right {
     color: #000AEE;
     border-radius: 3px;
 }
-span.merged { -hrit-mergeid: id }
+
 a.parent { 
     color:black;
     border-bottom: 1px dashed purple; 
-    -hrit-childid: href 
 }
 a.child { 
     color:black;
-    border-bottom: 1px dashed purple; 
-    -hrit-parentid: href }
+    border-bottom: 1px dashed purple; }
 .resourceContent {
     font-family: Arial, Helvetica, sans-serif;
 }
