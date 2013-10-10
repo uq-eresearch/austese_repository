@@ -585,7 +585,7 @@ function _loadRecord($collection, $id, $revision, $checkperms) {
  * @param String $id the resource identifier
  */
 function getResource($id){
-  $file = _loadResource($id);
+  $file = _loadResource($id, false);
   
   $requesttype = $_SERVER['HTTP_ACCEPT'];
   $scale = get_get_parameter('scale');
@@ -702,6 +702,7 @@ function _loadResource($id, $skip_perm_check) {
  * @return object       plain public resource record
  */
 function _processResource($file) {
+  $config = repositoryapi_get_configuration();
   $returnobj = $file->file;
   $id = $returnobj['_resourceid'];
   // unset revision
