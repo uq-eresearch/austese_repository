@@ -501,7 +501,7 @@ function getRecord($collection,$id,$revision) {
 }
 $mongo_requests = array();
 $mongo_time = 0;
-function _loadRecord($collection, $id, $revision, $checkperms) {
+function _loadRecord($collection, $id, $revision, $checkperms, $ignoredeleted = false) {
     global $mongo_requests, $mongo_time;
     $config = repositoryapi_get_configuration();
     
@@ -540,7 +540,7 @@ function _loadRecord($collection, $id, $revision, $checkperms) {
       _check_permission_on_project($project, 'view metadata');
     }
 
-    if (array_key_exists('_deleted',$dbobj)){
+    if (array_key_exists('_deleted',$dbobj) && !$ignoredeleted){
       drupal_add_http_header('Status', '410 Gone');
       echo 'The requested object has been deleted';
       exit;
@@ -551,13 +551,13 @@ function _loadRecord($collection, $id, $revision, $checkperms) {
         $returnobj['hazsomeversions'] = true;
 
         foreach ($returnobj['versions'] as $pos => $id) {
-          $returnobj['versions'][$pos] = _loadRecord('versions', $id, NULL, false);
+          $returnobj['versions'][$pos] = _loadRecord('versions', $id, NULL, false, true);
         }
       }
 
       if (!empty($returnobj['artefacts'])) {
         foreach ($returnobj['artefacts'] as $pos => $id) {
-          $returnobj['artefacts'][$pos] = _loadRecord('artefacts', $id, NULL, false);
+          $returnobj['artefacts'][$pos] = _loadRecord('artefacts', $id, NULL, false, true);
         }
       }
 
