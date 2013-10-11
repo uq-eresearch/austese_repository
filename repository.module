@@ -651,7 +651,7 @@ function repository_block_view($delta = '') {
     
     switch ($delta) {
         case 'project_links':
-            $block['subject'] = $node->title;
+            $block['subject'] = t('Project Admin');
             $block['content'] = "
                 <a href='/project/$project_id/projectstatus?project=$project_id'>Project Status</a><br>
                 <a href='/project/$project_id/workflow?project=$project_id'>Workflow</a><br>
