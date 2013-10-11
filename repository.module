@@ -622,7 +622,7 @@ function repository_user_presave(&$edit, $account, $category) {
 
 function repository_block_info() {
     $blocks['project_links'] = array(
-        'info' => t('Project Links'),
+        'info' => t('Project Admin'),
         'cache' => DRUPAL_NO_CACHE,
     );
     
@@ -653,21 +653,9 @@ function repository_block_view($delta = '') {
         case 'project_links':
             $block['subject'] = $node->title;
             $block['content'] = "
-                <a href='/repository/works?project=$project_id'>Works</a><br>
-                <a href='/repository/versions?project=$project_id'>Versions</a><br>
-                <a href='/repository/artefacts?project=$project_id'>Artefacts</a><br>
-                <a href='/repository/resources?project=$project_id'>Digital Resources</a><br>
-                    
-                <a href='/repository/agents?project=$project_id'>Agents</a><br>
-                <a href='/repository/events?project=$project_id'>Events</a><br>
-                <a href='/repository/events/timeline?project=$project_id'>Timeline</a><br>
-                <a href='/repository/events/map?project=$project_id'>Map</a><br>
-                <a href='/repository/mvds?project=$project_id'>MVDs</a><br>
-                <a href='/repository/collections?project=$project_id'>Collections</a><br>
-                <br>
-                <a href='/node/$project_id'>Project Information</a><br>
                 <a href='/project/$project_id/projectstatus?project=$project_id'>Project Status</a><br>
                 <a href='/project/$project_id/workflow?project=$project_id'>Workflow</a><br>
+                <a href='/node/add/page?og_group_ref=$project_id'>Add Page</a>
                     ";
             break;
     }
