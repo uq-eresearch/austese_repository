@@ -526,7 +526,7 @@ function _findRecords($collection,$labelFields, $pagesize=null, $pagenum=null,  
     return $coll->find($findopts)->sort(array($sort=>$sortDirection))->limit($pagesize)->skip($pagenum * $pagesize);
 }
 
-function _loadRecord($collection, $id, $revision, $checkperms, $ignoredeleted = false) {
+function _loadRecord($collection, $id, $revision, $checkperms, $skip_deleted = false) {
     global $mongo_requests, $mongo_time;
     $config = repositoryapi_get_configuration();
     
@@ -565,7 +565,7 @@ function _loadRecord($collection, $id, $revision, $checkperms, $ignoredeleted = 
       _check_permission_on_project($project, 'view metadata');
     }
 
-    if (array_key_exists('_deleted',$dbobj) && !$ignoredeleted){
+    if (array_key_exists('_deleted',$dbobj) && !$skip_deleted){
       drupal_add_http_header('Status', '410 Gone');
       echo 'The requested object has been deleted';
       exit;
@@ -588,13 +588,13 @@ function _loadRecord($collection, $id, $revision, $checkperms, $ignoredeleted = 
 
       if (!empty($returnobj['facsimiles'])) {
         foreach ($returnobj['facsimiles'] as $pos => $id) {
-          $returnobj['facsimiles'][$pos] = _processResource(_loadResource($id, true));
+          $returnobj['facsimiles'][$pos] = _processResource(_loadResource($id, true, true));
         }
       }
 
       if (!empty($returnobj['transcriptions'])) {
         foreach ($returnobj['transcriptions'] as $pos => $id) {
-          $returnobj['transcriptions'][$pos] = _processResource(_loadResource($id, true));
+          $returnobj['transcriptions'][$pos] = _processResource(_loadResource($id, true, true));
         }
       }
     }
@@ -610,7 +610,7 @@ function _loadRecord($collection, $id, $revision, $checkperms, $ignoredeleted = 
  * @param String $id the resource identifier
  */
 function getResource($id){
-  $file = _loadResource($id, false);
+  $file = _loadResource($id);
   
   $requesttype = $_SERVER['HTTP_ACCEPT'];
   $scale = get_get_parameter('scale');
@@ -670,7 +670,7 @@ function getResourceContent($id) {
 }
 
 
-function _loadResource($id, $skip_perm_check) {
+function _loadResource($id, $skip_perm_check=false, $skip_deleted=false) {
   global $mongo_requests, $mongo_time;
   $config = repositoryapi_get_configuration();
 
@@ -696,7 +696,7 @@ function _loadResource($id, $skip_perm_check) {
    echo 'The requested resource does not exist';
    exit;
   }
-  if (array_key_exists('_deleted',$file->file)){
+  if (array_key_exists('_deleted',$file->file) && !$skip_deleted){
    drupal_add_http_header('Status', '410 Gone');
    echo 'The requested resource has been deleted';
    exit;
