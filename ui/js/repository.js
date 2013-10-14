@@ -175,7 +175,18 @@ jQuery.fn.serializeObject = function() {
             setUpTagField(jQuery("#versions"), "version","versionTitle", projectParam);
             setUpTagField(jQuery('#readingVersion'),"version","versionTitle",projectParam, true);
             setUpTagField(jQuery('#coverImage'),"resource","coverImage",projectParam, true);
-
+            // allow freeform tags for tagging events 
+            jQuery('#eventtags').select2({
+                tags:[],
+                multiple: true,
+                formatResult: function(tag) {
+                    return tag || tag.text;
+                },
+                formatSelection: function(tag) {
+                    return tag.text || tag;
+                },
+                escapeMarkup: function(m) {return m;}
+                });
             jQuery('#project').select2({
                 placeholder: "Select a project",
                 minimumInputLength: 0,
@@ -487,6 +498,13 @@ jQuery.fn.serializeObject = function() {
               tokenizeListField(d,'resources','images');
               tokenizeListField(d,'resources','facsimiles');
               tokenizeListField(d,'places');
+              if (d.eventtags){
+                  var etags = [];
+                  for (var et = 0; et< d.eventtags.length; et++){
+                      etags.push({id:d.eventtags[et],text:d.eventtags[et]})
+                  }
+                  jQuery('#eventtags').select2("data",etags);
+              }
               // set up WYSIWYG editor
               wysiEditors.push(jQuery('#description').wysihtml5());
               wysiEditors.push(jQuery('#biography').wysihtml5());
@@ -540,7 +558,7 @@ jQuery.fn.serializeObject = function() {
                 }
             }
         }
-        splitField(data,['artefacts','events','agents','authors','editors', 'publishers', 'printers', 'influencers', 'compositors', 'amanuenses', 'illustrators', 'binders', 'readers', 'translators', 'booksellers', 'versions','transcriptions','resources','images','facsimiles','places']);
+        splitField(data,['eventtags','artefacts','events','agents','authors','editors', 'publishers', 'printers', 'influencers', 'compositors', 'amanuenses', 'illustrators', 'binders', 'readers', 'translators', 'booksellers', 'versions','transcriptions','resources','images','facsimiles','places']);
         if (data["_wysihtml5_mode"]){
             delete data["_wysihtml5_mode"];
         }

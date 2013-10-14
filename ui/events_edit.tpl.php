@@ -234,6 +234,13 @@ if (isset($_GET['project'])) {
         </div>
     </div>
     <div class="control-group">
+      <label class="control-label" for="eventtags">Tags</label>
+      <div class="controls">
+        <textarea  class="input-xxlarge" name="eventtags" id="eventtags"></textarea>
+        <p>Freeform text tags can be used to filter events e.g. when displaying on timelines</p>
+      </div>
+    </div>
+    <div class="control-group">
       <div class="controls">
          <input type="button" class="btn btn-primary save-btn" value="Save">
          <a href="/<?php print $modulePrefix; ?>/events/<?php if ($existingId): print $existingId; endif; ?><?php if ($project): print "?project=".$project; endif; ?>">
