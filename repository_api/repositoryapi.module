@@ -8,14 +8,14 @@ function repositoryapi_get_configuration() {
         "dbname" => "test",
         "uriprefix" => "/sites/all/modules/austese_repository/api",
         "recordtypes" => array('artefacts', 'versions', 'works', 'agents', 'events', 'places', 'mvds', 'collections'),
-        "labelfields" => array('artefacts' => 'source',
-            'versions' => 'versionTitle',
-            'works' => 'workTitle',
-            'agents' => 'lastName',
-            'events' => 'name',
-            'places' => 'name',
-            'mvds' => 'resources',
-            'collections' => 'name'),
+        "labelfields" => array('artefacts' => array('source'),
+            'versions' => array('versionTitle','name'),
+            'works' => array('workTitle', 'name'),
+            'agents' => array('lastName', 'firstName'),
+            'events' => array('name','description'),
+            'places' => array('name'),
+            'mvds' => array('resources'),
+            'collections' => array('name')),
     );
 }
 
@@ -402,58 +402,16 @@ function _check_permission_on_project($project, $permission) {
  * @param string $collection Type of records, eg work/agent
  * @param string $labelField Which field of the record to search on
  */
-function listRecords($collection, $labelField) {
+function listRecords($collection, $labelFields) {
+    
     $config = repositoryapi_get_configuration();
     
-    $m = new Mongo($config['dbhost'].':'.$config['dbport']);
-    $db = $m->selectDB($config['dbname']);
-    $coll = $db->selectCollection($collection);
-
     $pagesize = get_get_parameter('pageSize');
     // provide a default for page Index. Default for pagesize is null (all results will be returned)
     $pagenum = get_get_paramter_int('pageIndex');
-    // TODO: allow param to sort results by custom fields?
-    // allow param to filter results
-    $sort = get_get_parameter('sort');
-    $sortDirection = 1;
-    if (!$sort) {
-        $sort = "_id";
-    }
-    if ($sort == "_id"){
-        $sortDirection = -1;
-    } else {
-        $sort = "metadata." . $labelField;
-    }
-    
-    $filterTerm = get_get_parameter('query');
-    $searchField = get_get_parameter('searchField');
-    if (!$searchField) {
-      $searchField = $labelField;
-    }
-
-    // check project and permissions
-    $project = get_get_parameter('project');
-    _check_project_exists($project);
-    _check_permission_on_project($project, 'view metadata');
-
-
-    $findopts = array('_deleted'=>array('$exists'=>false));
-    if ($filterTerm != null){
-      $regex = new MongoRegex("/".$filterTerm."/i");
-      $searchQueryOpts = array('metadata.'.$searchField=> $regex);
-      // Quick fix to search MVD resource arrays for optional internal id property
-      if ($searchField == "resources"){
-       $searchQueryOpts = array ('$or'=>array($searchQueryOpts,array('metadata.resources.id'=> $regex)));
-      }
-      $findopts = array('$and'=>array($findopts,$searchQueryOpts));
-    }
-    if ($project != null && $project != '') {
-      $findopts = array('$and'=>array($findopts, array('metadata.project'=>$project)));
-    }
-    // sort by reverse id (newest objects should be listed first)
-    $cursor = $coll->find($findopts)->sort(array($sort=>$sortDirection))->limit($pagesize)->skip($pagenum * $pagesize);
-
     // return metadata for results
+    $cursor = _findRecords($collection, $labelFields,$pagesize,$pagenum);
+    
     echo "{\"collection\": \"$collection\", \"count\":" . $cursor->count(0) . ", \"pageSize\": \"". $pagesize . "\", \"pageIndex\": \"" . $pagenum . "\", \"results\": [";
     
     foreach ($cursor as $obj){
@@ -467,7 +425,7 @@ function listRecords($collection, $labelField) {
       $returnobj['id'] = $id->{'$id'};
       echo json_encode($returnobj);
       if ($cursor->hasNext()){
-	echo ",\n";
+        echo ",\n";
       }
      } catch (Exception $e){
      }
@@ -501,6 +459,73 @@ function getRecord($collection,$id,$revision) {
 }
 $mongo_requests = array();
 $mongo_time = 0;
+
+function _findRecords($collection,$labelFields, $pagesize=null, $pagenum=null,  $sort=null, $filterTerm=null, $searchFields=null,  $project=null) {
+    $config = repositoryapi_get_configuration();
+    
+    $m = new Mongo($config['dbhost'].':'.$config['dbport']);
+    $db = $m->selectDB($config['dbname']);
+    $coll = $db->selectCollection($collection);
+    
+    // allow param to filter results
+    if ($sort == null){
+        $sort = get_get_parameter('sort');
+    }
+    $sortDirection = 1;
+    if (!$sort) {
+        $sort = "_id";
+    }
+    if ($sort == "_id"){
+        $sortDirection = -1;
+    }
+    if ($filterTerm == null) {
+        $filterTerm = get_get_parameter('query');
+    }
+    // get search fields from param
+    if ($searchFields == null){
+        $searchField = get_get_parameter('searchField');
+        if ($searchField) {
+            $searchFields = array($searchField);
+        }
+    }
+    // otherwise use label field(s)
+    if (!$searchFields) {
+        $searchFields = $labelFields;
+    }
+    // check project and permissions
+    if ($project == null){
+        $project = get_get_parameter('project');
+    }
+    _check_project_exists($project);
+    _check_permission_on_project($project, 'view metadata');
+
+
+    $findopts = array('_deleted'=>array('$exists'=>false));
+    if ($filterTerm != null){
+      $regex = new MongoRegex("/".$filterTerm."/i");
+        $searchQueryOpts = array();
+        foreach ($searchFields as $k => $sf) {
+            $optKey = "metadata." . $sf;
+            if (!$searchQueryOpts) {
+                $searchQueryOpts = array($optKey => $regex);
+            } else {
+                $searchQueryOpts = array ('$or'=>array(array($optKey => $regex), $searchQueryOpts));
+            }
+            if ($sf == "resources"){
+              $searchQueryOpts ['metadata.resources.id'] = $regex;
+            }
+        }
+        $findopts = array('$and'=>array($findopts,$searchQueryOpts));
+    }
+    if ($project != null && $project != '') {
+      $findopts = array('$and'=>array($findopts, array('metadata.project'=>$project)));
+    }
+    //var_dump($findopts);
+    //($findopts);
+    // sort by reverse id (newest objects should be listed first)
+    return $coll->find($findopts)->sort(array($sort=>$sortDirection))->limit($pagesize)->skip($pagenum * $pagesize);
+}
+
 function _loadRecord($collection, $id, $revision, $checkperms, $ignoredeleted = false) {
     global $mongo_requests, $mongo_time;
     $config = repositoryapi_get_configuration();

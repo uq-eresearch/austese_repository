@@ -779,7 +779,53 @@ function repository_og_context_handler() {
       return array();
   }
 }
+function repository_callback_search_conditions($keys) {
+  $conditions = array();
+  // TODO get project
+  return $conditions;
+}
+function repository_search_info(){
+    return array(
+    'title' => 'Versions',
+    'path' => 'versions',
+    'conditions_callback' => 'repository_callback_search_conditions',
+  );
+}
+function repository_search_execute($keys = NULL, $conditions = NULL){
+    $project = null;
+    if (ISSET($conditions['project'])){
+        $project = $conditions['project'];
+    }
+    $searchResults = _findRecords("versions",array("versionTitle","name"),100, 0, 1, $keys,null,$project);
+    $results = array();
+    foreach ($searchResults as $obj){
+      $numrev = count($obj['_revisions']) - 1;
 
+      $id = $obj['_id'];
+      $metadata = $obj['_revisions'][$numrev];
+      // generate uri
+      $uri = 'repository/versions/' . $id->{'$id'};
+      $snippet = "";
+      if (ISSET($metadata['description'])){
+          $snippet = text_summary($metadata['description']);
+      }
+      /*$proj = null;
+      if (ISSET($metadata['project'])){
+         $projData = node_load($metadata['project']);
+         $proj = l($projData->title,'/node/'.$metadata['project']);
+      }*/
+      $results [] = array(
+        'link' => url($uri, array('absolute' => TRUE)),
+          'type' => 'Version',
+          'title' => $metadata['versionTitle'] . ' ' . $metadata['name'],
+          'user' => "",
+          'date' => "",
+          'extra' => array($metadata['date']),
+          'snippet' => $snippet
+        );
+     }
+    return $results;
+}
 
 /**
  * @} End of "defgroup repository".

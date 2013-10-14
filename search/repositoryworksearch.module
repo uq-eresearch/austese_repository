@@ -1,0 +1,38 @@
+<?php
+function repositoryworksearch_search_info(){
+    return array(
+    'title' => 'Works',
+    'path' => 'works',
+    'conditions_callback' => 'repository_callback_search_conditions',
+  );
+}
+function repositoryworksearch_search_execute($keys = NULL, $conditions = NULL){
+    $project = null;
+    if (ISSET($conditions['project'])){
+        $project = $conditions['project'];
+    }
+    $searchResults = _findRecords("works",array("workTitle","name"),100, 0, 1, $keys,null,$project);
+    $results = array();
+    foreach ($searchResults as $obj){
+      $numrev = count($obj['_revisions']) - 1;
+
+      $id = $obj['_id'];
+      $metadata = $obj['_revisions'][$numrev];
+      // generate uri
+      $uri = 'repository/works/' . $id->{'$id'};
+      $snippet = "";
+      if (ISSET($metadata['description'])){
+          $snippet = text_summary($metadata['description']);
+      }
+      $results [] = array(
+        'link' => url($uri, array('absolute' => TRUE)),
+          'type' => 'Work',
+          'title' => $metadata['workTitle'] . ' ' . $metadata['name'],
+          'user' => "",
+          'date' => "",
+          'extra' => null,
+          'snippet' => $snippet
+        );
+     }
+    return $results;
+}

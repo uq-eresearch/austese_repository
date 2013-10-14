@@ -1,0 +1,43 @@
+<?php
+function repositoryeventsearch_search_info(){
+    return array(
+    'title' => 'Events',
+    'path' => 'events',
+    'conditions_callback' => 'repository_callback_search_conditions',
+  );
+}
+function repositoryeventsearch_search_execute($keys = NULL, $conditions = NULL){
+    $project = null;
+    if (ISSET($conditions['project'])){
+        $project = $conditions['project'];
+    }
+    $searchResults = _findRecords("events",array('name','description'),100, 0, 1, $keys,null,$project);
+    $results = array();
+    foreach ($searchResults as $obj){
+      $numrev = count($obj['_revisions']) - 1;
+
+      $id = $obj['_id'];
+      $metadata = $obj['_revisions'][$numrev];
+      // generate uri
+      $uri = 'repository/events/' . $id->{'$id'};
+      if ($metadata['name']){
+          $name = $metadata['name'];
+      } else {
+          $name = "Untitled Event";
+      }
+      $snippet = "";
+      if (ISSET($metadata['description'])){
+          $snippet = text_summary($metadata['description']);
+      }
+      $results [] = array(
+        'link' => url($uri, array('absolute' => TRUE)),
+          'type' => 'Event',
+          'title' => $name,
+          'user' => "",
+          'date' => "",
+          'extra' => array($metadata['startDate'],$metadata['endDate']),
+          'snippet' => $snippet
+        );
+     }
+    return $results;
+}

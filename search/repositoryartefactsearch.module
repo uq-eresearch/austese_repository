@@ -1,0 +1,38 @@
+<?php
+function repositoryartefactsearch_search_info(){
+    return array(
+    'title' => 'Artefacts',
+    'path' => 'artefacts',
+    'conditions_callback' => 'repository_callback_search_conditions',
+  );
+}
+function repositoryartefactsearch_search_execute($keys = NULL, $conditions = NULL){
+    $project = null;
+    if (ISSET($conditions['project'])){
+        $project = $conditions['project'];
+    }
+    $searchResults = _findRecords("artefacts",array("source"),100, 0, 1, $keys,null,$project);
+    $results = array();
+    foreach ($searchResults as $obj){
+      $numrev = count($obj['_revisions']) - 1;
+
+      $id = $obj['_id'];
+      $metadata = $obj['_revisions'][$numrev];
+      // generate uri
+      $uri = 'repository/artefacts/' . $id->{'$id'};
+      $snippet = "";
+      if (ISSET($metadata['description'])){
+          $snippet = text_summary($metadata['description']);
+      }
+      $results [] = array(
+        'link' => url($uri, array('absolute' => TRUE)),
+          'type' => 'Artefact',
+          'title' => $metadata['source'],
+          'user' => "",
+          'date' => "",
+          'extra' => array($metadata['date']),
+          'snippet' => $snippet
+        );
+     }
+    return $results;
+}

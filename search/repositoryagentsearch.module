@@ -1,0 +1,38 @@
+<?php
+function repositoryagentsearch_search_info(){
+    return array(
+    'title' => 'Agents',
+    'path' => 'agents',
+    'conditions_callback' => 'repository_callback_search_conditions',
+  );
+}
+function repositoryagentsearch_search_execute($keys = NULL, $conditions = NULL){
+    $project = null;
+    if (ISSET($conditions['project'])){
+        $project = $conditions['project'];
+    }
+    $searchResults = _findRecords("agents",array("lastName","firstName"),100, 0, 1, $keys,null,$project);
+    $results = array();
+    foreach ($searchResults as $obj){
+      $numrev = count($obj['_revisions']) - 1;
+
+      $id = $obj['_id'];
+      $metadata = $obj['_revisions'][$numrev];
+      // generate uri
+      $uri = 'repository/agents/' . $id->{'$id'};
+      $snippet = "";
+      if (ISSET($metadata['biography'])){
+          $snippet = text_summary($metadata['biography']);
+      }
+      $results [] = array(
+        'link' => url($uri, array('absolute' => TRUE)),
+          'type' => 'Agent',
+          'title' => $metadata['lastName'] . ", " . $metadata['firstName'],
+          'user' => "",
+          'date' => "",
+          'extra' => null,
+          'snippet' => $snippet
+        );
+     }
+    return $results;
+}
