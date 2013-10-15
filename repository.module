@@ -262,8 +262,11 @@ function repository_display($template) {
         drupal_add_js($modulePath . '/ui/js/uploader.js');
         
         $project = node_load($project);
-        
-        return theme("repository_resources", array("projectshortname" => $project->field_short_name['und'][0]['value']));
+        $pshortname = null;
+        if ($project){
+            $pshortname = $project->field_short_name['und'][0]['value'];
+        }
+        return theme("repository_resources", array("projectshortname" => $pshortname));
     } else if ($template == 'places'){
         drupal_add_css('http://cdn.leafletjs.com/leaflet-0.4/leaflet.css',array('type' => 'external'));
         drupal_add_js('http://cdn.leafletjs.com/leaflet-0.4/leaflet.js',array('type' => 'external'));
