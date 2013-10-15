@@ -59,6 +59,9 @@ span.deleted {
   color:#999999;
   content: "\\";
 }
+.pb {
+    color: #dddddd;
+}
 span.added, span.inserted {
     color:#000AEE;
     border-radius: 3px;

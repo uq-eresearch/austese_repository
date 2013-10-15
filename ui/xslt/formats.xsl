@@ -44,6 +44,7 @@
 <span class="pb">
     <xsl:if test="@n">
         <xsl:attribute name="data-n"><xsl:value-of select="@n"/></xsl:attribute>
+        <xsl:value-of select="@n"/>
     </xsl:if>
 </span>
 <xsl:apply-templates/>
