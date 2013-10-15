@@ -2,6 +2,7 @@ jQuery(document).ready(function() {
     var metadata = jQuery('#metadata');
     var modulePath =  metadata.data('modulepath');
     var project = metadata.data('project');
+    var tag = metadata.data('tag');
     var editable = metadata.data('editable');
     var eventSummary = getTemplate("eventTimelineSummary");
     var timelineData = {
@@ -34,9 +35,18 @@ jQuery(document).ready(function() {
             return dateString;
         }
     };
+    var searchArgs = (project? "?project=" + project : "");
+    if (tag) {
+        if (searchArgs) {
+            searchArgs += "&";
+        } else {
+            searchArgs += "?"
+        }
+        searchArgs += "searchField=eventtags&query=" + tag
+    }
     jQuery.ajax({
         type: 'GET',
-        url: '/' + modulePath + '/api/events/' + (project? "?project=" + project : ""),
+        url: '/' + modulePath + '/api/events/' + searchArgs,
         dataType: "json",
         headers: {
             'Accept': 'application/json'
