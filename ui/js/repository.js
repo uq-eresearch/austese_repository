@@ -236,6 +236,7 @@ jQuery.fn.serializeObject = function() {
                  jQuery('#result').append('<p class="muted" style="clear:both">Place names taken from <a href="http://www.ga.gov.au/">Geoscience Australia</a> Gazetteer of Australia. Data, imagery and map information provided by <a href="http://open.mapquest.co.uk" target="_blank">MapQuest</a>, <a href="http://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> and contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.</p>');
                 } if (result.metadata && result.metadata.filetype && result.metadata.filetype.match("image")){
                     jQuery("#editlink").hide();
+                    jQuery("#pdflink").hide();
                     jQuery("#lightboxlink").show();
                     jQuery('#result').append('<script type="text/javascript">if (typeof enableAnnotations == \"function\"){enableAnnotations();}</script>');
                 } else {

@@ -437,7 +437,9 @@ function repository_display_resource($id,$raw=null){
     _check_permission_on_project($project, 'view metadata');
     
     if ($raw == 'raw'){
-        repository_render_tei($id);
+        echo repository_render_tei($id);
+    } else if ($raw == 'pdf') {
+        repository_stream_pdf($id);
     } else {
         //too slow use ajax instead - return theme('resources_content',array('content'=>$result));
         $modulePath = drupal_get_path('module', 'repository');
@@ -470,14 +472,14 @@ function repository_render_tei($id){
     @$valid = $dom->load($resurl);
     if (!$valid) {
         //watchdog('TEI Content', "Invalid XML/TEI Content", array(), WATCHDOG_WARNING);
-        echo "<pre>".file_get_contents($resurl)."</pre>";
+        return "<pre style='white-space: pre-wrap'>".file_get_contents($resurl)."</pre>";
     }
     $xslDoc = new DomDocument();
     $xslDoc->load($xslurl);
     
     $proc = new XsltProcessor();
     $proc->importStylesheet($xslDoc);
-    echo $proc->transformToXML($dom);
+    return $proc->transformToXML($dom);
 }
 
 function repository_display_record($template, $id=null){
@@ -829,7 +831,25 @@ function repository_search_execute($keys = NULL, $conditions = NULL){
      }
     return $results;
 }
+function repository_stream_pdf($id){
+    try {
 
+        require_once("dompdf/dompdf_config.inc.php");
+        // include TEI CSS
+        $cssurl = drupal_get_path('module', 'repository') . '/ui/css/tei.css';
+        $teicss = "<style type='text/css'>pre {font-family:serif;}" . file_get_contents($cssurl) . "</style> ";
+        $content = preg_replace('/\r\n?/', "\n", repository_render_tei($id));
+        $html =  "<html><body>" . $teicss . $content . "</body></html>";
+        $dompdf = new DOMPDF();
+        $dompdf->load_html($html);
+        $dompdf->render();
+        $dompdf->stream($id . ".pdf");
+        // prevent headers already sent error
+        drupal_exit();
+    } catch (Exception $e){
+        echo $e->getMessage();
+    }
+}
 /**
  * @} End of "defgroup repository".
  */

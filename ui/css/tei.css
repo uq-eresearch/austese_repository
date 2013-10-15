@@ -60,7 +60,7 @@ span.deleted {
   content: "\\";
 }
 .pb {
-    color: #dddddd;
+    color: #bbbbbb;
 }
 span.added, span.inserted {
     color:#000AEE;

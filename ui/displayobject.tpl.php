@@ -45,6 +45,7 @@ $modulePath =  drupal_get_path('module', 'repository');
    <li><i class="icon-eye-open"></i> <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/<?php print $existingId; ?>/content<?php if ($project): print '?project='.$project; endif; ?>">VIEW CONTENT</a></li>
    <li style="display:none" id="wordcloudlink"><i class="icon-eye-open"></i> <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/<?php print $existingId; ?>/content?cloud=true<?php if ($project): print '&project='.$project; endif; ?>">VIEW WORD CLOUD</a></li>
    <li style="display:none" id="lightboxlink"><i class="icon-eye-open"></i> <a  href="/lightbox<?php if ($project): print '?project='.$project; endif; ?>#<?php print $existingId; ?>">VIEW IN LIGHTBOX</a></li>
+   <li id="pdflink"><i class="icon-book"></i> <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/<?php print $existingId; ?>/content/pdf">EXPORT PDF</a></li>
    <?php endif; ?>
   
    <?php if (user_access('edit metadata')): ?>
