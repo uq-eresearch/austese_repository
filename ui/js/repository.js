@@ -125,7 +125,7 @@ jQuery.fn.serializeObject = function() {
                         var searchParams = {
                             query: term,
                             pageSize: 10,
-                            pageIndex: page
+                            pageIndex: page-1
                         };
                         jQuery.each(params,function(k,v){
                             searchParams[k] = v;
