@@ -512,7 +512,7 @@ function _findRecords($collection,$labelFields, $pagesize=null, $pagenum=null,  
                 $searchQueryOpts = array ('$or'=>array(array($optKey => $regex), $searchQueryOpts));
             }
             if ($sf == "resources"){
-              $searchQueryOpts ['metadata.resources.id'] = $regex;
+              $searchQueryOpts = array ('$or'=>array(array('metadata.resources.id' => $regex), $searchQueryOpts));
             }
         }
         $findopts = array('$and'=>array($findopts,$searchQueryOpts));
