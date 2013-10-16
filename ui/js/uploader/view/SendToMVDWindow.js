@@ -58,6 +58,15 @@ Ext.define('austese_uploader.view.SendToMVDWindow', {
                        {
                            name: 'subsection',
                            fieldLabel: 'Sub-section'
+                       },
+                       {
+                           xtype: 'combobox',
+                           name: 'filter',
+                           fieldLabel: 'Filter',
+                           store: 'FilterStore',
+                           valueField: 'filter',
+                           displayField: 'filter',
+                           editable: false
                        }
                     ]
                 }

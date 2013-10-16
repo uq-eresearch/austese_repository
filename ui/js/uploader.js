@@ -26,7 +26,8 @@ Ext.application({
     ],
     stores: [
         'ResourceStore',
-        'SortByStore'
+        'SortByStore',
+        'FilterStore'
     ],
     views: [
         'MainPanel',
