@@ -237,6 +237,7 @@ jQuery.fn.serializeObject = function() {
                 } if (result.metadata && result.metadata.filetype && result.metadata.filetype.match("image")){
                     jQuery("#editlink").hide();
                     jQuery("#pdflink").hide();
+                    jQuery("#mswordlink").hide();
                     jQuery("#lightboxlink").show();
                     jQuery('#result').append('<script type="text/javascript">if (typeof enableAnnotations == \"function\"){enableAnnotations();}</script>');
                 } else {

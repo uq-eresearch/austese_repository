@@ -440,6 +440,8 @@ function repository_display_resource($id,$raw=null){
         echo repository_render_tei($id);
     } else if ($raw == 'pdf') {
         repository_stream_pdf($id);
+    }  else if ($raw == 'word') {
+        repository_stream_word($id);
     } else {
         //too slow use ajax instead - return theme('resources_content',array('content'=>$result));
         $modulePath = drupal_get_path('module', 'repository');
@@ -845,6 +847,22 @@ function repository_stream_pdf($id){
         $dompdf->render();
         $dompdf->stream($id . ".pdf");
         // prevent headers already sent error
+        drupal_exit();
+    } catch (Exception $e){
+        echo $e->getMessage();
+    }
+}
+function repository_stream_word($id){
+    try {
+
+        require_once("htmltodoc/html_to_doc.inc.php");
+        // include TEI CSS
+        $cssurl = drupal_get_path('module', 'repository') . '/ui/css/tei.css';
+        $teicss = "<style type='text/css'>pre {font-family:serif;}" . file_get_contents($cssurl) . "</style> ";
+        $content = preg_replace('/\r\n?/', "\n", repository_render_tei($id));
+        $html =  "<html><head><title>Generated document</title><meta http-equiv='Content-Type' content='text/html; charset=utf-8'/>" . $teicss . "</head><body>" . $content . "</body></html>";
+        $htmltodoc = new HTML_TO_DOC();
+        $htmltodoc->createDoc($html,$id.".docx",true);
         drupal_exit();
     } catch (Exception $e){
         echo $e->getMessage();
