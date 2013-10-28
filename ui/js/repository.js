@@ -54,9 +54,9 @@ jQuery.fn.serializeObject = function() {
                  }
             } else {
                 // these are also called after load object
-                wysiEditors.push(jQuery('#description').wysihtml5());
-                wysiEditors.push(jQuery('#biography').wysihtml5());
-                wysiEditors.push(jQuery('#references').wysihtml5());
+                wysiEditors.push(jQuery('#description').wysihtml5({"html": true}));
+                wysiEditors.push(jQuery('#biography').wysihtml5({"html": true}));
+                wysiEditors.push(jQuery('#references').wysihtml5({"html": true}));
            }
             jQuery('[autofocus=true]').on("change, blur", function(e){
                var fieldName = e.currentTarget.name;
@@ -509,9 +509,9 @@ jQuery.fn.serializeObject = function() {
                   jQuery('#eventtags').select2("data",etags);
               }
               // set up WYSIWYG editor
-              wysiEditors.push(jQuery('#description').wysihtml5());
-              wysiEditors.push(jQuery('#biography').wysihtml5());
-              wysiEditors.push(jQuery('#references').wysihtml5());
+              wysiEditors.push(jQuery('#description').wysihtml5({"html": true}));
+              wysiEditors.push(jQuery('#biography').wysihtml5({"html": true}));
+              wysiEditors.push(jQuery('#references').wysihtml5({"html": true}));
               updateUILocked(d.locked || false);
               //
               loadProjectData();
