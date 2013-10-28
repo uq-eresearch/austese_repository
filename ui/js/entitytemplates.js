@@ -288,82 +288,82 @@ templates.eventDetail =
     </ul>\
     {{/gt}}{{/if}}\
     <h3 class="muted">Agent Roles</h3>\
-    {{#if agents}}{{#gt agents.length 0}}\
-    <p>{{agents.length}} agent{{#neq agents.length 1}}s{{/neq}} participated in this event (no role specified):</p>\
-    <ul>\
-    {{#each agents}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}\
-    </ul>\
-    {{/gt}}{{/if}}\
     {{#if authors}}{{#gt authors.length 0}}\
-    <p>{{authors.length}} author{{#neq authors.length 1}}s{{/neq}} participated in this event:</p>\
+    <p class="eventAgentLabel">Author{{#neq authors.length 1}}s{{/neq}}:</p>\
     <ul>\
     {{#each authors}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}\
     </ul>\
     {{/gt}}{{/if}}\
     {{#if amanuenses}}{{#gt amanuenses.length 0}}\
-    <p>{{amanuenses.length}} amanuens{{#eq amanuenses.length 1}}i{{/eq}}{{#neq amanuenses.length 1}}e{{/neq}}s participated in this event:</p>\
+    <p class="eventAgentLabel">Amanuens{{#eq amanuenses.length 1}}i{{/eq}}{{#neq amanuenses.length 1}}e{{/neq}}s:</p>\
     <ul>\
     {{#each amanuenses}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}\
     </ul>\
     {{/gt}}{{/if}}\
     {{#if influencers}}{{#gt influencers.length 0}}\
-    <p>{{influencers.length}} influencer{{#neq influencers.length 1}}s{{/neq}} participated in this event:</p>\
+    <p class="eventAgentLabel">Influencer{{#neq influencers.length 1}}s{{/neq}}:</p>\
     <ul>\
     {{#each influencers}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}\
     </ul>\
     {{/gt}}{{/if}}\
     {{#if editors}}{{#gt editors.length 0}}\
-    <p>{{editors.length}} editor{{#neq editors.length 1}}s{{/neq}} participated in this event:</p>\
+    <p class="eventAgentLabel">Editor{{#neq editors.length 1}}s{{/neq}}:</p>\
     <ul>\
     {{#each editors}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}\
     </ul>\
     {{/gt}}{{/if}}\
     {{#if publishers}}{{#gt publishers.length 0}}\
-    <p>{{publishers.length}} publisher{{#neq publishers.length 1}}s{{/neq}} participated in this event:</p>\
+    <p class="eventAgentLabel">Publisher{{#neq publishers.length 1}}s{{/neq}}:</p>\
     <ul>\
     {{#each publishers}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}\
     </ul>\
     {{/gt}}{{/if}}\
     {{#if printers}}{{#gt printers.length 0}}\
-    <p>{{printers.length}} printer{{#neq printers.length 1}}s{{/neq}} participated in this event:</p>\
+    <p class="eventAgentLabel">Printer{{#neq printers.length 1}}s{{/neq}}:</p>\
     <ul>\
     {{#each printers}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}\
     </ul>\
     {{/gt}}{{/if}}\
     {{#if compositors}}{{#gt compositors.length 0}}\
-    <p>{{compositors.length}} compositor{{#neq compositors.length 1}}s{{/neq}} participated in this event:</p>\
+    <p class="eventAgentLabel">Compositor{{#neq compositors.length 1}}s{{/neq}}:</p>\
     <ul>\
     {{#each compositors}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}\
     </ul>\
     {{/gt}}{{/if}}\
     {{#if illustrators}}{{#gt illustrators.length 0}}\
-    <p>{{illustrators.length}} illustrator{{#neq illustrators.length 1}}s{{/neq}} participated in this event:</p>\
+    <p class="eventAgentLabel">Illustrator{{#neq illustrators.length 1}}s{{/neq}}:</p>\
     <ul>\
     {{#each illustrators}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}\
     </ul>\
     {{/gt}}{{/if}}\
     {{#if binders}}{{#gt binders.length 0}}\
-    <p>{{binders.length}} binder{{#neq binders.length 1}}s{{/neq}} participated in this event:</p>\
+    <p class="eventAgentLabel">Binder{{#neq binders.length 1}}s{{/neq}}:</p>\
     <ul>\
     {{#each binders}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}\
     </ul>\
     {{/gt}}{{/if}}\
     {{#if readers}}{{#gt readers.length 0}}\
-    <p>{{readers.length}} reader{{#neq readers.length 1}}s{{/neq}} participated in this event:</p>\
+    <p class="eventAgentLabel">Reader{{#neq readers.length 1}}s{{/neq}}:</p>\
     <ul>\
     {{#each readers}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}\
     </ul>\
     {{/gt}}{{/if}}\
     {{#if translators}}{{#gt translators.length 0}}\
-    <p>{{translators.length}} translator{{#neq translators.length 1}}s{{/neq}} participated in this event:</p>\
+    <p class="eventAgentLabel">Translator{{#neq translators.length 1}}s{{/neq}}:</p>\
     <ul>\
     {{#each translators}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}\
     </ul>\
     {{/gt}}{{/if}}\
     {{#if booksellers}}{{#gt booksellers.length 0}}\
-    <p>{{booksellers.length}} bookseller{{#neq booksellers.length 1}}s{{/neq}} participated in this event:</p>\
+    <p class="eventAgentLabel">Bookseller{{#neq booksellers.length 1}}s{{/neq}}:</p>\
     <ul>\
     {{#each booksellers}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}\
+    </ul>\
+    {{/gt}}{{/if}}\
+    {{#if agents}}{{#gt agents.length 0}}\
+    <p class="eventAgentLabel">Agent{{#neq agents.length 1}}s{{/neq}} (no role specified):</p>\
+    <ul>\
+    {{#each agents}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}\
     </ul>\
     {{/gt}}{{/if}}\
     {{#if events}}{{#gt events.length 0}}\
