@@ -66,6 +66,16 @@ if (isset($_GET['project'])) {
   </div>
   <div class="well white-well">
   <fieldset>
+   <div class="control-group">
+      <label class="control-label" for="authors">Author(s)</label>
+      <div class="controls">
+        <textarea rows="1" name="authors" type="text" class="input-xxlarge" id="authors"></textarea>
+        <p class="help-block">Author(s) of this work</p>
+        <a target="_blank" href="/repository/agents/edit<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
+        <button type="button" title="Describe new agent in new tab" class="btn"><i class="icon-plus"></i> Create new agent</button>
+        </a>
+      </div>
+    </div>
   <div class="control-group">
       <label class="control-label" for="versions">Versions</label>
       <div class="controls">

@@ -454,6 +454,8 @@ templates.workDetail =
     {{#if name}}<tr><td class="metadatalabel muted">Name</td><td>{{name}}</td></tr>{{/if}}\
     {{#if description}}<tr><td class="metadatalabel muted">Description</td><td>{{{description}}}</td></tr>{{/if}}\
     </table>\
+    {{#if authors}}{{#gt authors.length 0}}<h3 class="muted">Author{{#neq authors.length 1}}s{{/neq}}</h3><ul>\
+    {{#each authors}}<li class="agent" data-agentid="{{.}}" data-template="summary"></li>{{/each}}{{/gt}}{{/if}}</ul>\
     <h3 class="muted">Versions</h3><ul>\
     {{#each versions}}<li class="version" data-versionid="{{.}}" data-template="summary"></li>{{/each}}\
     </ul>\
