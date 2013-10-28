@@ -54,6 +54,12 @@ if (isset($_GET['project'])) {
       </div>
     </div>
     <div class="control-group">
+      <label class="control-label" for="references">References</label>
+      <div class="controls">
+        <input name="references" type="text" class="input-xxlarge" id="references">
+      </div>
+    </div>
+    <div class="control-group">
       <label class="control-label" for="eventType">Type</label>
       <div class="controls">
         <input name="eventType" type="text" class="input-xxlarge" id="eventType">

@@ -56,6 +56,7 @@ jQuery.fn.serializeObject = function() {
                 // these are also called after load object
                 wysiEditors.push(jQuery('#description').wysihtml5());
                 wysiEditors.push(jQuery('#biography').wysihtml5());
+                wysiEditors.push(jQuery('#references').wysihtml5());
            }
             jQuery('[autofocus=true]').on("change, blur", function(e){
                var fieldName = e.currentTarget.name;
@@ -510,6 +511,7 @@ jQuery.fn.serializeObject = function() {
               // set up WYSIWYG editor
               wysiEditors.push(jQuery('#description').wysihtml5());
               wysiEditors.push(jQuery('#biography').wysihtml5());
+              wysiEditors.push(jQuery('#references').wysihtml5());
               updateUILocked(d.locked || false);
               //
               loadProjectData();

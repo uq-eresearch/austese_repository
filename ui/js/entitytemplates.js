@@ -273,6 +273,7 @@ templates.eventDetail =
     {{#if startDate}}<tr><td class="metadatalabel muted">Start Date</td><td>{{startDate}}</td></tr>{{/if}}\
     {{#if endDate}}<tr><td class="metadatalabel muted">End Date</td><td>{{endDate}}</td></tr>{{/if}}\
     {{#if description}}<tr><td class="metadatalabel muted">Description</td><td>{{{description}}}</td></tr>{{/if}}\
+    {{#if references}}<tr><td class="metadatalabel muted">References</td><td>{{{references}}}</td></tr>{{/if}}\
     </table>\
     {{#if artefacts}}{{#gt artefacts.length 0}}\
     <h3 class="muted">Artefacts</h3><p>{{artefacts.length}} artefact{{#neq artefacts.length 1}}s{{/neq}} produced by this event:</p>\
