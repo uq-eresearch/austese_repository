@@ -799,25 +799,36 @@ Ext.define('austese_uploader.controller.Controller', {
         var records = pp.loadedRecords;
         var ids='';
         var count = 0;
+        var otherFiles = false;
         // for each selected resource that is a transcription (i.e. not an image)
         for (var i = 0; i < records.length; i++){
             if (records[i].get('filetype').match('xml') || records[i].get('filetype').match('text')){
                 ids+=records[i].get("id") +";";
                 count++;
+            } else {
+                otherFiles = true;
             }
         }
-        // TODO: prompt for existing document id, 
-        // but HRIT server import doesn't support adding to existing at present
-        // however could look up existing MVD with some of these resources and offer to replace it
-        Ext.create('austese_uploader.view.SendToMVDWindow',{
+        var sendToMVDWindow = Ext.create('austese_uploader.view.SendToMVDWindow',{
             count: count,
             ids: ids,
             project: this.application.projectShortName
-        }).show();
-        
-        // redirect to collation module sendtomvd page
-        // TODO: post the ids so they don't display in URL?
-        
+        });
+        if (otherFiles){
+            Ext.Msg.show({
+                title:"Incompatible files selected",
+                msg: "Only text and XML files will be sent to MVD",
+                buttons: Ext.Msg.OKCANCEL,
+                fn: function(buttonId){
+                    console.log("button",buttonId)
+                    if(buttonId=='ok'){
+                        sendToMVDWindow.show();
+                    }
+                }
+            });
+        } else {
+            sendToMVDWindow.show();
+        }
         
     },
     createMVD: function(button){
