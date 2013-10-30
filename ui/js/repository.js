@@ -529,7 +529,8 @@ jQuery.fn.serializeObject = function() {
                     + '<h4>Successfully deleted ' + apiType +'</h4><p>'
                     + (apiType != "mvd"? '<a id="last-minute-undo" href="javascript:void(0);">Undo</a>' : "") + '</p>'
                     + '<p><a href="/' + modulePrefix + '/' + apiType + 's' + (project? '?project=' + project : '') +'">View ' + apiType + 's</a></p></div>').alert());
-                jQuery('#last-minute-undo').on('click', onSave);
+            jQuery('#last-minute-undo').on('click', onSave);
+            window.scrollTo(0,0);
           }
        });
     }
@@ -584,11 +585,13 @@ jQuery.fn.serializeObject = function() {
                     existingId = d.id;
                     jQuery('#metadata').data('existingid',d.id);
                 }
+                window.scrollTo(0,0);
                 updateUILocked(locked);
                 // load new page URI (because we have an id for the new object)
                 if (newObject){
                    document.location.href= '/' + modulePrefix + "/" + apiType + 's/edit/'  + existingId + (project? '?project='+project : '');
                 }
+                
           },
           error: function(jqXHR, textStatus, errorThrown) {
             console.log('Error saving record: ', jqXHR);
@@ -596,7 +599,7 @@ jQuery.fn.serializeObject = function() {
                 jQuery('<div class="alert alert-error alert-block"><button type="button" class="close" data-dismiss="alert">x</button>'
                     + '<h4>Error saving ' + apiType + '</h4>'
                     + '<p>' + textStatus + ': ' + errorThrown + '</p></div>').alert());
-      
+            window.scrollTo(0,0);
           }
         });
     }
@@ -858,6 +861,7 @@ jQuery.fn.serializeObject = function() {
           url: '/' + modulePath + '/api/resources/',
           success: function(d){
             jQuery('#alerts').append(jQuery('<div class="alert alert-block"><button type="button" class="close" data-dismiss="alert">x</button><h4>Resource uploaded</h4></div>').alert());
+            window.scrollTo(0,0);
           }
         });
     }
