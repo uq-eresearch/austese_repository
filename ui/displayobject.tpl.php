@@ -15,7 +15,7 @@ $modulePath =  drupal_get_path('module', 'repository');
 ?>
 <div id="alerts"></div>
 <div id="metadata"
- <?php if (user_access('edit metadata')): ?>
+ <?php if (austese_access('edit metadata', $project)): ?>
   data-editable="true"
  <?php endif; ?>
  <?php if ($project):?>
@@ -49,7 +49,7 @@ $modulePath =  drupal_get_path('module', 'repository');
    <li id="mswordlink"><i class="icon-book"></i> <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/<?php print $existingId; ?>/content/word">EXPORT WORD DOC</a></li>
    <?php endif; ?>
   
-   <?php if (user_access('edit metadata')): ?>
+   <?php if (austese_access('edit metadata', $project)): ?>
       <?php if ($apiType=='resource'):?>
         <li><i class="icon-th"></i> <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s<?php if ($project): print '?project='.$project; endif; ?>#<?php print $existingId; ?>">SHOW IN ORGANISER</a></li>
         

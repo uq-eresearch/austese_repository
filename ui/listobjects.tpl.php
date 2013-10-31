@@ -23,7 +23,7 @@ if (isset($_GET['project'])) {
 ?>
 <div id="alerts"></div>
 <div id="metadata"
- <?php if (user_access('edit metadata')): ?>
+ <?php if (austese_access('edit metadata', $project)): ?>
   data-editable="true"
  <?php endif; ?>
  <?php if ($project):?>
@@ -36,7 +36,7 @@ if (isset($_GET['project'])) {
 </div>
 <div class="row-fluid">
     <div class="span8" id="newobject">
-     <?php if (user_access('edit metadata') && $apiType != 'mvd' && $apiType != 'place'): ?>
+     <?php if (austese_access('edit metadata', $project) && $apiType != 'mvd' && $apiType != 'place'): ?>
        <a href="<?php print $apiType; ?>s/edit<?php if ($project) print '?project='.$project; ?>"><button type="button" class="btn"><i class="icon-plus"></i> New <?php print $apiType; ?></button></a>
      <?php endif; ?>
      <?php if ($apiType=='event'):?>

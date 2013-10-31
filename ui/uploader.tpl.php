@@ -20,7 +20,7 @@ if (isset($_GET['project'])) {
 ?>
 <!--  TODO: check permissions to determine whether to enable collation tools -->
 <div id="metadata"
- <?php if (user_access('edit metadata')): ?>
+ <?php if (austese_access('edit metadata', $project)): ?>
   data-editable="true"
  <?php endif; ?>
  <?php if ($existingId):?>

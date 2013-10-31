@@ -393,16 +393,21 @@ function _check_permission_on_project($permission, $project=False) {
     $project = get_get_parameter('project');
     _check_project_exists($project);
   }
-   
-  if ($project && !og_user_access('node', $project, $permission)) {
-    drupal_access_denied();
-    exit;
-  }
-  if (!$project && !user_access($permission)) {
+  
+  if (!austese_access($permission, $project)) {
     drupal_access_denied();
     exit;
   }
 }
+
+function austese_access($permission, $project=False) {
+  if ($project) {
+    $project_access = og_user_access('node', $project, $permission);
+  }
+  $global_access = user_access($permission);
+  return $project_access || $global_access;
+}
+
 /**
  * List records in a mongo collection
  * 

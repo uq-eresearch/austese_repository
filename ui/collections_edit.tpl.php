@@ -15,7 +15,7 @@ if (isset($_GET['project'])) {
 ?>
 <div id="alerts"></div>
 <div id="metadata"
- <?php if (user_access('edit metadata')): ?>
+ <?php if (austese_access('edit metadata', $project)): ?>
   data-editable="true"
  <?php endif; ?>
  <?php if ($project):?>

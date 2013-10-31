@@ -17,7 +17,7 @@ if (isset($project)) {
 
 ?>
 <div id="metadata"
- <?php if (user_access('edit metadata')): ?>
+ <?php if (austese_access('edit metadata', $project)): ?>
   data-editable="true"
   data-editurl="<?php print $GLOBALS['base_url'] . '/' . arg(0) . '/resources/edit/' . arg(3);?>"
  <?php endif; ?>
