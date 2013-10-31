@@ -19,10 +19,10 @@ if (isset($project)) {
 <div id="metadata"
  <?php if (user_access('edit metadata')): ?>
   data-editable="true"
+  data-editurl="<?php print $GLOBALS['base_url'] . '/' . arg(0) . '/resources/edit/' . arg(3);?>"
  <?php endif; ?>
  <?php if ($project):?>
- data-editurl="<?php print $GLOBALS['base_url'] . '/' . arg(0) . '/resources/edit/' . arg(3);?>"
- data-project="<?php print $project; ?>"
+  data-project="<?php print $project; ?>"
  <?php endif; ?>
  <?php if ($existingId):?>
    data-existingid="<?php print $existingId; ?>"

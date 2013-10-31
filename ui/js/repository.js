@@ -260,14 +260,18 @@ jQuery.fn.serializeObject = function() {
             var project = jQuery('#metadata').data('project');
             var projParam = (project? '?project=' + project : '');
             var defaultPageSize = 5;
-            jQuery.ajax({
-                type: 'GET',
-                url: '/' + modulePath + '/api/' + queryApiType + 's/',
-                data: {
+            var queryData = {
                     query: queryId,
                     searchField: queryField,
                     pageSize: defaultPageSize
-                },
+                };
+            if (project) {
+              queryData.project = project;
+            }
+            jQuery.ajax({
+                type: 'GET',
+                url: '/' + modulePath + '/api/' + queryApiType + 's/',
+                data: queryData,
                 dataType: "json",
                 headers: {
                     'Accept': 'application/json'
