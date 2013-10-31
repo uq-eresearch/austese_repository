@@ -323,6 +323,7 @@ function repository_edit($record_type, $id=null){
     drupal_add_js($modulePath . '/ui/lib/select2/jquery-ui-1.10.3.custom.js');
     drupal_add_css($modulePath . '/ui/lib/select2/select2.css',  array('group' => CSS_DEFAULT, 'every_page' => FALSE));
     drupal_add_js($modulePath . '/ui/lib/js2form.js');
+    drupal_add_js($modulePath . '/ui/lib/wysihtml5-advanced.js');
     drupal_add_js($modulePath . '/ui/lib/wysihtml5-0.3.0.min.js');
     drupal_add_js($modulePath . '/ui/lib/bootstrap-wysihtml5.js');
     drupal_add_css($modulePath. '/ui/lib/bootstrap-wysihtml5.css',  array('group' => CSS_DEFAULT, 'every_page' => FALSE));
