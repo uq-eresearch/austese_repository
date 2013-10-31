@@ -66,31 +66,15 @@ Ext.define('austese_uploader.controller.Controller', {
             'propertiespanel button[text="Cancel"]': {
                 click: this.cancelEdit
             },
-            'propertiespanel #configuresingle': {
-                click: function(){
-                    this.launchConfigureEditorWindow(true);
-                }
-            },
-            'propertiespanel #configuremulti': {
-                click: function(){
-                    this.launchConfigureEditorWindow(false);
-                }
-            },
             '#thumbnailsButton': {
                 click: this.toggleResourceView
             },
             '#gridButton':{
                 click: this.toggleResourceView
             },
-            'selectpropertieswindow button[text="Update"]': {
-                click: this.updateEditorFields
-            },
-            'selectpropertieswindow button[text="Cancel"], sendtomvdwindow button[text="Cancel"]': {
+            'sendtomvdwindow button[text="Cancel"]': {
                 click: this.cancelWindow
             }, 
-            'selectpropertieswindow button[text="Select All"]': {
-                click: this.selectAllCheckboxes
-            },
             'sendtomvdwindow button[text="OK"]':{
                 click: this.createMVD
             },
@@ -385,23 +369,19 @@ Ext.define('austese_uploader.controller.Controller', {
             
         } else if (l > 0) {
             //  display values for upload date, size and type are aggregated
-            aggregatedValues = {
-                    description: records[0].get('description'), 
-                    title: records[0].get('title'),
-                    project: records[0].get('project'),
-                    filetype: ''
-            };
+            aggregatedValues = {filetype:''};
             var aggregatedTypes = {};
-            aggregatedTypes[records[0].get('filetype')] = 1;
             var minDate = records[0].get('uploaddate'), 
                 maxDate = minDate;
-            var totalFileLength = records[0].get('filelength');
-            for (var i = 1; i < l; i++){
+            var totalFileLength = 0;
+            for (var i = 0; i < l; i++){
                 var currentRecord = records[i];
-                // display first non null title and description from any record 
-                aggregatedValues.title = aggregatedValues.title || currentRecord.get('title');
-                aggregatedValues.description = aggregatedValues.description || currentRecord.get('description');
-                aggregatedValues.project = aggregatedValues.project || currentRecord.get('project');
+                var fieldNames = ['title','description','project','coverage','format','language','publisher', 'rights','source'];
+                // display first non null value for each field from any record
+                for (var f = 0; f < fieldNames.length; f++){
+                    var fld = fieldNames[f];
+                    aggregatedValues[fld] = aggregatedValues[fld] || currentRecord.get(fld);
+                }
                 // aggregate file length and calculate min and max dates
                 totalFileLength += currentRecord.get('filelength');
                 var date = currentRecord.get('uploaddate');
@@ -430,6 +410,7 @@ Ext.define('austese_uploader.controller.Controller', {
             for (t in aggregatedTypes) {
                 aggregatedValues.filetype += t + " (" + aggregatedTypes[t] + ")<br/>";
             }
+            console.log("aggregated values are",aggregatedValues)
             form.setValues(aggregatedValues);
             // TODO file name field
             layout.getActiveItem().down('displayfield[name="filename"]').hide();
@@ -456,104 +437,6 @@ Ext.define('austese_uploader.controller.Controller', {
             msg: "Image rotation feature is still being developed",
             buttons: Ext.Msg.OK
         });
-    },
-    launchConfigureEditorWindow: function(single){
-        var metadataFieldSet = Ext.ComponentQuery.query('propertiespanel')[0] // the propertiespanel
-        .getLayout().getActiveItem(); // the active editor form
-        //.down('fieldset'); // the first fieldset (i.e. metadata)
-        // make a list of existing fields in metadata editor to avoid creating duplicate fields
-        var existingFields = [];
-        metadataFieldSet.items.each(
-            function(f){
-                if (single){
-                    existingFields.push(f.name);
-                } else if (f.down('textfield')){
-                    existingFields.push(f.down('textfield').name)
-                }
-            }
-        );
-       Ext.create('austese_uploader.view.SelectPropertiesWindow',
-               {
-                   single: single, 
-                   existingFields: existingFields
-               }
-       ).show();
-    },
-    selectAllCheckboxes: function(button){
-        button.up('window').down('form').items.each(function(c){
-            c.setValue('on');
-        });
-    },
-    updateEditorFields: function(button){
-        var win = button.up('window');
-        // read config values from window's form
-        var config = win.down('form').getForm().getValues();
-        var propertiespanel = Ext.ComponentQuery.query('propertiespanel')[0]
-        var metadataFieldSet =  propertiespanel
-            .getLayout().getActiveItem(); // the active editor form
-            //.down('fieldset'); // the first fieldset (i.e. metadata)
-        var existingFields = win.existingFields;
-        var records = propertiespanel.loadedRecords;
-        if (records.length > 0){
-            var record = records[0];
-        }
-        metadataFieldSet.items.each(
-            function(f){
-                // remove deselected fields (title, description, shortname and project are always shown)
-                var fieldname = win.single? f.name : f.itemId;
-                
-                // for multi-form we look at field containers (itemId is appended with 'fc')
-                if (fieldname != ('description' + (win.single? '' : 'fc')) 
-                        && fieldname != ('title' + (win.single? '' : 'fc')) 
-                        && fieldname != ('shortname' + (win.single? '' : 'fc'))
-                        && fieldname != ('project' + (win.single? '' : 'fc'))
-                        && !config.hasOwnProperty((win.single? fieldname : fieldname.substring(0,fieldname.length - 2)))){
-                    metadataFieldSet.remove(f);
-                }
-            }
-        );
-        for (var p in config) {
-          if (config.hasOwnProperty(p) 
-                  && config[p] == 'on' 
-                      && !Ext.Array.contains(existingFields,p)){
-                var fld;
-                if (win.single){
-                    fld = Ext.create('Ext.form.field.Text',{
-                        name: p,
-                        labelAlign: 'top',
-                        fieldLabel: Ext.util.Format.capitalize(p),
-                        value: (record? record.get(p): "")
-                    });
-                } else {
-                    // for multi-form we add fieldcontainer with checkbox
-                    fld = Ext.create('Ext.form.FieldContainer',{
-                        hideLabel: true,
-                        itemId: p + 'fc',
-                        layout: 'hbox',
-                        items: [
-                            {
-                                xtype: 'checkboxfield',
-                                flex: 0,
-                                margins: '0 10 0 0',
-                                name: 'update' + p,
-                                hideLabel: true,
-                                boxLabel: ''
-                            },
-                            {
-                                xtype: 'textfield',
-                                flex: 1,
-                                name: p,
-                                fieldLabel: Ext.util.Format.capitalize(p),
-                                labelAlign: 'top'
-                            }
-                        ]
-                    });
-                }
-                // add new field to first fieldset (metadata) in editor
-                metadataFieldSet.add(fld);
-          }
-        }
-        win.close();
     },
     cancelWindow: function(button) {
         button.up('window').close();

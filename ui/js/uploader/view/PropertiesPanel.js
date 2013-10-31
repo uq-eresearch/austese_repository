@@ -52,7 +52,8 @@ Ext.define('austese_uploader.view.PropertiesPanel', {
                     trackResetOnLoad: true,
                     defaults: {
                         anchor:'100%',
-                        labelAlign: 'top'
+                        labelAlign: 'top',
+                        xtype: 'textfield'
                     },
                     items: [
                         {
@@ -74,6 +75,30 @@ Ext.define('austese_uploader.view.PropertiesPanel', {
                             xtype: 'textfield',
                             name: 'project',
                             fieldLabel: 'Project'
+                        },
+                        {
+                            name: 'coverage',
+                            fieldLabel: 'Coverage',
+                        },
+                        {
+                            name: 'format',
+                            fieldLabel: 'Format'
+                        },
+                        {
+                            name: 'language',
+                            fieldLabel: 'Language'
+                        },
+                        {
+                            name: 'publisher',
+                            fieldLabel: 'Publisher'
+                        },
+                        {
+                            name: 'rights',
+                            fieldLabel: 'Rights'
+                        },
+                        {
+                            name: 'source',
+                            fieldLabel: 'Source'
                         }
                     ],
                     dockedItems: [
@@ -81,12 +106,6 @@ Ext.define('austese_uploader.view.PropertiesPanel', {
                             xtype: 'toolbar',
                             dock: 'bottom',
                             items: [
-                                {
-                                    xtype: 'button',
-                                    iconCls: 'configureIcon',
-                                    itemId: 'configuresingle',
-                                    tooltip: 'Select property fields to edit'
-                                },
                                 {
                                     xtype: 'tbfill'
                                 },
@@ -182,18 +201,150 @@ Ext.define('austese_uploader.view.PropertiesPanel', {
                                 }
                             ]
                         },
+                        {
+                            xtype: 'fieldcontainer',
+                            hideLabel: true,
+                            itemId: 'coveragefc',
+                            items: [
+                                {
+                                    xtype: 'checkboxfield',
+                                    flex: 0,
+                                    margins: '0 10 0 0',
+                                    name: 'updatecoverage',
+                                    fieldLabel: 'Label',
+                                    hideLabel: true,
+                                    boxLabel: ''
+                                },
+                                {
+                                    xtype: 'textfield',
+                                    flex: 1,
+                                    name: 'coverage',
+                                    fieldLabel: 'Coverage',
+                                    labelAlign: 'top'
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            hideLabel: true,
+                            itemId: 'formatfc',
+                            items: [
+                                {
+                                    xtype: 'checkboxfield',
+                                    flex: 0,
+                                    margins: '0 10 0 0',
+                                    name: 'updateformat',
+                                    fieldLabel: 'Label',
+                                    hideLabel: true,
+                                    boxLabel: ''
+                                },
+                                {
+                                    xtype: 'textfield',
+                                    flex: 1,
+                                    name: 'format',
+                                    fieldLabel: 'Format',
+                                    labelAlign: 'top'
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            hideLabel: true,
+                            itemId: 'languagefc',
+                            items: [
+                                {
+                                    xtype: 'checkboxfield',
+                                    flex: 0,
+                                    margins: '0 10 0 0',
+                                    name: 'updatelanguage',
+                                    fieldLabel: 'Label',
+                                    hideLabel: true,
+                                    boxLabel: ''
+                                },
+                                {
+                                    xtype: 'textfield',
+                                    flex: 1,
+                                    name: 'language',
+                                    fieldLabel: 'Language',
+                                    labelAlign: 'top'
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            hideLabel: true,
+                            itemId: 'publisherfc',
+                            items: [
+                                {
+                                    xtype: 'checkboxfield',
+                                    flex: 0,
+                                    margins: '0 10 0 0',
+                                    name: 'updatepublisher',
+                                    fieldLabel: 'Label',
+                                    hideLabel: true,
+                                    boxLabel: ''
+                                },
+                                {
+                                    xtype: 'textfield',
+                                    flex: 1,
+                                    name: 'publisher',
+                                    fieldLabel: 'Publisher',
+                                    labelAlign: 'top'
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            hideLabel: true,
+                            itemId: 'rightsfc',
+                            items: [
+                                {
+                                    xtype: 'checkboxfield',
+                                    flex: 0,
+                                    margins: '0 10 0 0',
+                                    name: 'updaterights',
+                                    fieldLabel: 'Label',
+                                    hideLabel: true,
+                                    boxLabel: ''
+                                },
+                                {
+                                    xtype: 'textfield',
+                                    flex: 1,
+                                    name: 'rights',
+                                    fieldLabel: 'Rights',
+                                    labelAlign: 'top'
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'fieldcontainer',
+                            hideLabel: true,
+                            itemId: 'sourcefc',
+                            items: [
+                                {
+                                    xtype: 'checkboxfield',
+                                    flex: 0,
+                                    margins: '0 10 0 0',
+                                    name: 'updatesource',
+                                    fieldLabel: 'Label',
+                                    hideLabel: true,
+                                    boxLabel: ''
+                                },
+                                {
+                                    xtype: 'textfield',
+                                    flex: 1,
+                                    name: 'source',
+                                    fieldLabel: 'Source',
+                                    labelAlign: 'top'
+                                }
+                            ]
+                        }
                     ],
                     dockedItems: [
                         {
                             xtype: 'toolbar',
                             dock: 'bottom',
                             items: [
-                                {
-                                    xtype: 'button',
-                                    iconCls: 'configureIcon',
-                                    itemId: 'configuremulti',
-                                    tooltip: 'Select property fields to edit'
-                                },
                                 {
                                     xtype: 'tbfill'
                                 },
@@ -219,66 +370,58 @@ Ext.define('austese_uploader.view.PropertiesPanel', {
                     defaults: {
                         anchor:'100%',
                         labelAlign: 'left',
-                        fieldStyle: 'padding-top:4px;'
+                        fieldStyle: 'padding-top:4px;', 
+                        xtype: 'displayfield',
+                        labelWidth: 60, 
+                        renderer: function(val){
+                            if (!val){
+                                return "<span class='muted'>Not specified</span>";
+                            } 
+                            else {
+                                return Ext.util.Format.ellipsis(val,25);
+                            }
+                        }
                     },
                     items: [
-                        
                         {   
-                            xtype:'displayfield',
                             fieldLabel: 'Title',
-                            labelWidth: 45,
-                            name:'title',
-                            renderer: function(val){
-                                if (!val){
-                                    return "<span class='muted'>Not specified</span>";
-                                } 
-                                else {
-                                    return Ext.util.Format.ellipsis(val,25);
-                                }
-                            }
+                            name:'title'
                         },
                         {   
-                            xtype:'displayfield',
-                            fieldLabel: 'Desc.',
-                            labelWidth: 45,
-                            name:'description',
-                            renderer: function(val){
-                                if (!val){
-                                    return "<span class='muted'>Not specified</span>";
-                                } 
-                                else {
-                                    return Ext.util.Format.ellipsis(val, 25);
-                                }
-                            }
+                            fieldLabel: 'Desc',
+                            name:'description'
                         },
                         {   
-                            xtype:'displayfield',
                             fieldLabel: 'Name',
-                            labelWidth: 45,
-                            name:'shortname',
-                            renderer: function(val){
-                                if (!val){
-                                    return "<span class='muted'>Not specified</span>";
-                                } 
-                                else {
-                                    return val;
-                                }
-                            }
+                            name:'shortname'
                         },
                         {   
-                            xtype:'displayfield',
                             fieldLabel: 'Project',
-                            labelWidth: 45,
-                            name:'project',
-                            renderer: function(val){
-                                if (!val){
-                                    return "<span class='muted'>Not specified</span>";
-                                } 
-                                else {
-                                    return val;
-                                }
-                            }
-                        
+                            name:'project'
+                        },
+                        {
+                            name: 'coverage',
+                            fieldLabel: 'Coverage',
+                        },
+                        {
+                            name: 'format',
+                            fieldLabel: 'Format'
+                        },
+                        {
+                            name: 'language',
+                            fieldLabel: 'Lang'
+                        },
+                        {
+                            name: 'publisher',
+                            fieldLabel: 'Publisher'
+                        },
+                        {
+                            name: 'rights',
+                            fieldLabel: 'Rights'
+                        },
+                        {
+                            name: 'source',
+                            fieldLabel: 'Source'
                         },
                         // file info
                         {
