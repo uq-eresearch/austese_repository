@@ -363,9 +363,9 @@ Ext.define('austese_uploader.controller.Controller', {
         var aggregatedValues;
         if (l == 1){
             form.loadRecord(records[0]);
-            // show file name field
+            // show metadata
+            layout.getActiveItem().down('fieldset[title="Metadata"]').show();
             layout.getActiveItem().down('displayfield[name="filename"]').show();
-            layout.getActiveItem().down('displayfield[name="title"]').show();
             
         } else if (l > 0) {
             //  display values for upload date, size and type are aggregated
@@ -412,9 +412,9 @@ Ext.define('austese_uploader.controller.Controller', {
             }
             console.log("aggregated values are",aggregatedValues)
             form.setValues(aggregatedValues);
-            // TODO file name field
+            // hide metadata
+            layout.getActiveItem().down('fieldset[title="Metadata]').hide();
             layout.getActiveItem().down('displayfield[name="filename"]').hide();
-            layout.getActiveItem().down('displayfield[name="title"]').hide();
             
         } else {
             // show no resources card

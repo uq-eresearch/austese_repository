@@ -367,61 +367,69 @@ Ext.define('austese_uploader.view.PropertiesPanel', {
                     bodyPadding: 10,
                     autoScroll: true,
                     trackResetOnLoad: true,
-                    defaults: {
-                        anchor:'100%',
-                        labelAlign: 'left',
-                        fieldStyle: 'padding-top:4px;', 
-                        xtype: 'displayfield',
-                        labelWidth: 60, 
-                        renderer: function(val){
-                            if (!val){
-                                return "<span class='muted'>Not specified</span>";
-                            } 
-                            else {
-                                return Ext.util.Format.ellipsis(val,25);
-                            }
-                        }
-                    },
                     items: [
-                        {   
-                            fieldLabel: 'Title',
-                            name:'title'
+                    {
+                        xtype: 'fieldset',
+                        collapsible: true,
+                        title: 'Metadata',
+                        defaultType: 'displayfield',
+                        defaults: {
+                            anchor:'100%',
+                            labelAlign: 'left',
+                            fieldStyle: 'padding-top:4px;', 
+                            xtype: 'displayfield',
+                            labelWidth: 60, 
+                            renderer: function(val){
+                                if (!val){
+                                    return "<span class='muted'>Not specified</span>";
+                                } 
+                                else {
+                                    return Ext.util.Format.ellipsis(val,25);
+                                }
+                            }
                         },
-                        {   
-                            fieldLabel: 'Desc',
-                            name:'description'
-                        },
-                        {   
-                            fieldLabel: 'Name',
-                            name:'shortname'
-                        },
-                        {   
-                            fieldLabel: 'Project',
-                            name:'project'
-                        },
-                        {
-                            name: 'coverage',
-                            fieldLabel: 'Coverage',
-                        },
-                        {
-                            name: 'format',
-                            fieldLabel: 'Format'
-                        },
-                        {
-                            name: 'language',
-                            fieldLabel: 'Lang'
-                        },
-                        {
-                            name: 'publisher',
-                            fieldLabel: 'Publisher'
-                        },
-                        {
-                            name: 'rights',
-                            fieldLabel: 'Rights'
-                        },
-                        {
-                            name: 'source',
-                            fieldLabel: 'Source'
+                        items: [
+                            {   
+                                fieldLabel: 'Title',
+                                name:'title'
+                            },
+                            {   
+                                fieldLabel: 'Desc',
+                                name:'description'
+                            },
+                            {   
+                                fieldLabel: 'Name',
+                                name:'shortname'
+                            },
+                            {   
+                                fieldLabel: 'Project',
+                                name:'project'
+                            },
+                            {
+                                name: 'coverage',
+                                fieldLabel: 'Coverage',
+                            },
+                            {
+                                name: 'format',
+                                fieldLabel: 'Format'
+                            },
+                            {
+                                name: 'language',
+                                fieldLabel: 'Lang'
+                            },
+                            {
+                                name: 'publisher',
+                                fieldLabel: 'Publisher'
+                            },
+                            {
+                                name: 'rights',
+                                fieldLabel: 'Rights'
+                            },
+                            {
+                                name: 'source',
+                                fieldLabel: 'Source'
+                            },
+                            ]
                         },
                         // file info
                         {
