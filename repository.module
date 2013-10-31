@@ -62,7 +62,6 @@ function repository_permission() {
 /**
  * Implements hook_menu().
  *
- *
  * @see hook_menu()
  * @see menu_example
  */
@@ -71,7 +70,8 @@ function repository_menu() {
     $items['repository'] = array(
     'title' => 'Content Repository',
     'page callback' => 'repository_toc',
-    'access arguments' => array('view metadata'),
+    'access callback' => TRUE,
+   'access arguments' => array('view metadata'),
     'type' => MENU_CALLBACK
   );
   
@@ -81,7 +81,8 @@ function repository_menu() {
     'title callback' => 'repository_display_title',
     'page callback' => 'repository_display',
     'page arguments' => array(1),
-    'access arguments' => array('view metadata'),
+    'access callback' => TRUE,
+//    'access arguments' => array('view metadata'),
     'type' => MENU_CALLBACK
   );
   // Add or edit an object of a specific type
@@ -90,7 +91,8 @@ function repository_menu() {
     'title callback' => 'repository_display_edit_title',
     'page callback' => 'repository_edit',
     'page arguments' => array(1,3),
-    'access arguments' => array('edit metadata'),
+    'access callback' => TRUE,
+//    'access arguments' => array('edit metadata'),
     'type' => MENU_CALLBACK
   );
   // Visualize an object of a specific type
@@ -99,7 +101,8 @@ function repository_menu() {
     'title callback' => 'repository_display_visualize_title',
     'page callback' => 'repository_visualize',
     'page arguments' => array(1,3),
-    'access arguments' => array('view visualizations'),
+    'access callback' => TRUE,
+//    'access arguments' => array('view visualizations'),
     'type' => MENU_CALLBACK
   );
   // Map events
@@ -107,7 +110,8 @@ function repository_menu() {
     'title' => 'Map of Events',
     'page callback' => 'repository_map_events',
     'page arguments' => array(1,3),
-    'access arguments' => array('view visualizations'),
+    'access callback' => TRUE,
+//    'access arguments' => array('view visualizations'),
     'type' => MENU_CALLBACK
   );
   // Timeline of events
@@ -115,14 +119,16 @@ function repository_menu() {
     'title' => 'Timeline of Events',
     'page callback' => 'repository_timeline_events',
     'page arguments' => array(),
-    'access arguments' => array('view visualizations'),
+    'access callback' => TRUE,
+//    'access arguments' => array('view visualizations'),
     'type' => MENU_CALLBACK
   );
   $items['repository/resources/%/content'] = array(
     'title' => "",
     'page callback' => 'repository_display_resource',
     'page arguments' => array(2,4),
-    'access arguments' => array('view metadata'),
+    'access callback' => TRUE,
+//    'access arguments' => array('view metadata'),
     'type' => MENU_CALLBACK
   );
   // Record view for individual objects
@@ -130,24 +136,33 @@ function repository_menu() {
     'title' => "",
     'page callback' => 'repository_display_record',
     'page arguments' => array(1,3),
-    'access arguments' => array('view metadata'),
+    'access callback' => TRUE,
+//    'access arguments' => array('view metadata'),
     'type' => MENU_CALLBACK
   );
   $items['project/%node/projectstatus'] = array(
     'title' => "Project Status",
     'page callback' => 'repository_projectstatus',
     'page arguments' => array(1),
-    'access arguments' => array('view metadata'),
+    'access callback' => TRUE,
+//    'access arguments' => array('view metadata'),
     'type' => MENU_CALLBACK
   );
   $items['project/%node/workflow'] = array(
-      'title' => 'Project Workflow',
-      'page callback' => 'repository_workflow',
-      'page arguments' => array(1),
-      'access arguments' => array('view metadata')
+    'title' => 'Project Workflow',
+    'page callback' => 'repository_workflow',
+    'page arguments' => array(1),
+    'access callback' => TRUE,
+//    'access arguments' => array('view metadata')
   );
   return $items;
 }
+
+/**
+ * Add a hook_xmlrpc call `check_login` for use by other local
+ * services to check whether a session cookie is valid.
+ *
+ */
 function repository_xmlrpc() {
   $methods[] = array(
     'check_login',
@@ -229,18 +244,20 @@ function _assert_valid_record_type($record_type) {
     }
 }
 
-function repository_display($template) {
-    _assert_valid_record_type($template);
+function repository_display($record_type) {
+    _assert_valid_record_type($record_type);
+
+    // Create breadcrumb trail
     $breadcrumb = array();
     $breadcrumb[] = l('Home', '<front>');
     _add_project_or_repository($breadcrumb);
-    $breadcrumb[] = t(ucfirst($template)); 
+    $breadcrumb[] = t(ucfirst($record_type)); 
     drupal_set_breadcrumb($breadcrumb);
     
     // check project and permissions
     $project = get_get_parameter('project');
     _check_project_exists($project);
-    _check_permission_on_project($project, 'view metadata');
+    _check_permission_on_project('view metadata', $project);
     
     $modulePath = drupal_get_path('module', 'repository');
     drupal_add_js($modulePath . '/ui/lib/handlebars.js');
@@ -249,7 +266,7 @@ function repository_display($template) {
     drupal_add_css($modulePath . '/ui/css/repository.css');
     
     // resource organizer
-    if ($template == 'resources'){
+    if ($record_type == 'resources'){
         if (!user_access('edit metadata')){
             drupal_access_denied();
             return;
@@ -267,7 +284,7 @@ function repository_display($template) {
             $pshortname = $project->field_short_name['und'][0]['value'];
         }
         return theme("repository_resources", array("projectshortname" => $pshortname));
-    } else if ($template == 'places'){
+    } else if ($record_type == 'places'){
         drupal_add_css('http://cdn.leafletjs.com/leaflet-0.4/leaflet.css',array('type' => 'external'));
         drupal_add_js('http://cdn.leafletjs.com/leaflet-0.4/leaflet.js',array('type' => 'external'));
         return theme("repository_display",array());
@@ -275,27 +292,29 @@ function repository_display($template) {
         return theme("repository_display",array());
     }
 }
-function repository_edit($template, $id=null){
-    if (!in_array($template,array("agents","artefacts","versions","works", "resources", "events", "mvds", "collections"))) {
+function repository_edit($record_type, $id=null){
+    if (!in_array($record_type,array("agents","artefacts","versions","works", "resources", "events", "mvds", "collections"))) {
         drupal_access_denied();
         return;
     }
     
     $projectParam = _get_projectParam();
+
+    // Create breadcrumb trail
     $breadcrumb = array();
     $breadcrumb[] = l('Home', '<front>');
     _add_project_or_repository($breadcrumb);
-    $breadcrumb[] = l(ucwords($template),'repository/'.$template,$projectParam);
-    if ($template != 'mvds'){
-        $breadcrumb[] = l('View '. ucwords(substr($template,0,-1)),'repository/'.$template.'/'.$id,$projectParam);
+    $breadcrumb[] = l(ucwords($record_type),'repository/'.$record_type,$projectParam);
+    if ($record_type != 'mvds'){
+        $breadcrumb[] = l('View '. ucwords(substr($record_type,0,-1)),'repository/'.$record_type.'/'.$id,$projectParam);
     }
-    $breadcrumb[] = t('Edit '. ucfirst(substr($template,0,-1))); 
+    $breadcrumb[] = t('Edit '. ucfirst(substr($record_type,0,-1))); 
     drupal_set_breadcrumb($breadcrumb);
     
     // check project and permissions
     $project = get_get_parameter('project');
     _check_project_exists($project);
-    _check_permission_on_project($project, 'edit metadata');
+    _check_permission_on_project('edit metadata', $project);
     
     // Add scripts
     $modulePath = drupal_get_path('module', 'repository');
@@ -309,7 +328,7 @@ function repository_edit($template, $id=null){
     drupal_add_css($modulePath. '/ui/lib/bootstrap-wysihtml5.css',  array('group' => CSS_DEFAULT, 'every_page' => FALSE));
     drupal_add_js($modulePath . '/ui/lib/handlebars.js');
     drupal_add_js($modulePath . '/ui/js/entitytemplates.js');
-    if ($template == "resources"){
+    if ($record_type == "resources"){
         if (isset($_GET['multi'])) {
            $multiParam = true;
         } else {
@@ -344,10 +363,13 @@ function repository_edit($template, $id=null){
 
     // Add stylesheets
     drupal_add_css($modulePath . '/ui/css/repository.css',  array('group' => CSS_DEFAULT, 'every_page' => FALSE)); 
-    return theme('repository_'.$template.'_edit',array());
+    return theme('repository_'.$record_type.'_edit',array());
 }
+
 function repository_timeline_events(){
     $projectParam = _get_projectParam();
+
+    // Create breadcrumb trail
     $breadcrumb = array();
     $breadcrumb[] = l('Home', '<front>');
     _add_project_or_repository($breadcrumb);
@@ -358,7 +380,7 @@ function repository_timeline_events(){
     // check project and permissions
     $project = get_get_parameter('project');
     _check_project_exists($project);
-    _check_permission_on_project($project, 'view metadata');
+    _check_permission_on_project('view metadata', $project);
     
     // Add scripts
     $modulePath = drupal_get_path('module', 'repository');
@@ -369,8 +391,11 @@ function repository_timeline_events(){
     drupal_add_js($modulePath.'/ui/js/timelineevents.js'); 
     return theme('repository_visualize',array());
 }
+
 function repository_map_events($id=null){
     $projectParam = _get_projectParam();
+
+    // Create breadcrumb trail
     $breadcrumb = array();
     $breadcrumb[] = l('Home', '<front>');
     _add_project_or_repository($breadcrumb);
@@ -381,7 +406,7 @@ function repository_map_events($id=null){
     // check project and permissions
     $project = get_get_parameter('project');
     _check_project_exists($project);
-    _check_permission_on_project($project, 'view metadata');
+    _check_permission_on_project('view metadata', $project);
     
     // Add scripts
     $modulePath = drupal_get_path('module', 'repository'); 
@@ -394,11 +419,14 @@ function repository_map_events($id=null){
     drupal_add_js($modulePath . '/ui/js/mapevents.js');
     return theme('repository_visualize',array());
 }
+
 function repository_visualize($template, $id=null){
     if (!in_array($template,array("agents","artefacts","versions","works", "resources", "events"))) {
         drupal_access_denied();
         return;
     }
+
+    // Create breadcrumbs
     $projectParam = _get_projectParam();
     $breadcrumb = array();
     $breadcrumb[] = l('Home', '<front>');
@@ -410,7 +438,7 @@ function repository_visualize($template, $id=null){
     // check project and permissions
     $project = get_get_parameter('project');
     _check_project_exists($project);
-    _check_permission_on_project($project, 'view metadata');
+    _check_permission_on_project('view metadata', $project);
     
     // Add scripts
     $modulePath = drupal_get_path('module', 'repository');
@@ -421,8 +449,11 @@ function repository_visualize($template, $id=null){
     drupal_add_js($modulePath . '/ui/js/visualizeentity.js');
     return theme('repository_visualize',array());
 }
+
 function repository_display_resource($id,$raw=null){
     $projectParam = _get_projectParam();
+
+    // Create breadcrumbs
     $breadcrumb = array();
     $breadcrumb[] = l('Home', '<front>');
     _add_project_or_repository($breadcrumb);
@@ -434,7 +465,7 @@ function repository_display_resource($id,$raw=null){
     // check project and permissions
     $project = get_get_parameter('project');
     _check_project_exists($project);
-    _check_permission_on_project($project, 'view metadata');
+    _check_permission_on_project('view metadata', $project);
     
     if ($raw == 'raw'){
         echo repository_render_tei($id);
@@ -484,23 +515,25 @@ function repository_render_tei($id){
     return $proc->transformToXML($dom);
 }
 
-function repository_display_record($template, $id=null){
-    if (!in_array($template,array("agents","artefacts","versions","works", "resources", "places", "events", "collections"))) {
+function repository_display_record($record_type, $id=null){
+    if (!in_array($record_type,array("agents","artefacts","versions","works", "resources", "places", "events", "collections"))) {
         drupal_access_denied();
         return;
     }
     $projectParam = _get_projectParam();
+
+    // Create breadcrumb trail
     $breadcrumb = array();
     $breadcrumb[] = l('Home', '<front>');
     _add_project_or_repository($breadcrumb);
-    $breadcrumb[] = l(ucwords($template),'repository/'.$template,$projectParam);
-    $breadcrumb[] = t('View ' . ucfirst(substr($template,0,-1))); 
+    $breadcrumb[] = l(ucwords($record_type),'repository/'.$record_type,$projectParam);
+    $breadcrumb[] = t('View ' . ucfirst(substr($record_type,0,-1))); 
     drupal_set_breadcrumb($breadcrumb);
     
     // check project and permissions
     $project = get_get_parameter('project');
     _check_project_exists($project);
-    _check_permission_on_project($project, 'view metadata');
+    _check_permission_on_project('view metadata', $project);
     
     // Add scripts
     $modulePath = drupal_get_path('module', 'repository');
@@ -515,6 +548,7 @@ function repository_display_record($template, $id=null){
     drupal_add_js($modulePath . '/ui/js/repository.js');
     return theme('repository_display_record',array());
 }
+
 function repository_toc() {
   $projectParam = _get_projectParam();
   $list[] = l("Artefacts","repository/artefacts",$projectParam);
@@ -532,6 +566,10 @@ function repository_toc() {
   );
   return $render_array;
 }
+
+/**
+ * Implements hook_theme
+ */
 function repository_theme(){
  return array(
     'repository_display' => array(
@@ -600,6 +638,7 @@ function repository_theme(){
     )
  );
 }
+
 /** 
  * User preference for launching tools in full screen mode - for repository upload tool and other AustESE tools
  * with full screen option
@@ -622,6 +661,7 @@ function repository_form_user_profile_form_alter(&$form, &$form_state) {
   );
   // TODO add other preferences e.g. default metadata fields to display in editor
 }
+
 function repository_user_presave(&$edit, $account, $category) {
   $edit['data']['fullscreen'] = isset($edit['fullscreen']) ? $edit['fullscreen'] : 0;
 }
@@ -671,11 +711,17 @@ function repository_block_view($delta = '') {
 }
 
 function repository_projectstatus($node) {
+  // Create breadcrumb trail
   $breadcrumb = array();
   $breadcrumb[] = l('Home', '<front>');
   _add_project_or_repository($breadcrumb);
   $breadcrumb[] = t("Project status"); 
   drupal_set_breadcrumb($breadcrumb);
+  
+  // check project and permissions
+  $project = get_get_parameter('project');
+  _check_project_exists($project);
+  _check_permission_on_project('manage project', $project);
   
   $config = repositoryapi_get_configuration();
   
@@ -735,8 +781,6 @@ function repository_projectstatus($node) {
 //    $match = array("metadata.project"=>)
     // db.events.aggregate([{$match: {"metadata.project":"22", "metadata.artefacts.0":{$exists:1}}}, {$project: {_id:0, "artefacts":"$metadata.artefacts"}},  {$unwind: "$artefacts"}, {$group: {_id: "artefacts", artefacts: {$addToSet:"$artefacts"}}} ])
     
-    
-    
     return theme("repository_projectstatus",array('counts' => $counts));
   } catch (Exception $e){
     drupal_add_http_header('Status', '500 Internal server error'); 
@@ -745,17 +789,33 @@ function repository_projectstatus($node) {
   }
 }
 
-function repository_workflow($node) {
+/**
+ * View: A workflow overview customised for a project
+ * @param  Node $project The current project
+ * @return drupal render array
+ */
+function repository_workflow($project) {
+    // Create breadcrumb trail
     $breadcrumb = array();
     $breadcrumb[] = l('Home', '<front>');
     _add_project_or_repository($breadcrumb);
     $breadcrumb[] = t("Project workflow"); 
     drupal_set_breadcrumb($breadcrumb);
+
+    // check project and permissions
+    $project = get_get_parameter('project');
+    _check_project_exists($project);
+    _check_permission_on_project('manage project', $project);
     
-    $projParam = "?project=" . $node->nid;
-    return theme('repository_workflow', array('node' => $node, 'projParam' => $projParam));
+    $projParam = "?project=" . $project->nid;
+    return theme('repository_workflow', array('node' => $project, 'projParam' => $projParam));
 }
 
+/**
+ * Implements hook_og_context_negotiation_info
+ *
+ * Allows setting the project context based on a project get parameter
+ */
 function repository_og_context_negotiation_info() {
   $providers = array();
 

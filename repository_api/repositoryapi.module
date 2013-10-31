@@ -26,16 +26,20 @@ function repositoryapi_og_permission() {
   return array(
     'edit metadata' => array(
       'title' => t('Edit metadata'),
-      'description' => t('Allow users to create and edit metadata in the content repository')
+      'description' => t('Allow users to create and edit project metadata records in the content repository')
     ),
     'view metadata' => array(
       'title' => t('View metadata'),
-      'description' => t('Allow users to view metadata in the content repository')
+      'description' => t('Allow users to view project metadata records in the content repository')
     ),
     'delete metadata' => array(
       'title' => t('Delete metadata'),
-      'description' => t('Allow users to delete metadata in the content repository')
+      'description' => t('Allow users to delete project metadata records in the content repository')
     ),
+    'manage project' => array(
+      'title' => t('Manage project'),
+      'description' => t('Allow users to manage the project, includes viewing project completion statistics and project workflow. Doesn\'t allow any extra editing capabilities')
+    )
   );
 }
 
@@ -187,7 +191,7 @@ function createRecord($collection){
       // Allow access from local server for api calls
     } else {
       _check_project_exists($project);
-      _check_permission_on_project($project, 'edit metadata');
+      _check_permission_on_project('edit metadata', $project);
     }
     
     
@@ -259,7 +263,7 @@ function createResource() {
     $project = $_POST["project"];
   }
   _check_project_exists($project);
-  _check_permission_on_project($project, 'edit metadata');
+  _check_permission_on_project('edit metadata', $project);
 
   try {
     $m = new Mongo($config['dbhost'].':'.$config['dbport']);
@@ -330,7 +334,7 @@ function listResources(){
   } else {
       // Check logged in user has permission to access resource
       _check_project_exists($project);
-      _check_permission_on_project($project, 'view metadata');
+      _check_permission_on_project('view metadata', $project);
   }
     
   $not_superseded = array('_superseded'=>array('$exists'=>false));
@@ -384,7 +388,12 @@ function _check_project_exists($project) {
     exit;
   }
 }
-function _check_permission_on_project($project, $permission) {
+function _check_permission_on_project($permission, $project=False) {
+  if (!$project) {
+    $project = get_get_parameter('project');
+    _check_project_exists($project);
+  }
+   
   if ($project && !og_user_access('node', $project, $permission)) {
     drupal_access_denied();
     exit;
@@ -497,7 +506,7 @@ function _findRecords($collection,$labelFields, $pagesize=null, $pagenum=null,  
         $project = get_get_parameter('project');
     }
     _check_project_exists($project);
-    _check_permission_on_project($project, 'view metadata');
+    _check_permission_on_project('view metadata', $project);
 
 
     $findopts = array('_deleted'=>array('$exists'=>false));
@@ -562,7 +571,7 @@ function _loadRecord($collection, $id, $revision, $checkperms, $skip_deleted = f
     if ($checkperms) {
       $project = $dbobj['metadata']['project'];
       _check_project_exists($project);
-      _check_permission_on_project($project, 'view metadata');
+      _check_permission_on_project('view metadata', $project);
     }
 
     if (array_key_exists('_deleted',$dbobj) && !$skip_deleted){
@@ -712,7 +721,7 @@ function _loadResource($id, $skip_perm_check=false, $skip_deleted=false) {
   } else {
       // Check logged in user has permission to access resource
       _check_project_exists($project);
-      _check_permission_on_project($project, 'view metadata');
+      _check_permission_on_project('view metadata', $project);
   }
   return $file;
 }
@@ -765,7 +774,7 @@ function updateRecord($collection,$id){
     // Check permission to add records to the new project
     $to_project = $obj['project'];
     _check_project_exists($to_project);
-    _check_permission_on_project($to_project, 'edit metadata');
+    _check_permission_on_project('edit metadata', $to_project);
     
     // remove uri field as we generate this
     if (array_key_exists('uri', $obj)){
@@ -792,7 +801,7 @@ function updateRecord($collection,$id){
     // Check we're allowed to edit records in the original project
     $orig_project = $existobj['metadata']['project'];
     _check_project_exists($orig_project);
-    _check_permission_on_project($orig_project, 'edit metadata');
+    _check_permission_on_project('edit metadata', $orig_project);
     
     
     
@@ -847,7 +856,7 @@ function updateResource($id) {
   // Check permissions on existing resource
   $orig_project = $file->file['metadata']['project'];
   _check_project_exists($orig_project);
-  _check_permission_on_project($orig_project, 'edit metadata');
+  _check_permission_on_project('edit metadata', $orig_project);
   
   
   $existid = $existobj['_id'];
@@ -864,7 +873,7 @@ function updateResource($id) {
     // Check permissions on updated resource
     $project = $obj['project'];
     _check_project_exists($project);
-    _check_permission_on_project($project, 'edit metadata');
+    _check_permission_on_project('edit metadata', $project);
     
     // remove uri field as we generate this
     if (array_key_exists('uri', $obj)){
@@ -946,7 +955,7 @@ function deleteRecord($collection,$id){
     } else {
         // Check logged in user has permission to access resource
         _check_project_exists($project);
-        _check_permission_on_project($project, 'delete metadata');
+        _check_permission_on_project('delete metadata', $project);
     }
     
     $inserted = $coll->update(array('_id'=> new MongoId($id)),  array('$set' => array('_deleted' => true)), array('safe' => true));
@@ -993,7 +1002,7 @@ function deleteResource($id){
   // Check permission before deleting
   $project = $file->file['metadata']['project'];
   _check_project_exists($project);
-  _check_permission_on_project($project, 'delete metadata');
+  _check_permission_on_project('delete metadata', $project);
   
   
   
