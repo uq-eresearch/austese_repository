@@ -725,16 +725,12 @@ Ext.define('austese_uploader.controller.Controller', {
           + (formValues.subsection? '%2f'+ formValues.subsection : "");
       var filter = formValues.filter;
       mvdWin.close();
-      var progressWin = Ext.create('Ext.window.Window',{
-          header:false, closable:false, modal: true, width:300,layout:'form',
-          items:[
-                 {xtype:'progressbar'},
-                 {xtype: 'label', text: 'Creating MVD (this can take a long time)'}
-          ]
-      }).show();
-      // show progress window so user knows something is happening (sendtomvd page takes a while to load)
-      progressWin.down('progressbar').wait();
-      document.location.href='/collationtools/sendtomvd/' + ids + "?docpath=" + docpath  + this._getProjectParam({isFirstParam: false}) + "&filter=" + filter;
+      Ext.ComponentQuery.query('statusbar')[0].setStatus({
+          iconCls: 'x-status-info',
+          text: "MVD creation page opened in another tab",
+          clear: true
+      });
+      window.open('/collationtools/sendtomvd/' + ids + "?docpath=" + docpath  + this._getProjectParam({isFirstParam: false}) + "&filter=" + filter);
     },
     sendToLightBox: function(button){
         var pp = button.up('propertiespanel');
