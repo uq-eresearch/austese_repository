@@ -111,7 +111,6 @@ function repository_menu() {
     'page callback' => 'repository_map_events',
     'page arguments' => array(1,3),
     'access callback' => TRUE,
-//    'access arguments' => array('view visualizations'),
     'type' => MENU_CALLBACK
   );
   // Timeline of events
@@ -120,7 +119,14 @@ function repository_menu() {
     'page callback' => 'repository_timeline_events',
     'page arguments' => array(),
     'access callback' => TRUE,
-//    'access arguments' => array('view visualizations'),
+    'type' => MENU_CALLBACK
+  );
+  // Timeline of events
+  $items['repository/events/chronology'] = array(
+    'title' => 'Chronology',
+    'page callback' => 'repository_chronology_events',
+    'page arguments' => array(),
+    'access callback' => TRUE,
     'type' => MENU_CALLBACK
   );
   $items['repository/resources/%/content'] = array(
@@ -244,7 +250,7 @@ function _assert_valid_record_type($record_type) {
     }
 }
 
-function repository_display($record_type) {
+function repository_display($record_type, $template='Summary') {
     _assert_valid_record_type($record_type);
 
     // Create breadcrumb trail
@@ -287,9 +293,9 @@ function repository_display($record_type) {
     } else if ($record_type == 'places'){
         drupal_add_css('http://cdn.leafletjs.com/leaflet-0.4/leaflet.css',array('type' => 'external'));
         drupal_add_js('http://cdn.leafletjs.com/leaflet-0.4/leaflet.js',array('type' => 'external'));
-        return theme("repository_display",array());
+        return theme("repository_display",array("displaytemplate" => $template));
     } else {
-        return theme("repository_display",array());
+        return theme("repository_display",array("displaytemplate" => $template));
     }
 }
 function repository_edit($record_type, $id=null){
@@ -392,7 +398,9 @@ function repository_timeline_events(){
     drupal_add_js($modulePath.'/ui/js/timelineevents.js'); 
     return theme('repository_visualize',array());
 }
-
+function repository_chronology_events(){
+    return repository_display('events','ChronologyDetail');
+}
 function repository_map_events($id=null){
     $projectParam = _get_projectParam();
 

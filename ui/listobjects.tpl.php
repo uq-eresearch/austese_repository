@@ -29,6 +29,7 @@ if (isset($_GET['project'])) {
  <?php if ($project):?>
  data-project="<?php print $project; ?>"
  <?php endif; ?>
+ data-template="<?= $displaytemplate ?>"
  data-modulepath="<?php print $modulePrefix; ?>"
  data-moduleprefix="<?php print arg(0); ?>"
  data-apioperation="<?php print $apiOperation;?>"
@@ -42,12 +43,26 @@ if (isset($_GET['project'])) {
      <?php if ($apiType=='event'):?>
        &nbsp;<a href="/<?php print arg(0); ?>/<?php print $apiType; ?>s/map/<?php if ($project): print "?project=".$project; endif; ?>"><button type="button" class="btn"><i class="icon-globe"></i> View Map</button></a>
        &nbsp;<a href="/<?php print arg(0); ?>/<?php print $apiType; ?>s/timeline/<?php if ($project): print "?project=".$project; endif; ?>"><button type="button" class="btn"><i class="icon-time"></i> View Timeline</button></a>
+       <?php if ($displaytemplate == 'ChronologyDetail'): ?>
+       &nbsp;<a href="/<?php print arg(0); ?>/<?php print $apiType; ?>s/<?php if ($project): print "?project=".$project; endif; ?>"><button type="button" class="btn"><i class="icon-list"></i> View Details</button></a>
+       <?php else: ?>
+       &nbsp;<a href="/<?php print arg(0); ?>/<?php print $apiType; ?>s/chronology/<?php if ($project): print "?project=".$project; endif; ?>"><button type="button" class="btn"><i class="icon-time"></i> View Chronology</button></a>
+       <?php endif; ?>
      <?php endif;?>
      </div>
     <?php if ($apiType != "mvd"):?>
     <div class="span2">Sort by: <select  name="sort" id="sort">
-       <option selected="true" value="_id">created</option>
+       <option value="_id">created</option>
        <option value="label"><?php print $filterField; ?></option>
+       <?php if ($apiType == 'event'):?>
+        <option <?php if ($displaytemplate == 'ChronologyDetail'):?>
+         selected="true" 
+         <?php endif; ?> 
+         value="metadata.startDate">start date</option>
+       <?php endif;?>
+        <?php if ($apiType == 'artefact' || $apiType == 'version'):?>
+        <option value="metadata.date">date</option>
+       <?php endif;?>
     </select>
     </div>
     <input title="Type filter terms and then hit enter" type="text" placeholder="Filter on <?php print $filterField; ?>" class="span2" id="filter"/>

@@ -152,3 +152,6 @@ div.sticky-bottom {
 #existingOutput .obj, #existingOutput .obj h5 {
     display:inline;
 }
+.chronologyItem {
+    border-bottom: 1px solid #eeeeee;
+}

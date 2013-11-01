@@ -263,6 +263,15 @@ templates.eventTimelineSummary =
         <p>\
     </div>'
 ;
+templates.eventChronologyDetail = '<div class="obj chronologyItem">\
+    <div class="row-fluid"><div class="span3">\
+    <a href="/{{modulePrefix}}/events/{{id}}{{projParam}}">{{#if startDate}}{{startDate}} &ndash; {{else}}Unspecified Date &ndash; {{/if}}\
+    {{#if endDate}}{{endDate}}{{/if}}\
+    </a></div><div class="span9">\
+    {{#if name}}<b>{{name}}</b><br/>{{/if}}\
+    {{{description}}}\
+    </div></div>'
+;
 //{{#gt agents.length 0}}<br/>({{agents.length}} participant{{#neq agents.length 1}}s{{/neq}}){{/gt}}\
 templates.eventDetail = 
     '<div class="obj">\
