@@ -730,6 +730,8 @@ jQuery.fn.serializeObject = function() {
                     elem.html(getTemplate("resourceCompact")(d));
                 } else if (template == "image"){
                     elem.html(getTemplate("imageEmbed")(d));
+                } else if (template == "imageScale"){
+                    elem.html(getTemplate("imageScaleEmbed")(d));
                 }
               }
             });

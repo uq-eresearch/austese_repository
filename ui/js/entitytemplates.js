@@ -400,8 +400,8 @@ templates.artefactSummary =
 templates.artefactDetail = 
     '<div>\
     <h1>{{#if source}}{{upper source 80}}{{else}}UNTITLED ARTEFACT{{/if}}</h1>\
-    <div class="row-fluid">{{#if coverImage}}<div class="span2"><div class="resource" data-resourceid="{{coverImage}}" data-template="image">Image</div></div>{{else}}\
-    {{#gt facsimiles.length 0}}<div class="span2"><div class="resource" data-resourceid="{{facsimiles.[0]}}" data-template="image">Image</div></div>{{/gt}}{{/if}}\
+    <div class="row-fluid">{{#if coverImage}}<div class="span2"><div class="resource" data-resourceid="{{coverImage}}" data-template="imageScale">Image</div></div>{{else}}\
+    {{#gt facsimiles.length 0}}<div class="span2"><div class="resource" data-resourceid="{{facsimiles.[0]}}" data-template="imageScale">Image</div></div>{{/gt}}{{/if}}\
     <table class="span10 table">\
     {{#if source}}<tr><td class="metadatalabel muted">Title</td><td>{{source}}</td></tr>{{/if}}\
     {{#if pageNumbers}}<tr><td class="metadatalabel muted">Page Number(s)</td><td>{{pageNumbers}}</td></tr>{{/if}}\
@@ -509,6 +509,9 @@ templates.placeDetail =
 ;
 templates.imageEmbed = 
     '<img class="thumbnail" src="{{uri}}/content"/><br/><a style="font-size:smaller" href="/{{modulePrefix}}/resources/{{id}}{{projParam}}">Image details</a>'
+;
+templates.imageScaleEmbed = 
+    '<img class="thumbnail" src="{{uri}}/content?scale=true"/><br/><a style="font-size:smaller" href="/{{modulePrefix}}/resources/{{id}}{{projParam}}">Image details</a>'
 ;
 templates.resourceToken = 
     '<li>\
