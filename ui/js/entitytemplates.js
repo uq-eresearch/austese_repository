@@ -400,7 +400,9 @@ templates.artefactSummary =
 templates.artefactDetail = 
     '<div>\
     <h1>{{#if source}}{{upper source 80}}{{else}}UNTITLED ARTEFACT{{/if}}</h1>\
-    <table class="table">\
+    <div class="row-fluid">{{#if coverImage}}<div class="span2"><div class="resource" data-resourceid="{{coverImage}}" data-template="image">Image</div></div>{{else}}\
+    {{#gt facsimiles.length 0}}<div class="span2"><div class="resource" data-resourceid="{{facsimiles.[0]}}" data-template="image">Image</div></div>{{/gt}}{{/if}}\
+    <table class="span10 table">\
     {{#if source}}<tr><td class="metadatalabel muted">Title</td><td>{{source}}</td></tr>{{/if}}\
     {{#if pageNumbers}}<tr><td class="metadatalabel muted">Page Number(s)</td><td>{{pageNumbers}}</td></tr>{{/if}}\
     {{#if date}}<tr><td class="metadatalabel muted">Date</td><td>{{date}}</td></tr>{{/if}}\
@@ -412,7 +414,7 @@ templates.artefactDetail =
     {{#if format}}<tr><td class="metadatalabel muted">Format</td><td>{{format}}</td></tr>{{/if}}\
     {{#if paperType}}<tr><td class="metadatalabel muted">Paper Type</td><td>{{paperType}}</td></tr>{{/if}}\
     {{#if artefactSize}}<tr><td class="metadatalabel muted">Size</td><td>{{artefactSize}}</td></tr>{{/if}}\
-    </table>\
+    </table></div>\
     {{#gt artefacts.length 0}}\
         <h3 class="muted">Parts</h3><p>{{artefacts.length}} part{{#neq artefacts.length 1}}s{{/neq}} associated with this artefact:</p>\
         <ul>\
