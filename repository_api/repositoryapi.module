@@ -401,6 +401,7 @@ function _check_permission_on_project($permission, $project=False) {
 }
 
 function austese_access($permission, $project=False) {
+  $project_access = False;
   if ($project) {
     $project_access = og_user_access('node', $project, $permission);
   }
