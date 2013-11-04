@@ -20,9 +20,9 @@ Ext.define('austese_uploader.view.ThumbnailView', {
             ],
             tpl: [
                   '<tpl for=".">',
-                      '<div class="x-unselectable thumb-wrap">',
+                      '<div data-qtip="<p><tpl if="title"><b>{title}</b><br/></tpl><tpl if="name"><b>({name})</b><br/></tpl><i>{filename}</i></p><tpl if="description"><p>{description}</p></tpl><tpl if="rights"><p>Rights: {rights}</p></tpl><tpl if="source"><p>Source: {source}</p></tpl>" class="x-unselectable thumb-wrap">',
                           '<div class="thumb">',
-                          '<img class="thumbnail" src="{thumbnailUri}?scale=true" title="{shortName}. Double click to view details" />',
+                          '<img class="thumbnail" src="{thumbnailUri}?scale=true" />',
                           '</div>',
                           '<span class="x-editable">{shortName}</span>',
                       '</div>',
