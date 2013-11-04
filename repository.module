@@ -121,7 +121,7 @@ function repository_menu() {
     'access callback' => TRUE,
     'type' => MENU_CALLBACK
   );
-  // Timeline of events
+  // Chronology of events
   $items['repository/events/chronology'] = array(
     'title' => 'Chronology',
     'page callback' => 'repository_chronology_events',

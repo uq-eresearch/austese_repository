@@ -1,4 +1,5 @@
 jQuery(document).ready(function() {
+    
     var metadata = jQuery('#metadata');
     var modulePath =  metadata.data('modulepath');
     var project = metadata.data('project');
@@ -65,15 +66,20 @@ jQuery(document).ready(function() {
                 }
                 var title = e.name || "Untitled Event"
                 var eventData = {
-                    headline: title + (e.eventType? " (" + e.eventType  + ")": ""),
+                    headline: title,
+                    tag: e.eventType,
                     text: eventSummary(e)
                 };
+                
                 if (e.startDate){
                     eventData.startDate=formatDate(e.startDate);
                 }
                 if (e.endDate) {
                     eventData.endDate=formatDate(e.endDate);
                 }
+                if (e.artefacts && e.artefacts.length > 0){
+                    event.classname = "artefact-event"
+                } 
                 timelineData.timeline.date.push(eventData);
             });
             createStoryJS({
