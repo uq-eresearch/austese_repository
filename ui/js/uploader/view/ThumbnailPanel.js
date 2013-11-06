@@ -26,7 +26,7 @@ Ext.define('austese_uploader.view.ThumbnailPanel', {
                     dock: 'bottom',
                     pageSize: 50,
                     displayInfo: true,
-                    plugins : [new Ext.create('austese_uploader.view.PagingToolbarResizer',{displayText: 'Resources per page', options : [25, 50, 75, 100, 150, 200]})]
+                    plugins : [new Ext.create('austese_uploader.view.PagingToolbarResizer',{displayText: 'Resources per page', options : [25, 50, 75, 100, 150, 200, 500]})]
                 },
                 {
                     xtype: 'toolbar',
