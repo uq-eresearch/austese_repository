@@ -20,6 +20,13 @@ Ext.define('austese_uploader.view.ThumbnailPanel', {
             ],
             dockedItems: [
                 {
+                    xtype: 'pagingtoolbar',
+                    store: 'ResourceStore',
+                    dock: 'bottom',
+                    pageSize: 50,
+                    displayInfo: true
+                },
+                {
                     xtype: 'toolbar',
                     dock: 'top',
                     items: [
