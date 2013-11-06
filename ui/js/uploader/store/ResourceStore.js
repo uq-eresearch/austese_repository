@@ -32,12 +32,23 @@ Ext.define('austese_uploader.store.ResourceStore', {
                 },
                 pageParam: 'pageIndex',
                 limitParam: 'pageSize',
-                startParam: false
+                startParam: false,
+                sortParam: false
             }
         }, cfg)]);
         me.on('beforeload', function(store, operation) {
             //adjust page because we count from 0 not 1
             operation.page = operation.page - 1;
+            if (operation.sorters.length > 0){
+                var sortField = operation.sorters[0].property;
+                if (sortField != 'filename'){
+                    sortField = 'metadata.' + sortField
+                } 
+                if (sortField == 'metadata.uploaddate'){
+                    sortField = "uploadDate";
+                }
+                store.getProxy().extraParams.sort = sortField;
+            }
         });
     }
 });
