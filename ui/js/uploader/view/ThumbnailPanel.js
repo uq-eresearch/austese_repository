@@ -134,7 +134,13 @@ Ext.define('austese_uploader.view.ThumbnailPanel', {
     },
     sort: function() {
         var field = this.down('combobox').getValue();
-        Ext.getStore('ResourceStore').sort(field);
+        var store = Ext.getStore('ResourceStore');
+        if (field == "uploaddate"){
+            store.sort(field,'DESC');
+        } else {
+            store.sort(field,'ASC');
+        }
+        store.load();
     },
     filter: function(field, newValue) {
         var dataview = this.down('thumbnailview'),
