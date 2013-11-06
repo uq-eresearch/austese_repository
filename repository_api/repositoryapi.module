@@ -647,7 +647,7 @@ function getResource($id){
       } catch (Exception $e){
       }
       drupal_add_http_header('Content-Description', 'File Transfer');
-      drupal_add_http_header('Content-Disposition', 'attachment; filename='.$filename);
+      drupal_add_http_header('Content-Disposition', 'attachment; filename="'.$filename.'"');
       // set 10 minute expires header for file content
       $expires = (60*10);
       header("Pragma: public");
