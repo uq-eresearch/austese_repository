@@ -4,7 +4,8 @@ Ext.define('austese_uploader.view.ThumbnailPanel', {
     requires: [
         'austese_uploader.view.ThumbnailView',
         'austese_uploader.view.ResourceGrid',
-        'austese_uploader.form.MultiFileFieldButton'
+        'austese_uploader.form.MultiFileFieldButton',
+        'austese_uploader.view.PagingToolbarResizer'
     ],
     layout: 'card',
     initComponent: function() {
@@ -24,7 +25,8 @@ Ext.define('austese_uploader.view.ThumbnailPanel', {
                     store: 'ResourceStore',
                     dock: 'bottom',
                     pageSize: 50,
-                    displayInfo: true
+                    displayInfo: true,
+                    plugins : [new Ext.create('austese_uploader.view.PagingToolbarResizer',{displayText: 'Resources per page', options : [25, 50, 75, 100, 150, 200]})]
                 },
                 {
                     xtype: 'toolbar',
