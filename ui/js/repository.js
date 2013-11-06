@@ -61,6 +61,7 @@ jQuery.fn.serializeObject = function() {
             jQuery('[autofocus=true]').on("change, blur", function(e){
                var fieldName = e.currentTarget.name;
                var searchTerm = jQuery(e.currentTarget).val();
+               var project = jQuery('#metadata').data('project');
                if (searchTerm && searchTerm.length >= 3){
                    jQuery.ajax({
                         type: 'GET',
@@ -72,7 +73,8 @@ jQuery.fn.serializeObject = function() {
                         data: {
                             searchField: fieldName, 
                             query: searchTerm, 
-                            pageSize: 10
+                            pageSize: 10,
+                            project: project
                         },
                         failure: function(xhr){
                             console.log("failed to look up similar records",xhr)
