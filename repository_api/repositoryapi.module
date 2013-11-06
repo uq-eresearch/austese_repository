@@ -324,6 +324,19 @@ function listResources(){
   $pagesize = get_get_parameter('pageSize');
   $filterTerm = get_get_parameter('query');
   $typeFilter = get_get_parameter('type');
+  // allow param to filter results
+  if ($sort == null){
+    $sort = get_get_parameter('sort');
+  }
+   // sort by reverse id by default (newest objects should be listed first)
+  if (!ISSET($sort)) {
+    $sort = "_id";
+  }
+  if ($sort == "_id" || $sort == "uploadDate"){
+    $sortDirection = -1;
+  } else {
+    $sortDirection = 1;
+  }
   // provide a default for page Index. Default for pagesize is null (all results will be returned)
   $pagenum = get_get_paramter_int('pageIndex');
   
@@ -353,8 +366,8 @@ function listResources(){
   if ($project != null && $project != ''){
       $findopts = array('$and'=>array($findopts, array('metadata.project'=>$project)));
   }
-  // sort by reverse id (newest objects should be listed first)
-  $cursor = $grid->find($findopts)->sort(array('_id'=>-1))->limit($pagesize)->skip($pagenum * $pagesize);
+ 
+  $cursor = $grid->find($findopts)->sort(array($sort=>$sortDirection))->limit($pagesize)->skip($pagenum * $pagesize);
 
 
   echo "{\"count\":" . $cursor->count(0) . ", \"pageSize\": \"". $pagesize . "\", \"pageIndex\": \"". $pagenum . "\", \"results\": [";
