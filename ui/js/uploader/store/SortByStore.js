@@ -8,7 +8,7 @@ Ext.define('austese_uploader.store.SortByStore', {
         me.callParent([Ext.apply({
             storeId: 'SortByStore',
             data  : [{label: 'File Name', field: 'filename'},
-                     {label: 'Date Uploaded', field: 'uploaddate'}, 
+                     {label: 'Upload Date', field: 'uploaddate'}, 
                      {label: 'Type', field: 'filetype'},
                      {label: 'Title', field: 'title'},
                      {label: 'Short Name', field: 'shortname'},

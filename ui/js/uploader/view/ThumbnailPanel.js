@@ -91,6 +91,7 @@ Ext.define('austese_uploader.view.ThumbnailPanel', {
                             xtype: 'textfield',
                             fieldLabel: 'Filter',
                             labelWidth: 35,
+                            width: 140,
                             labelAlign: 'right',
                             listeners: {
                                 scope : this,
@@ -102,6 +103,7 @@ Ext.define('austese_uploader.view.ThumbnailPanel', {
                             xtype: 'combobox',
                             fieldLabel: 'Sort By',
                             labelWidth: 45,
+                            width: 155,
                             labelAlign: 'right',
                             store: 'SortByStore',
                             valueField: 'field',
