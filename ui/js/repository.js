@@ -882,7 +882,7 @@ jQuery.fn.serializeObject = function() {
         }
         jQuery('#pager').empty();
         if (startIndex > 0){
-          jQuery('#pager').append(jQuery("<button class='btn'><i class='icon-chevron-left'></i></button>").click(function(){
+          jQuery('#pager').append(jQuery("<button class='btn'><i class='fa fa-chevron-left'></i></button>").click(function(){
             loadObjects(page-1, filterTerm);
          }));
        }
@@ -908,7 +908,7 @@ jQuery.fn.serializeObject = function() {
            
        });
        if(numPages > endIndex){
-           jQuery('#pager').append(jQuery("<button class='btn'><i class='icon-chevron-right'></i></button>").click(function(){
+           jQuery('#pager').append(jQuery("<button class='btn'><i class='fa fa-chevron-right'></i></button>").click(function(){
               loadObjects(page+1, filterTerm);
            }));
        }

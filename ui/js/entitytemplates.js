@@ -134,10 +134,10 @@ templates.versionSummary =
         {{date}} {{publisher}}\
         {{#if description}}<br/>{{{ellipsis description 80}}}{{/if}}\
         {{#if firstLine}}<br/><em>{{firstLine}}</em>{{/if}}\
-        {{#gt artefacts.length 0}}<br/>({{artefacts.length}} associated artefact{{#neq artefacts.length 1}}s{{/neq}}){{/gt}}\
-        {{#gt versions.length 0}}<tpl if="xindex == 1"><br/>({{versions.length}} associated part{{#neq versions.length 1}}s{{/neq}}){{/gt}}\
-        {{#gt transcriptions.length 0}}<tpl if="xindex == 1"><br/>({{transcriptions.length}} associated version transcription{{#neq transcriptions.length 1}}s{{/neq}}){{/gt}}\
-        {{#if hasEditPermission}}<p><a href="/{{modulePrefix}}/versions/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a></p>{{/if}}\
+        {{#gt artefacts.length 0}}<br/>{{artefacts.length}} associated artefact{{#neq artefacts.length 1}}s{{/neq}}{{/gt}}\
+        {{#gt versions.length 0}}<tpl if="xindex == 1"><br/>{{versions.length}} associated part{{#neq versions.length 1}}s{{/neq}}{{/gt}}\
+        {{#gt transcriptions.length 0}}<tpl if="xindex == 1"><br/><i class="fa fa-file-text-o"></i> {{transcriptions.length}} version transcription{{#neq transcriptions.length 1}}s{{/neq}}{{/gt}}\
+        {{#if hasEditPermission}}<p>{{#if locked}}<i class="fa fa-lock"></i> {{/if}}<a href="/{{modulePrefix}}/versions/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a></p>{{/if}}\
     </div>'
 ;
 templates.versionCompact = 
@@ -172,7 +172,7 @@ templates.versionDetail =
             </ul>\
         {{/gt}}\
         {{#gt transcriptions.length 0}}\
-           <h3 class="muted">Version Transcriptions</h3><p>{{transcriptions.length}} transcription{{#neq transcriptions.length 1}}s{{/neq}} associated with this version:</p>\
+           <h3 class="muted"><i class="fa fa-file-text-o"></i> Version Transcriptions</h3><p>{{transcriptions.length}} transcription{{#neq transcriptions.length 1}}s{{/neq}} associated with this version:</p>\
             <ul>\
             {{#each transcriptions}}<li class="resource" data-resourceid="{{.}}" data-template="summary"></li>{{/each}}\
             </ul>\
@@ -183,18 +183,20 @@ templates.versionDetail =
             {{#each places}}<li class="place" data-placeid="{{.}}" data-template="compact"></li>{{/each}}\
             </ul>\
         {{/gt}}\
+        {{#if locked}}<i class="fa fa-lock"></i> {{/if}}\
     </div>'
 ;
 templates.agentToken = '<li title="{{lastName}}, {{firstName}}" data-content="{{biography}}">{{lastName}}{{if firstName}}, {{firstName}}{{/if}}</li>';
 templates.agentTokenResult = '{{#if id}}<li>{{lastName}}{{#if firstName}}, {{firstName}}{{/if}} {{ellipsis biography 30}}</li>{{/if}}';
 templates.agentSummary =
     '<div class="obj">\
-    <h4><a title="{{lastName}}{{#if firstName}}, {{firstName}}{{/if}}" data-content="{{biography}}" href="/{{modulePrefix}}/agents/{{id}}{{projParam}}">{{lastName}}, {{firstName}}</a></h4>\
+    <h4>{{#eq agentType "Person"}}<i class="fa fa-user"></i> {{/eq}}{{#eq agentType "Organisation"}}<i class="fa fa-building-o"></i> {{/eq}}<a title="{{lastName}}{{#if firstName}}, {{firstName}}{{/if}}"\
+    data-content="{{biography}}" href="/{{modulePrefix}}/agents/{{id}}{{projParam}}">{{lastName}}, {{firstName}}</a></h4>\
     {{#if birthDate}} b. {{birthDate}}, {{/if}}\
     {{#if deathDate}} d. {{deathDate}}, {{/if}}\
     {{{ellipsis biography 80}}}\
     {{#if hasEditPermission}}\
-        <p><a href="/{{modulePrefix}}/agents/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a></p>\
+        <p>{{#if locked}}<i class="fa fa-lock"></i> {{/if}}<a href="/{{modulePrefix}}/agents/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a></p>\
     {{/if}}\
     </div>'
 ;
@@ -209,6 +211,7 @@ templates.agentDetail =
     {{#if biography}}<tr><td class="metadatalabel muted">Biography</td><td>{{{biography}}}</td></tr>{{/if}}\
     {{#if agentType}}<tr><td class="metadatalabel muted">Agent Type</td><td>{{agentType}}</td></tr>{{/if}}\
     </table></div>\
+    {{#if locked}}<i class="fa fa-lock"></i> {{/if}}\
     </div>'
 ;
 templates.agentCompact = 
@@ -241,7 +244,7 @@ templates.eventSummary =
         {{#gt artefacts.length 0}}<br/>(Produced {{artefacts.length}} artefact{{#neq artefacts.length 1}}s{{/neq}}){{/gt}}\
         {{#gt events.length 0}}<br/>({{events.length}} sub-event{{#neq events.length 1}}s{{/neq}}){{/gt}}\
         {{#if hasEditPermission}}\
-        <p><a href="/{{modulePrefix}}/events/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a></p>\
+        <p>{{#if locked}}<i class="fa fa-lock"></i> {{/if}}<a href="/{{modulePrefix}}/events/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a></p>\
         {{/if}}\
     </div>'
 ;
@@ -259,7 +262,8 @@ templates.eventTimelineSummary =
         {{#if description}}<br/>{{ellipsis description 80}}{{/if}}\
         <p><a target="_blank" style="font-size:smaller" href="/{{modulePrefix}}/events/{{id}}{{projParam}}">VIEW</a> \
         {{#if hasEditPermission}}\
-        <a target="_blank" href="/{{modulePrefix}}/events/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a>\
+          {{#if locked}}<i class="fa fa-lock"></i> {{/if}}\
+          <a target="_blank" href="/{{modulePrefix}}/events/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a>\
         {{/if}}\
         <p>\
     </div>'
@@ -382,6 +386,7 @@ templates.eventDetail =
         {{#each events}}<li><div class="event" data-eventid="{{.}}" data-template="summary"></div></li>{{/each}}\
         </ul>\
     {{/gt}}{{/if}}\
+    {{#if locked}}<i class="fa fa-lock"></i> {{/if}}\
     </div>'
 ;
 templates.artefactToken = '<li title="{{source}}, {{date}}" data-content="{{#if bibDetails}}{{ellipsis bibDetails}}{{/if}}">{{source}}, {{date}}</li>';
@@ -389,13 +394,13 @@ templates.artefactTokenResult = '{{#if id}}<li><b>{{source}}</b>, {{date}}</li>{
 templates.artefactSummary = 
     '<div class="obj">\
     <h4><a href="/{{modulePrefix}}/artefacts/{{id}}{{projParam}}">{{source}}</a></h4>\
-    {{#if date}}{{date}}, {{/if}}{{#if bibDetails}}{{ellipsis bibDetails 80}}<br/>{{/if}}\
-    {{#if description}}{{{ellipsis description 80}}}<br/>{{/if}}\
-    {{#gt artefacts.length 0}}({{artefacts.length}} associated part{{#neq artefacts.length 1}}s{{/neq}})<br/>{{/gt}}\
-    {{#gt facsimiles.length 0}}({{facsimiles.length}} associated facsimile{{#neq facsimiles.length 1}}s{{/neq}})<br/>{{/gt}}\
-    {{#gt transcriptions.length 0}}({{transcriptions.length}} associated diplomatic transcription{{#neq transcriptions.length 1}}s{{/neq}}){{/gt}}\
+    {{#if date}}{{date}}{{/if}} {{#if bibDetails}}<br/>{{ellipsis bibDetails 80}}{{/if}}\
+    {{#if description}}<br/>{{{ellipsis description 80}}}{{/if}}\
+    {{#gt artefacts.length 0}}<br/>({{artefacts.length}} associated part{{#neq artefacts.length 1}}s{{/neq}}){{/gt}}\
+    {{#gt facsimiles.length 0}}<br/><i class="fa fa-camera"></i> {{facsimiles.length}} facsimile{{#neq facsimiles.length 1}}s{{/neq}}{{/gt}}\
+    {{#gt transcriptions.length 0}}<br/><i class="fa fa-file-text-o"></i> {{transcriptions.length}} diplomatic transcription{{#neq transcriptions.length 1}}s{{/neq}}{{/gt}}\
     {{#if hasEditPermission}}\
-        <p><a href="/{{modulePrefix}}/artefacts/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a></p>\
+        <p>{{#if locked}}<i class="fa fa-lock"></i> {{/if}}<a href="/{{modulePrefix}}/artefacts/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a></p>\
     {{/if}}\
     </div>';
 templates.artefactDetail = 
@@ -423,17 +428,18 @@ templates.artefactDetail =
         </ul>\
     {{/gt}}\
     {{#gt facsimiles.length 0}}\
-        <h3 class="muted">Facsimiles</h3><p>{{facsimiles.length}} facsimile{{#neq facsimiles.length 1}}s{{/neq}} associated with this artefact:</p>\
+        <h3 class="muted"><i class="fa fa-camera"></i>  Facsimiles</h3><p>{{facsimiles.length}} facsimile{{#neq facsimiles.length 1}}s{{/neq}} associated with this artefact:</p>\
         <ul>\
         {{#each facsimiles}}<li class="resource" data-resourceid="{{.}}" data-template="summary"></li>{{/each}}\
         </ul>\
     {{/gt}}\
     {{#gt transcriptions.length 0}}\
-        <h3 class="muted">Diplomatic Transcriptions</h3><p>{{transcriptions.length}} transcription{{#neq transcriptions.length 1}}s{{/neq}} associated with this artefact:</p>\
+        <h3 class="muted"><i class="fa fa-file-text-o"></i> Diplomatic Transcriptions</h3><p>{{transcriptions.length}} transcription{{#neq transcriptions.length 1}}s{{/neq}} associated with this artefact:</p>\
         <ul>\
         {{#each transcriptions}}<li class="resource" data-resourceid="{{.}}" data-template="summary"></li>{{/each}}\
         </ul>\
     {{/gt}}\
+    {{#if locked}}<i class="fa fa-lock"></i> {{/if}}\
     </div>'
 ;
 templates.artefactCompact =
@@ -452,6 +458,7 @@ templates.workSummary =
     {{#gt versions.length 0}}({{versions.length}} associated version{{#neq versions.length 1}}s{{/neq}}){{/gt}}\
     <p>\
     {{#if hasEditPermission}}\
+    {{#if locked}}<i class="fa fa-lock"></i> {{/if}}\
     <a href="/{{modulePrefix}}/works/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a>&nbsp;\
     {{/if}}\
     <a href="/reading/{{id}}{{projParam}}" style="font-size:smaller">READ</a>\
@@ -471,6 +478,7 @@ templates.workDetail =
     <h3 class="muted">Versions</h3><ul>\
     {{#each versions}}<li class="version" data-versionid="{{.}}" data-template="summary"></li>{{/each}}\
     </ul>\
+    {{#if locked}}<i class="fa fa-lock"></i> {{/if}}\
     </div>'
 ;
 templates.workCompact =
@@ -561,6 +569,7 @@ templates.resourceDetail =
         <h3>Image Preview</h3>\
         <div data-id="http://{{serverName}}/repository/resources/{{id}}/content"><img class="thumbnail" src="{{uri}}?scale=true&height=480" alt="Image preview"/></div>\
     {{/match}}\
+    {{#if locked}}<i class="fa fa-lock"></i> {{/if}}\
     </div>'
 ;
 //<tr><td class="muted">Uploaded</td><td>{{[Ext.util.Format.date(new Date(values.uploadDate.sec*1000),"d/m/Y g:i a")]}}</td></tr>\
