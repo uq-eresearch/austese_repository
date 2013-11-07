@@ -491,6 +491,10 @@ function repository_display_resource($id,$raw=null){
             drupal_add_js($modulePath . '/ui/lib/d3cloud/d3.layout.cloud.js');
             drupal_add_js($modulePath . '/ui/js/wordcloud.js');
         }
+        if (isset($_GET['annotationView'])) {
+            drupal_add_js($modulePath . '/ui/lib/rangy-core.js');
+            drupal_add_js($modulePath . '/ui/js/viewannotations.js');
+        }
         drupal_add_js($modulePath . '/ui/lib/handlebars.js');
         drupal_add_js($modulePath . '/ui/js/entitytemplates.js');
         drupal_add_js($modulePath . '/ui/js/displayresource.js');

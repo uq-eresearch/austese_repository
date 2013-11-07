@@ -17,6 +17,10 @@ jQuery(document).ready(function(){
             wordCount=normalizedText.split(/\s+/).length;
         }
         jQuery('#wordCount').html("Resource Total Word Count: " + wordCount);
+        
+        if (typeof annotationView != 'undefined' && typeof annotationView.display == "function"){
+        	annotationView.display(resURI);
+        } 
     };
     if (typeof (jQuery().popover) == 'function'){
         jQuery.ajax({
@@ -106,7 +110,7 @@ jQuery(document).ready(function(){
                                         + '<p><a href="/' + modulePrefix + '/resources/edit/' + existingId + (project? '?project=' + project : '') +'">Edit content</a> in transcription editor to view and correct errors</p>'
                                         + '</div>').alert());
                             }
-                            result = "<pre style='white-space:pre-wrap'>" + content + "</pre>";
+                            result = "<pre id='textContainer' style='white-space:pre-wrap'>" + content + "</pre>";
                             jQuery("#resourceContent").html(result);
                             afterContentLoaded();
                         } else {
@@ -136,7 +140,7 @@ jQuery(document).ready(function(){
                                                 afterContentLoaded();
                                             }
                                       });
-                                    } else{
+                                    } else {
                                         jQuery("#resourceContent").html(result);
                                         afterContentLoaded();
                                     }
