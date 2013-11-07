@@ -44,7 +44,7 @@ if (isset($_GET['project'])) {
       <label class="control-label" for="lastName">Last Name</label>
       <div class="controls">
         <input autofocus="true" name="lastName" type="text" class="input-xxlarge" id="lastName">
-        <p>Last Name (or Organisation Name)</p>
+        <p>Last Name (or Organisation or Group Name)</p>
         <div id="existingOutput"></div>
       </div>
     </div>
@@ -62,6 +62,7 @@ if (isset($_GET['project'])) {
         <select name="agentType" class="input-xxlarge" id="agentType">
          <option>Person</option>
          <option>Organisation</option>
+         <option>Group</option>
         </select>
       </div>
     </div>
