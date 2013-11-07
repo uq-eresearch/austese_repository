@@ -191,7 +191,7 @@ templates.agentTokenResult = '{{#if id}}<li>{{lastName}}{{#if firstName}}, {{fir
 templates.agentSummary =
     '<div class="obj">\
     <h4>{{#eq agentType "Person"}}<i class="fa fa-user"></i> {{/eq}}{{#eq agentType "Organisation"}}<i class="fa fa-building-o"></i> {{/eq}}<a title="{{lastName}}{{#if firstName}}, {{firstName}}{{/if}}"\
-    data-content="{{biography}}" href="/{{modulePrefix}}/agents/{{id}}{{projParam}}">{{lastName}}, {{firstName}}</a></h4>\
+    data-content="{{biography}}" href="/{{modulePrefix}}/agents/{{id}}{{projParam}}">{{lastName}}{{#if firstName}}, {{firstName}}{{/if}}</a></h4>\
     {{#if birthDate}} b. {{birthDate}}, {{/if}}\
     {{#if deathDate}} d. {{deathDate}}, {{/if}}\
     {{{ellipsis biography 80}}}\
