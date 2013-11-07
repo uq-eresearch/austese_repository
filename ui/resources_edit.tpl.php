@@ -40,12 +40,16 @@ if (isset($project)) {
   <a href="#" data-dismiss="alert" class="close">x</a>
   <span id="failMessage"></span>
 </div>
-<div class="pull-right"><a id="toggleFacsimile" href="#">Show facsimile</a></div>
-<div class="pull-right"><a id="toggleMulti" href="#">
-<!--  // FIXME: if user cancels navigation due to unsaved changes, multi toggle will get out of sync -->
-<!--  input style="margin-top:-4px" <?php if($multi): print 'checked'; endif; ?> type="checkbox"/--> 
-Compare while editing</a></div>
-<div id="editInfo"></div>
+<div class="btn-toolbar">
+  <div class="buttons btn-group">
+    <a id="toggleFacsimile" class="btn" href="#"><i class="icon-picture"></i> Show facsimile</a>
+    <a id="togglePreview" class="btn" href="#"><i class="icon-eye-close"></i> Hide preview</a>
+    <a id="toggleMulti" class="btn" href="#"><i class="icon-random"></i>
+    <!--  // FIXME: if user cancels navigation due to unsaved changes, multi toggle will get out of sync -->
+    <!--  input style="margin-top:-4px" <?php if($multi): print 'checked'; endif; ?> type="checkbox"/--> 
+    Compare while editing</a>
+  </div>
+</div>
 
 <div class="form-horizontal">
   <div class="sticky-bottom well">
@@ -61,7 +65,10 @@ Compare while editing</a></div>
 <!--  ui for multi/merge editor -->
 <div id="multi-editor-ui">
   <div class="row-fluid">
-    <div class="span12" id="multieditor"></div>
+    <div class="span12">
+      <div class="editInfo"></div>
+      <div id="multieditor"></div>
+    </div>
   </div>
   <div class="row-fluid">
     <div class="span12 form-actions form-center">
@@ -85,12 +92,14 @@ Compare while editing</a></div>
 <!--  ui for basic editor -->
 <div id="single-editor-ui" class="row-fluid">
   <div id="editorspan" class="span6">
+
+    <div class="editInfo"></div>
     <textarea id="editor" name="editor"> </textarea>
-    <div class="form-actions">
+<!--     <div class="form-actions">
        <button data-resource="/<?php print drupal_get_path('module', 'repository');?>/api/resources/<?php print arg(3); ?>" class="btn btn-primary savebtn" title="Save as new version">Save</button>
-    </div>
+    </div> -->
   </div>
-  <div class="span6">
+  <div id="preview" class="span6">
     <div class="edit-preview">
     </div>
   </div>
@@ -104,11 +113,13 @@ Compare while editing</a></div>
   <div class="parent">
     <div class="imageHolder"></div>
   </div>
-  <div class="buttons">
-    <button class="zoom-in">Zoom In</button>
-    <button class="zoom-out">Zoom Out</button>
-    <input type="range" class="zoom-range">
-    <button class="reset">Reset</button>
+  <div class="btn-toolbar">
+    <div class="buttons btn-group">
+      <button class="zoom-in btn"><i class="icon-zoom-in"></i></button>
+      <button class="zoom-out btn"><i class="icon-zoom-out"></i></button>
+      <input type="range" class="zoom-range">
+      <button class="reset btn">Reset</button>
+    </div>
   </div>
 </div>
 
