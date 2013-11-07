@@ -42,9 +42,9 @@ if (isset($project)) {
 </div>
 <div class="btn-toolbar">
   <div class="buttons btn-group">
-    <a id="toggleFacsimile" class="btn" href="#"><i class="icon-picture"></i> Show facsimile</a>
-    <a id="togglePreview" class="btn" href="#"><i class="icon-eye-close"></i> Hide preview</a>
-    <a id="toggleMulti" class="btn" href="#"><i class="icon-random"></i> Compare while editing</a>
+    <a id="toggleFacsimile" class="btn" href="#"><i class="fa fa-picture-o"></i> Show facsimile</a>
+    <a id="togglePreview" class="btn" href="#"><i class="fa fa-eye-slash"></i> Hide preview</a>
+    <a id="toggleMulti" class="btn" href="#"><i class="fa fa-random"></i> Compare while editing</a>
   </div>
 </div>
 
@@ -106,8 +106,8 @@ if (isset($project)) {
   </div>
   <div class="btn-toolbar">
     <div class="buttons btn-group">
-      <button class="zoom-in btn"><i class="icon-zoom-in"></i></button>
-      <button class="zoom-out btn"><i class="icon-zoom-out"></i></button>
+      <button class="zoom-in btn"><i class="fa fa-search-minus"></i></button>
+      <button class="zoom-out btn"><i class="fa fa-search-plus"></i></button>
       <input type="range" class="zoom-range">
       <button class="reset btn">Reset</button>
     </div>
