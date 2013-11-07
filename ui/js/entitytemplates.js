@@ -185,11 +185,11 @@ templates.versionDetail =
         {{/gt}}\
     </div>'
 ;
-templates.agentToken = '<li title="{{lastName}}, {{firstName}}" data-content="{{biography}}">{{lastName}}, {{firstName}}</li>';
-templates.agentTokenResult = '{{#if id}}<li>{{lastName}}, {{firstName}} {{ellipsis biography 30}}</li>{{/if}}';
+templates.agentToken = '<li title="{{lastName}}, {{firstName}}" data-content="{{biography}}">{{lastName}}{{if firstName}}, {{firstName}}{{/if}}</li>';
+templates.agentTokenResult = '{{#if id}}<li>{{lastName}}{{#if firstName}}, {{firstName}}{{/if}} {{ellipsis biography 30}}</li>{{/if}}';
 templates.agentSummary =
     '<div class="obj">\
-    <h4><a title="{{lastName}}, {{firstName}}" data-content="{{biography}}" href="/{{modulePrefix}}/agents/{{id}}{{projParam}}">{{lastName}}, {{firstName}}</a></h4>\
+    <h4><a title="{{lastName}}{{#if firstName}}, {{firstName}}{{/if}}" data-content="{{biography}}" href="/{{modulePrefix}}/agents/{{id}}{{projParam}}">{{lastName}}, {{firstName}}</a></h4>\
     {{#if birthDate}} b. {{birthDate}}, {{/if}}\
     {{#if deathDate}} d. {{deathDate}}, {{/if}}\
     {{{ellipsis biography 80}}}\
@@ -207,6 +207,7 @@ templates.agentDetail =
     {{#if birthDate}}<tr><td class="metadatalabel muted">Born</td><td>{{birthDate}}</td></tr>{{/if}}\
     {{#if deathDate}}<tr><td class="metadatalabel muted">Died</td><td>{{deathDate}}</td></tr>{{/if}}\
     {{#if biography}}<tr><td class="metadatalabel muted">Biography</td><td>{{{biography}}}</td></tr>{{/if}}\
+    {{#if agentType}}<tr><td class="metadatalabel muted">Agent Type</td><td>{{agentType}}</td></tr>{{/if}}\
     </table></div>\
     </div>'
 ;
