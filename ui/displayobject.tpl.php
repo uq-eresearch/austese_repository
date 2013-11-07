@@ -41,26 +41,26 @@ $modulePath =  drupal_get_path('module', 'repository');
 <ul class="actionLinks">
 
    <?php if ($apiType=='resource'):?>
-   <li><i style="font-size:110%" class="fa fa-download"></i> <a href="/<?php print $modulePath; ?>/api/<?php print $apiType; ?>s/<?php print $existingId; ?>">DOWNLOAD</a></li>
-   <li><i style="font-size:110%" class="fa fa-eye"></i> <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/<?php print $existingId; ?>/content<?php if ($project): print '?project='.$project; endif; ?>">VIEW CONTENT</a></li>
-   <li style="display:none" id="wordcloudlink"><i style="font-size:110%" class="fa fa-cloud"></i> <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/<?php print $existingId; ?>/content?cloud=true<?php if ($project): print '&project='.$project; endif; ?>">VIEW WORD CLOUD</a></li>
-   <li style="display:none" id="lightboxlink"><i style="font-size:110%" class="fa fa-lightbulb-o"></i> <a  href="/lightbox<?php if ($project): print '?project='.$project; endif; ?>#<?php print $existingId; ?>">VIEW IN LIGHTBOX</a></li>
-   <li id="pdflink"><i style="font-size:110%" class="fa fa-book"></i> <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/<?php print $existingId; ?>/content/pdf">EXPORT PDF</a></li>
-   <li id="mswordlink"><i style="font-size:110%" class="fa fa-book"></i> <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/<?php print $existingId; ?>/content/word">EXPORT WORD DOC</a></li>
+   <li><i class="sidebaricon fa fa-download"></i> <a href="/<?php print $modulePath; ?>/api/<?php print $apiType; ?>s/<?php print $existingId; ?>">DOWNLOAD</a></li>
+   <li><i class="sidebaricon fa fa-eye"></i> <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/<?php print $existingId; ?>/content<?php if ($project): print '?project='.$project; endif; ?>">VIEW CONTENT</a></li>
+   <li style="display:none" id="wordcloudlink"><i class="sidebaricon fa fa-cloud"></i> <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/<?php print $existingId; ?>/content?cloud=true<?php if ($project): print '&project='.$project; endif; ?>">VIEW WORD CLOUD</a></li>
+   <li style="display:none" id="lightboxlink"><i class="sidebaricon fa fa-lightbulb-o"></i> <a  href="/lightbox<?php if ($project): print '?project='.$project; endif; ?>#<?php print $existingId; ?>">VIEW IN LIGHTBOX</a></li>
+   <li id="pdflink"><i class="sidebaricon fa fa-book"></i> <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/<?php print $existingId; ?>/content/pdf">EXPORT PDF</a></li>
+   <li id="mswordlink"><i class="sidebaricon fa fa-book"></i> <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/<?php print $existingId; ?>/content/word">EXPORT WORD DOC</a></li>
    <?php endif; ?>
   
    <?php if (austese_access('edit metadata', $project)): ?>
       <?php if ($apiType=='resource'):?>
-        <li><i style="font-size:110%" class="fa fa-th"></i> <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s<?php if ($project): print '?project='.$project; endif; ?>#<?php print $existingId; ?>">SHOW IN ORGANISER</a></li>
+        <li><i class="sidebaricon fa fa-th"></i> <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s<?php if ($project): print '?project='.$project; endif; ?>#<?php print $existingId; ?>">SHOW IN ORGANISER</a></li>
         
       <?php endif; ?>
-      <li id="editlink" ><i style="font-size:110%" class="fa fa-pencil-square-o"></i> <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/edit/<?php print $existingId; ?><?php if ($project): print "?project=".$project; endif; ?>">EDIT
+      <li id="editlink" ><i class="sidebaricon fa fa-pencil-square-o"></i> <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/edit/<?php print $existingId; ?><?php if ($project): print "?project=".$project; endif; ?>">EDIT
       <?php if ($apiType=='resource'):?> CONTENT<?php endif; ?>
       </a></li>
    <?php endif; ?>
    
-   <?php if ($apiType=='work'):?><li><i style="font-size:110%" class="fa fa-book"></i> <a href="/reading/<?php print $existingId; ?><?php if ($project): print "?project=".$project; endif; ?>">READ</a></li><?php endif; ?>
- <li><i style="font-size:110%" class="fa fa-asterisk"></i> <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/visualize/<?php print $existingId; ?><?php if ($project): print "?project=".$project; endif; ?>">VISUALIZE CONNECTIONS</a></li>
+   <?php if ($apiType=='work'):?><li><i class="sidebaricon fa fa-book"></i> <a href="/reading/<?php print $existingId; ?><?php if ($project): print "?project=".$project; endif; ?>">READ</a></li><?php endif; ?>
+ <li><i class="sidebaricon fa fa-asterisk"></i> <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/visualize/<?php print $existingId; ?><?php if ($project): print "?project=".$project; endif; ?>">VISUALIZE CONNECTIONS</a></li>
  </ul>
  <?php if ($apiType=='resource'):?>
  <div style="margin-top:1em" id="viewmvd"></div>

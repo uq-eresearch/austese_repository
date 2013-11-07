@@ -155,6 +155,11 @@ div.sticky-bottom {
 .chronologyItem {
     border-bottom: 1px solid #eeeeee;
 }
+.sidebaricon {
+    width:20px;
+    font-size:110%;
+    text-align: center;
+}
 /* Replace wysihtml5 icons with font awesome icons */
 i[class^="icon-"], i[class*=" icon-"] {background-image:none}
 .icon-font:before{display: inline-block;
