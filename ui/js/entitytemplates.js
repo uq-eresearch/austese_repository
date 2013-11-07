@@ -241,8 +241,8 @@ templates.eventSummary =
         {{#if startDate}}{{startDate}} &ndash; {{/if}}\
         {{#if endDate}}{{endDate}}{{/if}}\
         {{#if description}}<br/>{{ellipsis description 80}}{{/if}}\
-        {{#gt artefacts.length 0}}<br/>(Produced {{artefacts.length}} artefact{{#neq artefacts.length 1}}s{{/neq}}){{/gt}}\
-        {{#gt events.length 0}}<br/>({{events.length}} sub-event{{#neq events.length 1}}s{{/neq}}){{/gt}}\
+        {{#gt artefacts.length 0}}<br/>Produced {{artefacts.length}} artefact{{#neq artefacts.length 1}}s{{/neq}}{{/gt}}\
+        {{#gt events.length 0}}<br/>{{events.length}} sub-event{{#neq events.length 1}}s{{/neq}}{{/gt}}\
         {{#if hasEditPermission}}\
         <p>{{#if locked}}<i class="fa fa-lock"></i> {{/if}}<a href="/{{modulePrefix}}/events/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a></p>\
         {{/if}}\
@@ -396,9 +396,9 @@ templates.artefactSummary =
     <h4><a href="/{{modulePrefix}}/artefacts/{{id}}{{projParam}}">{{source}}</a></h4>\
     {{#if date}}{{date}}{{/if}} {{#if bibDetails}}<br/>{{ellipsis bibDetails 80}}{{/if}}\
     {{#if description}}<br/>{{{ellipsis description 80}}}{{/if}}\
-    {{#gt artefacts.length 0}}<br/><i class="fa fa-asterisk"></i> {{artefacts.length}} associated part{{#neq artefacts.length 1}}s{{/neq}}{{/gt}}\
-    {{#gt facsimiles.length 0}}<br/><i class="fa fa-camera"></i> {{facsimiles.length}} facsimile{{#neq facsimiles.length 1}}s{{/neq}}{{/gt}}\
-    {{#gt transcriptions.length 0}}<br/><i class="fa fa-file-text-o"></i> {{transcriptions.length}} diplomatic transcription{{#neq transcriptions.length 1}}s{{/neq}}{{/gt}}\
+    {{#gt artefacts.length 0}}<br/><i class="sidebaricon fa fa-asterisk"></i> {{artefacts.length}} associated part{{#neq artefacts.length 1}}s{{/neq}}{{/gt}}\
+    {{#gt facsimiles.length 0}}<br/><i class="sidebaricon fa fa-camera"></i> {{facsimiles.length}} facsimile{{#neq facsimiles.length 1}}s{{/neq}}{{/gt}}\
+    {{#gt transcriptions.length 0}}<br/><i class="sidebaricon fa fa-file-text-o"></i> {{transcriptions.length}} diplomatic transcription{{#neq transcriptions.length 1}}s{{/neq}}{{/gt}}\
     {{#if hasEditPermission}}\
         <p>{{#if locked}}<i class="fa fa-lock"></i> {{/if}}<a href="/{{modulePrefix}}/artefacts/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a></p>\
     {{/if}}\
