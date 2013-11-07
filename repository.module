@@ -343,9 +343,8 @@ function repository_edit($record_type, $id=null){
         } else {
             $multiParam = false;
         }
-        if ($path = libraries_get_path('jquery.panzoom')) {
-            drupal_add_js($path . '/jquery.panzoom.min.js');
-        }
+        drupal_add_js($modulePath . '/ui/lib/jquery.panzoom.min.js');
+
         drupal_add_js($modulePath . '/ui/lib/codemirror/codemirror.js');
         // support collapsing tags
         drupal_add_js($modulePath. '/ui/lib/codemirror/foldcode.js');
