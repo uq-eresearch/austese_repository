@@ -20,14 +20,17 @@ Ext.define('austese_uploader.view.ThumbnailPanel', {
                 }
             ],
             dockedItems: [
-                /*{
+                {
                     xtype: 'pagingtoolbar',
                     store: 'ResourceStore',
                     dock: 'bottom',
                     pageSize: 50,
                     displayInfo: true,
-                    plugins : [new Ext.create('austese_uploader.view.PagingToolbarResizer',{displayText: 'Resources per page', options : [25, 50, 75, 100, 150, 200, 500]})]
-                },*/
+                    plugins : [new Ext.create('austese_uploader.view.PagingToolbarResizer',{
+                            displayText: 'Resources per page', 
+                            options : [25, 50, 75, 100, 150, 200, 500]
+                    })]
+                },
                 {
                     xtype: 'toolbar',
                     dock: 'top',
@@ -92,6 +95,7 @@ Ext.define('austese_uploader.view.ThumbnailPanel', {
                             fieldLabel: 'Filter',
                             labelWidth: 35,
                             width: 140,
+                            itemId: 'filterField',
                             labelAlign: 'right',
                             listeners: {
                                 scope : this,
@@ -143,7 +147,7 @@ Ext.define('austese_uploader.view.ThumbnailPanel', {
         store.load();
     },
     filter: function(field, newValue) {
-        var dataview = this.down('thumbnailview'),
+       var dataview = this.down('thumbnailview'),
             store = dataview.store;
         store.suspendEvents();
         store.clearFilter();
@@ -157,5 +161,6 @@ Ext.define('austese_uploader.view.ThumbnailPanel', {
                     || item.get('filename').match(re);
             }
         });
+        store.loadPage(1);
     }
 });

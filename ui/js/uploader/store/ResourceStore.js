@@ -49,6 +49,10 @@ Ext.define('austese_uploader.store.ResourceStore', {
                 }
                 store.getProxy().extraParams.sort = sortField;
             }
+            if (operation.filters.length > 0){
+                var filterValue = Ext.ComponentQuery.query('#filterField')[0].value;
+                store.getProxy().extraParams.query = filterValue;
+            }
         });
     }
 });
