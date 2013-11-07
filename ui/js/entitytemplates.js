@@ -81,7 +81,7 @@ function getTemplate(tName) {
 templates.collectionSummary = '\
     <div class="obj">\
         <h4><a href="/{{modulePrefix}}/collections/{{id}}{{projParam}}">{{name}}</a></h4>\
-        {{#gt resources.length 0}}<br/>({{resources.length}} associated resource{{#neq resources.length 1}}s{{/neq}}){{/gt}}\
+        {{#gt resources.length 0}}<i class="fa fa-asterisk"></i> {{resources.length}} associated resource{{#neq resources.length 1}}s{{/neq}}{{/gt}}\
         {{#if hasEditPermission}}<p><a href="/{{modulePrefix}}/collections/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a></p>{{/if}}\
     </div>'
 ;
@@ -131,12 +131,12 @@ templates.versionTokenResult = '{{#if id}}<li><b>{{versionTitle}}</b>{{#if name}
 templates.versionSummary = 
     '<div class="obj">\
         <h4><a href="/{{modulePrefix}}/versions/{{id}}{{projParam}}">{{versionTitle}} {{#if name}}({{name}}){{/if}}</a></h4>\
-        {{date}} {{publisher}}\
-        {{#if description}}<br/>{{{ellipsis description 80}}}{{/if}}\
-        {{#if firstLine}}<br/><em>{{firstLine}}</em>{{/if}}\
-        {{#gt artefacts.length 0}}<br/>{{artefacts.length}} associated artefact{{#neq artefacts.length 1}}s{{/neq}}{{/gt}}\
-        {{#gt versions.length 0}}<tpl if="xindex == 1"><br/>{{versions.length}} associated part{{#neq versions.length 1}}s{{/neq}}{{/gt}}\
-        {{#gt transcriptions.length 0}}<tpl if="xindex == 1"><br/><i class="fa fa-file-text-o"></i> {{transcriptions.length}} version transcription{{#neq transcriptions.length 1}}s{{/neq}}{{/gt}}\
+        {{#if date}}{{date}} {{/if}}{{publisher}}{{#if date}}<br/>{{else}}{{#if publisher}}<br/>{{/if}}{{/if}}\
+        {{#if description}}{{{ellipsis description 80}}}<br/>{{/if}}\
+        {{#if firstLine}}<em>{{firstLine}}</em><br/>{{/if}}\
+        {{#gt artefacts.length 0}}<i class="fa fa-asterisk"></i> {{artefacts.length}} associated artefact{{#neq artefacts.length 1}}s{{/neq}}<br/>{{/gt}}\
+        {{#gt versions.length 0}}<i class="fa fa-asterisk"></i> {{versions.length}} associated part{{#neq versions.length 1}}s{{/neq}}<br/>{{/gt}}\
+        {{#gt transcriptions.length 0}}<i class="fa fa-file-text-o"></i> {{transcriptions.length}} version transcription{{#neq transcriptions.length 1}}s{{/neq}}{{/gt}}\
         {{#if hasEditPermission}}<p>{{#if locked}}<i class="fa fa-lock"></i> {{/if}}<a href="/{{modulePrefix}}/versions/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a></p>{{/if}}\
     </div>'
 ;
@@ -396,7 +396,7 @@ templates.artefactSummary =
     <h4><a href="/{{modulePrefix}}/artefacts/{{id}}{{projParam}}">{{source}}</a></h4>\
     {{#if date}}{{date}}{{/if}} {{#if bibDetails}}<br/>{{ellipsis bibDetails 80}}{{/if}}\
     {{#if description}}<br/>{{{ellipsis description 80}}}{{/if}}\
-    {{#gt artefacts.length 0}}<br/>({{artefacts.length}} associated part{{#neq artefacts.length 1}}s{{/neq}}){{/gt}}\
+    {{#gt artefacts.length 0}}<br/><i class="fa fa-asterisk"></i> {{artefacts.length}} associated part{{#neq artefacts.length 1}}s{{/neq}}{{/gt}}\
     {{#gt facsimiles.length 0}}<br/><i class="fa fa-camera"></i> {{facsimiles.length}} facsimile{{#neq facsimiles.length 1}}s{{/neq}}{{/gt}}\
     {{#gt transcriptions.length 0}}<br/><i class="fa fa-file-text-o"></i> {{transcriptions.length}} diplomatic transcription{{#neq transcriptions.length 1}}s{{/neq}}{{/gt}}\
     {{#if hasEditPermission}}\
@@ -455,7 +455,7 @@ templates.workSummary =
     '<div class="obj">\
     <h4><a href="/{{modulePrefix}}/works/{{id}}{{projParam}}">{{workTitle}}{{#if name}} ({{name}}){{/if}}</a></h4>\
     {{#if description}}{{{ellipsis description 80}}}<br/>{{/if}}\
-    {{#gt versions.length 0}}({{versions.length}} associated version{{#neq versions.length 1}}s{{/neq}}){{/gt}}\
+    {{#gt versions.length 0}}<i class="fa fa-asterisk"></i> {{versions.length}} associated version{{#neq versions.length 1}}s{{/neq}}{{/gt}}\
     <p>\
     {{#if hasEditPermission}}\
     {{#if locked}}<i class="fa fa-lock"></i> {{/if}}\
