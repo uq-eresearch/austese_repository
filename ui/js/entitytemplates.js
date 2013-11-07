@@ -394,7 +394,7 @@ templates.artefactTokenResult = '{{#if id}}<li><b>{{source}}</b>, {{date}}</li>{
 templates.artefactSummary = 
     '<div class="obj">\
     <h4><a href="/{{modulePrefix}}/artefacts/{{id}}{{projParam}}">{{source}}</a></h4>\
-    {{#if date}}{{date}}{{/if}} {{#if bibDetails}}<br/>{{ellipsis bibDetails 80}}<br/>{{/if}}\
+    {{#if date}}{{date}}<br/>{{/if}}{{#if bibDetails}}{{ellipsis bibDetails 80}}<br/>{{/if}}\
     {{#if description}}{{{ellipsis description 80}}}<br/>{{/if}}\
     {{#gt artefacts.length 0}}<i class="sidebaricon fa fa-asterisk"></i> {{artefacts.length}} associated part{{#neq artefacts.length 1}}s{{/neq}}<br/>{{/gt}}\
     {{#gt facsimiles.length 0}}<i class="sidebaricon fa fa-camera"></i> {{facsimiles.length}} facsimile{{#neq facsimiles.length 1}}s{{/neq}}<br/>{{/gt}}\
