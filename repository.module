@@ -273,7 +273,7 @@ function repository_display($record_type, $template='Summary') {
     
     // resource organizer
     if ($record_type == 'resources'){
-        if (!austese_access('edit metadata')){
+        if (!austese_access('edit metadata', $project)){
             drupal_access_denied();
             return;
         }
