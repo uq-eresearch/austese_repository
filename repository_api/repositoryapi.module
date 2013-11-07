@@ -423,6 +423,32 @@ function austese_access($permission, $project=False) {
 }
 
 /**
+ * Read a record (work/artefact/version/agent/etc) from the mongo db
+ * In JSON form.
+ *
+ * @param string $collection Type of record eg. work
+ * @param string $id Record identifier
+ * @param string $revision Optional. Retrieve a specific revision
+ */
+function getRecord($collection,$id,$revision) {
+    global $mongo_requests, $mongo_time;
+    $recurse = isset($_GET['recurse']);
+    
+    $returnobj = _loadRecord($collection, $id, $revision, true, false, $recurse);
+
+    drupal_add_http_header('Content-Type', 'application/json');
+    drupal_add_http_header('Num-Mongo-Requests', count($mongo_requests));
+    drupal_add_http_header('Mongo-Requests', implode(';', $mongo_requests));
+    drupal_add_http_header('Mongo-Time', number_format($mongo_time, 4) . " sec");
+
+    $json_params = 0;
+    if (isset($_GET['pretty'])) {
+      $json_params |= JSON_PRETTY_PRINT;
+    }
+    echo json_encode($returnobj, $json_params);
+}
+
+/**
  * List records in a mongo collection
  * 
  * Responds with JSON. Supports pagination, searching and listing all.
@@ -437,13 +463,20 @@ function listRecords($collection, $labelFields) {
     $pagesize = get_get_parameter('pageSize');
     // provide a default for page Index. Default for pagesize is null (all results will be returned)
     $pagenum = get_get_paramter_int('pageIndex');
+    $recurse = isset($_GET['recurse']);
+
     // return metadata for results
     $cursor = _findRecords($collection, $labelFields,$pagesize,$pagenum);
     
-    echo "{\"collection\": \"$collection\", \"count\":" . $cursor->count(0) . ", \"pageSize\": \"". $pagesize . "\", \"pageIndex\": \"" . $pagenum . "\", \"results\": [";
-    
+    $results = array();
+    $results['collection'] = $collection;
+    $results['count'] = $cursor->count(0);
+    $results['pageSize'] = $pagesize;
+    $results['pageIndex'] = $pagenum;
+    $results['results'] = array();
+
     foreach ($cursor as $obj){
-     try{
+
       $numrev = count($obj['_revisions']) - 1;
 
       $id = $obj['_id'];
@@ -451,39 +484,16 @@ function listRecords($collection, $labelFields) {
       // generate uri
       $returnobj['uri'] = $config['uriprefix'] . '/'. $collection . '/' . $id->{'$id'};
       $returnobj['id'] = $id->{'$id'};
-      echo json_encode($returnobj);
-      if ($cursor->hasNext()){
-        echo ",\n";
+
+      if ($recurse) {
+        $results['results'][] = _loadRecord($collection, $id->{'$id'}, NULL, false, true, true);
+      } else {
+        $results['results'][] = $returnobj;
       }
-     } catch (Exception $e){
-     }
+
     }
-    echo "]}";
+    echo json_encode($results);
     drupal_add_http_header('Content-Type', 'application/json');
-}
-
-/**
- * Read a record (work/artefact/version/agent/etc) from the mongo db
- * In JSON form.
- *
- * @param string $collection Type of record eg. work
- * @param string $id Record identifier
- * @param string $revision Optional. Retrieve a specific revision
- */
-function getRecord($collection,$id,$revision) {
-    global $mongo_requests, $mongo_time;
-    $returnobj = _loadRecord($collection, $id, $revision, true);
-
-    drupal_add_http_header('Content-Type', 'application/json');
-    drupal_add_http_header('Num-Mongo-Requests', count($mongo_requests));
-    drupal_add_http_header('Mongo-Requests', implode(';', $mongo_requests));
-    drupal_add_http_header('Mongo-Time', number_format($mongo_time, 4) . " sec");
-
-    $json_params = 0;
-    if (isset($_GET['pretty'])) {
-      $json_params |= JSON_PRETTY_PRINT;
-    }
-    echo json_encode($returnobj, $json_params);
 }
 $mongo_requests = array();
 $mongo_time = 0;
@@ -554,7 +564,18 @@ function _findRecords($collection,$labelFields, $pagesize=null, $pagenum=null,  
     return $coll->find($findopts)->sort(array($sort=>$sortDirection))->limit($pagesize)->skip($pagenum * $pagesize);
 }
 
-function _loadRecord($collection, $id, $revision, $checkperms, $skip_deleted = false) {
+/**
+ * Load a mongo record from the collection
+ * 
+ * @param  string  $collection   The record type
+ * @param  string  $id           The record id
+ * @param  string  $revision     (may be null) Load a specific revision
+ * @param  boolean $checkperms   ()
+ * @param  boolean $skip_deleted When recursing, ignore deleted instead of HTTP status error
+ * @param  boolean $recurse      Recursively load records
+ * @return object                Record object
+ */
+function _loadRecord($collection, $id, $revision, $checkperms, $skip_deleted=false, $recurse=false) {
     global $mongo_requests, $mongo_time;
     $config = repositoryapi_get_configuration();
     
@@ -599,18 +620,18 @@ function _loadRecord($collection, $id, $revision, $checkperms, $skip_deleted = f
       exit;
     }
 
-    if (isset($_GET['recurse'])) {
+    if ($recurse) {
       if (!empty($returnobj['versions'])) {
         $returnobj['hazsomeversions'] = true;
 
         foreach ($returnobj['versions'] as $pos => $id) {
-          $returnobj['versions'][$pos] = _loadRecord('versions', $id, NULL, false, true);
+          $returnobj['versions'][$pos] = _loadRecord('versions', $id, NULL, false, true, true);
         }
       }
 
       if (!empty($returnobj['artefacts'])) {
         foreach ($returnobj['artefacts'] as $pos => $id) {
-          $returnobj['artefacts'][$pos] = _loadRecord('artefacts', $id, NULL, false, true);
+          $returnobj['artefacts'][$pos] = _loadRecord('artefacts', $id, NULL, false, true, true);
         }
       }
 

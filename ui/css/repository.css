@@ -104,7 +104,7 @@ div.sticky-bottom {
     padding:5px;
     z-index:1000;
 }
-#single-editor-ui, #multi-editor-ui {
+#single-editor-ui, #multi-editor-ui, #facsimile {
     display:none;
 }
 

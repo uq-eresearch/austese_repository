@@ -334,12 +334,17 @@ function repository_edit($record_type, $id=null){
     drupal_add_js($modulePath . '/ui/lib/bootstrap-wysihtml5.js');
     drupal_add_css($modulePath. '/ui/lib/bootstrap-wysihtml5.css',  array('group' => CSS_DEFAULT, 'every_page' => FALSE));
     drupal_add_js($modulePath . '/ui/lib/handlebars.js');
+    drupal_add_js('http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js');
     drupal_add_js($modulePath . '/ui/js/entitytemplates.js');
+
     if ($record_type == "resources"){
         if (isset($_GET['multi'])) {
            $multiParam = true;
         } else {
             $multiParam = false;
+        }
+        if ($path = libraries_get_path('jquery.panzoom')) {
+            drupal_add_js($path . '/jquery.panzoom.min.js');
         }
         drupal_add_js($modulePath . '/ui/lib/codemirror/codemirror.js');
         // support collapsing tags
@@ -363,7 +368,6 @@ function repository_edit($record_type, $id=null){
         drupal_add_js($modulePath . '/ui/lib/codemirror/xml.js');
         drupal_add_js($modulePath . '/ui/js/resourceedit.js');
         drupal_add_css($modulePath . '/ui/lib/codemirror/codemirror.css',  array('group' => CSS_DEFAULT, 'every_page' => FALSE)); 
- 
     } else {
         drupal_add_js($modulePath . '/ui/js/repository.js');
     }

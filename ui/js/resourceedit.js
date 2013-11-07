@@ -5,6 +5,9 @@ jQuery(function(){
      editor.displayResourceMetadata(resourceId);
      jQuery('.savebtn').click(editor.newResourceVersion);
      jQuery('#toggleMulti').click(editor.toggleMulti);
+     jQuery('#toggleFacsimile').click(editor.toggleFacsimile);
+     jQuery('#nextFacsimile').click(editor.nextFacsimile);
+     jQuery('#prevFacsimile').click(editor.prevFacsimile);
      jQuery.ajax({
          url:'/sites/all/modules/austese_repository/ui/xslt/formats.xsl',
          success: function(xsl){
@@ -275,6 +278,13 @@ var editor = {
       jQuery('#emptyURIMessage').css('display','block');
      }
  },
+ /**
+  * Saves a new version of a resource. Displays a message on success/failure.
+  * 
+  * Called when the save button is pressed.
+  * 
+  * @return undefined
+  */
  newResourceVersion : function(){
      var uri = jQuery('.savebtn').eq(0).data("resource");
      jQuery('.alert').hide();
@@ -296,8 +306,18 @@ var editor = {
          });
      } 
  },
+ displayingXML: function(){
+  return editor.xsl && jQuery('#metadata').data('contenttype') == 'text/xml';
+ },
+ /**
+  * Updates the preview pane based on the editor. Called every time an edit occurs on an XML document.
+  *
+  * Or for non-xml, removes the preview pane and expands the editor
+  *
+  * @return undefined
+  */
  previewResource: function(){
-     if (editor.xsl && jQuery('#metadata').data('contenttype') == 'text/xml'){
+     if (editor.displayingXML()){
          var text = editor.cm.getValue();
          var result = "Preview unavailable: Your browser does not support XSLT";
          if (window.ActiveXObject) { // IE
@@ -323,7 +343,11 @@ var editor = {
          jQuery('#editorspan').removeClass('span6').addClass('span12');
          jQuery(".edit-preview").hide();
      }
- }, 
+ },
+ /**
+  * Reloads the page with the 'diff' view enabled or disabled
+  * @return undefined
+  */
  toggleMulti: function(){
      var multi = jQuery('#metadata').data('multi');
      var project = jQuery('#metadata').data('project');
@@ -338,5 +362,89 @@ var editor = {
          params += "multi=true";
      }
      document.location.href = jQuery('#metadata').data('editurl') + '?' + params;
- }
+ },
+  toggleFacsimile: function() {
+    var action = jQuery(this).text();
+    var multi = jQuery('#metadata').data('multi');
+    var searchUri = '/sites/all/modules/austese_repository/api/versions/';
+    var resourceId = jQuery('#metadata').data('existingid');
+    var project = jQuery('#metadata').data('project');
+    var targetEl = "#single-editor-ui";
+    if (multi) {
+      targetEl = jQuery("#multieditor").parent();
+    }
+
+    if (action == "Show facsimile") {
+      jQuery('#facsimile').prependTo(targetEl).show();
+      distribute(targetEl);
+
+      jQuery.ajax({
+          url: searchUri,
+          type: 'GET',
+          data: {
+            recurse: true,
+            searchField: 'transcriptions',
+            query: resourceId,
+            project: project
+          },
+          success: function(data, status, xhr){
+            mydata = data;
+            facsimiles = _.chain(mydata.results)
+                  .pluck('artefacts').flatten()
+                  .pluck('artefacts').flatten()
+                  .pluck('facsimiles').flatten().value()
+            currFacsimile = 0;
+            editor.displayFacsimile();
+          },
+          error: function(jqXHR, textStatus, errorThrown){
+              jQuery('#facsimile').text(textStatus);
+          }
+      });
+
+      jQuery(this).text("Hide facsimile");
+    } else {
+      jQuery('#facsimile').appendTo('body').removeClass().hide();
+      distribute(targetEl);
+
+      jQuery(this).text("Show facsimile");
+    }
+
+    return false;
+  },
+  displayFacsimile: function() {
+    jQuery('#facsimile .count').text("Image " + (currFacsimile +1) + " of " + facsimiles.length);
+    jQuery('#facsimile .imageHolder').html("<img src='" + facsimiles[currFacsimile].uri + "'>");
+
+    jQuery('#facsimile .imageHolder').panzoom({
+      $zoomIn: jQuery('#facsimile .zoom-in'),
+      $zoomOut: jQuery('#facsimile .zoom-out'),
+      $zoomRange: jQuery('#facsimile .zoom-range'),
+      $reset: jQuery('#facsimile .reset'),
+    });
+  },
+  nextFacsimile: function() {
+    currFacsimile = (currFacsimile + 1) % facsimiles.length;
+    editor.displayFacsimile();
+  },
+  prevFacsimile: function() {
+    if (currFacsimile == 0) {
+      currFacsimile = facsimiles.length - 1;
+    } else {
+      currFacsimile = currFacsimile - 1;
+    }
+    editor.displayFacsimile();
+  }
 };
+
+function distribute(element) {
+  var spanClasses = "span3 span4 span6 span12";
+  var children = jQuery(element).children();
+  var count = children.length;
+  var spanWidth = "span" + 12 / count;
+  children.each(function() {jQuery(this).removeClass(spanClasses).addClass(spanWidth)});
+}
+
+
+function findFacsimiles(data) {
+
+}
