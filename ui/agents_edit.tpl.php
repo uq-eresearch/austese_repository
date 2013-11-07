@@ -44,6 +44,7 @@ if (isset($_GET['project'])) {
       <label class="control-label" for="lastName">Last Name</label>
       <div class="controls">
         <input autofocus="true" name="lastName" type="text" class="input-xxlarge" id="lastName">
+        <p>Last Name (or Organisation Name)</p>
         <div id="existingOutput"></div>
       </div>
     </div>
@@ -52,12 +53,23 @@ if (isset($_GET['project'])) {
       <label class="control-label" for="firstName">First Name</label>
       <div class="controls">
         <input name="firstName" type="text" class="input-xxlarge" id="firstName">
+        <p>Given name(s) for an individual person</p>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="agentType">Agent Type</label>
+      <div class="controls">
+        <select name="agentType" class="input-xxlarge" id="agentType">
+         <option>Person</option>
+         <option>Organisation</option>
+        </select>
       </div>
     </div>
     <div class="control-group">
       <label class="control-label" for="biography">Biography</label>
       <div class="controls">
         <textarea rows="10" class="input-xxlarge" name="biography" id="biography"></textarea>
+        <p>Biography / description of agent</p>
       </div>
     </div>
     </fieldset>
