@@ -106,8 +106,8 @@ if (isset($project)) {
   </div>
   <div class="btn-toolbar">
     <div class="buttons btn-group">
-      <button class="zoom-in btn"><i class="fa fa-search-minus"></i></button>
-      <button class="zoom-out btn"><i class="fa fa-search-plus"></i></button>
+      <button class="zoom-in btn"><i class="fa fa-search-plus"></i></button>
+      <button class="zoom-out btn"><i class="fa fa-search-minus"></i></button>
       <input type="range" class="zoom-range">
       <button class="reset btn">Reset</button>
     </div>
