@@ -6,7 +6,8 @@
  */
 $apiType = substr(arg(1),0,-1); // remove the trailing 's'
 $apiOperation = "load";
-$modulePrefix = drupal_get_path('module', 'repository');
+$modulePrefix = "repository";
+$modulePath = drupal_get_path('module', 'repository');
 if ($apiType == "artefact"){
     $filterField = "source";
 } else if ($apiType == "place" || $apiType == "agent" || $apiType == "collection") {
@@ -30,23 +31,23 @@ if (isset($_GET['project'])) {
  data-project="<?php print $project; ?>"
  <?php endif; ?>
  data-template="<?= $displaytemplate ?>"
- data-modulepath="<?php print $modulePrefix; ?>"
- data-moduleprefix="<?php print arg(0); ?>"
+ data-modulepath="<?php print $modulePath; ?>"
+ data-moduleprefix="<?php print $modulePrefix; ?>"
  data-apioperation="<?php print $apiOperation;?>"
  data-apitype="<?php print $apiType;?>">
 </div>
 <div class="row-fluid">
     <div class="span8" id="newobject">
      <?php if (austese_access('edit metadata', $project) && $apiType != 'mvd' && $apiType != 'place'): ?>
-       <a href="<?php print $apiType; ?>s/edit<?php if ($project) print '?project='.$project; ?>"><button type="button" class="btn"><i class="icon-plus"></i> New <?php print $apiType; ?></button></a>
+       <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/edit<?php if ($project) print '?project='.$project; ?>"><button type="button" class="btn"><i class="icon-plus"></i> New <?php print $apiType; ?></button></a>
      <?php endif; ?>
      <?php if ($apiType=='event'):?>
-       &nbsp;<a href="/<?php print arg(0); ?>/<?php print $apiType; ?>s/map/<?php if ($project): print "?project=".$project; endif; ?>"><button type="button" class="btn"><i class="icon-globe"></i> View Map</button></a>
-       &nbsp;<a href="/<?php print arg(0); ?>/<?php print $apiType; ?>s/timeline/<?php if ($project): print "?project=".$project; endif; ?>"><button type="button" class="btn"><i class="icon-time"></i> View Timeline</button></a>
+       &nbsp;<a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/map/<?php if ($project): print "?project=".$project; endif; ?>"><button type="button" class="btn"><i class="icon-globe"></i> View Map</button></a>
+       &nbsp;<a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/timeline/<?php if ($project): print "?project=".$project; endif; ?>"><button type="button" class="btn"><i class="icon-time"></i> View Timeline</button></a>
        <?php if ($displaytemplate == 'ChronologyDetail'): ?>
-       &nbsp;<a href="/<?php print arg(0); ?>/<?php print $apiType; ?>s/<?php if ($project): print "?project=".$project; endif; ?>"><button type="button" class="btn"><i class="icon-list"></i> View Details</button></a>
+       &nbsp;<a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/<?php if ($project): print "?project=".$project; endif; ?>"><button type="button" class="btn"><i class="icon-list"></i> View Details</button></a>
        <?php else: ?>
-       &nbsp;<a href="/<?php print arg(0); ?>/<?php print $apiType; ?>s/chronology/<?php if ($project): print "?project=".$project; endif; ?>"><button type="button" class="btn"><i class="icon-time"></i> View Chronology</button></a>
+       &nbsp;<a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/chronology/<?php if ($project): print "?project=".$project; endif; ?>"><button type="button" class="btn"><i class="icon-time"></i> View Chronology</button></a>
        <?php endif; ?>
      <?php endif;?>
      </div>
