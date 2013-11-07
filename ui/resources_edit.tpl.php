@@ -44,10 +44,7 @@ if (isset($project)) {
   <div class="buttons btn-group">
     <a id="toggleFacsimile" class="btn" href="#"><i class="icon-picture"></i> Show facsimile</a>
     <a id="togglePreview" class="btn" href="#"><i class="icon-eye-close"></i> Hide preview</a>
-    <a id="toggleMulti" class="btn" href="#"><i class="icon-random"></i>
-    <!--  // FIXME: if user cancels navigation due to unsaved changes, multi toggle will get out of sync -->
-    <!--  input style="margin-top:-4px" <?php if($multi): print 'checked'; endif; ?> type="checkbox"/--> 
-    Compare while editing</a>
+    <a id="toggleMulti" class="btn" href="#"><i class="icon-random"></i> Compare while editing</a>
   </div>
 </div>
 
@@ -72,9 +69,6 @@ if (isset($project)) {
   </div>
   <div class="row-fluid">
     <div class="span12 form-actions form-center">
-       <!--div class="span6">
-       <input type="hidden" class="span12" id="lhs-select"/>
-       </div-->
        <div class="span6">
         <button data-resource="/<?php print drupal_get_path('module', 'repository');?>/api/resources/<?php print arg(3); ?>" class="btn btn-primary savebtn" title="Save as new version">Save</button>
        </div>
@@ -95,9 +89,6 @@ if (isset($project)) {
 
     <div class="editInfo"></div>
     <textarea id="editor" name="editor"> </textarea>
-<!--     <div class="form-actions">
-       <button data-resource="/<?php print drupal_get_path('module', 'repository');?>/api/resources/<?php print arg(3); ?>" class="btn btn-primary savebtn" title="Save as new version">Save</button>
-    </div> -->
   </div>
   <div id="preview" class="span6">
     <div class="edit-preview">
