@@ -33,6 +33,18 @@ if (isset($_GET['cloud'])) {
 
 <div><p class="resource"></p></div>
 <div class="row-fluid">
+  <div class="btn-toolbar" id="panzoom-toolbar" style="display:none">
+    <div class="buttons btn-group">
+      <button class="zoom-in btn"><i class="fa fa-search-plus"></i></button>
+      <button class="zoom-out btn"><i class="fa fa-search-minus"></i></button>
+      <input type="range" class="zoom-range">
+      <button class="reset btn">Reset</button>
+    </div>
+    <button class="enableAnnotations btn" style="display:none;"><i class="fa fa-comments"></i> Enable Annotations</button>
+  </div>
+</div>
+
+<div class="row-fluid">
 <div id="resourceContent" class="span<?php if ($cloud) print "9"; else print "12"; ?> well white-well" data-id="http://<?php print $_SERVER['SERVER_NAME']; ?>/repository/resources/<?php print $existingId; ?>/content">
 Rendering content...
 </div>

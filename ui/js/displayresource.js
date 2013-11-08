@@ -1,9 +1,10 @@
 jQuery(document).ready(function(){
+    // get metadata
     var existingId = jQuery('#metadata').data('existingid');
     var modulePrefix = jQuery('#metadata').data('moduleprefix');
     var project = jQuery('#metadata').data('project');
-    // get metadata
     var resURI = '/' + jQuery('#metadata').data('modulepath') + "/api/resources/" + existingId;
+
     function afterContentLoaded(){
         if (typeof wordCloud != 'undefined' && typeof wordCloud.drawWordCloud == "function"){
             wordCloud.drawWordCloud();
@@ -47,6 +48,7 @@ jQuery(document).ready(function(){
           }
         });
     }
+
     jQuery.ajax({
         type: 'GET',
         dataType: "json",
@@ -58,10 +60,44 @@ jQuery(document).ready(function(){
             var mimeType = resmeta.metadata.filetype;
             // if resource is an image create image tag
             if (mimeType.match("image")) {
-                jQuery('#resourceContent').html("<img alt='Image preview' class='thumbnail' src='" + resURI + "'/>");
-                if (typeof enableAnnotations == "function"){
-                    enableAnnotations();
+                jQuery('#resourceContent').html("<div id='imageHolder' class='thumbnail'><img alt='Image preview' src='" + resURI + "'/></div>");
+
+                var imageHolder = jQuery('#resourceContent #imageHolder');
+                var annoButton = jQuery('.enableAnnotations');
+                function toggleAnnotations() {
+                    if (annoButton.text().match('Enable')) {
+                        imageHolder.panzoom('reset');
+                        imageHolder.panzoom('disable');
+                        enableAnnotations();
+                        
+                        var html = annoButton.html();
+                        html = html.replace('Enable', 'Disable');
+                        annoButton.html(html);
+                    } else {
+                        disableAnnotations();
+                        imageHolder.panzoom('enable');
+                        
+                        var html = annoButton.html();
+                        html = html.replace('Disable', 'Enable');
+                        annoButton.html(html);
+                    }
                 }
+
+                if (typeof enableAnnotations == "function"){
+                    // enableAnnotations();
+                    annoButton.show().click(toggleAnnotations);
+                }
+
+                // Enable pan and zoom
+                jQuery('#panzoom-toolbar').show();
+                imageHolder.panzoom({
+                  $zoomIn: jQuery('#panzoom-toolbar .zoom-in'),
+                  $zoomOut: jQuery('#panzoom-toolbar .zoom-out'),
+                  $zoomRange: jQuery('#panzoom-toolbar .zoom-range'),
+                  $reset: jQuery('#panzoom-toolbar .reset'),
+                });
+
+
             } else if (mimeType.match("xml") || mimeType.match("text")){
                 var resURL;
                 // if resource is plain text insert text content directly
