@@ -45,8 +45,8 @@ $modulePath =  drupal_get_path('module', 'repository');
    <li><i class="sidebaricon fa fa-eye"></i> <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/<?php print $existingId; ?>/content<?php if ($project): print '?project='.$project; endif; ?>">VIEW CONTENT</a></li>
    <li style="display:none" id="wordcloudlink"><i class="sidebaricon fa fa-cloud"></i> <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/<?php print $existingId; ?>/content?cloud=true<?php if ($project): print '&project='.$project; endif; ?>">VIEW WORD CLOUD</a></li>
    <li style="display:none" id="lightboxlink"><i class="sidebaricon fa fa-lightbulb-o"></i> <a  href="/lightbox<?php if ($project): print '?project='.$project; endif; ?>#<?php print $existingId; ?>">VIEW IN LIGHTBOX</a></li>
-   <li id="pdflink"><i class="sidebaricon fa fa-book"></i> <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/<?php print $existingId; ?>/content/pdf">EXPORT PDF</a></li>
-   <li id="mswordlink"><i class="sidebaricon fa fa-book"></i> <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/<?php print $existingId; ?>/content/word">EXPORT WORD DOC</a></li>
+   <li id="pdflink"><i class="sidebaricon fa icomoon-file-pdf"></i> <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/<?php print $existingId; ?>/content/pdf">EXPORT PDF</a></li>
+   <li id="mswordlink"><i class="sidebaricon fa icomoon-file-word"></i> <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/<?php print $existingId; ?>/content/word">EXPORT WORD DOC</a></li>
    <?php endif; ?>
   
    <?php if (austese_access('edit metadata', $project)): ?>
