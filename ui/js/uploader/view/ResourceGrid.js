@@ -11,7 +11,7 @@ Ext.define('austese_uploader.view.ResourceGrid', {
             multiSelect: true,
             store: Ext.getStore('ResourceStore'),
             columns: [
-                  {text: 'File', dataIndex: 'filename'},
+                  {text: 'File', dataIndex: 'filename', width:150},
                   {text: 'Title', dataIndex: 'title', flex: 1},
                   {text: 'Short Name', dataIndex: 'shortname'},
                   {text: 'Type', dataIndex: 'filetype'},
