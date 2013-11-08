@@ -1,76 +1,120 @@
-(function($) {
-	function lookupElementByXPath(path) {
-		path = path.substring(30);
-    	console.log(path);
-	    var paths = path.split('/');
-	    var node = jQuery("#resourceContent")[0];
-	    var returnNode = null;
-	
-	    if (node.children[0].tagName == "PRE" && node.children[0].id == "textContainer") {
-	    	node = node.children[0];
-	    }
-	    
-	    for (var i = 0; i < paths.length; i++) {
-	        if (paths[i] != "") {
-	            var patt1 = "\\[\\d*\\]";
-	            var index = -1;
-	            if (paths[i].match(patt1)) {
-	                index = paths[i].match(patt1)[0];
-	                index = parseInt(index.substring(1, index.length - 1));
-	            }
-	
-	            var patt2 = ".*\\[";
-	            var tagname = -1;
-	            if (paths[i].match(patt2)) {
-	                tagname = paths[i].match(patt2)[0];
-	                tagname = tagname.substring(0, tagname.length - 1);
-	            }
-	
-	            var children = node.childNodes;
-	
-	            if (tagname == "text()") {
-	                for (var j = 0; j < children.length; j++) {
-	                    if (!children[j].tagName) {
-	                        if (index == 1) {
-	                            node = children[j];
-	                            returnNode = node;
-	                            j = children.length;
-	                        } else {
-	                            index = index - 1;
-	                        }
-	                    }
-	                }
-	                if (j != (children.length + 1)) {
-	                    returnNode = null;
-	                }
-	            } else {
-	                for (var j = 0; j < children.length; j++) {
-	                    if (children[j].tagName && (children[j].tagName.toLowerCase() == tagname)) {
-	                        if (index == 1) {
-	                            node = children[j];
-	                            returnNode = node;
-	                            j = children.length;
-	                        } else {
-	                            index = index - 1;
-	                        }
-	                    }
-	                }
-	                if (j != (children.length + 1)) {
-	                    returnNode = null;
-	                }
-	            }
-	        }
-	    }
-	    return returnNode;
+function lookupElementByXPath(path) {
+	path = path.substring(30);
+    var paths = path.split('/');
+    var node = jQuery("#resourceContent")[0];
+    var returnNode = null;
+    
+    if (node.children[0].tagName == "PRE" && node.children[0].id == "textContainer") {
+    	node = node.children[0];
+    }
+    
+    for (var i = 0; i < paths.length; i++) {
+        if (paths[i] != "") {
+            var patt1 = "\\[\\d*\\]";
+            var index = -1;
+            if (paths[i].match(patt1)) {
+                index = paths[i].match(patt1)[0];
+                index = parseInt(index.substring(1, index.length - 1));
+            }
+
+            var patt2 = ".*\\[";
+            var tagname = -1;
+            if (paths[i].match(patt2)) {
+                tagname = paths[i].match(patt2)[0];
+                tagname = tagname.substring(0, tagname.length - 1);
+            }
+
+            var children = node.childNodes;
+
+            if (tagname == "text()") {
+                for (var j = 0; j < children.length; j++) {
+                    if (!children[j].tagName) {
+                        if (index == 1) {
+                            node = children[j];
+                            returnNode = node;
+                            j = children.length;
+                        } else {
+                            index = index - 1;
+                        }
+                    }
+                }
+                if (j != (children.length + 1)) {
+                    returnNode = null;
+                }
+            } else {
+                for (var j = 0; j < children.length; j++) {
+                    if (children[j].tagName && (children[j].tagName.toLowerCase() == tagname)) {
+                        if (index == 1) {
+                            node = children[j];
+                            returnNode = node;
+                            j = children.length;
+                        } else {
+                            index = index - 1;
+                        }
+                    }
+                }
+                if (j != (children.length + 1)) {
+                    returnNode = null;
+                }
+            }
+        }
+    }
+    return returnNode;
+}
+
+function highlightText(startOffset, startOffsetXpath, endOffset, endOffsetXpath) {
+	var containerDiv = jQuery("#resourceContent")[0];
+    
+	var startElement = lookupElementByXPath(startOffsetXpath);
+	var endElement = lookupElementByXPath(endOffsetXpath);
+			
+	var range = rangy.createRange();
+
+	range.selectNodeContents(containerDiv);
+	if (startElement != containerDiv || endElement != containerDiv) {
+			range.setStart(startElement, parseInt(startOffset));
+			range.setEnd(endElement, parseInt(endOffset));
 	}
 	
+	var markerTextChar = "\ufeff";
+    var markerTextCharEntity = "&#xfeff;";
+    var markerEl;
+    var markerId = "sel_" + new Date().getTime() + "_"
+            + Math.random().toString().substr(2);
+
+    markerEl = document.createElement("span");
+    markerEl.id = markerId;
+    markerEl.appendChild(document.createTextNode(markerTextChar));
+    range.insertNode(markerEl);
+
+    var verticalOffset = markerEl.offsetTop;
+    var parent = markerEl.parentNode;
+    parent.removeChild(markerEl);
+    parent.normalize();
+	
+	range.selectNodeContents(containerDiv);
+	if (startElement != containerDiv || endElement != containerDiv) {
+			range.setStart(startElement, parseInt(startOffset));
+			range.setEnd(endElement, parseInt(endOffset));
+	}
+    
+	var sel = window.rangy.getSelection();
+	
+	sel.removeAllRanges();
+	sel.addRange(range);
+    
+	jQuery('body').animate({
+        scrollTop: verticalOffset - 300
+    }, 1000);
+}
+	
+(function($) {
 	annotationView.display = function(resURI){
         jQuery.ajax({
             url : '/lorestore/oa/?matchval=' + resURI + '&asTriples=false',
             type : 'GET',
             contentType : "application/rdf+xml",
             success : function(res) {
-            	console.log("got annotations",res)
                 var patt1 = "#xpath=[^=#,]+,[^=#,]+#char=[0-9]+,[0-9]+$";
                 var patt2 = "#xywh=[\\.0-9]+,[\\.0-9]+,[\\.0-9]+,[\\.0-9]+$";
                 var patt3 = /[^=#,]+/g;
@@ -190,10 +234,6 @@
                 	imgs[i].attr('width', '16');
                 	imgs[i].attr('objectUrl', annotations[i].objectUrl);
                 	imgs[i].attr('src', '/sites/all/modules/austese_repository/ui/img/link_black.png');
-                	imgs[i].attr('startOffset', annotations[i].startOffset);
-                	imgs[i].attr('startOffsetXpath', annotations[i].startOffsetXpath);
-                	imgs[i].attr('endOffset', annotations[i].endOffset);
-                	imgs[i].attr('endOffsetXpath', annotations[i].endOffsetXpath);
                 	
                 	$("<img index='" + i + "' src='" + annotations[i].src + "' />")
                 		.attr("src", annotations[i].src)
@@ -232,21 +272,27 @@
                             var anchor = $("<a href='/repository/resources/" + this.src.substring(this.src.lastIndexOf("/") + 1) + "'></a>");
                             anchor.append(div);
                             
-                            var div2 = $("<div><img src='/sites/all/modules/austese_repository/ui/img/double_quote_left.png'/>" + selectedText 
-                            		+ "<img src='/sites/all/modules/austese_repository/ui/img/double_quote_right.png'/></div>");
+                            var div2 = $("<div style='min-width: 250px'>"
+                            		+ "<img src='/sites/all/modules/austese_repository/ui/img/double_quote_left.png'/>" + selectedText 
+                            		+ "<img src='/sites/all/modules/austese_repository/ui/img/double_quote_right.png' />"
+                            		+ "<img onclick='highlightText(" + annotations[this.attributes.index.value].startOffset 
+                            		+ ",\"" + annotations[this.attributes.index.value].startOffsetXpath 
+                            		+ "\"," + annotations[this.attributes.index.value].endOffset 
+                            		+ ",\"" + annotations[this.attributes.index.value].endOffsetXpath + "\");' style='cursor: pointer' "
+                            		+ "src='/sites/all/modules/austese_repository/ui/img/application_side_contract.png' />" 
+                            		+ "</div>");
                             div2.width(origWidth * annotation.w / 100.0);
                             div2.height(origHeight * annotation.h / 100.0);
                             div2.css("padding-right","14px");
                             div2.append(anchor);
                             
                             imgs[this.attributes.index.value].popover({
-                        		header: '12345', 
                         		placement: 'left',
                         		trigger: 'manual',
                         		html: true,
                         		template: '<div onmouseover="'
                         			+		'if (jQuery(\'[selected=selected]\').length == 0) {'
-                        			+		'clearTimeout(timeoutObj);jQuery(this).mouseleave(function() {'
+                        			+		'clearTimeout(timeoutObj); jQuery(this).mouseleave(function() {'
                         			+		'var ref = jQuery(this); clearTimeout(timeoutObj); '
                         			+		'timeoutObj = setTimeout(function(){ref.hide();}, 300);});}" '
                         			+		'class="popover">'
