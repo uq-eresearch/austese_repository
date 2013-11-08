@@ -43,7 +43,7 @@ Rendering content...
 <?php if ($annotationView): ?>
 <div class="span1">
   <div class="row-fluid">
-    <div id="annotationView" class="well white-well" style="width:16px; padding-top: 35px;"></div>
+    <div id="annotationView" class="well white-well" style="width:16px;"></div>
   </div>
 </div>
 <div id="popover_content_wrapper" style="display: none">

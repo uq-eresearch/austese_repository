@@ -62,12 +62,8 @@ function lookupElementByXPath(path) {
     return returnNode;
 }
 
-function highlightText(startOffset, startOffsetXpath, endOffset, endOffsetXpath) {
+function getSelectionOffset(startOffset, startElement, endOffset, endElement) {			
 	var containerDiv = jQuery("#resourceContent")[0];
-    
-	var startElement = lookupElementByXPath(startOffsetXpath);
-	var endElement = lookupElementByXPath(endOffsetXpath);
-			
 	var range = rangy.createRange();
 
 	range.selectNodeContents(containerDiv);
@@ -91,7 +87,17 @@ function highlightText(startOffset, startOffsetXpath, endOffset, endOffsetXpath)
     var parent = markerEl.parentNode;
     parent.removeChild(markerEl);
     parent.normalize();
-	
+    
+    return verticalOffset;
+}
+
+function highlightText(startOffset, startOffsetXpath, endOffset, endOffsetXpath) {
+	var containerDiv = jQuery("#resourceContent")[0];
+    
+	var startElement = lookupElementByXPath(startOffsetXpath);
+	var endElement = lookupElementByXPath(endOffsetXpath);
+			
+    var range = rangy.createRange();
 	range.selectNodeContents(containerDiv);
 	if (startElement != containerDiv || endElement != containerDiv) {
 			range.setStart(startElement, parseInt(startOffset));
@@ -102,14 +108,12 @@ function highlightText(startOffset, startOffsetXpath, endOffset, endOffsetXpath)
 	
 	sel.removeAllRanges();
 	sel.addRange(range);
-    
-	jQuery('body').animate({
-        scrollTop: verticalOffset - 300
-    }, 1000);
 }
 	
 (function($) {
 	annotationView.display = function(resURI){
+		jQuery("#annotationView").height(jQuery("#resourceContent").height());
+		
         jQuery.ajax({
             url : '/lorestore/oa/?matchval=' + resURI + '&asTriples=false',
             type : 'GET',
@@ -226,10 +230,14 @@ function highlightText(startOffset, startOffsetXpath, endOffset, endOffsetXpath)
                 var imgs = [];
                 
                 for (var i = 0; i < annotations.length; i++) {                    
+                	var startElement = lookupElementByXPath(annotations[i].startOffsetXpath);
+                	var endElement = lookupElementByXPath(annotations[i].endOffsetXpath);
+                    var verticalOffset = getSelectionOffset(annotations[i].startOffset, startElement, annotations[i].endOffset, endElement);
+                    
                 	imgs[i] = jQuery("<img></img>");
                 	imgs[i].attr('id', 'Annotation_' + annotations[i].annotationID).addClass('textAlignment');
                 	
-                	imgs[i].attr('style', 'cursor: pointer;');
+                	imgs[i].attr('style', 'cursor: pointer; position:absolute; top: '+ verticalOffset + 'px;');
                 	imgs[i].attr('height', '16');
                 	imgs[i].attr('width', '16');
                 	imgs[i].attr('objectUrl', annotations[i].objectUrl);
@@ -273,13 +281,13 @@ function highlightText(startOffset, startOffsetXpath, endOffset, endOffsetXpath)
                             anchor.append(div);
                             
                             var div2 = $("<div style='min-width: 250px'>"
-                            		+ "<img src='/sites/all/modules/austese_repository/ui/img/double_quote_left.png'/>" + selectedText 
-                            		+ "<img src='/sites/all/modules/austese_repository/ui/img/double_quote_right.png' />"
                             		+ "<img onclick='highlightText(" + annotations[this.attributes.index.value].startOffset 
                             		+ ",\"" + annotations[this.attributes.index.value].startOffsetXpath 
                             		+ "\"," + annotations[this.attributes.index.value].endOffset 
                             		+ ",\"" + annotations[this.attributes.index.value].endOffsetXpath + "\");' style='cursor: pointer' "
                             		+ "src='/sites/all/modules/austese_repository/ui/img/application_side_contract.png' />" 
+                            		+ "<img src='/sites/all/modules/austese_repository/ui/img/double_quote_left.png'/>" + selectedText 
+                            		+ "<img src='/sites/all/modules/austese_repository/ui/img/double_quote_right.png' />"
                             		+ "</div>");
                             div2.width(origWidth * annotation.w / 100.0);
                             div2.height(origHeight * annotation.h / 100.0);
