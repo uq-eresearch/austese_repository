@@ -1,6 +1,7 @@
 var wordCloud = {};
 (function($) {
-// Based on https://github.com/jasondavies/d3-cloud/blob/master/examples/simple.html
+    $(document).ready(function(){
+            // Based on https://github.com/jasondavies/d3-cloud/blob/master/examples/simple.html
             // and http://www.jasondavies.com/wordcloud/
             var w = $('#wordcloud').width();
             var buffer = 50;
@@ -112,4 +113,5 @@ var wordCloud = {};
                       concordance(hash.substring(1,hash.length));
                   }
               };
+    });
  })(jQuery);
