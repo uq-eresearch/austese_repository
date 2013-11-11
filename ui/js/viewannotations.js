@@ -228,7 +228,7 @@ function attachToLink(verticalOffset, annotationsByVerticalOffset, imgs) {
 			+		'class="popover" style="width:605px">'
 			+ '<div class="arrow"></div>'
 			+ '<div class="popover-inner" style="width:600px">' 
-			+ 	'<div class="popover-content" style="height: 190px; overflow: auto;" style="width:600px">'
+			+ 	'<div class="popover-content" style="height: 180px; overflow: auto;" style="width:600px">'
 			+		'<p></p>'
 			+	'</div>'
 			+ '</div></div>',
