@@ -54,6 +54,12 @@ jQuery(document).ready(function() {
             if (fullscreen == 1){
                 this.getController('Controller').toggleFullscreen(Ext.ComponentQuery.query('#toggleFullscreenButton')[0]);
             }
+            var organiserlist = jQuery('#metadata').data('organiserlist');
+            if (organiserlist == 1){
+                this.getController('Controller').toggleResourceView(Ext.ComponentQuery.query('#gridButton')[0]);
+                Ext.ComponentQuery.query('#gridButton')[0].toggle(true);
+                Ext.ComponentQuery.query('#thumbnailsButton')[0].toggle(false);
+            }
             if (project){
                 // set the project param for the store: used to filter resources belonging to project
                 this.getStore('ResourceStore').proxy.extraParams.project = project;

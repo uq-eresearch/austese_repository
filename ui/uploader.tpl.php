@@ -10,8 +10,14 @@ $apiOperation = arg(2);
 $existingId=arg(3);
 if (property_exists($user,'data')){
  $fullscreen = $user->data['fullscreen'];
+  if (isset($user->data['organiserlist'])){
+    $organiserlist = $user->data['organiserlist'];
+  } else {
+    $organiserlist = false;
+  }
 } else {
  $fullscreen = false;
+ $organiserlist = false;
 }
 $project = null;
 if (isset($_GET['project'])) {
@@ -28,6 +34,9 @@ if (isset($_GET['project'])) {
  <?php endif; ?>
  <?php if ($fullscreen):?>
  data-fullscreen="<?php print $fullscreen; ?>"
+ <?php endif; ?>
+  <?php if ($organiserlist):?>
+ data-organiserlist="<?php print $organiserlist; ?>"
  <?php endif; ?>
  <?php if ($project):?>
  data-project="<?php print $project; ?>"

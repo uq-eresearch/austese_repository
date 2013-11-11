@@ -672,11 +672,19 @@ function repository_form_user_profile_form_alter(&$form, &$form_state) {
     '#return_value' => 1,
     '#default_value' => isset($account->data['fullscreen']) ? $account->data['fullscreen'] : 0 ,
   );
+  $form['austese']['organiserlist'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Resource Organiser defaults to list'),
+    '#description' => t('Check this box if you want to launch the resource organiser in list mode rather than thumbnail mode by default'),
+    '#return_value' => 1,
+    '#default_value' => isset($account->data['organiserlist']) ? $account->data['organiserlist'] : 0 ,
+  );
   // TODO add other preferences e.g. default metadata fields to display in editor
 }
 
 function repository_user_presave(&$edit, $account, $category) {
   $edit['data']['fullscreen'] = isset($edit['fullscreen']) ? $edit['fullscreen'] : 0;
+  $edit['data']['organiserlist'] = isset($edit['organiserlist']) ? $edit['organiserlist'] : 0;
 }
 
 
