@@ -109,7 +109,141 @@ function highlightText(startOffset, startOffsetXpath, endOffset, endOffsetXpath)
 	sel.removeAllRanges();
 	sel.addRange(range);
 }
+
+function preloadImage(verticalOffset, index, annotationsByVerticalOffset, imgs) {
+	jQuery("<img src='" + annotationsByVerticalOffset[verticalOffset][index].annotation.src + "' />")
+		.attr("src", annotationsByVerticalOffset[verticalOffset][index].annotation.src)
+		.one('load', function() {
+			annotationsByVerticalOffset[verticalOffset][index].width = this.width;
+			annotationsByVerticalOffset[verticalOffset][index].height = this.height;
+			if (annotationsByVerticalOffset[verticalOffset].length > (index + 1)) {
+				preloadImage(verticalOffset, index + 1, annotationsByVerticalOffset, imgs);
+			} else {
+				attachToLink(verticalOffset, annotationsByVerticalOffset, imgs);
+			}
+	})
+}
+
+function attachToLink(verticalOffset, annotationsByVerticalOffset, imgs) {
+	var divA = jQuery("<div></div>");
 	
+	for (var i = 0; i < annotationsByVerticalOffset[verticalOffset].length; i++) {
+	    var annotation = annotationsByVerticalOffset[verticalOffset][i].annotation;
+	    var startElement = annotationsByVerticalOffset[verticalOffset][i].startElement;
+	    var endElement = annotationsByVerticalOffset[verticalOffset][i].endElement;
+		var origWidth = annotationsByVerticalOffset[verticalOffset][i].width;
+		var origHeight = annotationsByVerticalOffset[verticalOffset][i].height;
+	    
+	    var containerDiv = jQuery("#resourceContent")[0];
+		        
+		var selectedText;
+		var range = rangy.createRange();
+	    range.selectNodeContents(containerDiv);
+	    if (startElement != containerDiv || endElement != containerDiv) {
+	        range.setStart(startElement, parseInt(annotation.startOffset));
+	        range.setEnd(endElement, parseInt(annotation.endOffset));
+	        if (range.textRange) {
+	            selectedText = range.textRange.text
+	        } else {
+	            selectedText = range.toString();
+	        }
+	    }
+		
+		var scale = 1.0;
+		
+		var newImageWidth = (origWidth * (parseFloat(annotation.x) + parseFloat(annotation.w)) / 100.0);
+		if (newImageWidth > 550) {
+			scale = (550 / newImageWidth);
+		}
+		
+		origWidth = scale * origWidth;
+		origHeight = scale * origHeight;
+		
+	    var img = jQuery("<img></img>");
+	
+	    img.attr("src", annotation.src);
+	    img.css("display", "inline-block");
+	    img.css("position", "absolute");
+	    img.css("clip", "rect(" + (origHeight * annotation.y / 100.0) + "px,"
+	    		+ (origWidth * (parseFloat(annotation.x) 
+	    				+ parseFloat(annotation.w)) / 100.0) + "px,"
+	    		+ (origHeight * (parseFloat(annotation.y) 
+	    				+ parseFloat(annotation.h)) / 100.0) + "px,"
+	    		+ (origWidth * annotation.x / 100.0) + "px)");
+	    img.css("top", "-" + (origHeight * annotation.y / 100.0) + "px");
+	    img.css("left", "-" + (origWidth * annotation.x / 100.0) + "px");
+	    
+	    img.height(origHeight);
+	    img.width(origWidth);                            
+	    
+	    var anchor = jQuery("<a></a>");
+	    anchor.attr("href", '/repository/resources/' + annotation.src.substring(annotation.src.lastIndexOf("/") + 1));
+	    anchor.append(img);
+	    
+	    var divD = jQuery("<div></div>");
+	    divD.css("position", "relative");
+	    divD.css("width", origWidth);
+	    divD.css("height", origHeight);
+	    divD.append(anchor);
+	    
+	    var divC = jQuery("<div></div>");
+	    divC.css("position", "relative");
+	    divC.css("overflow", "hidden");
+	    divC.css("padding-bottom", "14px");
+	    divC.css("width", (origWidth * annotation.w / 100.0) + "px");
+	    divC.css("height", (origHeight * annotation.h / 100.0) + "px");
+	    divC.append(divD);
+	    
+	    var divB = jQuery("<div style='min-width: 550px'>"
+	    		+ "<img onclick='jQuery(\"#popoverDiv_" + verticalOffset + "\").hide(); "
+	    		+ "highlightText(" + annotation.startOffset 
+	    		+ ",\"" + annotation.startOffsetXpath 
+	    		+ "\"," + annotation.endOffset 
+	    		+ ",\"" + annotation.endOffsetXpath + "\");' style='cursor: pointer' "
+	    		+ "src='/sites/all/modules/austese_repository/ui/img/application_side_contract.png' />" 
+	    		+ "<img src='/sites/all/modules/austese_repository/ui/img/double_quote_left.png'/>" + selectedText 
+	    		+ "<img src='/sites/all/modules/austese_repository/ui/img/double_quote_right.png' />"
+	    		+ "<br />"
+	    		+ "</div>");
+	    divB.width(origWidth * annotation.w / 100.0);
+	    divB.height(origHeight * annotation.h / 100.0);
+	    divB.css("padding-right","14px");
+	    divB.append(divC);
+	    
+	    divA.append(divB);
+	    if (i + 1 < annotationsByVerticalOffset[verticalOffset].length) {
+	    	divA.append(jQuery("<br />"));
+	    	divA.append(jQuery("<hr />"));
+	    }
+	}
+	
+    imgs[verticalOffset].popover({
+		placement: 'left',
+		trigger: 'manual',
+		html: true,
+		template: '<div id="popoverDiv_' + verticalOffset + '" onmouseover="'
+			+		'clearTimeout(timeoutObj); jQuery(this).mouseleave(function() {'
+			+		'var ref = jQuery(this); clearTimeout(timeoutObj); '
+			+		'timeoutObj = setTimeout(function(){ref.hide();}, 300);});" '
+			+		'class="popover" style="width:605px">'
+			+ '<div class="arrow"></div>'
+			+ '<div class="popover-inner" style="width:600px">' 
+			+ 	'<div class="popover-content" style="height: 190px; overflow: auto;" style="width:600px">'
+			+		'<p></p>'
+			+	'</div>'
+			+ '</div></div>',
+		content: divA
+	}).mouseenter(function(e) {
+		var ref = jQuery(this);
+		ref.popover('show');
+    }).mouseleave(function(e) {
+    	var ref = jQuery(this);
+		timeoutObj = setTimeout(function(){
+			ref.popover('hide');
+    	}, 100);
+    });
+}
+
 (function($) {
 	annotationView.display = function(resURI){
 		jQuery("#annotationView").height(jQuery("#resourceContent").height());
@@ -229,104 +363,38 @@ function highlightText(startOffset, startOffsetXpath, endOffset, endOffsetXpath)
 
                 var imgs = [];
                 
+                var annotationsByVerticalOffset = {};
+
                 for (var i = 0; i < annotations.length; i++) {                    
                 	var startElement = lookupElementByXPath(annotations[i].startOffsetXpath);
                 	var endElement = lookupElementByXPath(annotations[i].endOffsetXpath);
                     var verticalOffset = getSelectionOffset(annotations[i].startOffset, startElement, annotations[i].endOffset, endElement);
-                    
-                	imgs[i] = jQuery("<img></img>");
-                	imgs[i].attr('id', 'Annotation_' + annotations[i].annotationID).addClass('textAlignment');
+                
+                    if (!annotationsByVerticalOffset[verticalOffset]) {
+                    	annotationsByVerticalOffset[verticalOffset] = [{
+                			'annotation': annotations[i],
+                			'startElement': startElement,
+                			'endElement': endElement}];
+                    } else {
+                    	annotationsByVerticalOffset[verticalOffset].push({
+                			'annotation': annotations[i],
+                			'startElement': startElement,
+                			'endElement': endElement});
+                    }
+                }
+                                
+                for (var verticalOffset in annotationsByVerticalOffset) {  
+                	imgs[verticalOffset] = jQuery("<img></img>");
+                	imgs[verticalOffset].attr('id', 'Annotation_' + verticalOffset).addClass('textAlignment');
                 	
-                	imgs[i].attr('style', 'cursor: pointer; position:absolute; top: '+ verticalOffset + 'px;');
-                	imgs[i].attr('height', '16');
-                	imgs[i].attr('width', '16');
-                	imgs[i].attr('objectUrl', annotations[i].objectUrl);
-                	imgs[i].attr('src', '/sites/all/modules/austese_repository/ui/img/link_black.png');
+                	imgs[verticalOffset].attr('style', 'cursor: pointer; position:absolute; top: '+ verticalOffset + 'px;');
+                	imgs[verticalOffset].attr('height', '16');
+                	imgs[verticalOffset].attr('width', '16');
+                	imgs[verticalOffset].attr('src', '/sites/all/modules/austese_repository/ui/img/link_black.png');
                 	
-                	$("<img index='" + i + "' src='" + annotations[i].src + "' />")
-                		.attr("src", annotations[i].src)
-                		.one('load', function() {
-                			var index = this.attributes.index.value;
-                            var annotation = annotations[index];
-                            
-                            var containerDiv = jQuery("#resourceContent")[0];
-                            
-                        	var startElement = lookupElementByXPath(annotation.startOffsetXpath);
-                        	var endElement = lookupElementByXPath(annotation.endOffsetXpath);
-                			        
-                        	var selectedText;
-                        	var range = rangy.createRange();
-                            range.selectNodeContents(containerDiv);
-                            if (startElement != containerDiv || endElement != containerDiv) {
-                                range.setStart(startElement, parseInt(annotation.startOffset));
-                                range.setEnd(endElement, parseInt(annotation.endOffset));
-                                if (range.textRange) {
-                                    selectedText = range.textRange.text
-                                } else {
-                                    selectedText = range.toString();
-                                }
-                            }
-                            
-                    		var origWidth = this.width;
-                    		var origHeight = this.height;
-                            var div = $("<div></div>");
-                            
-                            div.width(origWidth * annotation.w / 100.0);
-                            div.height(origHeight * annotation.h / 100.0);
-                            div.css("display", "inline-block");
-                            div.css("background-image", "url(" + this.src + ")");
-                            div.css("background-repeat","no-repeat");
-                            div.css("background-position", "-" + (origWidth * annotation.x / 100.0) + "px" 
-                            		+ " -" + (origHeight * annotation.y / 100.0) + "px");
-
-                            var anchor = $("<a href='/repository/resources/" + this.src.substring(this.src.lastIndexOf("/") + 1) + "'></a>");
-                            anchor.append(div);
-                            
-                            var div2 = $("<div style='min-width: 550px'>"
-                            		+ "<img onclick='jQuery(\"#popoverDiv_" + index + "\").hide(); "
-                            		+ "highlightText(" + annotations[index].startOffset 
-                            		+ ",\"" + annotations[index].startOffsetXpath 
-                            		+ "\"," + annotations[index].endOffset 
-                            		+ ",\"" + annotations[index].endOffsetXpath + "\");' style='cursor: pointer' "
-                            		+ "src='/sites/all/modules/austese_repository/ui/img/application_side_contract.png' />" 
-                            		+ "<img src='/sites/all/modules/austese_repository/ui/img/double_quote_left.png'/>" + selectedText 
-                            		+ "<img src='/sites/all/modules/austese_repository/ui/img/double_quote_right.png' />"
-                            		+ "<br />"
-                            		+ "</div>");
-                            div2.width(origWidth * annotation.w / 100.0);
-                            div2.height(origHeight * annotation.h / 100.0);
-                            div2.css("padding-right","14px");
-                            div2.append(anchor);
-                            
-                            imgs[index].popover({
-                        		placement: 'left',
-                        		trigger: 'manual',
-                        		html: true,
-                        		template: '<div id="popoverDiv_' + index + '" onmouseover="'
-                        			+		'clearTimeout(timeoutObj); jQuery(this).mouseleave(function() {'
-                        			+		'var ref = jQuery(this); clearTimeout(timeoutObj); '
-                        			+		'timeoutObj = setTimeout(function(){ref.hide();}, 300);});" '
-                        			+		'class="popover" style="width:605px">'
-                        			+ '<div class="arrow"></div>'
-                        			+ '<div class="popover-inner" style="width:600px">' 
-                        			+ 	'<div class="popover-content" style="height: 190px; overflow: auto;" style="width:600px">'
-                        			+		'<p></p>'
-                        			+	'</div>'
-                        			+ '</div></div>',
-                        		content: div2
-                        	}).mouseenter(function(e) {
-                    			var ref = jQuery(this);
-                        		ref.popover('show');
-                            }).mouseleave(function(e) {
-                            	var ref = jQuery(this);
-                        		timeoutObj = setTimeout(function(){
-                        			ref.popover('hide');
-                            	}, 100);
-                            });
-                		}
-                	);
-                	                	
-                    jQuery('#annotationView').append(imgs[i]);
+                	preloadImage(verticalOffset, 0, annotationsByVerticalOffset, imgs);
+                	
+                    jQuery('#annotationView').append(imgs[verticalOffset]);
                 }
             },
             error : function(xhr, testStatus, error) {
