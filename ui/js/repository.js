@@ -312,6 +312,20 @@ jQuery.fn.serializeObject = function() {
                                   r.next = r.facsimiles[resourceIndex+1];
                               }
                           }
+
+                          if (queryField === 'artefacts' && r.artefacts) {
+                              var resourceIndex = jQuery.inArray(queryId ,r.artefacts);
+                              if (resourceIndex >= 0){
+                                  r.resourceIndex = resourceIndex + 1;
+                              }
+                              r.collectionLength = r.artefacts.length;
+                              if (resourceIndex !== 0) {
+                                  r.prev = r.artefacts[resourceIndex-1];
+                              }
+                              if ((resourceIndex + 1) !== r.artefacts.length){
+                                  r.next = r.artefacts[resourceIndex+1];
+                              }
+                          }
                           
                           display += "<li>" + getTemplate(queryApiType + 'Compact')(r) +"</li>";
                       });

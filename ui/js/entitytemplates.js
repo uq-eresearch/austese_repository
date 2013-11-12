@@ -445,7 +445,7 @@ templates.artefactDetail =
 templates.artefactCompact =
     '<div class="obj">\
         <h5><a {{#if newTab}}target="_blank"{{/if}} data-content="{{bibDetails}}" href="/{{modulePrefix}}/artefacts/{{id}}{{projParam}}">{{source}}</a></h5>\
-        {{#if date}}{{date}}{{/if}}\
+        {{#if date}}{{date}}<br/>{{/if}}\
         Item {{resourceIndex}} of {{collectionLength}} \
         {{#if prev}}<a href="{{prev}}{{projParam}}">Previous</a> {{/if}}\
         {{#if next}}<a href="{{next}}{{projParam}}">Next</a>{{/if}}\
