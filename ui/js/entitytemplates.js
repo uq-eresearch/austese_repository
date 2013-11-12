@@ -69,7 +69,7 @@ Handlebars.registerHelper('filesize', function(len, options) {
 var templates = {};
 var compiledTemplates = {};
 function getTemplate(tName) {
-    if (!compiledTemplates[tName]) {
+    if (!compiledTemplates[tName] && templates[tName]) {
         try {
             compiledTemplates[tName] = Handlebars.compile(templates[tName]);
         } catch (e){
@@ -429,9 +429,9 @@ templates.artefactDetail =
     {{/gt}}\
     {{#gt facsimiles.length 0}}\
         <h3 class="muted"><i class="fa fa-camera"></i>  Facsimiles</h3><p>{{facsimiles.length}} facsimile{{#neq facsimiles.length 1}}s{{/neq}} associated with this artefact:</p>\
-        <ul>\
-        {{#each facsimiles}}<li class="resource" data-resourceid="{{.}}" data-template="summary"></li>{{/each}}\
-        </ul>\
+        <div class="row-fluid">\
+        {{#each facsimiles}}<div class="span2 resource facsimilePreview" data-resourceid="{{.}}" data-template="facsimilePreview"></div>{{/each}}\
+        </div>\
     {{/gt}}\
     {{#gt transcriptions.length 0}}\
         <h3 class="muted"><i class="fa fa-file-text-o"></i> Diplomatic Transcriptions</h3><p>{{transcriptions.length}} transcription{{#neq transcriptions.length 1}}s{{/neq}} associated with this artefact:</p>\
@@ -516,6 +516,12 @@ templates.placeDetail =
     </div>\
     <div class="span6 minimap" data-lat="{{latitude}}" data-long="{{longitude}}"></div>'
 ;
+templates.facsimilePreview = 
+   '<a style="font-size:smaller" href="/{{modulePrefix}}/resources/{{id}}{{projParam}}">\
+    <img class="thumbnail" src="{{uri}}/content?scale=true"/>\
+    {{filename}}{{#if title}}<br/>{{title}}{{/if}}</a>'
+;
+
 templates.imageEmbed = 
     '<img class="thumbnail" src="{{uri}}/content"/><br/><a style="font-size:smaller" href="/{{modulePrefix}}/resources/{{id}}{{projParam}}">Image details</a>'
 ;

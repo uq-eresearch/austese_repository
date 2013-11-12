@@ -160,6 +160,10 @@ div.sticky-bottom {
     font-size:110%;
     text-align: center;
 }
+.row-fluid .facsimilePreview{
+    margin-left:2% !important;
+    text-align:center;
+}
 /* Replace wysihtml5 icons with font awesome icons */
 i[class^="icon-"], i[class*=" icon-"] {background-image:none}
 .icon-font:before{display: inline-block;

@@ -734,6 +734,11 @@ jQuery.fn.serializeObject = function() {
                     elem.html(getTemplate("imageEmbed")(d));
                 } else if (template == "imageScale"){
                     elem.html(getTemplate("imageScaleEmbed")(d));
+                } else {
+                    var temp = getTemplate(template);
+                    if (temp){
+                        elem.html(temp(d));
+                    }
                 }
               }
             });
