@@ -92,6 +92,7 @@ var tags = {
 };
 var editor = {
  isDirty: false,
+ facsimiles: [],
  foldXML: function(cm, where) { 
             cm.foldCode(where, CodeMirror.tagRangeFinder); 
  },
@@ -374,12 +375,39 @@ var editor = {
      }
      document.location.href = jQuery('#metadata').data('editurl') + '?' + params;
  },
-  toggleFacsimile: function() {
-    var action = jQuery(this).text();
-    var multi = jQuery('#metadata').data('multi');
+ loadFacsimiles: function() {
     var searchUri = '/sites/all/modules/austese_repository/api/versions/';
     var resourceId = jQuery('#metadata').data('existingid');
     var project = jQuery('#metadata').data('project');
+
+    var possibleTypes = ['versions', 'artefacts'];
+    jQuery.each(possibleTypes, function(index, value) {
+      jQuery.ajax({
+          url: '/sites/all/modules/austese_repository/api/' + value + '/',
+          type: 'GET',
+          data: {
+            recurse: true,
+            searchField: 'transcriptions',
+            query: resourceId,
+            project: project
+          },
+          success: function(data, status, xhr){
+            mydata = data;
+            editor.facsimiles = editor.facsimiles.concat(findFacsimiles(data));
+            currFacsimile = 0;
+            if (editor.facsimiles.length > 0) {
+              editor.displayFacsimile();
+            }
+          },
+          error: function(jqXHR, textStatus, errorThrown){
+              jQuery('#facsimile').text(textStatus);
+          }
+      });
+    });
+ },
+  toggleFacsimile: function() {
+    var action = jQuery(this).text();
+    var multi = jQuery('#metadata').data('multi');
     var targetEl = "#single-editor-ui";
     if (multi) {
       targetEl = jQuery("#multieditor").parent();
@@ -389,28 +417,10 @@ var editor = {
       jQuery('#facsimile').prependTo(targetEl).show();
       distribute(targetEl);
 
-      if (editor.facsimiles) {
+      if (editor.facsimiles.length > 0) {
         editor.displayFacsimile();
       } else {
-        jQuery.ajax({
-            url: searchUri,
-            type: 'GET',
-            data: {
-              recurse: true,
-              searchField: 'transcriptions',
-              query: resourceId,
-              project: project
-            },
-            success: function(data, status, xhr){
-              mydata = data;
-              editor.facsimiles = findFacsimiles(data);
-              currFacsimile = 0;
-              editor.displayFacsimile();
-            },
-            error: function(jqXHR, textStatus, errorThrown){
-                jQuery('#facsimile').text(textStatus);
-            }
-        });
+        editor.loadFacsimiles();
       }
       var html = jQuery(this).html();
       html = html.replace(/(\w+) facsimile/, 'Hide facsimile')
