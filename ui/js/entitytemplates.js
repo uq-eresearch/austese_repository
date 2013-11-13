@@ -399,6 +399,13 @@ templates.artefactSummary =
     {{#gt artefacts.length 0}}<i class="sidebaricon fa fa-asterisk"></i> {{artefacts.length}} associated part{{#neq artefacts.length 1}}s{{/neq}}<br/>{{/gt}}\
     {{#gt facsimiles.length 0}}<i class="sidebaricon fa fa-camera"></i> {{facsimiles.length}} facsimile{{#neq facsimiles.length 1}}s{{/neq}}<br/>{{/gt}}\
     {{#gt transcriptions.length 0}}<i class="sidebaricon fa fa-file-text-o"></i> {{transcriptions.length}} diplomatic transcription{{#neq transcriptions.length 1}}s{{/neq}}{{/gt}}\
+    {{#if coverImage}}\
+        <div class="resource facsimilePreview" data-resourceid="{{coverImage}}" data-template="facsimilePreview"></div>\
+    {{else}}\
+        {{#if facsimiles}}\
+            <div class="resource facsimilePreview" data-resourceid="{{facsimiles.[0]}}" data-template="facsimilePreview"></div>\
+        {{/if}}\
+    {{/if}}\
     {{#if hasEditPermission}}\
         <p>{{#if locked}}<i class="fa fa-lock"></i> {{/if}}<a href="/{{modulePrefix}}/artefacts/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a></p>\
     {{/if}}\
