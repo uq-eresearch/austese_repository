@@ -740,6 +740,7 @@ jQuery.fn.serializeObject = function() {
                 var project = jQuery('#metadata').data('project');
                 d.projParam = (project? '?project=' + project : '');
                 d.modulePrefix = modulePrefix;
+                d.hasEditPermission = jQuery('#metadata').data('editable');
                 if (template && template == "summary"){
                     elem.html(getTemplate("resourceSummary")(d));
                 } else if (template && template == "compact") {
@@ -779,6 +780,7 @@ jQuery.fn.serializeObject = function() {
                   var project = jQuery('#metadata').data('project');
                   d.projParam = (project? '?project=' + project : '');
                   d.modulePrefix = modulePrefix;
+                  d.hasEditPermission = jQuery('#metadata').data('editable');
                   if (template && template == 'summary'){
                       elem.html(getTemplate("artefactSummary")(d));
                   }
@@ -797,6 +799,7 @@ jQuery.fn.serializeObject = function() {
                 var project = jQuery('#metadata').data('project');
                 d.projParam = (project? '?project=' + project : '');
                 d.modulePrefix = modulePrefix;
+                d.hasEditPermission = jQuery('#metadata').data('editable');
                 if (template && template == 'summary'){
                     elem.html(getTemplate("versionSummary")(d));
                 }
@@ -813,6 +816,7 @@ jQuery.fn.serializeObject = function() {
                 var project = jQuery('#metadata').data('project');
                 d.projParam = (project? '?project=' + project : '');
                 d.modulePrefix = modulePrefix;
+                d.hasEditPermission = jQuery('#metadata').data('editable');
                 if (template && template == 'summary'){
                     elem.html(getTemplate("agentSummary")(d));
                     enablePopups(elem);
@@ -830,6 +834,7 @@ jQuery.fn.serializeObject = function() {
                 var project = jQuery('#metadata').data('project');
                 d.projParam = (project? '?project=' + project : '');
                 d.modulePrefix = modulePrefix;
+                d.hasEditPermission = jQuery('#metadata').data('editable');
                 if (template && template == 'summary'){
                     elem.html(getTemplate("eventSummary")(d));
                 }

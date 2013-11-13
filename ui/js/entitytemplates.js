@@ -538,6 +538,8 @@ templates.resourceSummary =
     '<div>\
     <h4><a href="/{{modulePrefix}}/resources/{{id}}{{projParam}}">{{#if metadata.title}}{{metadata.title}}, {{/if}}{{filename}}</a></h4>\
     {{metadata.format}}\
+    {{#if hasEditPermission}}<a href="/{{modulePrefix}}/resources/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a>&nbsp;{{/if}}\
+    <a style="font-size:smaller" href="/{{modulePrefix}}/resources/{{id}}/content{{projParam}}">VIEW</a>\
     </div>'
 ;
 templates.resourceBareDetail = '<span>\
