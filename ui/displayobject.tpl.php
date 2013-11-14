@@ -48,7 +48,7 @@ $modulePath =  drupal_get_path('module', 'repository');
    <li><i class="sidebaricon fa fa-eye"></i> <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/<?php print $existingId; ?>/content<?php if ($project): print '?project='.$project; endif; ?>">VIEW CONTENT</a></li>
    <li><i class="sidebaricon fa fa-download"></i> <a href="/<?php print $modulePath; ?>/api/<?php print $apiType; ?>s/<?php print $existingId; ?>">DOWNLOAD</a></li>
    <?php if (austese_access('edit metadata', $project)): ?>
-        <li><i class="sidebaricon fa fa-th"></i> <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s<?php if ($project): print '?project='.$project; endif; ?>#<?php print $existingId; ?>">SHOW IN ORGANISER</a></li>
+        <!--  li><i class="sidebaricon fa fa-th"></i> <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s<?php if ($project): print '?project='.$project; endif; ?>#<?php print $existingId; ?>">SHOW IN ORGANISER</a></li-->
    <?php endif; ?>
    <li style="display:none" id="wordcloudlink"><i class="sidebaricon fa fa-cloud"></i> <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/<?php print $existingId; ?>/content?cloud=true<?php if ($project): print '&project='.$project; endif; ?>">VIEW WORD CLOUD</a></li>
    <li style="display:none" id="lightboxlink"><i class="sidebaricon fa fa-lightbulb-o"></i> <a  href="/lightbox<?php if ($project): print '?project='.$project; endif; ?>#<?php print $existingId; ?>">VIEW IN LIGHTBOX</a></li>
