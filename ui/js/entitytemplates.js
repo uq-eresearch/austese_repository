@@ -529,7 +529,7 @@ templates.facsimilePreview =
 ;
 
 templates.imageEmbed = 
-    '<img class="thumbnail" src="{{uri}}/content"/><br/><a style="font-size:smaller" href="/{{modulePrefix}}/resources/{{id}}{{projParam}}">Image details</a>'
+    '<img class="thumbnail" src="{{uri}}/content"/><a style="font-size:smaller" href="/{{modulePrefix}}/resources/{{id}}{{projParam}}">Image details</a>'
 ;
 templates.imageScaleEmbed = 
     '<img class="thumbnail" src="{{uri}}/content?scale=true"/><br/><a style="font-size:smaller" href="/{{modulePrefix}}/resources/{{id}}{{projParam}}">Image details</a>'
