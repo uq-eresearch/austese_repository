@@ -82,7 +82,7 @@ templates.collectionSummary = '\
     <div class="obj">\
         <h4><a href="/{{modulePrefix}}/collections/{{id}}{{projParam}}">{{name}}</a></h4>\
         {{#gt resources.length 0}}<i class="fa fa-asterisk"></i> {{resources.length}} associated resource{{#neq resources.length 1}}s{{/neq}}{{/gt}}\
-        {{#if hasEditPermission}}<p><a href="/{{modulePrefix}}/collections/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a></p>{{/if}}\
+        {{#if hasEditPermission}}<p><a href="/{{modulePrefix}}/collections/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT METADATA</a></p>{{/if}}\
     </div>'
 ;
 templates.collectionCompact = '\
@@ -103,7 +103,7 @@ templates.collectionDetail =
           </ul>\
         {{/gt}}\
         {{#if hasEditPermission}}\
-        <p><a href="/{{modulePrefix}}/collections/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a></p>\
+        <p><a href="/{{modulePrefix}}/collections/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT METADATA</a></p>\
         {{/if}}\
     </div>'
 ;
@@ -137,7 +137,7 @@ templates.versionSummary =
         {{#gt artefacts.length 0}}<i class="fa fa-asterisk"></i> {{artefacts.length}} associated artefact{{#neq artefacts.length 1}}s{{/neq}}<br/>{{/gt}}\
         {{#gt versions.length 0}}<i class="fa fa-asterisk"></i> {{versions.length}} associated part{{#neq versions.length 1}}s{{/neq}}<br/>{{/gt}}\
         {{#gt transcriptions.length 0}}<i class="fa fa-file-text-o"></i> {{transcriptions.length}} version transcription{{#neq transcriptions.length 1}}s{{/neq}}{{/gt}}\
-        {{#if hasEditPermission}}<p>{{#if locked}}<i class="fa fa-lock"></i> {{/if}}<a href="/{{modulePrefix}}/versions/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a></p>{{/if}}\
+        {{#if hasEditPermission}}<p>{{#if locked}}<i class="fa fa-lock"></i> {{/if}}<a href="/{{modulePrefix}}/versions/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT METADATA</a></p>{{/if}}\
     </div>'
 ;
 templates.versionCompact = 
@@ -196,7 +196,7 @@ templates.agentSummary =
     {{#if deathDate}} d. {{deathDate}}, {{/if}}\
     {{{ellipsis biography 80}}}\
     {{#if hasEditPermission}}\
-        <p>{{#if locked}}<i class="fa fa-lock"></i> {{/if}}<a href="/{{modulePrefix}}/agents/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a></p>\
+        <p>{{#if locked}}<i class="fa fa-lock"></i> {{/if}}<a href="/{{modulePrefix}}/agents/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT METADATA</a></p>\
     {{/if}}\
     </div>'
 ;
@@ -244,7 +244,7 @@ templates.eventSummary =
         {{#gt artefacts.length 0}}<br/>Produced {{artefacts.length}} artefact{{#neq artefacts.length 1}}s{{/neq}}{{/gt}}\
         {{#gt events.length 0}}<br/>{{events.length}} sub-event{{#neq events.length 1}}s{{/neq}}{{/gt}}\
         {{#if hasEditPermission}}\
-        <p>{{#if locked}}<i class="fa fa-lock"></i> {{/if}}<a href="/{{modulePrefix}}/events/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a></p>\
+        <p>{{#if locked}}<i class="fa fa-lock"></i> {{/if}}<a href="/{{modulePrefix}}/events/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT METADATA</a></p>\
         {{/if}}\
     </div>'
 ;
@@ -263,7 +263,7 @@ templates.eventTimelineSummary =
         <p><a target="_blank" style="font-size:smaller" href="/{{modulePrefix}}/events/{{id}}{{projParam}}">VIEW</a> \
         {{#if hasEditPermission}}\
           {{#if locked}}<i class="fa fa-lock"></i> {{/if}}\
-          <a target="_blank" href="/{{modulePrefix}}/events/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a>\
+          <a target="_blank" href="/{{modulePrefix}}/events/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT METADATA</a>\
         {{/if}}\
         <p>\
     </div>'
@@ -407,15 +407,14 @@ templates.artefactSummary =
         {{/if}}\
     {{/if}}\
     {{#if hasEditPermission}}\
-        <p>{{#if locked}}<i class="fa fa-lock"></i> {{/if}}<a href="/{{modulePrefix}}/artefacts/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a></p>\
+        <p>{{#if locked}}<i class="fa fa-lock"></i> {{/if}}<a href="/{{modulePrefix}}/artefacts/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT METADATA</a></p>\
     {{/if}}\
     </div>';
+
 templates.artefactDetail = 
     '<div>\
     <h1>{{#if source}}{{upper source 80}}{{else}}UNTITLED ARTEFACT{{/if}}</h1>\
-    <div class="row-fluid">{{#if coverImage}}<div class="span2"><div class="resource" data-resourceid="{{coverImage}}" data-template="imageScale">Image</div></div>{{else}}\
-    {{#gt facsimiles.length 0}}<div class="span2"><div class="resource" data-resourceid="{{facsimiles.[0]}}" data-template="imageScale">Image</div></div>{{/gt}}{{/if}}\
-    <table class="span10 table">\
+    <table class="table">\
     {{#if source}}<tr><td class="metadatalabel muted">Title</td><td>{{source}}</td></tr>{{/if}}\
     {{#if pageNumbers}}<tr><td class="metadatalabel muted">Page Number(s)</td><td>{{pageNumbers}}</td></tr>{{/if}}\
     {{#if date}}<tr><td class="metadatalabel muted">Date</td><td>{{date}}</td></tr>{{/if}}\
@@ -427,7 +426,7 @@ templates.artefactDetail =
     {{#if format}}<tr><td class="metadatalabel muted">Format</td><td>{{format}}</td></tr>{{/if}}\
     {{#if paperType}}<tr><td class="metadatalabel muted">Paper Type</td><td>{{paperType}}</td></tr>{{/if}}\
     {{#if artefactSize}}<tr><td class="metadatalabel muted">Size</td><td>{{artefactSize}}</td></tr>{{/if}}\
-    </table></div>\
+    </table>\
     {{#gt artefacts.length 0}}\
         <h3 class="muted">Parts</h3><p>{{artefacts.length}} part{{#neq artefacts.length 1}}s{{/neq}} associated with this artefact:</p>\
         <ul>\
@@ -466,7 +465,7 @@ templates.workSummary =
     <p>\
     {{#if hasEditPermission}}\
     {{#if locked}}<i class="fa fa-lock"></i> {{/if}}\
-    <a href="/{{modulePrefix}}/works/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a>&nbsp;\
+    <a href="/{{modulePrefix}}/works/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT METADATA</a>&nbsp;&nbsp;\
     {{/if}}\
     <a href="/reading/{{id}}{{projParam}}" style="font-size:smaller">READ</a>\
     </p>\
@@ -545,7 +544,7 @@ templates.resourceSummary =
     '<div>\
     <h4><a href="/{{modulePrefix}}/resources/{{id}}{{projParam}}">{{#if metadata.title}}{{metadata.title}}, {{/if}}{{filename}}</a></h4>\
     {{metadata.format}}\
-    {{#if hasEditPermission}}<a href="/{{modulePrefix}}/resources/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT</a>&nbsp;{{/if}}\
+    {{#if hasEditPermission}}<a href="/{{modulePrefix}}/resources/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT CONTENT</a>&nbsp;&nbsp;{{/if}}\
     <a style="font-size:smaller" href="/{{modulePrefix}}/resources/{{id}}/content{{projParam}}">VIEW</a>\
     </div>'
 ;

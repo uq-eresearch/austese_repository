@@ -41,7 +41,7 @@ $modulePath =  drupal_get_path('module', 'repository');
 <ul class="actionLinks">
    <?php if (austese_access('edit metadata', $project)): ?>
       <li id="editlink" ><i class="sidebaricon fa fa-pencil-square-o"></i> <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/edit/<?php print $existingId; ?><?php if ($project): print "?project=".$project; endif; ?>">EDIT
-      <?php if ($apiType=='resource'):?> CONTENT<?php endif; ?>
+      <?php if ($apiType=='resource'):?> CONTENT<?php else:?> METADATA<?php endif; ?>
       </a></li>
    <?php endif; ?>
    <?php if ($apiType=='resource'):?>
