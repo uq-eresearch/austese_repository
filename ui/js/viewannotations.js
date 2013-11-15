@@ -134,6 +134,11 @@ function attachToLink(verticalOffset, annotationsByVerticalOffset, imgs) {
         var origWidth = annotationsByVerticalOffset[verticalOffset][i].width;
         var origHeight = annotationsByVerticalOffset[verticalOffset][i].height;
 
+        if (annotation.w == 0 && annotation.h == 0) {
+        	annotation.w = 100;
+        	annotation.h = 100;
+        }
+        
         var containerDiv = jQuery("#resourceContent")[0];
 
         var selectedText;
