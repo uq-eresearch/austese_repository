@@ -921,6 +921,7 @@ jQuery.fn.serializeObject = function() {
        jQuery('.pagebtn').click(function(){
            var pageNum = parseInt(jQuery(this).html() - 1);
            loadObjects(pageNum,filterTerm);
+           jQuery('body').scrollTop(0);
        });
        jQuery('#sort').on('change',function(){
            //try {
