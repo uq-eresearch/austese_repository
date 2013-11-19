@@ -41,12 +41,12 @@
 </xsl:template>
 
 <xsl:template match="pb">
-<div class="pb" annotator_ignore="true" unselectable="on">
+<span style="margin-top: 1em; display: block" class="pb" annotator_ignore="true" unselectable="on">
     <xsl:if test="@n">
         <xsl:attribute name="data-n"><xsl:value-of select="@n"/></xsl:attribute>
         <xsl:value-of select="@n"/>
     </xsl:if>
-</div>
+</span>
 <xsl:apply-templates/>
 </xsl:template>
 
