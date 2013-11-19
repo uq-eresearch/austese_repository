@@ -163,6 +163,7 @@ div.sticky-bottom {
 .row-fluid .facsimilePreview{
     margin-left:2% !important;
     text-align:center;
+    max-width:120px;
 }
 /* Replace wysihtml5 icons with font awesome icons */
 i[class^="icon-"], i[class*=" icon-"] {background-image:none}
