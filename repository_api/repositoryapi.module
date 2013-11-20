@@ -433,12 +433,15 @@ function austese_access($permission, $project=False) {
 function getRecord($collection,$id,$revision) {
     global $mongo_requests, $mongo_time;
     $recurse = isset($_GET['recurse']);
+    $debug_mongo = isset($_GET['mongo_debug']);
     
     $returnobj = _loadRecord($collection, $id, $revision, true, false, $recurse);
 
     drupal_add_http_header('Content-Type', 'application/json');
     drupal_add_http_header('Num-Mongo-Requests', count($mongo_requests));
-    drupal_add_http_header('Mongo-Requests', implode(';', $mongo_requests));
+    if ($debug_mongo) {
+      drupal_add_http_header('Mongo-Requests', implode(';', $mongo_requests));
+    }
     drupal_add_http_header('Mongo-Time', number_format($mongo_time, 4) . " sec");
 
     $json_params = 0;
