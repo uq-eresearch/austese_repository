@@ -14,7 +14,7 @@ function repositoryapi_get_configuration() {
             'agents' => array('lastName', 'firstName'),
             'events' => array('name','description'),
             'places' => array('name'),
-            'mvds' => array('resources'),
+            'mvds' => array('name'),
             'collections' => array('name')),
     );
 }
@@ -508,6 +508,9 @@ function _findRecords($collection,$labelFields, $pagesize=null, $pagenum=null,  
     // allow param to filter results
     if ($sort == null){
         $sort = get_get_parameter('sort');
+        if ($sort == "label"){
+            $sort = "metadata.".$labelFields[0];
+        }
     }
     $sortDirection = 1;
     if (!$sort) {
