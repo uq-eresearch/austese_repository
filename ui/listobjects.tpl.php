@@ -10,7 +10,7 @@ $modulePrefix = "repository";
 $modulePath = drupal_get_path('module', 'repository');
 if ($apiType == "artefact"){
     $filterField = "source";
-} else if ($apiType == "place" || $apiType == "agent" || $apiType == "collection") {
+} else if ($apiType == "place" || $apiType == "agent" || $apiType == "collection" || $apiType == "mvd") {
     $filterField = "name";
 } else if ($apiType == "event" || $apiType == "action") {
     $filterField = "description";
@@ -51,7 +51,7 @@ if (isset($_GET['project'])) {
        <?php endif; ?>
      <?php endif;?>
      </div>
-    <?php if ($apiType != "mvd"):?>
+    
     <div class="span2">Sort by: <select  name="sort" id="sort">
        <option value="_id">created</option>
        <option value="label"><?php print $filterField; ?></option>
@@ -67,7 +67,7 @@ if (isset($_GET['project'])) {
     </select>
     </div>
     <input title="Type filter terms and then hit enter" type="text" placeholder="Filter on <?php print $filterField; ?>" class="span2" id="filter"/>
-    <?php endif; ?>
+
 </div>
 <div id="resultsummary"></div>
 <div id="resultcurrent"></div>
