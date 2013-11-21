@@ -1,4 +1,4 @@
-jQuery(function(){
+jQuery(document).ready(function(){
      editor.init();
      var resourceId = jQuery('.savebtn').eq(0).data("resource");
      editor.loadResource(resourceId);
@@ -17,8 +17,10 @@ jQuery(function(){
         var html = jQuery('#toggleMulti').html();
         html = html.replace(/Compare while editing/, 'Single editor')
         jQuery('#toggleMulti').html(html);
+     } else {
+         // turn facsimile on by default
+         jQuery('#toggleFacsimile').click();
      }
-
      jQuery.ajax({
          url:'/sites/all/modules/austese_repository/ui/xslt/formats.xsl',
          success: function(xsl){
@@ -397,7 +399,14 @@ var editor = {
             currFacsimile = 0;
             if (editor.facsimiles.length > 0) {
               editor.displayFacsimile();
+              jQuery('#facsimile').prependTo("#single-editor-ui").show();
+              jQuery('#toggleFacsimile').show();
+            } else {
+                // hide facsimile panel
+               jQuery('#toggleFacsimile').hide();
+               jQuery('#facsimile').appendTo('body').removeClass().hide();
             }
+            distribute("#single-editor-ui");
           },
           error: function(jqXHR, textStatus, errorThrown){
               jQuery('#facsimile').text(textStatus);
