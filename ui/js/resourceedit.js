@@ -9,6 +9,7 @@ jQuery(document).ready(function(){
      jQuery('#nextFacsimile').click(editor.nextFacsimile);
      jQuery('#prevFacsimile').click(editor.prevFacsimile);
      jQuery('#togglePreview').click(editor.togglePreview);
+     jQuery('.pageNum').on('change',editor.gotoFacsimile);
 
      var multi = jQuery('#metadata').data('multi');
      if (multi) {
@@ -447,7 +448,8 @@ var editor = {
   },
   displayFacsimile: function() {
     var facsimiles = editor.facsimiles;
-    jQuery('#facsimile .count').text("Image " + (currFacsimile +1) + " of " + facsimiles.length);
+    jQuery('#facsimile .totalPages').text(facsimiles.length);
+    jQuery('#facsimile .pageNum').val(currFacsimile + 1);
     jQuery('#facsimile .imageHolder').html("<img src='" + facsimiles[currFacsimile].uri + "'>");
 
     jQuery('#facsimile .imageHolder').panzoom({
@@ -456,6 +458,13 @@ var editor = {
       $zoomRange: jQuery('#facsimile .zoom-range'),
       $reset: jQuery('#facsimile .reset'),
     });
+  },
+  gotoFacsimile: function(){
+      var newFacs = parseInt(jQuery('.pageNum').val());
+      if (newFacs){
+          currFacsimile = newFacs - 1;
+          editor.displayFacsimile();
+      }
   },
   nextFacsimile: function() {
     currFacsimile = (currFacsimile + 1) % editor.facsimiles.length;

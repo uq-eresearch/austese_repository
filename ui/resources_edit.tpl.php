@@ -99,8 +99,9 @@ if (isset($project)) {
 
 <div id="facsimile">
   <b><a id="prevFacsimile" href="#">Prev</a></b>
-  <span class="count">No facsimiles found.</span>
+  <span class="count">Image <input style="width:20px" type="text" class="pageNum" value="--"/> of <span class="totalPages">--</span></span>
   <b><a id="nextFacsimile" href="#">Next</a></b>
+  
   <div class="parent">
     <div class="imageHolder"></div>
   </div>
