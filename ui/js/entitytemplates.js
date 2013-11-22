@@ -433,17 +433,17 @@ templates.artefactDetail =
         {{#each artefacts}}<li><div class="artefact" data-artefactid="{{.}}" data-template="summary"></div></li>{{/each}}\
         </ul>\
     {{/gt}}\
-    {{#gt facsimiles.length 0}}\
-        <h3 class="muted"><i class="fa fa-camera"></i>  Facsimiles</h3><p>{{facsimiles.length}} facsimile{{#neq facsimiles.length 1}}s{{/neq}} associated with this artefact:</p>\
-        <div class="row-fluid">\
-        {{#each facsimiles}}<div class="span2 resource facsimilePreview" data-resourceid="{{.}}" data-template="facsimilePreview"></div>{{/each}}\
-        </div>\
-    {{/gt}}\
     {{#gt transcriptions.length 0}}\
         <h3 class="muted"><i class="fa fa-file-text-o"></i> Diplomatic Transcriptions</h3><p>{{transcriptions.length}} transcription{{#neq transcriptions.length 1}}s{{/neq}} associated with this artefact:</p>\
         <ul>\
         {{#each transcriptions}}<li class="resource" data-resourceid="{{.}}" data-template="summary"></li>{{/each}}\
         </ul>\
+    {{/gt}}\
+    {{#gt facsimiles.length 0}}\
+        <h3 class="muted"><i class="fa fa-camera"></i>  Facsimiles</h3><p>{{facsimiles.length}} facsimile{{#neq facsimiles.length 1}}s{{/neq}} associated with this artefact:</p>\
+        <div class="row-fluid">\
+        {{#each facsimiles}}<div class="span2 resource facsimilePreview" data-resourceid="{{.}}" data-template="facsimilePreview"></div>{{/each}}\
+        </div>\
     {{/gt}}\
     {{#if locked}}<i class="fa fa-lock"></i> {{/if}}\
     </div>'
