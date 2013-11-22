@@ -14,7 +14,7 @@ function repositoryapi_get_configuration() {
             'agents' => array('lastName', 'firstName'),
             'events' => array('name','description'),
             'places' => array('name'),
-            'mvds' => array('name'),
+            'mvds' => array('resources', 'name'),
             'collections' => array('name')),
     );
 }
