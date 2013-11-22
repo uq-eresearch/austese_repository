@@ -673,7 +673,7 @@ function getResource($id){
   // Tell any cache the different resources are served
   // depending on content type
   drupal_add_http_header('Vary', 'Accept');
-  if ($requesttype === 'application/json'){
+  if (preg_match('/application\/json/', $requesttype)){
       // return json metadata
       $returnobj = _processResource($file);
       drupal_add_http_header('Content-Type', 'application/json');
