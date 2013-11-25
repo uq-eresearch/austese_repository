@@ -867,11 +867,57 @@ function repository_og_context_handler() {
       return array();
   }
 }
-function repository_callback_search_conditions($keys) {
-  $conditions = array();
-  // TODO get project
-  return $conditions;
+/**
+ * Add a project parameter to the search form if we're in the context of a project.
+ */
+function repository_form_search_form_alter(&$form, &$form_state) {
+  $form['#submit'][] = 'search_form_alter_submit';
+  $context = og_context();
+  if (isset($context['group_type']) && $context['group_type'] === 'node') {
+    $form['project'] = array(
+      '#type' => 'hidden',
+      '#value' => $context['gid']
+    );
+  }
 }
+function repository_form__austese_search_form_alter(&$form, &$form_state) {
+  $context = og_context();
+  if (isset($context['group_type']) && $context['group_type'] === 'node') {
+    $form['project'] = array(
+      '#type' => 'hidden',
+      '#value' => $context['gid']
+    );
+  }
+}/**
+ * Add a project parameter to the redirect so as not to lose the project
+ * context.
+ * @see repository_form_search_form_alter
+ */
+function search_form_alter_submit($form, &$form_state) {
+  $context = og_context();
+  if (isset($context['group_type']) && $context['group_type'] === 'node') {
+      $form_state['redirect'] = array($form_state['redirect'],
+          array('query' => array('project' => $context['gid'])));
+  }
+}
+/**
+ * Add project parameters to all the different types of search links in the nav panel.
+ */
+function repository_menu_local_tasks_alter(&$data, $router_item, $root_path) {
+  $context = og_context();
+    
+  if ($router_item['page_callback'] == 'search_view') {
+    if (isset($context['group_type']) && $context['group_type'] === 'node') {
+        $project = $context['gid'];
+        foreach ($data['tabs'][0]['output'] as &$tab) {
+            $tab['#link']['localized_options']['query'] = array('project' => $project);
+        }
+    }
+  }
+}
+/**
+ * Setup a search handler for Versions
+ */
 function repository_search_info(){
     return array(
     'title' => 'Versions',
@@ -879,6 +925,26 @@ function repository_search_info(){
     'conditions_callback' => 'repository_callback_search_conditions',
   );
 }
+/**
+ * Add a project parameter to the list of conditions if in the context of a project.
+ * @param type $keys
+ * @return type
+ */
+function repository_callback_search_conditions($keys) {
+  $conditions = array();
+  $context = og_context();
+  if (isset($context['group_type']) && $context['group_type'] === 'node') {
+    $conditions['project'] = $context['gid'];
+  }
+  return $conditions;
+}
+/**
+ * Execute a 'Version' type search
+ * 
+ * @param type $keys search terms
+ * @param type $conditions extra conditions
+ * @return array of results
+ */
 function repository_search_execute($keys = NULL, $conditions = NULL){
     $project = null;
     if (ISSET($conditions['project'])){
