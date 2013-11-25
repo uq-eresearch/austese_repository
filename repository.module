@@ -859,9 +859,9 @@ function repository_og_context_negotiation_info() {
  *  a flat array of group IDs.
  */
 function repository_og_context_handler() {
-  if (isset($_GET['project']) && is_numeric($_GET['project'])) {
+  if (isset($_REQUEST['project']) && is_numeric($_REQUEST['project'])) {
     return array(
-        'node' => array($_GET['project'])
+        'node' => array($_REQUEST['project'])
     );
   } else {
       return array();
