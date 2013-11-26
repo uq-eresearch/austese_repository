@@ -275,6 +275,10 @@ templates.eventChronologyDetail = '<div class="obj chronologyItem">\
     </a></div><div class="span9">\
     {{#if name}}<b>{{name}}</b><br/>{{/if}}\
     {{{description}}}\
+    {{#if hasEditPermission}}\
+    {{#if locked}}<i class="fa fa-lock"></i> {{/if}}\
+     <a target="_blank" href="/{{modulePrefix}}/events/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT METADATA</a>\
+    {{/if}}\
     </div></div>'
 ;
 //{{#gt agents.length 0}}<br/>({{agents.length}} participant{{#neq agents.length 1}}s{{/neq}}){{/gt}}\
