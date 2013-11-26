@@ -4,7 +4,6 @@
  * @file
  * Module file for content repository
  */
-
 /**
  * @defgroup repository Content Repository
  * @ingroup austese
@@ -20,21 +19,21 @@
 function repository_help($path, $arg) {
   switch ($path) {
     case 'repository/agents':
-        return t('Content Repository: Agents');
+      return t('Content Repository: Agents');
     case 'repository/events':
-        return t('Content Repository: Events');
+      return t('Content Repository: Events');
     case 'repository/artefacts':
-        return t('Content Repository: Artefacts');
+      return t('Content Repository: Artefacts');
     case 'repository/versions':
-        return t('Content Repository: Versions');
+      return t('Content Repository: Versions');
     case 'repository/works':
-        return t('Content Repository: Works');
+      return t('Content Repository: Works');
     case 'repository/resources':
-        return t('Content Repository: Digital Resources');
+      return t('Content Repository: Digital Resources');
     case 'repository/places':
-        return t('Content Repository: Places');
+      return t('Content Repository: Places');
     case 'admin/help#repository':
-        return t('AustESE Content Repository');
+      return t('AustESE Content Repository');
   }
 }
 
@@ -66,7 +65,7 @@ function repository_permission() {
  * @see menu_example
  */
 function repository_menu() {
-  
+
   $items['admin/austese/repository'] = array(
     'title' => 'Ausese Repository',
     'description' => 'Configure the AustESE Repository Module.',
@@ -76,18 +75,18 @@ function repository_menu() {
     'file' => 'includes/admin.form.inc',
     'type' => MENU_NORMAL_ITEM,
   );
-    // List object types
-    $items['repository'] = array(
+  // List object types
+  $items['repository'] = array(
     'title' => 'Content Repository',
     'page callback' => 'repository_toc',
     'access callback' => TRUE,
-   'access arguments' => array('view metadata'),
+    'access arguments' => array('view metadata'),
     'type' => MENU_CALLBACK
   );
-  
+
   // View objects by type
   $items['repository/%'] = array(
-    'title arguments' => array('title'=>1),
+    'title arguments' => array('title' => 1),
     'title callback' => 'repository_display_title',
     'page callback' => 'repository_display',
     'page arguments' => array(1),
@@ -97,20 +96,20 @@ function repository_menu() {
   );
   // Add or edit an object of a specific type
   $items['repository/%/edit'] = array(
-    'title arguments' => array('title'=>1),
+    'title arguments' => array('title' => 1),
     'title callback' => 'repository_display_edit_title',
     'page callback' => 'repository_edit',
-    'page arguments' => array(1,3),
+    'page arguments' => array(1, 3),
     'access callback' => TRUE,
 //    'access arguments' => array('edit metadata'),
     'type' => MENU_CALLBACK
   );
   // Visualize an object of a specific type
   $items['repository/%/visualize'] = array(
-    'title arguments' => array('title'=>1),
+    'title arguments' => array('title' => 1),
     'title callback' => 'repository_display_visualize_title',
     'page callback' => 'repository_visualize',
-    'page arguments' => array(1,3),
+    'page arguments' => array(1, 3),
     'access callback' => TRUE,
 //    'access arguments' => array('view visualizations'),
     'type' => MENU_CALLBACK
@@ -119,7 +118,7 @@ function repository_menu() {
   $items['repository/events/map'] = array(
     'title' => 'Map of Events',
     'page callback' => 'repository_map_events',
-    'page arguments' => array(1,3),
+    'page arguments' => array(1, 3),
     'access callback' => TRUE,
     'type' => MENU_CALLBACK
   );
@@ -142,7 +141,7 @@ function repository_menu() {
   $items['repository/resources/%/content'] = array(
     'title' => "",
     'page callback' => 'repository_display_resource',
-    'page arguments' => array(2,4),
+    'page arguments' => array(2, 4),
     'access callback' => TRUE,
 //    'access arguments' => array('view metadata'),
     'type' => MENU_CALLBACK
@@ -151,7 +150,7 @@ function repository_menu() {
   $items['repository/%/%'] = array(
     'title' => "",
     'page callback' => 'repository_display_record',
-    'page arguments' => array(1,3),
+    'page arguments' => array(1, 3),
     'access callback' => TRUE,
 //    'access arguments' => array('view metadata'),
     'type' => MENU_CALLBACK
@@ -187,9 +186,10 @@ function repository_xmlrpc() {
       'struct',
       'string'),
     t('Check the session is valid')
-    );
+  );
   return $methods;
 }
+
 function repository_xmlrpc_check_login($sid) {
   if ("127.0.0.1" != $_SERVER['REMOTE_ADDR']) {
     return false;
@@ -210,32 +210,37 @@ function repository_xmlrpc_check_login($sid) {
   return $response;
 }
 
-function repository_display_title($title){
-    return ucwords($title);
+function repository_display_title($title) {
+  return ucwords($title);
 }
-function repository_display_edit_title($title){
-    if ($title == "resources"){
-        return "Edit Resource";
-    } else {
-        return 'Describe ' . ucwords(substr($title,0,-1));
-    }
+
+function repository_display_edit_title($title) {
+  if ($title == "resources") {
+    return "Edit Resource";
+  }
+  else {
+    return 'Describe ' . ucwords(substr($title, 0, -1));
+  }
 }
-function repository_display_visualize_title($title){
-    return 'Visualize ' . ucwords(substr($title,0,-1));
+
+function repository_display_visualize_title($title) {
+  return 'Visualize ' . ucwords(substr($title, 0, -1));
 }
-function repository_display_record_title($title){
-    return 'View ' . ucwords(substr($title,0,-1));
+
+function repository_display_record_title($title) {
+  return 'View ' . ucwords(substr($title, 0, -1));
 }
+
 function repository_description() {
   return array('#markup' => t('The austese content repository module'));
 }
 
 function _get_projectParam() {
-    $projectParam = array();
-    if (isset($_GET['project'])) {
-        $projectParam = array('query' => array('project' => $_GET['project']));
-    }
-    return $projectParam;
+  $projectParam = array();
+  if (isset($_GET['project'])) {
+    $projectParam = array('query' => array('project' => $_GET['project']));
+  }
+  return $projectParam;
 }
 
 /**
@@ -244,273 +249,284 @@ function _get_projectParam() {
  * @param type $breadcrumb An existing breadcrumb array to modify
  */
 function _add_project_or_repository(&$breadcrumb) {
-    $projectParam = _get_projectParam();
-    if (isset($_GET['project'])) {
-        $project = node_load($_GET['project']);
-        $breadcrumb[] = l($project->title, 'node/' . $project->nid, $projectParam);
-    } else {
-        $breadcrumb[] = l('Repository', 'repository',$projectParam);
-    }
+  $projectParam = _get_projectParam();
+  if (isset($_GET['project'])) {
+    $project = node_load($_GET['project']);
+    $breadcrumb[] = l($project->title, 'node/' . $project->nid, $projectParam);
+  }
+  else {
+    $breadcrumb[] = l('Repository', 'repository', $projectParam);
+  }
 }
 
 function _assert_valid_record_type($record_type) {
-    if (!in_array($record_type,array("agents","artefacts","versions","works","resources", "places", "events", "mvds", "collections"))) {
-        drupal_access_denied();
-        exit;
-    }
+  if (!in_array($record_type, array("agents", "artefacts", "versions", "works", "resources", "places", "events", "mvds", "collections"))) {
+    drupal_access_denied();
+    exit;
+  }
 }
 
-function repository_display($record_type, $template='Summary') {
-    _assert_valid_record_type($record_type);
+function repository_display($record_type, $template = 'Summary') {
+  _assert_valid_record_type($record_type);
 
-    // Create breadcrumb trail
-    $breadcrumb = array();
-    $breadcrumb[] = l('Home', '<front>');
-    _add_project_or_repository($breadcrumb);
-    $breadcrumb[] = t(ucfirst($record_type)); 
-    drupal_set_breadcrumb($breadcrumb);
-    
-    // check project and permissions
-    $project = get_get_parameter('project');
-    _check_project_exists($project);
-    _check_permission_on_project('view metadata', $project);
-    
-    $modulePath = drupal_get_path('module', 'repository');
-    drupal_add_js($modulePath . '/ui/lib/handlebars.js');
-    drupal_add_js($modulePath . '/ui/js/entitytemplates.js');
+  // Create breadcrumb trail
+  $breadcrumb = array();
+  $breadcrumb[] = l('Home', '<front>');
+  _add_project_or_repository($breadcrumb);
+  $breadcrumb[] = t(ucfirst($record_type));
+  drupal_set_breadcrumb($breadcrumb);
+
+  // check project and permissions
+  $project = get_get_parameter('project');
+  _check_project_exists($project);
+  _check_permission_on_project('view metadata', $project);
+
+  $modulePath = drupal_get_path('module', 'repository');
+  drupal_add_js($modulePath . '/ui/lib/handlebars.js');
+  drupal_add_js($modulePath . '/ui/js/entitytemplates.js');
+  drupal_add_js($modulePath . '/ui/js/repository.js');
+  drupal_add_css($modulePath . '/ui/css/repository.css');
+
+  // resource organizer
+  if ($record_type == 'resources') {
+    if (!austese_access('edit metadata', $project)) {
+      drupal_access_denied();
+      return;
+    }
+    drupal_add_js('/sites/all/libraries/ext-4.1.1a/ext-all.js');
+    drupal_add_css(base_path() . 'sites/all/libraries/ext-4.1.1a/resources/css/ext-all.css', array('type' => 'external', 'every_page' => FALSE));
+    drupal_add_css(base_path() . 'sites/all/libraries/ext-4.1.1a/resources/css/ext-all-gray.css', array('type' => 'external', 'every_page' => FALSE));
+    drupal_add_css($modulePath . '/ui/css/uploader.css');
+    drupal_add_js($modulePath . '/ui/lib/formdata.js');
+    drupal_add_js($modulePath . '/ui/js/uploader.js');
+
+    $project = node_load($project);
+    $pshortname = null;
+    if ($project) {
+      $pshortname = $project->field_short_name['und'][0]['value'];
+    }
+    return theme("repository_resources", array("projectshortname" => $pshortname));
+  }
+  else if ($record_type == 'places') {
+    drupal_add_css('http://cdn.leafletjs.com/leaflet-0.4/leaflet.css', array('type' => 'external'));
+    drupal_add_js('http://cdn.leafletjs.com/leaflet-0.4/leaflet.js', array('type' => 'external'));
+    return theme("repository_display", array("displaytemplate" => $template));
+  }
+  else {
+    return theme("repository_display", array("displaytemplate" => $template));
+  }
+}
+
+function repository_edit($record_type, $id = null) {
+  if (!in_array($record_type, array("agents", "artefacts", "versions", "works", "resources", "events", "mvds", "collections"))) {
+    drupal_access_denied();
+    return;
+  }
+
+  $projectParam = _get_projectParam();
+
+  // Create breadcrumb trail
+  $breadcrumb = array();
+  $breadcrumb[] = l('Home', '<front>');
+  _add_project_or_repository($breadcrumb);
+  $breadcrumb[] = l(ucwords($record_type), 'repository/' . $record_type, $projectParam);
+  if ($record_type != 'mvds') {
+    $breadcrumb[] = l('View ' . ucwords(substr($record_type, 0, -1)), 'repository/' . $record_type . '/' . $id, $projectParam);
+  }
+  $breadcrumb[] = t('Edit ' . ucfirst(substr($record_type, 0, -1)));
+  drupal_set_breadcrumb($breadcrumb);
+
+  // check project and permissions
+  $project = get_get_parameter('project');
+  _check_project_exists($project);
+  _check_permission_on_project('edit metadata', $project);
+
+  // Add scripts
+  $modulePath = drupal_get_path('module', 'repository');
+  drupal_add_js($modulePath . '/ui/lib/select2/select2.min.js');
+  // NB: jQuery UI 1.10.x should be installed using jquery update module
+  drupal_add_js($modulePath . '/ui/lib/select2/jquery-ui-1.10.3.custom.js');
+  drupal_add_css($modulePath . '/ui/lib/select2/select2.css', array('group' => CSS_DEFAULT, 'every_page' => FALSE));
+  drupal_add_js($modulePath . '/ui/lib/js2form.js');
+  drupal_add_js($modulePath . '/ui/lib/wysihtml5-advanced.js');
+  drupal_add_js($modulePath . '/ui/lib/wysihtml5-0.3.0.min.js');
+  drupal_add_js($modulePath . '/ui/lib/bootstrap-wysihtml5.js');
+  drupal_add_css($modulePath . '/ui/lib/bootstrap-wysihtml5.css', array('group' => CSS_DEFAULT, 'every_page' => FALSE));
+  drupal_add_js($modulePath . '/ui/lib/handlebars.js');
+  drupal_add_js('http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js');
+  drupal_add_js($modulePath . '/ui/js/entitytemplates.js');
+
+  if ($record_type == "resources") {
+    if (isset($_GET['multi'])) {
+      $multiParam = true;
+    }
+    else {
+      $multiParam = false;
+    }
+    drupal_add_js($modulePath . '/ui/lib/jquery.panzoom.min.js');
+
+    drupal_add_js($modulePath . '/ui/lib/codemirror/codemirror.js');
+    // support collapsing tags
+    drupal_add_js($modulePath . '/ui/lib/codemirror/foldcode.js');
+    drupal_add_js($modulePath . '/ui/lib/codemirror/xml-fold.js');
+    // support autoclosing tags
+    drupal_add_js($modulePath . '/ui/lib/codemirror/closetag.js');
+    // support highlighting tags pairs
+    drupal_add_js($modulePath . '/ui/lib/codemirror/matchtags.js');
+    // autocmpletion
+    drupal_add_js($modulePath . '/ui/lib/codemirror/show-hint.js');
+    drupal_add_js($modulePath . '/ui/lib/codemirror/xml-hint.js');
+    drupal_add_css($modulePath . '/ui/lib/codemirror/show-hint.css');
+    drupal_add_css($modulePath . '/ui/css/tei.css');
+    if ($multiParam) {
+      drupal_add_js($modulePath . '/ui/lib/codemirror/merge/dep/diff_match_patch.js');
+      drupal_add_js($modulePath . '/ui/lib/codemirror/merge/merge.js');
+      drupal_add_css($modulePath . '/ui/lib/codemirror/merge/merge.css');
+    }
+    // xml edit
+    drupal_add_js($modulePath . '/ui/lib/codemirror/xml.js');
+    drupal_add_js($modulePath . '/ui/js/resourceedit.js');
+    drupal_add_css($modulePath . '/ui/lib/codemirror/codemirror.css', array('group' => CSS_DEFAULT, 'every_page' => FALSE));
+  }
+  else {
     drupal_add_js($modulePath . '/ui/js/repository.js');
-    drupal_add_css($modulePath . '/ui/css/repository.css');
-    
-    // resource organizer
-    if ($record_type == 'resources'){
-        if (!austese_access('edit metadata', $project)){
-            drupal_access_denied();
-            return;
-        }
-        drupal_add_js('/sites/all/libraries/ext-4.1.1a/ext-all.js');
-        drupal_add_css(base_path().'sites/all/libraries/ext-4.1.1a/resources/css/ext-all.css', array('type'=>'external','every_page' => FALSE));
-        drupal_add_css(base_path().'sites/all/libraries/ext-4.1.1a/resources/css/ext-all-gray.css',array('type'=>'external','every_page' => FALSE));
-        drupal_add_css($modulePath . '/ui/css/uploader.css');
-        drupal_add_js($modulePath . '/ui/lib/formdata.js');
-        drupal_add_js($modulePath . '/ui/js/uploader.js');
-        
-        $project = node_load($project);
-        $pshortname = null;
-        if ($project){
-            $pshortname = $project->field_short_name['und'][0]['value'];
-        }
-        return theme("repository_resources", array("projectshortname" => $pshortname));
-    } else if ($record_type == 'places'){
-        drupal_add_css('http://cdn.leafletjs.com/leaflet-0.4/leaflet.css',array('type' => 'external'));
-        drupal_add_js('http://cdn.leafletjs.com/leaflet-0.4/leaflet.js',array('type' => 'external'));
-        return theme("repository_display",array("displaytemplate" => $template));
-    } else {
-        return theme("repository_display",array("displaytemplate" => $template));
-    }
-}
-function repository_edit($record_type, $id=null){
-    if (!in_array($record_type,array("agents","artefacts","versions","works", "resources", "events", "mvds", "collections"))) {
-        drupal_access_denied();
-        return;
-    }
-    
-    $projectParam = _get_projectParam();
+  }
 
-    // Create breadcrumb trail
-    $breadcrumb = array();
-    $breadcrumb[] = l('Home', '<front>');
-    _add_project_or_repository($breadcrumb);
-    $breadcrumb[] = l(ucwords($record_type),'repository/'.$record_type,$projectParam);
-    if ($record_type != 'mvds'){
-        $breadcrumb[] = l('View '. ucwords(substr($record_type,0,-1)),'repository/'.$record_type.'/'.$id,$projectParam);
-    }
-    $breadcrumb[] = t('Edit '. ucfirst(substr($record_type,0,-1))); 
-    drupal_set_breadcrumb($breadcrumb);
-    
-    // check project and permissions
-    $project = get_get_parameter('project');
-    _check_project_exists($project);
-    _check_permission_on_project('edit metadata', $project);
-    
-    // Add scripts
+  // Add stylesheets
+  drupal_add_css($modulePath . '/ui/css/repository.css', array('group' => CSS_DEFAULT, 'every_page' => FALSE));
+  return theme('repository_' . $record_type . '_edit', array());
+}
+
+function repository_timeline_events() {
+  $projectParam = _get_projectParam();
+
+  // Create breadcrumb trail
+  $breadcrumb = array();
+  $breadcrumb[] = l('Home', '<front>');
+  _add_project_or_repository($breadcrumb);
+  $breadcrumb[] = l('Events', 'repository/events', $projectParam);
+  $breadcrumb[] = t(drupal_get_title());
+  drupal_set_breadcrumb($breadcrumb);
+
+  // check project and permissions
+  $project = get_get_parameter('project');
+  _check_project_exists($project);
+  _check_permission_on_project('view metadata', $project);
+
+  // Add scripts
+  $modulePath = drupal_get_path('module', 'repository');
+  drupal_add_css($modulePath . '/ui/lib/timeline/css/timeline.css', array('group' => CSS_DEFAULT, 'every_page' => FALSE));
+  drupal_add_js($modulePath . '/ui/lib/timeline/js/storyjs-embed.js');
+  drupal_add_js($modulePath . '/ui/lib/handlebars.js');
+  drupal_add_js($modulePath . '/ui/js/entitytemplates.js');
+  drupal_add_js($modulePath . '/ui/js/timelineevents.js');
+  return theme('repository_visualize', array());
+}
+
+function repository_chronology_events() {
+  return repository_display('events', 'ChronologyDetail');
+}
+
+function repository_map_events($id = null) {
+  $projectParam = _get_projectParam();
+
+  // Create breadcrumb trail
+  $breadcrumb = array();
+  $breadcrumb[] = l('Home', '<front>');
+  _add_project_or_repository($breadcrumb);
+  $breadcrumb[] = l('Events', 'repository/events', $projectParam);
+  $breadcrumb[] = t(drupal_get_title());
+  drupal_set_breadcrumb($breadcrumb);
+
+  // check project and permissions
+  $project = get_get_parameter('project');
+  _check_project_exists($project);
+  _check_permission_on_project('view metadata', $project);
+
+  // Add scripts
+  $modulePath = drupal_get_path('module', 'repository');
+  drupal_add_css('http://cdn.leafletjs.com/leaflet-0.4/leaflet.css', array('type' => 'external'));
+  drupal_add_js('http://cdn.leafletjs.com/leaflet-0.4/leaflet.js', array('type' => 'external'));
+  drupal_add_css($modulePath . '/ui/css/repository.css');
+  drupal_add_js($modulePath . '/ui/lib/oms.min.js');
+  drupal_add_js($modulePath . '/ui/lib/handlebars.js');
+  drupal_add_js($modulePath . '/ui/js/entitytemplates.js');
+  drupal_add_js($modulePath . '/ui/js/mapevents.js');
+  return theme('repository_visualize', array());
+}
+
+function repository_visualize($template, $id = null) {
+  if (!in_array($template, array("agents", "artefacts", "versions", "works", "resources", "events"))) {
+    drupal_access_denied();
+    return;
+  }
+
+  // Create breadcrumbs
+  $projectParam = _get_projectParam();
+  $breadcrumb = array();
+  $breadcrumb[] = l('Home', '<front>');
+  _add_project_or_repository($breadcrumb);
+  $breadcrumb[] = l(ucwords($template), 'repository/' . $template, $projectParam);
+  $breadcrumb[] = t(drupal_get_title());
+  drupal_set_breadcrumb($breadcrumb);
+
+  // check project and permissions
+  $project = get_get_parameter('project');
+  _check_project_exists($project);
+  _check_permission_on_project('view metadata', $project);
+
+  // Add scripts
+  $modulePath = drupal_get_path('module', 'repository');
+  drupal_add_js($modulePath . '/ui/lib/graphdracula/raphael.js');
+  drupal_add_js($modulePath . '/ui/lib/graphdracula/dracula_graffle.js');
+  drupal_add_js($modulePath . '/ui/lib/graphdracula/dracula_graph.js');
+  //drupal_add_js($modulePath . '/ui/js/lib/graphdracula/dracula_algorithms.js');
+  drupal_add_js($modulePath . '/ui/js/visualizeentity.js');
+  return theme('repository_visualize', array());
+}
+
+function repository_display_resource($id, $raw = null) {
+  $projectParam = _get_projectParam();
+
+  // Create breadcrumbs
+  $breadcrumb = array();
+  $breadcrumb[] = l('Home', '<front>');
+  _add_project_or_repository($breadcrumb);
+  $breadcrumb[] = l('Resources', 'repository/resources', $projectParam);
+  $breadcrumb[] = l('View Resource', 'repository/resources/' . $id, $projectParam);
+  $breadcrumb[] = t('View Resource Content');
+  drupal_set_breadcrumb($breadcrumb);
+
+  // check project and permissions
+  $project = get_get_parameter('project');
+  _check_project_exists($project);
+  _check_permission_on_project('view metadata', $project);
+
+  if ($raw == 'raw') {
+    echo repository_render_tei($id);
+  }
+  else if ($raw == 'pdf') {
+    repository_stream_pdf($id);
+  }
+  else if ($raw == 'word') {
+    repository_stream_word($id);
+  }
+  else {
+    //too slow use ajax instead - return theme('resources_content',array('content'=>$result));
     $modulePath = drupal_get_path('module', 'repository');
-    drupal_add_js($modulePath . '/ui/lib/select2/select2.min.js');
-    // NB: jQuery UI 1.10.x should be installed using jquery update module
-    drupal_add_js($modulePath . '/ui/lib/select2/jquery-ui-1.10.3.custom.js');
-    drupal_add_css($modulePath . '/ui/lib/select2/select2.css',  array('group' => CSS_DEFAULT, 'every_page' => FALSE));
-    drupal_add_js($modulePath . '/ui/lib/js2form.js');
-    drupal_add_js($modulePath . '/ui/lib/wysihtml5-advanced.js');
-    drupal_add_js($modulePath . '/ui/lib/wysihtml5-0.3.0.min.js');
-    drupal_add_js($modulePath . '/ui/lib/bootstrap-wysihtml5.js');
-    drupal_add_css($modulePath. '/ui/lib/bootstrap-wysihtml5.css',  array('group' => CSS_DEFAULT, 'every_page' => FALSE));
-    drupal_add_js($modulePath . '/ui/lib/handlebars.js');
-    drupal_add_js('http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js');
-    drupal_add_js($modulePath . '/ui/js/entitytemplates.js');
-
-    if ($record_type == "resources"){
-        if (isset($_GET['multi'])) {
-           $multiParam = true;
-        } else {
-            $multiParam = false;
-        }
-        drupal_add_js($modulePath . '/ui/lib/jquery.panzoom.min.js');
-
-        drupal_add_js($modulePath . '/ui/lib/codemirror/codemirror.js');
-        // support collapsing tags
-        drupal_add_js($modulePath. '/ui/lib/codemirror/foldcode.js');
-        drupal_add_js($modulePath. '/ui/lib/codemirror/xml-fold.js');
-        // support autoclosing tags
-        drupal_add_js($modulePath . '/ui/lib/codemirror/closetag.js');
-        // support highlighting tags pairs
-        drupal_add_js($modulePath . '/ui/lib/codemirror/matchtags.js');
-        // autocmpletion
-        drupal_add_js($modulePath. '/ui/lib/codemirror/show-hint.js');
-        drupal_add_js($modulePath. '/ui/lib/codemirror/xml-hint.js');
-        drupal_add_css($modulePath. '/ui/lib/codemirror/show-hint.css');
-        drupal_add_css($modulePath . '/ui/css/tei.css');
-        if ($multiParam) {
-            drupal_add_js($modulePath . '/ui/lib/codemirror/merge/dep/diff_match_patch.js');
-            drupal_add_js($modulePath . '/ui/lib/codemirror/merge/merge.js');
-            drupal_add_css($modulePath. '/ui/lib/codemirror/merge/merge.css');
-        }
-        // xml edit
-        drupal_add_js($modulePath . '/ui/lib/codemirror/xml.js');
-        drupal_add_js($modulePath . '/ui/js/resourceedit.js');
-        drupal_add_css($modulePath . '/ui/lib/codemirror/codemirror.css',  array('group' => CSS_DEFAULT, 'every_page' => FALSE)); 
-    } else {
-        drupal_add_js($modulePath . '/ui/js/repository.js');
+    if (isset($_GET['cloud'])) {
+      drupal_add_css($modulePath . '/ui/css/repository.css');
+      drupal_add_js($modulePath . '/ui/lib/d3cloud/d3.js');
+      drupal_add_js($modulePath . '/ui/lib/d3cloud/d3.layout.cloud.js');
+      drupal_add_js($modulePath . '/ui/js/wordcloud.js');
     }
-
-    // Add stylesheets
-    drupal_add_css($modulePath . '/ui/css/repository.css',  array('group' => CSS_DEFAULT, 'every_page' => FALSE)); 
-    return theme('repository_'.$record_type.'_edit',array());
-}
-
-function repository_timeline_events(){
-    $projectParam = _get_projectParam();
-
-    // Create breadcrumb trail
-    $breadcrumb = array();
-    $breadcrumb[] = l('Home', '<front>');
-    _add_project_or_repository($breadcrumb);
-    $breadcrumb[] = l('Events','repository/events',$projectParam);
-    $breadcrumb[] = t(drupal_get_title()); 
-    drupal_set_breadcrumb($breadcrumb);
-    
-    // check project and permissions
-    $project = get_get_parameter('project');
-    _check_project_exists($project);
-    _check_permission_on_project('view metadata', $project);
-    
-    // Add scripts
-    $modulePath = drupal_get_path('module', 'repository');
-    drupal_add_css($modulePath.'/ui/lib/timeline/css/timeline.css',  array('group' => CSS_DEFAULT, 'every_page' => FALSE));
-    drupal_add_js($modulePath.'/ui/lib/timeline/js/storyjs-embed.js');
-    drupal_add_js($modulePath . '/ui/lib/handlebars.js');
-    drupal_add_js($modulePath . '/ui/js/entitytemplates.js'); 
-    drupal_add_js($modulePath.'/ui/js/timelineevents.js'); 
-    return theme('repository_visualize',array());
-}
-function repository_chronology_events(){
-    return repository_display('events','ChronologyDetail');
-}
-function repository_map_events($id=null){
-    $projectParam = _get_projectParam();
-
-    // Create breadcrumb trail
-    $breadcrumb = array();
-    $breadcrumb[] = l('Home', '<front>');
-    _add_project_or_repository($breadcrumb);
-    $breadcrumb[] = l('Events','repository/events',$projectParam);
-    $breadcrumb[] = t(drupal_get_title()); 
-    drupal_set_breadcrumb($breadcrumb);
-    
-    // check project and permissions
-    $project = get_get_parameter('project');
-    _check_project_exists($project);
-    _check_permission_on_project('view metadata', $project);
-    
-    // Add scripts
-    $modulePath = drupal_get_path('module', 'repository'); 
-    drupal_add_css('http://cdn.leafletjs.com/leaflet-0.4/leaflet.css',array('type' => 'external'));
-    drupal_add_js('http://cdn.leafletjs.com/leaflet-0.4/leaflet.js',array('type' => 'external'));
-    drupal_add_css($modulePath . '/ui/css/repository.css'); 
-    drupal_add_js($modulePath . '/ui/lib/oms.min.js');
+    drupal_add_js($modulePath . '/ui/lib/jquery.panzoom.min.js');
     drupal_add_js($modulePath . '/ui/lib/handlebars.js');
     drupal_add_js($modulePath . '/ui/js/entitytemplates.js');
-    drupal_add_js($modulePath . '/ui/js/mapevents.js');
-    return theme('repository_visualize',array());
-}
-
-function repository_visualize($template, $id=null){
-    if (!in_array($template,array("agents","artefacts","versions","works", "resources", "events"))) {
-        drupal_access_denied();
-        return;
-    }
-
-    // Create breadcrumbs
-    $projectParam = _get_projectParam();
-    $breadcrumb = array();
-    $breadcrumb[] = l('Home', '<front>');
-    _add_project_or_repository($breadcrumb);
-    $breadcrumb[] = l(ucwords($template),'repository/'.$template,$projectParam);
-    $breadcrumb[] = t(drupal_get_title()); 
-    drupal_set_breadcrumb($breadcrumb);
-    
-    // check project and permissions
-    $project = get_get_parameter('project');
-    _check_project_exists($project);
-    _check_permission_on_project('view metadata', $project);
-    
-    // Add scripts
-    $modulePath = drupal_get_path('module', 'repository');
-    drupal_add_js($modulePath . '/ui/lib/graphdracula/raphael.js');
-    drupal_add_js($modulePath . '/ui/lib/graphdracula/dracula_graffle.js');
-    drupal_add_js($modulePath . '/ui/lib/graphdracula/dracula_graph.js');
-    //drupal_add_js($modulePath . '/ui/js/lib/graphdracula/dracula_algorithms.js');
-    drupal_add_js($modulePath . '/ui/js/visualizeentity.js');
-    return theme('repository_visualize',array());
-}
-
-function repository_display_resource($id,$raw=null){
-    $projectParam = _get_projectParam();
-
-    // Create breadcrumbs
-    $breadcrumb = array();
-    $breadcrumb[] = l('Home', '<front>');
-    _add_project_or_repository($breadcrumb);
-    $breadcrumb[] = l('Resources','repository/resources',$projectParam);
-    $breadcrumb[] = l('View Resource','repository/resources/'.$id,$projectParam);
-    $breadcrumb[] = t('View Resource Content');
-    drupal_set_breadcrumb($breadcrumb);
-    
-    // check project and permissions
-    $project = get_get_parameter('project');
-    _check_project_exists($project);
-    _check_permission_on_project('view metadata', $project);
-    
-    if ($raw == 'raw'){
-        echo repository_render_tei($id);
-    } else if ($raw == 'pdf') {
-        repository_stream_pdf($id);
-    }  else if ($raw == 'word') {
-        repository_stream_word($id);
-    } else {
-        //too slow use ajax instead - return theme('resources_content',array('content'=>$result));
-        $modulePath = drupal_get_path('module', 'repository');
-        if (isset($_GET['cloud'])) {
-            drupal_add_css($modulePath . '/ui/css/repository.css');
-            drupal_add_js($modulePath . '/ui/lib/d3cloud/d3.js');
-            drupal_add_js($modulePath . '/ui/lib/d3cloud/d3.layout.cloud.js');
-            drupal_add_js($modulePath . '/ui/js/wordcloud.js');
-        }
-        drupal_add_js($modulePath . '/ui/lib/jquery.panzoom.min.js');
-        drupal_add_js($modulePath . '/ui/lib/handlebars.js');
-        drupal_add_js($modulePath . '/ui/js/entitytemplates.js');
-        drupal_add_js($modulePath . '/ui/js/displayresource.js');
-        drupal_add_css($modulePath . '/ui/css/tei.css');
-        return theme('repository_resources_content',array());
-    }
+    drupal_add_js($modulePath . '/ui/js/displayresource.js');
+    drupal_add_css($modulePath . '/ui/css/tei.css');
+    return theme('repository_resources_content', array());
+  }
 }
 
 /**
@@ -520,72 +536,72 @@ function repository_display_resource($id,$raw=null){
  * @return type
  */
 // shift to repository api
-function repository_render_tei($id){
-    global $base_url;
-    $modulePath = drupal_get_path('module', 'repository');
-    $resurl = $base_url . "/" . drupal_get_path('module', 'repository') . "/api/resources/" . $id;
-    $xslurl = $modulePath . '/ui/xslt/formats.xsl';
-    $dom = new DomDocument();
-    @$valid = $dom->load($resurl);
-    if (!$valid) {
-        //watchdog('TEI Content', "Invalid XML/TEI Content", array(), WATCHDOG_WARNING);
-        return "<pre style='white-space: pre-wrap'>".file_get_contents($resurl)."</pre>";
-    }
-    $xslDoc = new DomDocument();
-    $xslDoc->load($xslurl);
-    
-    $proc = new XsltProcessor();
-    $proc->importStylesheet($xslDoc);
-    return $proc->transformToXML($dom);
+function repository_render_tei($id) {
+  global $base_url;
+  $modulePath = drupal_get_path('module', 'repository');
+  $resurl = $base_url . "/" . drupal_get_path('module', 'repository') . "/api/resources/" . $id;
+  $xslurl = $modulePath . '/ui/xslt/formats.xsl';
+  $dom = new DomDocument();
+  @$valid = $dom->load($resurl);
+  if (!$valid) {
+    //watchdog('TEI Content', "Invalid XML/TEI Content", array(), WATCHDOG_WARNING);
+    return "<pre style='white-space: pre-wrap'>" . file_get_contents($resurl) . "</pre>";
+  }
+  $xslDoc = new DomDocument();
+  $xslDoc->load($xslurl);
+
+  $proc = new XsltProcessor();
+  $proc->importStylesheet($xslDoc);
+  return $proc->transformToXML($dom);
 }
 
-function repository_display_record($record_type, $id=null){
-    if (!in_array($record_type,array("agents","artefacts","versions","works", "resources", "places", "events", "collections"))) {
-        drupal_access_denied();
-        return;
-    }
-    $projectParam = _get_projectParam();
+function repository_display_record($record_type, $id = null) {
+  if (!in_array($record_type, array("agents", "artefacts", "versions", "works", "resources", "places", "events", "collections"))) {
+    drupal_access_denied();
+    return;
+  }
+  $projectParam = _get_projectParam();
 
-    // Create breadcrumb trail
-    $breadcrumb = array();
-    $breadcrumb[] = l('Home', '<front>');
-    _add_project_or_repository($breadcrumb);
-    $breadcrumb[] = l(ucwords($record_type),'repository/'.$record_type,$projectParam);
-    $breadcrumb[] = t('View ' . ucfirst(substr($record_type,0,-1))); 
-    drupal_set_breadcrumb($breadcrumb);
-    
-    // check project and permissions
-    $project = get_get_parameter('project');
-    _check_project_exists($project);
-    _check_permission_on_project('view metadata', $project);
-    
-    // Add scripts
-    $modulePath = drupal_get_path('module', 'repository');
-    
-    drupal_add_css('http://cdn.leafletjs.com/leaflet-0.4/leaflet.css',array('type' => 'external'));
-    drupal_add_js('http://cdn.leafletjs.com/leaflet-0.4/leaflet.js',array('type' => 'external'));
-    
-    // Add stylesheets
-    drupal_add_css($modulePath . '/ui/css/repository.css');
-    drupal_add_js($modulePath . '/ui/lib/handlebars.js'); 
-    drupal_add_js($modulePath . '/ui/js/entitytemplates.js');
-    drupal_add_js($modulePath . '/ui/js/repository.js');
-    return theme('repository_display_record',array());
+  // Create breadcrumb trail
+  $breadcrumb = array();
+  $breadcrumb[] = l('Home', '<front>');
+  _add_project_or_repository($breadcrumb);
+  $breadcrumb[] = l(ucwords($record_type), 'repository/' . $record_type, $projectParam);
+  $breadcrumb[] = t('View ' . ucfirst(substr($record_type, 0, -1)));
+  drupal_set_breadcrumb($breadcrumb);
+
+  // check project and permissions
+  $project = get_get_parameter('project');
+  _check_project_exists($project);
+  _check_permission_on_project('view metadata', $project);
+
+  // Add scripts
+  $modulePath = drupal_get_path('module', 'repository');
+
+  drupal_add_css('http://cdn.leafletjs.com/leaflet-0.4/leaflet.css', array('type' => 'external'));
+  drupal_add_js('http://cdn.leafletjs.com/leaflet-0.4/leaflet.js', array('type' => 'external'));
+
+  // Add stylesheets
+  drupal_add_css($modulePath . '/ui/css/repository.css');
+  drupal_add_js($modulePath . '/ui/lib/handlebars.js');
+  drupal_add_js($modulePath . '/ui/js/entitytemplates.js');
+  drupal_add_js($modulePath . '/ui/js/repository.js');
+  return theme('repository_display_record', array());
 }
 
 function repository_toc() {
   $projectParam = _get_projectParam();
-  $list[] = l("Artefacts","repository/artefacts",$projectParam);
-  $list[] = l("Versions","repository/versions",$projectParam);
-  $list[] = l("Works","repository/works",$projectParam);
-  $list[] = l("Digital Resources","repository/resources",$projectParam);
-  $list[] = l("Agents","repository/agents",$projectParam);
-  $list[] = l("Events","repository/events",$projectParam);
-  $list[] = l("Places", "repository/places",$projectParam);
-  $list[] = l("MVDs", "repository/mvds",$projectParam);
-  $list[] = l("Collections", "repository/collections",$projectParam);
+  $list[] = l("Artefacts", "repository/artefacts", $projectParam);
+  $list[] = l("Versions", "repository/versions", $projectParam);
+  $list[] = l("Works", "repository/works", $projectParam);
+  $list[] = l("Digital Resources", "repository/resources", $projectParam);
+  $list[] = l("Agents", "repository/agents", $projectParam);
+  $list[] = l("Events", "repository/events", $projectParam);
+  $list[] = l("Places", "repository/places", $projectParam);
+  $list[] = l("MVDs", "repository/mvds", $projectParam);
+  $list[] = l("Collections", "repository/collections", $projectParam);
   $render_array['repository_list'] = array(
-    '#theme' => 'item_list',  
+    '#theme' => 'item_list',
     '#items' => $list
   );
   return $render_array;
@@ -594,76 +610,76 @@ function repository_toc() {
 /**
  * Implements hook_theme
  */
-function repository_theme(){
- return array(
+function repository_theme() {
+  return array(
     'repository_display' => array(
-        'template' => 'ui/listobjects',
-        'variables' => array()
+      'template' => 'ui/listobjects',
+      'variables' => array()
     ),
     'repository_visualize' => array(
-        'template' => 'ui/visualizeobject',
-        'variables' => array()
+      'template' => 'ui/visualizeobject',
+      'variables' => array()
     ),
     'repository_display_record' => array(
-        'template' => 'ui/displayobject',
-        'variables' => array()
+      'template' => 'ui/displayobject',
+      'variables' => array()
     ),
     'repository_agents_edit' => array(
-        'template' => 'ui/agents_edit',
-        'variables' => array()
+      'template' => 'ui/agents_edit',
+      'variables' => array()
     ),
     'repository_events_edit' => array(
-        'template' => 'ui/events_edit',
-        'variables' => array()
+      'template' => 'ui/events_edit',
+      'variables' => array()
     ),
     'repository_artefacts_edit' => array(
-       'template' => 'ui/artefacts_edit',
-       'variables' => array()
+      'template' => 'ui/artefacts_edit',
+      'variables' => array()
     ),
     'repository_versions_edit' => array(
-       'template' => 'ui/versions_edit',
-       'variables' => array()
+      'template' => 'ui/versions_edit',
+      'variables' => array()
     ),
     'repository_works_edit' => array(
-       'template' => 'ui/works_edit',
-       'variables' => array()
+      'template' => 'ui/works_edit',
+      'variables' => array()
     ),
     'repository_resources_edit' => array(
-        'template' => 'ui/resources_edit',
-        'variables' => array()
+      'template' => 'ui/resources_edit',
+      'variables' => array()
     ),
     'repository_mvds_edit' => array(
-        'template' => 'ui/mvds_edit',
-        'variables' => array()
+      'template' => 'ui/mvds_edit',
+      'variables' => array()
     ),
-    'repository_collections_edit' => array (
-        'template' => 'ui/collections_edit',
-        'variables' => array()
+    'repository_collections_edit' => array(
+      'template' => 'ui/collections_edit',
+      'variables' => array()
     ),
     'repository_resources' => array(
-       'template' => 'ui/uploader',
-       'variables' => array()
+      'template' => 'ui/uploader',
+      'variables' => array()
     ),
     'repository_resources_content' => array(
-        'template' =>'ui/displayresource',
-        'variables' => array('content' => null)
+      'template' => 'ui/displayresource',
+      'variables' => array('content' => null)
     ),
     'repository_version_toc_block' => array(
-        'template' => 'ui/toc_block',
-        'variables'=>  array('versionid' => null)
+      'template' => 'ui/toc_block',
+      'variables' => array('versionid' => null)
     ),
     'repository_projectstatus' => array(
-        'template' => 'ui/projectstatus',
-        'variables' => array()
+      'template' => 'ui/projectstatus',
+      'variables' => array()
     ),
     'repository_workflow' => array(
-        'template' => 'ui/workflow',
-        'variables' => array()
+      'template' => 'ui/workflow',
+      'variables' => array()
     )
- );
+  );
 }
 
-/** 
+/**
  * User preference for launching tools in full screen mode - for repository upload tool and other AustESE tools
  * with full screen option
  */
@@ -681,14 +697,14 @@ function repository_form_user_profile_form_alter(&$form, &$form_state) {
     '#title' => t('AustESE tools launch full screen'),
     '#description' => t('Check this box if you want to launch AustESE tools in fullscreen mode by default'),
     '#return_value' => 1,
-    '#default_value' => isset($account->data['fullscreen']) ? $account->data['fullscreen'] : 0 ,
+    '#default_value' => isset($account->data['fullscreen']) ? $account->data['fullscreen'] : 0,
   );
   $form['austese']['organiserlist'] = array(
     '#type' => 'checkbox',
     '#title' => t('Resource Organiser defaults to list'),
     '#description' => t('Check this box if you want to launch the resource organiser in list mode rather than thumbnail mode by default'),
     '#return_value' => 1,
-    '#default_value' => isset($account->data['organiserlist']) ? $account->data['organiserlist'] : 0 ,
+    '#default_value' => isset($account->data['organiserlist']) ? $account->data['organiserlist'] : 0,
   );
   // TODO add other preferences e.g. default metadata fields to display in editor
 }
@@ -698,48 +714,47 @@ function repository_user_presave(&$edit, $account, $category) {
   $edit['data']['organiserlist'] = isset($edit['organiserlist']) ? $edit['organiserlist'] : 0;
 }
 
-
 function repository_block_info() {
-    $blocks['project_links'] = array(
-        'info' => t('Project Admin'),
-        'cache' => DRUPAL_NO_CACHE,
-    );
-    
-    return $blocks;
+  $blocks['project_links'] = array(
+    'info' => t('Project Admin'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
+  return $blocks;
 }
 
 function repository_block_view($delta = '') {
-    $block = array();
-    
-    $context = og_context();
-    if (isset($context['group_type']) && $context['group_type'] === 'node') {
-        $node = node_load($context['gid']);
-    }
-    if (!isset($node)) {
-        return;
-    }
+  $block = array();
+
+  $context = og_context();
+  if (isset($context['group_type']) && $context['group_type'] === 'node') {
+    $node = node_load($context['gid']);
+  }
+  if (!isset($node)) {
+    return;
+  }
 //    $node = menu_get_object();
-    
-    if ($node->type != 'project') {
-        return;
-    }
-    
-    $node_url = url('node/' . $node->nid, array('absolute' => TRUE));
-    
-    $project_id = $node->nid;
-    
-    switch ($delta) {
-        case 'project_links':
-            $block['subject'] = t('Project Admin');
-            $block['content'] = "
+
+  if ($node->type != 'project') {
+    return;
+  }
+
+  $node_url = url('node/' . $node->nid, array('absolute' => TRUE));
+
+  $project_id = $node->nid;
+
+  switch ($delta) {
+    case 'project_links':
+      $block['subject'] = t('Project Admin');
+      $block['content'] = "
                 <a href='/project/$project_id/projectstatus?project=$project_id'>Project Status</a><br>
                 <a href='/project/$project_id/workflow?project=$project_id'>Workflow</a><br>
                 <a href='/node/add/page?og_group_ref=$project_id'>Add Page</a>
                     ";
-            break;
-    }
-    
-    return $block;
+      break;
+  }
+
+  return $block;
 }
 
 function repository_projectstatus($node) {
@@ -747,75 +762,74 @@ function repository_projectstatus($node) {
   $breadcrumb = array();
   $breadcrumb[] = l('Home', '<front>');
   _add_project_or_repository($breadcrumb);
-  $breadcrumb[] = t("Project status"); 
+  $breadcrumb[] = t("Project status");
   drupal_set_breadcrumb($breadcrumb);
-  
+
   // check project and permissions
   $project = get_get_parameter('project');
   _check_project_exists($project);
   _check_permission_on_project('manage project', $project);
-  
+
   $config = repositoryapi_get_configuration();
-  
+
   $counts = array(
-      'artefacts' => array('title' => 'Artefacts'),
-      'versions' => array('title' => 'Versions'),
-      'works' => array('title' => 'Works'),
-      'agents' => array('title' => 'Agents'),
-      'events' => array('title' => 'Events'),
-      'mvds' => array('title' => 'MVDs'),
-      'collections' => array('title' => 'Collections'),
-      'fs.files' => array('title' => 'Digital Resources'),
+    'artefacts' => array('title' => 'Artefacts'),
+    'versions' => array('title' => 'Versions'),
+    'works' => array('title' => 'Works'),
+    'agents' => array('title' => 'Agents'),
+    'events' => array('title' => 'Events'),
+    'mvds' => array('title' => 'MVDs'),
+    'collections' => array('title' => 'Collections'),
+    'fs.files' => array('title' => 'Digital Resources'),
   );
-  
+
   try {
-    $m = new Mongo($config['dbhost'].':'.$config['dbport']);
+    $m = new Mongo($config['dbhost'] . ':' . $config['dbport']);
     $db = $m->selectDB($config['dbname']);
-        
+
     foreach (array_keys($counts) as $recordtype) {
-        $coll = $db->selectCollection($recordtype);
-        $total = $coll->count(array(
-                            'metadata.project' => $node->nid,
-                            '_superseded' => array('$exists' => false),
-                            '_deleted' => array('$exists' => false)));
-        $locked = $coll->count(array(
-                            'metadata.project' => $node->nid,
-                            '_deleted' => array('$exists' => false),
-                            '_superseded' => array('$exists' => false),
-                            'metadata.locked' => 'on'));
-        $counts[$recordtype]['total'] = $total;
-        $counts[$recordtype]['locked'] = $locked;
-        $counts[$recordtype]['percent'] = $total < 1 ? "N/A" : sprintf('%01d%%', ($locked / $total)*100);
+      $coll = $db->selectCollection($recordtype);
+      $total = $coll->count(array(
+        'metadata.project' => $node->nid,
+        '_superseded' => array('$exists' => false),
+        '_deleted' => array('$exists' => false)));
+      $locked = $coll->count(array(
+        'metadata.project' => $node->nid,
+        '_deleted' => array('$exists' => false),
+        '_superseded' => array('$exists' => false),
+        'metadata.locked' => 'on'));
+      $counts[$recordtype]['total'] = $total;
+      $counts[$recordtype]['locked'] = $locked;
+      $counts[$recordtype]['percent'] = $total < 1 ? "N/A" : sprintf('%01d%%', ($locked / $total) * 100);
     }
-    
+
     // Extra checks
     $files = $db->selectCollection('fs.files');
     $numWithRights = $files->count(array(
-                                    'metadata.rights' => array('$exists' => true),
-                                    'metadata.rights' => array('$ne' => ''),
-                                    '_superseded' => array('$exists' => false),
-                                    '_deleted' => array('$exists' => false)));
+      'metadata.rights' => array('$exists' => true),
+      'metadata.rights' => array('$ne' => ''),
+      '_superseded' => array('$exists' => false),
+      '_deleted' => array('$exists' => false)));
     $counts['filesrights'] = array();
     $counts['filesrights']['title'] = 'Digital resources rights';
     $counts['filesrights']['total'] = $counts['fs.files']['total'];
     $counts['filesrights']['locked'] = $numWithRights;
     $counts['filesrights']['percent'] = '%';
-    
-    
+
+
     $coll = $db->selectCollection('artefacts');
     $coll->count(array(
-                    'metadata.project' => $node->nid,
-                    '_deleted' => array('$exists' => false),
-                    '_superseded' => array('$exists' => false),
-                    
-                    
+      'metadata.project' => $node->nid,
+      '_deleted' => array('$exists' => false),
+      '_superseded' => array('$exists' => false),
     ));
 //    $match = array("metadata.project"=>)
     // db.events.aggregate([{$match: {"metadata.project":"22", "metadata.artefacts.0":{$exists:1}}}, {$project: {_id:0, "artefacts":"$metadata.artefacts"}},  {$unwind: "$artefacts"}, {$group: {_id: "artefacts", artefacts: {$addToSet:"$artefacts"}}} ])
-    
-    return theme("repository_projectstatus",array('counts' => $counts));
-  } catch (Exception $e){
-    drupal_add_http_header('Status', '500 Internal server error'); 
+
+    return theme("repository_projectstatus", array('counts' => $counts));
+  }
+  catch (Exception $e) {
+    drupal_add_http_header('Status', '500 Internal server error');
     echo $e->getMessage();
     exit;
   }
@@ -827,20 +841,20 @@ function repository_projectstatus($node) {
  * @return drupal render array
  */
 function repository_workflow($project) {
-    // Create breadcrumb trail
-    $breadcrumb = array();
-    $breadcrumb[] = l('Home', '<front>');
-    _add_project_or_repository($breadcrumb);
-    $breadcrumb[] = t("Project workflow"); 
-    drupal_set_breadcrumb($breadcrumb);
+  // Create breadcrumb trail
+  $breadcrumb = array();
+  $breadcrumb[] = l('Home', '<front>');
+  _add_project_or_repository($breadcrumb);
+  $breadcrumb[] = t("Project workflow");
+  drupal_set_breadcrumb($breadcrumb);
 
-    // check project and permissions
-    $project = get_get_parameter('project');
-    _check_project_exists($project);
-    _check_permission_on_project('manage project', $project);
-    
-    $projParam = "?project=" . $project->nid;
-    return theme('repository_workflow', array('node' => $project, 'projParam' => $projParam));
+  // check project and permissions
+  $project = get_get_parameter('project');
+  _check_project_exists($project);
+  _check_permission_on_project('manage project', $project);
+
+  $projParam = "?project=" . $project->nid;
+  return theme('repository_workflow', array('node' => $project, 'projParam' => $projParam));
 }
 
 /**
@@ -872,12 +886,14 @@ function repository_og_context_negotiation_info() {
 function repository_og_context_handler() {
   if (isset($_REQUEST['project']) && is_numeric($_REQUEST['project'])) {
     return array(
-        'node' => array($_REQUEST['project'])
+      'node' => array($_REQUEST['project'])
     );
-  } else {
-      return array();
+  }
+  else {
+    return array();
   }
 }
+
 /**
  * Add a project parameter to the search form if we're in the context of a project.
  */
@@ -891,6 +907,7 @@ function repository_form_search_form_alter(&$form, &$form_state) {
     );
   }
 }
+
 function repository_form__austese_search_form_alter(&$form, &$form_state) {
   $context = og_context();
   if (isset($context['group_type']) && $context['group_type'] === 'node') {
@@ -899,43 +916,50 @@ function repository_form__austese_search_form_alter(&$form, &$form_state) {
       '#value' => $context['gid']
     );
   }
-}/**
+}
+
+/**
  * Add a project parameter to the redirect so as not to lose the project
  * context.
  * @see repository_form_search_form_alter
  */
+
 function search_form_alter_submit($form, &$form_state) {
   $context = og_context();
   if (isset($context['group_type']) && $context['group_type'] === 'node') {
-      $form_state['redirect'] = array($form_state['redirect'],
-          array('query' => array('project' => $context['gid'])));
+    $form_state['redirect'] = array($form_state['redirect'],
+      array('query' => array('project' => $context['gid'])));
   }
 }
+
 /**
  * Add project parameters to all the different types of search links in the nav panel.
  */
 function repository_menu_local_tasks_alter(&$data, $router_item, $root_path) {
+  module_load_include('module', 'og_context');
   $context = og_context();
-    
+
   if ($router_item['page_callback'] == 'search_view') {
     if (isset($context['group_type']) && $context['group_type'] === 'node') {
-        $project = $context['gid'];
-        foreach ($data['tabs'][0]['output'] as &$tab) {
-            $tab['#link']['localized_options']['query'] = array('project' => $project);
-        }
+      $project = $context['gid'];
+      foreach ($data['tabs'][0]['output'] as &$tab) {
+        $tab['#link']['localized_options']['query'] = array('project' => $project);
+      }
     }
   }
 }
+
 /**
  * Setup a search handler for Versions
  */
-function repository_search_info(){
-    return array(
+function repository_search_info() {
+  return array(
     'title' => 'Versions',
     'path' => 'versions',
     'conditions_callback' => 'repository_callback_search_conditions',
   );
 }
+
 /**
  * Add a project parameter to the list of conditions if in the context of a project.
  * @param type $keys
@@ -949,6 +973,7 @@ function repository_callback_search_conditions($keys) {
   }
   return $conditions;
 }
+
 /**
  * Execute a 'Version' type search
  * 
@@ -956,76 +981,81 @@ function repository_callback_search_conditions($keys) {
  * @param type $conditions extra conditions
  * @return array of results
  */
-function repository_search_execute($keys = NULL, $conditions = NULL){
-    $project = null;
-    if (ISSET($conditions['project'])){
-        $project = $conditions['project'];
-    }
-    $searchResults = _findRecords("versions",array("versionTitle","name"),100, 0, 1, $keys,null,$project);
-    $results = array();
-    foreach ($searchResults as $obj){
-      $numrev = count($obj['_revisions']) - 1;
+function repository_search_execute($keys = NULL, $conditions = NULL) {
+  $project = null;
+  if (ISSET($conditions['project'])) {
+    $project = $conditions['project'];
+  }
+  $searchResults = _findRecords("versions", array("versionTitle", "name"), 100, 0, 1, $keys, null, $project);
+  $results = array();
+  foreach ($searchResults as $obj) {
+    $numrev = count($obj['_revisions']) - 1;
 
-      $id = $obj['_id'];
-      $metadata = $obj['_revisions'][$numrev];
-      // generate uri
-      $uri = 'repository/versions/' . $id->{'$id'};
-      $snippet = "";
-      if (ISSET($metadata['description'])){
-          $snippet = text_summary($metadata['description']);
-      }
-      /*$proj = null;
+    $id = $obj['_id'];
+    $metadata = $obj['_revisions'][$numrev];
+    // generate uri
+    $uri = 'repository/versions/' . $id->{'$id'};
+    $snippet = "";
+    if (ISSET($metadata['description'])) {
+      $snippet = text_summary($metadata['description']);
+    }
+    /* $proj = null;
       if (ISSET($metadata['project'])){
-         $projData = node_load($metadata['project']);
-         $proj = l($projData->title,'/node/'.$metadata['project']);
-      }*/
-      $results [] = array(
-        'link' => url($uri, array('absolute' => TRUE)),
-          'type' => 'Version',
-          'title' => $metadata['versionTitle'] . ' ' . $metadata['name'],
-          'user' => "",
-          'date' => "",
-          'extra' => array($metadata['date']),
-          'snippet' => $snippet
-        );
-     }
-    return $results;
+      $projData = node_load($metadata['project']);
+      $proj = l($projData->title,'/node/'.$metadata['project']);
+      } */
+    $results [] = array(
+      'link' => url($uri, array('absolute' => TRUE)),
+      'type' => 'Version',
+      'title' => $metadata['versionTitle'] . ' ' . $metadata['name'],
+      'user' => "",
+      'date' => "",
+      'extra' => array($metadata['date']),
+      'snippet' => $snippet
+    );
+  }
+  return $results;
 }
-function repository_stream_pdf($id){
-    try {
 
-        require_once("dompdf/dompdf_config.inc.php");
-        // include TEI CSS
-        $cssurl = drupal_get_path('module', 'repository') . '/ui/css/tei.css';
-        $teicss = "<style type='text/css'>pre {font-family:serif;}" . file_get_contents($cssurl) . "</style> ";
-        $content = preg_replace('/\r\n?/', "\n", repository_render_tei($id));
-        $html =  "<html><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8'/>" . $teicss . "</head><body>" . $content . "</body></html>";
-        $dompdf = new DOMPDF();
-        $dompdf->load_html($html);
-        $dompdf->render();
-        $dompdf->stream($id . ".pdf");
-        // prevent headers already sent error
-        drupal_exit();
-    } catch (Exception $e){
-        echo $e->getMessage();
-    }
-}
-function repository_stream_word($id){
-    try {
+function repository_stream_pdf($id) {
+  try {
 
-        require_once("htmltodoc/html_to_doc.inc.php");
-        // include TEI CSS
-        $cssurl = drupal_get_path('module', 'repository') . '/ui/css/tei.css';
-        $teicss = "<style type='text/css'>pre {font-family:serif;} " . file_get_contents($cssurl) . " </style> ";
-        $content = preg_replace('/\r\n?/', "\n", repository_render_tei($id));
-        $html =  "<html><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8'/><title>Generated document</title>" . $teicss . "</head><body>" . $content . "</body></html>";
-        $htmltodoc = new HTML_TO_DOC();
-        $htmltodoc->createDoc($html,$id.".docx",true);
-        drupal_exit();
-    } catch (Exception $e){
-        echo $e->getMessage();
-    }
+    require_once("dompdf/dompdf_config.inc.php");
+    // include TEI CSS
+    $cssurl = drupal_get_path('module', 'repository') . '/ui/css/tei.css';
+    $teicss = "<style type='text/css'>pre {font-family:serif;}" . file_get_contents($cssurl) . "</style> ";
+    $content = preg_replace('/\r\n?/', "\n", repository_render_tei($id));
+    $html = "<html><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8'/>" . $teicss . "</head><body>" . $content . "</body></html>";
+    $dompdf = new DOMPDF();
+    $dompdf->load_html($html);
+    $dompdf->render();
+    $dompdf->stream($id . ".pdf");
+    // prevent headers already sent error
+    drupal_exit();
+  }
+  catch (Exception $e) {
+    echo $e->getMessage();
+  }
 }
+
+function repository_stream_word($id) {
+  try {
+
+    require_once("htmltodoc/html_to_doc.inc.php");
+    // include TEI CSS
+    $cssurl = drupal_get_path('module', 'repository') . '/ui/css/tei.css';
+    $teicss = "<style type='text/css'>pre {font-family:serif;} " . file_get_contents($cssurl) . " </style> ";
+    $content = preg_replace('/\r\n?/', "\n", repository_render_tei($id));
+    $html = "<html><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8'/><title>Generated document</title>" . $teicss . "</head><body>" . $content . "</body></html>";
+    $htmltodoc = new HTML_TO_DOC();
+    $htmltodoc->createDoc($html, $id . ".docx", true);
+    drupal_exit();
+  }
+  catch (Exception $e) {
+    echo $e->getMessage();
+  }
+}
+
 /**
  * @} End of "defgroup repository".
  */
