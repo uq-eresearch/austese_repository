@@ -67,7 +67,7 @@ function repository_permission() {
 function repository_menu() {
 
   $items['admin/austese/repository'] = array(
-    'title' => 'Ausese Repository',
+    'title' => 'AustESE Repository',
     'description' => 'Configure the AustESE Repository Module.',
     'page callback' => 'drupal_get_form',
     'access arguments' => array('administer site configuration'),
