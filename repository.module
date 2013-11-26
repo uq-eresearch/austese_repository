@@ -66,6 +66,16 @@ function repository_permission() {
  * @see menu_example
  */
 function repository_menu() {
+  
+  $items['admin/austese/repository'] = array(
+    'title' => 'Ausese Repository',
+    'description' => 'Configure the AustESE Repository Module.',
+    'page callback' => 'drupal_get_form',
+    'access arguments' => array('administer site configuration'),
+    'page arguments' => array('austese_repository_admin'),
+    'file' => 'includes/admin.form.inc',
+    'type' => MENU_NORMAL_ITEM,
+  );
     // List object types
     $items['repository'] = array(
     'title' => 'Content Repository',
@@ -511,8 +521,9 @@ function repository_display_resource($id,$raw=null){
  */
 // shift to repository api
 function repository_render_tei($id){
+    global $base_url;
     $modulePath = drupal_get_path('module', 'repository');
-    $resurl = 'http://' . $_SERVER['HTTP_HOST'] . "/" . drupal_get_path('module', 'repository') . "/api/resources/" . $id;
+    $resurl = $base_url . "/" . drupal_get_path('module', 'repository') . "/api/resources/" . $id;
     $xslurl = $modulePath . '/ui/xslt/formats.xsl';
     $dom = new DomDocument();
     @$valid = $dom->load($resurl);

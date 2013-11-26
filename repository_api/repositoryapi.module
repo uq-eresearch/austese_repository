@@ -3,9 +3,9 @@
 function repositoryapi_get_configuration() {
     // Could later store these using drupals variable_get/variable_set
     return array(
-        "dbhost" => "localhost",
-        "dbport" => "27017",
-        "dbname" => "test",
+        "dbhost" => variable_get('mongo_host', 'localhost'),
+        "dbport" => variable_get('mongo_port', '27017'),
+        "dbname" => variable_get('mongo_dbname', 'test'),
         "uriprefix" => "/sites/all/modules/austese_repository/api",
         "recordtypes" => array('artefacts', 'versions', 'works', 'agents', 'events', 'places', 'mvds', 'collections'),
         "labelfields" => array('artefacts' => array('source'),
