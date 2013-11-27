@@ -64,6 +64,12 @@
 </xsl:template>
 
 <xsl:template match="//l">
+<xsl:if test="not(@type = 'half')">
+	<span style="color:grey; width: 2em;" class="l" annotator_ignore="true" unselectable="on">
+    	<xsl:value-of select="count(preceding::l[not(@type='half')])+1" />
+		<xsl:text>&#xA0;&#xA0;</xsl:text>    
+	</span>
+</xsl:if>
 <xsl:if test="@type='half'">
 <span class="half">&#160;</span>
 </xsl:if>
