@@ -19,7 +19,7 @@ function repositoryagentsearch_form_search_form_alter(&$form, &$form_state) {
     $form['advanced']['agentType'] = array(
       '#type' => 'checkboxes',
       '#title' => t('Only of type(s)'),
-      '#options' => array("Person","Organisation","Group")
+      '#options' => drupal_map_assoc(array("Person","Organisation","Group"))
     );
     $form['advanced']['submit'] = array(
       '#type' => 'submit',
@@ -28,11 +28,26 @@ function repositoryagentsearch_form_search_form_alter(&$form, &$form_state) {
     );
     //$form['advanced']['#validate'][] = 'search_form_validate';
     //$form['advanced']['#validate'][] = 'repositoryagentsearch_search_form_validate';
-    //$form['#validate'][] = 'repositoryagentsearch_search_form_validate';
+    $form['#validate'][] = 'repositoryagentsearch_search_form_validate';
   }
-}
+}/**
+ * Form validation handler for repositoryagentsearch_form_search_form_alter().
+ */
 function repositoryagentsearch_search_form_validate($form, &$form_state) {
-   var_dump($form);
+  // Initialize using any existing basic search keywords.
+  $keys = $form_state['values']['processed_keys'];
+  // Insert extra restrictions into the search keywords string.
+  if (isset($form_state['values']['agentType']) && is_array($form_state['values']['agentType'])) {
+    // Retrieve selected types - Form API sets the value of unselected
+    // checkboxes to 0.
+    $form_state['values']['agentType'] = array_filter($form_state['values']['agentType']);
+    if (count($form_state['values']['agentType'])) {
+      $keys = search_expression_insert($keys, 'agentType', implode(',', array_keys($form_state['values']['agentType'])));
+    }
+  }
+  if (!empty($keys)) {
+    form_set_value($form['basic']['processed_keys'], trim($keys), $form_state);
+  }
 }
 
 function repositoryagentsearch_search_execute($keys = NULL, $conditions = NULL){
