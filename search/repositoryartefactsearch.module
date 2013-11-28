@@ -11,28 +11,46 @@ function repositoryartefactsearch_search_execute($keys = NULL, $conditions = NUL
     if (ISSET($conditions['project'])){
         $project = $conditions['project'];
     }
-    $searchResults = _findRecords("artefacts",array("source"),100, 0, 1, $keys,null,$project);
-    $results = array();
-    foreach ($searchResults as $obj){
-      $numrev = count($obj['_revisions']) - 1;
 
-      $id = $obj['_id'];
-      $metadata = $obj['_revisions'][$numrev];
-      // generate uri
-      $uri = 'repository/artefacts/' . $id->{'$id'};
-      $snippet = "";
-      if (ISSET($metadata['description'])){
-          $snippet = text_summary($metadata['description']);
-      }
-      $results [] = array(
-        'link' => url($uri, array('absolute' => TRUE)),
-          'type' => 'Artefact',
-          'title' => $metadata['source'],
-          'user' => "",
-          'date' => "",
-          'extra' => array($metadata['date']),
-          'snippet' => $snippet
+    $client = new Elasticsearch\Client();
+    $searchParams['index'] = 'austese';
+    $searchParams['type']  = 'artefacts';
+    $searchParams['body']['query']['query_string']['query'] = $keys;
+    $searchParams['body']['filter']['and'][]['term']['metadata.project'] = $project;
+    $searchParams['body']['filter']['and'][]['missing']['field'] = "metadata._superseded";
+    $searchParams['body']['filter']['and'][]['missing']['field'] = "metadata._deleted";
+    $searchParams['body']['filter']['and'][]['missing']['field'] = "_deleted";
+    $searchParams['body']['highlight']['fields']['*'] = array("number_of_fragments" => 3);
+    // $searchParams['body']['highlight']['fields']['metadata.source'] = array();
+    // $searchParams['body']['highlight']['fields']['metadata.bibDetails'] = array();
+    $queryResponse = $client->search($searchParams);
+
+    $results = array();
+    foreach($queryResponse['hits']['hits'] as $searchResult) {
+        $obj = $searchResult['_source'];
+        $id = $obj['_id'];
+        $metadata = $obj['metadata'];      // generate uri
+        $uri = 'repository/artefacts/' . $id->{'$id'};
+        $snippet = "";
+        if (ISSET($metadata['description'])){
+            $snippet = text_summary($metadata['description']);
+        }
+        foreach($searchResult['highlight'] as $highlight_field => $highlight_matches) {
+          foreach($highlight_matches as $match) {
+            $snippet .= $match . "</br>";
+          }
+        }
+
+
+        $results [] = array(
+          'link' => url($uri, array('absolute' => TRUE)),
+            'type' => 'Artefact',
+            'title' => $metadata['source'],
+            'user' => "",
+            'date' => "",
+            'extra' => array($metadata['date']),
+            'snippet' => $snippet
         );
-     }
+    }
     return $results;
 }
