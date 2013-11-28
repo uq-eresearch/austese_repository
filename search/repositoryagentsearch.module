@@ -6,7 +6,38 @@ function repositoryagentsearch_search_info(){
     'conditions_callback' => 'repository_callback_search_conditions',
   );
 }
+function repositoryagentsearch_form_search_form_alter(&$form, &$form_state) {
+  if (isset($form['module']) && $form['module']['#value'] == 'repositoryagentsearch' && user_access('use advanced search')) {
+    $form['advanced'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Advanced search'),
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+      '#attributes' => array('class' => array('search-advanced')),
+    );
+
+    $form['advanced']['agentType'] = array(
+      '#type' => 'checkboxes',
+      '#title' => t('Only of type(s)'),
+      '#options' => array("Person","Organisation","Group")
+    );
+    $form['advanced']['submit'] = array(
+      '#type' => 'submit',
+      '#value' => t('Advanced search'),
+      '#weight' => 100,
+    );
+    //$form['advanced']['#validate'][] = 'search_form_validate';
+    //$form['advanced']['#validate'][] = 'repositoryagentsearch_search_form_validate';
+    //$form['#validate'][] = 'repositoryagentsearch_search_form_validate';
+  }
+}
+function repositoryagentsearch_search_form_validate($form, &$form_state) {
+   var_dump($form);
+}
+
 function repositoryagentsearch_search_execute($keys = NULL, $conditions = NULL){
+    //var_dump($keys);
+    //var_dump($conditions);
     $project = null;
     if (ISSET($conditions['project'])){
         $project = $conditions['project'];
