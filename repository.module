@@ -765,12 +765,12 @@ function repository_projectstatus($node) {
         $coll = $db->selectCollection($recordtype);
         $total = $coll->count(array(
                             'metadata.project' => $node->nid,
-                            '_superseded' => array('$exists' => false),
+                            'metadata._superseded' => array('$exists' => false),
                             '_deleted' => array('$exists' => false)));
         $locked = $coll->count(array(
                             'metadata.project' => $node->nid,
                             '_deleted' => array('$exists' => false),
-                            '_superseded' => array('$exists' => false),
+                            'metadata._superseded' => array('$exists' => false),
                             'metadata.locked' => 'on'));
         $counts[$recordtype]['total'] = $total;
         $counts[$recordtype]['locked'] = $locked;
@@ -782,7 +782,7 @@ function repository_projectstatus($node) {
     $numWithRights = $files->count(array(
                                     'metadata.rights' => array('$exists' => true),
                                     'metadata.rights' => array('$ne' => ''),
-                                    '_superseded' => array('$exists' => false),
+                                    'metadata._superseded' => array('$exists' => false),
                                     '_deleted' => array('$exists' => false)));
     $counts['filesrights'] = array();
     $counts['filesrights']['title'] = 'Digital resources rights';
@@ -795,7 +795,7 @@ function repository_projectstatus($node) {
     $coll->count(array(
                     'metadata.project' => $node->nid,
                     '_deleted' => array('$exists' => false),
-                    '_superseded' => array('$exists' => false),
+                    'metadata._superseded' => array('$exists' => false),
                     
                     
     ));

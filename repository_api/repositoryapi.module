@@ -288,7 +288,7 @@ function createResource() {
     // store generated id
     $grid->update(
             array('_id'=>new MongoId($id)),
-            array('$set' => array('_resourceid' => $resid)),
+            array('$set' => array('metadata._resourceid' => $resid)),
             array('safe' => true));
 
     drupal_add_http_header('Content-Type', 'application/json');
@@ -350,7 +350,7 @@ function listResources(){
       _check_permission_on_project('view metadata', $project);
   }
     
-  $not_superseded = array('_superseded'=>array('$exists'=>false));
+  $not_superseded = array('metadata._superseded'=>array('$exists'=>false));
   
   $findopts = array('$and'=>array($not_superseded,
       array('_deleted'=>array('$exists'=>false))));
@@ -374,9 +374,10 @@ function listResources(){
   foreach ($cursor as $obj){
     try {
       $returnobj = $obj->file;
-      $id = $returnobj['_resourceid'];
+      $id = $returnobj['metadata']['_resourceid'];
       unset($returnobj['_id']);
       unset($returnobj['_resourceid']);
+      unset($returnobj['metadata']['_resourceid']);
       unset($returnobj['_revisions']);
       // generate uri
       $returnobj['uri'] = $config['uriprefix']  . '/resources/' . $id;
@@ -736,8 +737,8 @@ function _loadResource($id, $skip_perm_check=false, $skip_deleted=false) {
 
   $query = array('$and'=>
     array(
-      array('_resourceid'=>$id),
-      array('_superseded'=>array('$exists'=>false))
+      array('metadata._resourceid'=>$id),
+      array('metadata._superseded'=>array('$exists'=>false))
     )
   );
   $file = $grid->findOne($query);
@@ -784,11 +785,11 @@ function _loadResource($id, $skip_perm_check=false, $skip_deleted=false) {
 function _processResource($file) {
   $config = repositoryapi_get_configuration();
   $returnobj = $file->file;
-  $id = $returnobj['_resourceid'];
+  $id = $returnobj['metadata']['_resourceid'];
   // unset revision
   unset($returnobj['_revisions']);
   unset($returnobj['_id']);
-  unset($returnobj['_resourceid']);
+  unset($returnobj['metadata']['_resourceid']);
   // generate uri
   $returnobj['uri'] = $config['uriprefix']  . '/resources/' . $id;
   $returnobj['id'] = $id;
@@ -887,8 +888,8 @@ function updateResource($id) {
   // only update the most recent version of this resource (i.e. superseded not true)
   $query = array('$and'=>
     array(
-      array('_resourceid'=>$id),
-      array('_superseded'=>array('$exists'=>false))
+      array('metadata._resourceid'=>$id),
+      array('metadata._superseded'=>array('$exists'=>false))
     )
   );
   $file = $grid->findOne($query);
@@ -956,9 +957,9 @@ function updateResource($id) {
       'metadata' => $metadata));
     // set superseded to be true on the existing resource
     $grid->update(array('_id'=>new MongoId($existid)),
-      array('$set' => array('_superseded' => true)), array('safe' => true));
+      array('$set' => array('metadata._superseded' => true)), array('safe' => true));
     // set filename and resource id on new resource
-    $grid->update(array('_id'=>new MongoId($storedfile->{'$id'})), array('$set' => array('filename' => $existobj['filename'], '_resourceid'=>$id)), array('safe' => true));
+    $grid->update(array('_id'=>new MongoId($storedfile->{'$id'})), array('$set' => array('filename' => $existobj['filename'], 'metadata._resourceid'=>$id)), array('safe' => true));
 
     }
     drupal_add_http_header('Status', '204 No Content');
@@ -1034,8 +1035,8 @@ function deleteResource($id){
   $grid = $db->getGridFS();
   $query = array('$and'=>
     array(
-      array('_resourceid'=>$id),
-      array('_superseded'=>array('$exists'=>false))
+      array('metadata._resourceid'=>$id),
+      array('metadata._superseded'=>array('$exists'=>false))
     )
   );
   $file = $grid->findOne($query);
@@ -1052,7 +1053,7 @@ function deleteResource($id){
   
   
   
-  $grid->update($query, array('$set' => array('_deleted' => true)), array('safe' => true));
+  $grid->update($query, array('$set' => array('metadata._deleted' => true)), array('safe' => true));
   drupal_add_http_header('Status', '204 No Content');
 }
 
