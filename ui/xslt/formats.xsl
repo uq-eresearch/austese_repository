@@ -65,7 +65,7 @@
 
 <xsl:template match="//l">
 <xsl:if test="not(@type = 'half')">
-	<span style="color:grey; width: 2em;" class="l" annotator_ignore="true" unselectable="on">
+	<span style="color:grey;" class="l" annotator_ignore="true" unselectable="on">
     	<xsl:value-of select="count(preceding::l[not(@type='half')])+1" />
 		<xsl:text>&#xA0;&#xA0;</xsl:text>    
 	</span>
@@ -175,7 +175,52 @@
 </xsl:template>
 
 <xsl:template match="//div[@type='Hnote']">
-<div class="Hnote"><xsl:apply-templates/></div>
+<div class="Hnote">
+<xsl:apply-templates/>
+</div>
+</xsl:template>
+
+<xsl:template match="//div[@type='Hnote']//lb">
+<br />
+<span style="color:grey; font-style:italic;" class="l" annotator_ignore="true" unselectable="on">
+	<xsl:variable name="HnoteId" select="generate-id(ancestor::div[@type='Hnote'])" />
+	<xsl:value-of select="count(preceding::lb[generate-id(ancestor::div[@type='Hnote']) = $HnoteId]) 
+						+ count(ancestor::lb[generate-id(ancestor::div[@type='Hnote']) = $HnoteId])
+						+ count(preceding::p[generate-id(ancestor::div[@type='Hnote']) = $HnoteId]) 
+						+ count(ancestor::p[generate-id(ancestor::div[@type='Hnote']) = $HnoteId]) + 1" />
+</span>
+</xsl:template>
+
+<xsl:template match="//div[@type='Hnote']//p">
+    <p>
+	    <xsl:attribute name="id">
+		    <xsl:choose>
+		        <xsl:when test="@id">
+		            <xsl:value-of select="@id"/>
+		        </xsl:when>
+		        <xsl:otherwise>
+		            <xsl:value-of select="generate-id()"/>
+		        </xsl:otherwise>
+		    </xsl:choose>
+	    </xsl:attribute>
+	    <xsl:if test="contains(@rend,'text-indent')">
+	       <xsl:attribute name="style">
+	           <xsl:value-of select="@rend"/>
+	       </xsl:attribute>
+	    </xsl:if>
+		<span style="color:grey; font-style:italic;" class="l" annotator_ignore="true" unselectable="on">
+			<xsl:variable name="HnoteId" select="generate-id(ancestor::div[@type='Hnote'])" />
+			<xsl:value-of select="count(preceding::lb[generate-id(ancestor::div[@type='Hnote']) = $HnoteId]) 
+						+ count(ancestor::lb[generate-id(ancestor::div[@type='Hnote']) = $HnoteId])
+						+ count(preceding::p[generate-id(ancestor::div[@type='Hnote']) = $HnoteId]) 
+						+ count(ancestor::p[generate-id(ancestor::div[@type='Hnote']) = $HnoteId]) + 1" />
+			<xsl:text>&#xA0;</xsl:text>
+		</span>
+	    <xsl:if test="../@type = 'prose'">
+			<xsl:text>&#xA0;&#xA0;&#xA0;</xsl:text>
+		</xsl:if>
+        <xsl:apply-templates/>
+    </p>
 </xsl:template>
 
 <xsl:template match="//div[@type='Hversion']">
