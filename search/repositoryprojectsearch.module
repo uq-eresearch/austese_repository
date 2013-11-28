@@ -1,0 +1,24 @@
+<?php
+function repositoryprojectsearch_search_info(){
+    return array(
+    'title' => 'Projects',
+    'path' => 'projects',
+    'conditions_callback' => 'repository_callback_search_conditions',
+  );
+}
+function repositoryprojectsearch_search_execute($keys = NULL, $conditions = NULL) {
+    $project = null;
+    if (ISSET($conditions['project'])){
+        $project = $conditions['project'];
+    }
+      $results [] = array(
+        'link' => url('/', array('absolute' => TRUE)),
+          'type' => 'Project',
+          'title' => 'Fake Title',
+          'user' => "",
+          'date' => "",
+          'extra' => null,
+          'snippet' => "A bit of a snippet eh"
+        );
+    return $results;
+}
