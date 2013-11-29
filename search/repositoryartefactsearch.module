@@ -21,8 +21,6 @@ function repositoryartefactsearch_search_execute($keys = NULL, $conditions = NUL
     $searchParams['body']['filter']['and'][]['missing']['field'] = "metadata._deleted";
     $searchParams['body']['filter']['and'][]['missing']['field'] = "_deleted";
     $searchParams['body']['highlight']['fields']['*'] = array("number_of_fragments" => 3);
-    // $searchParams['body']['highlight']['fields']['metadata.source'] = array();
-    // $searchParams['body']['highlight']['fields']['metadata.bibDetails'] = array();
     $queryResponse = $client->search($searchParams);
 
     $results = array();
