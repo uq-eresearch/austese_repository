@@ -55,15 +55,15 @@ License: GPL 3.0
 * Convert MongoDB to running as a single master of a replica set, [Convert a Standalone to a Replica Set][1]
   * Edit `/etc/mongodb.conf` adding line:
 
-        replSet = rs0
+            replSet = rs0
 
   * Restart `mongod`
 
-        sudo restart mongodb
+            sudo restart mongodb
 
   * Connect to the instance using the mongo shell and run:
 
-        rs.initiate()
+            rs.initiate()
 
 
 * Update MongoDB GridFS document structure, so that it can be accessed by the Java driver. Using the mongo shell:
@@ -80,6 +80,10 @@ License: GPL 3.0
 ### Drupal Setup
 
 * Update to `elasticsearch` branch of `austese_repository`
+        
+        git pull
+        git checkout elasticsearch
+
 * Install and enable drupal `composer_manager` module
 
         drush dl composer_manager
