@@ -1,9 +1,10 @@
-curl -X DELETE localhost:9200/_river/artefacts
+#!/bin/sh
+
 curl -X DELETE localhost:9200/austese
-#curl -X DELETE localhost:9200/austese/artefacts
 
-
-curl -XPUT "localhost:9200/_river/artefacts/_meta" -d'
+for collection in artefacts agents versions events works
+do
+read -d '' json_doc <<EOF
 {
   "type": "mongodb",
   "mongodb": {
@@ -15,12 +16,22 @@ curl -XPUT "localhost:9200/_river/artefacts/_meta" -d'
       "include_fields": ["metadata"]
     },
     "db": "test",
-    "collection": "artefacts",
+    "collection": "$collection",
 
     "script": "if (ctx.document._deleted) {ctx.deleted = true; }"
   },
   "index": {
     "name": "austese",
-    "type": "artefacts"
+    "type": "$collection"
   }
-}'
+}
+EOF
+
+echo Deleting $collection river: 
+curl -X DELETE localhost:9200/_river/$collection
+echo Deleting $collection index type
+curl -X DELETE localhost:9200/austese/$collection
+echo Creating $collection River
+curl -XPUT "localhost:9200/_river/$collection/_meta" -d"$json_doc"
+echo
+done
