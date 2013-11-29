@@ -23,7 +23,7 @@ License: GPL 3.0
 * Install MongoDB from 10gen to get latest version, [instructions here][0]
   * Uninstall Ubuntu Mongodb
 
-            sudo apt-get remove mongodb
+            sudo apt-get remove mongodb mongodb-clients mongodb-dev mongodb-server
 
   * Install 10gen mongodb
 
@@ -56,7 +56,7 @@ License: GPL 3.0
 
 * Restart elasticsearch
 
-        sudo /etc/init.d/elasticsearch restart
+        sudo service elasticsearch restart
 
 * Convert MongoDB to running as a single master of a replica set, [Convert a Standalone to a Replica Set][1]
   * Edit `/etc/mongodb.conf` adding line:
@@ -65,7 +65,7 @@ License: GPL 3.0
 
   * Restart `mongod`
 
-            sudo restart mongodb
+            sudo service restart mongodb
 
   * Connect to the instance using the mongo shell and run:
 
