@@ -8,3 +8,4 @@ project = "austese"
 dependencies[] = restws
 dependencies[] = repository
 dependencies[] = og
+dependencies[] = composer_manager
