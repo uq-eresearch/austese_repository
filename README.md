@@ -14,6 +14,85 @@ How to use this module
 License: GPL 3.0
 
 
+## Setting up ElasticSearch Indexing
+
+| MongoDB River Plugin     | ElasticSearch    | MongoDB |
+|--------------------------|------------------|---------|
+| 1.7.2                    | 0.90.5           | 2.4.8   |
+
+* Install MongoDB from 10gen to get latest version, [instructions here][0]
+  * Uninstall Ubuntu Mongodb
+
+    sudo apt-get remove mongodb
+
+  * Install 10gen mongodb
+
+    sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
+    echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | sudo tee /etc/apt/sources.list.d/mongod
+    sudo apt-get update
+    sudo apt-get install mongodb-10gen
+
+* Install elasticsearch:
+
+    sudo apt-get install elasticsearch
+
+* Install elastic search mapper attachments
+
+    sudo /usr/share/elasticsearch/bin/plugin -install elasticsearch/elasticsearch-mapper-attachments/1.9.0
+
+* Install the mongodb river
+
+    sudo /usr/share/elasticsearch/bin/plugin -install com.github.richardwilly98.elasticsearch/elasticsearch-river-mongodb/1.7.2 
+
+* Install javascript scripting support for ElasticSearch
+
+    sudo /usr/share/elasticsearch/bin/plugin -install elasticsearch/elasticsearch-lang-javascript
+
+* Restart elasticsearch
+
+    sudo /etc/init.d/elasticsearch restart
+
+* Convert MongoDB to running as a single master of a replica set, [Convert a Standalone to a Replica Set][1]
+  * Edit `/etc/mongodb.conf` adding line:
+
+    replSet = rs0
+
+  * Restart `mongod`
+
+    sudo restart mongodb
+
+  * Connect to the instance using the mongo shell and run:
+
+    rs.initiate()
+
+
+* Update MongoDB GridFS document structure, so that it can be accessed by the Java driver. Using the mongo shell:
+
+    db.fs.files.update({}, {$rename: {'_resourceid': 'metadata._resourceid', '_superseded': 'metadata._superseded'}}, false, true) 
+
+
+* Enable the elasticsearch mongo river to start indexing:
+
+    cd austese_repository
+    ./scripts/index-others.sh
+
+
+### Drupal Setup
+
+* Update to `elasticsearch` branch of `austese_repository`
+* Install and enable drupal `composer_manager` module
+
+    drush dl composer_manager
+    drush en composer_manager
+    cd sites/all/modules/composer_manager
+    curl -sS https://getcomposer.org/installer | php 
+    php composer.phar install
+
+    drush composer-manager update
+
+[0]: http://docs.mongodb.org/manual/tutorial/install-mongodb-on-ubuntu/
+[1]: http://docs.mongodb.org/manual/tutorial/convert-standalone-to-replica-set/
+
 ## About
 
 This module was developed as part of the [AustESE project](http://itee.uq.edu.au/~eresearch/projects/austese).
