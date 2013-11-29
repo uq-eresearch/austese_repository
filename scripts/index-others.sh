@@ -1,5 +1,11 @@
 #!/bin/sh
 
+# A simple script that sends a bunch of POST requests to a locally running
+# ElasticSearch server with included mongodb-river, telling it about
+# locally available AustESE records to start indexing.
+#
+# WARNING: Starts by deleting your existing ElasticSearch Austese Index
+
 curl -X DELETE localhost:9200/austese
 
 for collection in artefacts agents versions events works
