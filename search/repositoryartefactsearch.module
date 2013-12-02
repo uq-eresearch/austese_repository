@@ -22,7 +22,7 @@ function repositoryartefactsearch_form_search_form_alter(&$form, &$form_state) {
       $form['advanced'][$f] = array(
       '#type' => 'textfield',
       '#title' => t($fieldLabels[$i])
-    );
+      );
     }
     $form['advanced']['submit'] = array(
       '#type' => 'submit',
@@ -55,11 +55,10 @@ function repositoryartefactsearch_search_execute($keys = NULL, $conditions = NUL
     $formFields = array('source','date','description','bibliographicDetails','pageNumbers','series','format','paperType','artefactSize');
     $searchFields = array();
     foreach ($formFields as $f){
-      $searchFields[$f] = search_expression_extract($keys, $f);
+      $searchFields[$f] = search_expression_extract($tempKeys, $f);
       $tempKeys = search_expression_insert($tempKeys,$f);
     }
     $searchTerm = $tempKeys;
-    print($searchTerm);
     $project = null;
     if (ISSET($conditions['project'])){
         $project = $conditions['project'];
