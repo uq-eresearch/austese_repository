@@ -6,9 +6,12 @@ function repositoryapi_get_configuration() {
         "dbhost" => "localhost",
         "dbport" => "27017",
         "dbname" => "test",
+        "escollection" => "austese",
+        "esindexes" => array("artefacts", "agents", "versions", "events", "works"),
         "uriprefix" => "/sites/all/modules/austese_repository/api",
         "recordtypes" => array('artefacts', 'versions', 'works', 'agents', 'events', 'places', 'mvds', 'collections'),
-        "labelfields" => array('artefacts' => array('source'),
+        "labelfields" => array(
+            'artefacts' => array('source'),
             'versions' => array('versionTitle','name'),
             'works' => array('workTitle', 'name'),
             'agents' => array('lastName', 'firstName'),
@@ -91,6 +94,15 @@ function projects_list_callback() {
     
 }
 
+/**
+ * Handler for /sites/all/modules/austese_repository/api/*
+ * 
+ * Calls the appropriate CRUDS function
+ * 
+ * @param string $resourcetype type of record or resource (required)
+ * @param string $id ID for a specific record or resource
+ * @param string $revision ID for a specific revision
+ */
 function resource_page_callback($resourcetype, $id=null, $revision=null) {
     $config = repositoryapi_get_configuration();
 //    // CSRF protection on write operations.
@@ -168,9 +180,9 @@ function handle_resource($id, $revision) {
 /**
  * Create a metadata record in the mongo db
  * 
- * @param string $collection The type of record to create
+ * @param string $recordtype The type of record to create
  */
-function createRecord($collection){
+function createRecord($recordtype){
   $config = repositoryapi_get_configuration();
   $input = @file_get_contents('php://input');
 
@@ -209,7 +221,7 @@ function createRecord($collection){
     $newobj = array('_revisions' => array($obj), 'metadata'=>$obj);
     $m = new Mongo($config['dbhost'].':'.$config['dbport']);
     $db = $m->selectDB($config['dbname']);
-    $coll = $db->selectCollection($collection);
+    $coll = $db->selectCollection($recordtype);
     $inserted = $coll->insert($newobj, array('safe' => true));
     // check whether there were any errors during insert
     if ($inserted['ok'] != 1 || $inserted['err'] != NULL) {
@@ -224,7 +236,7 @@ function createRecord($collection){
     // insert passes newobj by reference, so new _id will have been added
     // use _id to generate uri
     $id = $newobj['_id'];
-    $obj['uri'] = $config['uriprefix'] . '/' . $collection . '/' . $id->{'$id'};
+    $obj['uri'] = $config['uriprefix'] . '/' . $recordtype . '/' . $id->{'$id'};
     $obj['id'] = $id->{'$id'};
     drupal_add_http_header('Content-Type', 'application/json');
     echo json_encode($obj);
@@ -288,7 +300,7 @@ function createResource() {
     // store generated id
     $grid->update(
             array('_id'=>new MongoId($id)),
-            array('$set' => array('_resourceid' => $resid)),
+            array('$set' => array('metadata._resourceid' => $resid)),
             array('safe' => true));
 
     drupal_add_http_header('Content-Type', 'application/json');
@@ -350,7 +362,7 @@ function listResources(){
       _check_permission_on_project('view metadata', $project);
   }
     
-  $not_superseded = array('_superseded'=>array('$exists'=>false));
+  $not_superseded = array('metadata._superseded'=>array('$exists'=>false));
   
   $findopts = array('$and'=>array($not_superseded,
       array('_deleted'=>array('$exists'=>false))));
@@ -374,9 +386,10 @@ function listResources(){
   foreach ($cursor as $obj){
     try {
       $returnobj = $obj->file;
-      $id = $returnobj['_resourceid'];
+      $id = $returnobj['metadata']['_resourceid'];
       unset($returnobj['_id']);
       unset($returnobj['_resourceid']);
+      unset($returnobj['metadata']['_resourceid']);
       unset($returnobj['_revisions']);
       // generate uri
       $returnobj['uri'] = $config['uriprefix']  . '/resources/' . $id;
@@ -426,16 +439,16 @@ function austese_access($permission, $project=False) {
  * Read a record (work/artefact/version/agent/etc) from the mongo db
  * In JSON form.
  *
- * @param string $collection Type of record eg. work
+ * @param string $recordtype Type of record eg. work
  * @param string $id Record identifier
  * @param string $revision Optional. Retrieve a specific revision
  */
-function getRecord($collection,$id,$revision) {
+function getRecord($recordtype,$id,$revision) {
     global $mongo_requests, $mongo_time;
     $recurse = isset($_GET['recurse']);
     $debug_mongo = isset($_GET['mongo_debug']);
     
-    $returnobj = _loadRecord($collection, $id, $revision, true, false, $recurse);
+    $returnobj = _loadRecord($recordtype, $id, $revision, true, false, $recurse);
 
     drupal_add_http_header('Content-Type', 'application/json');
     drupal_add_http_header('Num-Mongo-Requests', count($mongo_requests));
@@ -456,23 +469,119 @@ function getRecord($collection,$id,$revision) {
  * 
  * Responds with JSON. Supports pagination, searching and listing all.
  *
- * @param string $collection Type of records, eg work/agent
+ * @param string $recordtype Type of records, eg work/agent
  * @param string $labelField Which field of the record to search on
  */
-function listRecords($collection, $labelFields) {
-    
+function listRecords($recordtype, $labelFields) {
     $config = repositoryapi_get_configuration();
-    
     $pagesize = get_get_parameter('pageSize');
     // provide a default for page Index. Default for pagesize is null (all results will be returned)
     $pagenum = get_get_paramter_int('pageIndex');
     $recurse = isset($_GET['recurse']);
+    $filterTerm = get_get_parameter('query');
+
+
+    $project = get_get_parameter('project');
+    _check_project_exists($project);
+    _check_permission_on_project('view metadata', $project);
+
+    
+    if (in_array($recordtype, $config['esindexes']) && !$recurse) {
+      $results = filterElasticSearchRecords($recordtype, $labelFields, $pagesize, $pagenum, $filterTerm, $project);
+    } else {
+      $results = searchMongoRecords($recordtype, $labelFields, $pagesize, $pagenum, $recurse);
+    }
+    drupal_add_http_header('Content-Type', 'application/json');
+    echo json_encode($results);
+}
+
+/**
+ * Performs a query for records against the elasticsearch index
+ *
+ * Requires $recordtype to be indexed in elasticsearch
+ * @param  [type]  $recordtype [description]
+ * @param  integer $pagesize   [description]
+ * @param  integer $pagenum    [description]
+ * @return [type]              [description]
+ */
+function filterElasticSearchRecords($recordtype, $labelFields, $pagesize=10, $pagenum=0, $filterTerm="", $project) {
+    $config = repositoryapi_get_configuration();
+    foreach ($labelFields as &$value) {
+      $value = 'metadata.'.$value;
+    }
+    
+    // allow param to filter results
+    $sort = get_get_parameter('sort');
+    if ($sort == "label"){
+        $sort = $labelFields[0];
+    }
+    $sortDirection = "asc";
+    if (!$sort) {
+        $sort = "_id";
+    }
+    if ($sort == "_id"){
+        $sortDirection = "desc";
+    }
+    // get search fields from param
+    $searchField = get_get_parameter('searchField');
+    if ($searchField) {
+        $searchFields = array('metadata.'.$searchField);
+    }
+    // otherwise use label field(s)
+    if (!$searchFields) {
+        $searchFields = $labelFields;
+    }
+
+    $client = new Elasticsearch\Client();
+    $searchParams['index'] = $config['escollection'];
+    $searchParams['type']  = $recordtype;
+    $searchParams['size'] = $pagesize;
+    $searchParams['from']  = $pagenum;
+    $searchParams['body']['sort'][] = array($sort => array("order" => $sortDirection));
+    if ($filterTerm) {
+      $searchParams['body']['query']['multi_match']['query'] = $filterTerm;
+      $searchParams['body']['query']['multi_match']['fields'] = $searchFields;
+    }
+    $searchParams['body']['filter']['and'][]['term']['metadata.project'] = $project;
+    $searchParams['body']['filter']['and'][]['missing']['field'] = "metadata._superseded";
+    $searchParams['body']['filter']['and'][]['missing']['field'] = "metadata._deleted";
+    $searchParams['body']['filter']['and'][]['missing']['field'] = "_deleted";
+    // $searchParams['body']['highlight']['fields']['*'] = array("number_of_fragments" => 3);
+    $queryResponse = $client->search($searchParams);
+
+    $results = array();
+    $results['collection'] = $recordtype;
+    $results['count'] = $queryResponse['hits']['total'];
+    $results['pageSize'] = $pagesize;
+    $results['pageIndex'] = $pagenum;
+
+    foreach($queryResponse['hits']['hits'] as $searchResult) {
+      $id = $searchResult['_id'];
+      $returnobj = $searchResult['_source']['metadata'];
+      $returnobj['uri'] = $config['uriprefix'] . '/'. $recordtype . '/' . $id;
+      $returnobj['id'] = $id;
+
+      $results['results'][] = $returnobj;
+    }
+    return $results;
+}
+
+/**
+ * List records in a mongo collection
+ * 
+ * Responds with JSON. Supports pagination, searching and listing all.
+ *
+ * @param string $recordtype Type of records, eg work/agent
+ * @param string $labelField Which field of the record to search on
+ */
+function searchMongoRecords($recordtype, $labelFields, $pagesize, $pagenum, $filterTerm, $recurse) {
+    $config = repositoryapi_get_configuration();
 
     // return metadata for results
-    $cursor = _findRecords($collection, $labelFields,$pagesize,$pagenum);
+    $cursor = _findRecords($recordtype, $labelFields, $pagesize, $pagenum, null, $filterTerm);
     
     $results = array();
-    $results['collection'] = $collection;
+    $results['collection'] = $recordtype;
     $results['count'] = $cursor->count(0);
     $results['pageSize'] = $pagesize;
     $results['pageIndex'] = $pagenum;
@@ -480,33 +589,45 @@ function listRecords($collection, $labelFields) {
 
     foreach ($cursor as $obj){
 
-      $numrev = count($obj['_revisions']) - 1;
-
       $id = $obj['_id'];
-      $returnobj = $obj['_revisions'][$numrev];
-      // generate uri
-      $returnobj['uri'] = $config['uriprefix'] . '/'. $collection . '/' . $id->{'$id'};
-      $returnobj['id'] = $id->{'$id'};
 
       if ($recurse) {
-        $results['results'][] = _loadRecord($collection, $id->{'$id'}, NULL, false, true, true);
+        $results['results'][] = _loadRecord($recordtype, $id->{'$id'}, NULL, false, true, true);
       } else {
+        $numrev = count($obj['_revisions']) - 1;
+        $returnobj = $obj['_revisions'][$numrev];
+        // generate uri
+        $returnobj['uri'] = $config['uriprefix'] . '/'. $recordtype . '/' . $id->{'$id'};
+        $returnobj['id'] = $id->{'$id'};
+
         $results['results'][] = $returnobj;
       }
 
     }
-    echo json_encode($results);
-    drupal_add_http_header('Content-Type', 'application/json');
+    return $results;
 }
+
 $mongo_requests = array();
 $mongo_time = 0;
 
-function _findRecords($collection,$labelFields, $pagesize=null, $pagenum=null,  $sort=null, $filterTerm=null, $searchFields=null,  $project=null) {
+/**
+ * Query MongoDB for records
+ * @param  string $recordtype   [description]
+ * @param  [type] $labelFields  [description]
+ * @param  [type] $pagesize     [description]
+ * @param  [type] $pagenum      [description]
+ * @param  [type] $sort         [description]
+ * @param  [type] $filterTerm   [description]
+ * @param  [type] $searchFields [description]
+ * @param  [type] $project      [description]
+ * @return [type]               [description]
+ */
+function _findRecords($recordtype, $labelFields, $pagesize=null, $pagenum=null,  $sort=null, $filterTerm=null, $searchFields=null,  $project=null) {
     $config = repositoryapi_get_configuration();
     
     $m = new Mongo($config['dbhost'].':'.$config['dbport']);
     $db = $m->selectDB($config['dbname']);
-    $coll = $db->selectCollection($collection);
+    $coll = $db->selectCollection($recordtype);
     
     // allow param to filter results
     if ($sort == null){
@@ -521,9 +642,6 @@ function _findRecords($collection,$labelFields, $pagesize=null, $pagenum=null,  
     }
     if ($sort == "_id"){
         $sortDirection = -1;
-    }
-    if ($filterTerm == null) {
-        $filterTerm = get_get_parameter('query');
     }
     // get search fields from param
     if ($searchFields == null){
@@ -573,22 +691,22 @@ function _findRecords($collection,$labelFields, $pagesize=null, $pagenum=null,  
 /**
  * Load a mongo record from the collection
  * 
- * @param  string  $collection   The record type
+ * @param  string  $recordtype   The record type
  * @param  string  $id           The record id
  * @param  string  $revision     (may be null) Load a specific revision
- * @param  boolean $checkperms   ()
+ * @param  boolean $checkperms   check the viewing user has permission to see record
  * @param  boolean $skip_deleted When recursing, ignore deleted instead of HTTP status error
  * @param  boolean $recurse      Recursively load records
  * @return object                Record object
  */
-function _loadRecord($collection, $id, $revision, $checkperms, $skip_deleted=false, $recurse=false) {
+function _loadRecord($recordtype, $id, $revision, $checkperms, $skip_deleted=false, $recurse=false) {
     global $mongo_requests, $mongo_time;
     $config = repositoryapi_get_configuration();
     
     $start = microtime(true);
     $m = new Mongo($config['dbhost'].':'.$config['dbport']);
     $db = $m->selectDB($config['dbname']);
-    $coll = $db->selectCollection($collection);
+    $coll = $db->selectCollection($recordtype);
     $query = array('_id'=>new MongoId($id));
 
     $dbobj = $coll->findOne($query);
@@ -610,7 +728,7 @@ function _loadRecord($collection, $id, $revision, $checkperms, $skip_deleted=fal
     $returnobj = $dbobj['_revisions'][$revision];
 
     // generate uri
-    $returnobj['uri'] = $config['uriprefix'] . '/'. $collection . '/' . $id->{'$id'};
+    $returnobj['uri'] = $config['uriprefix'] . '/'. $recordtype . '/' . $id->{'$id'};
     $returnobj['id'] = $id->{'$id'};
 
     // check project and permissions
@@ -736,8 +854,8 @@ function _loadResource($id, $skip_perm_check=false, $skip_deleted=false) {
 
   $query = array('$and'=>
     array(
-      array('_resourceid'=>$id),
-      array('_superseded'=>array('$exists'=>false))
+      array('metadata._resourceid'=>$id),
+      array('metadata._superseded'=>array('$exists'=>false))
     )
   );
   $file = $grid->findOne($query);
@@ -784,11 +902,11 @@ function _loadResource($id, $skip_perm_check=false, $skip_deleted=false) {
 function _processResource($file) {
   $config = repositoryapi_get_configuration();
   $returnobj = $file->file;
-  $id = $returnobj['_resourceid'];
+  $id = $returnobj['metadata']['_resourceid'];
   // unset revision
   unset($returnobj['_revisions']);
   unset($returnobj['_id']);
-  unset($returnobj['_resourceid']);
+  unset($returnobj['metadata']['_resourceid']);
   // generate uri
   $returnobj['uri'] = $config['uriprefix']  . '/resources/' . $id;
   $returnobj['id'] = $id;
@@ -799,12 +917,12 @@ function _processResource($file) {
  * Requires permission on both the 'from' and 'to' projects, if project is changing
  * 
  * @global type $config
- * @param type $collection
+ * @param type $recordtype
  * @param MongoId $id
  * @return type
  */
 // TODO support patch for incremental update?
-function updateRecord($collection,$id){
+function updateRecord($recordtype,$id){
   $config = repositoryapi_get_configuration();
   $input = @file_get_contents('php://input');
 
@@ -833,7 +951,7 @@ function updateRecord($collection,$id){
     // TOD0 check for provenance fields, add date if required
     $m = new Mongo($config['dbhost'].':'.$config['dbport']);
     $db = $m->selectDB($config['dbname']);
-    $coll = $db->selectCollection($collection);
+    $coll = $db->selectCollection($recordtype);
     // lookup existing object to find revision number
     $id = new MongoId($id);
     $query = array('_id'=>$id);
@@ -887,8 +1005,8 @@ function updateResource($id) {
   // only update the most recent version of this resource (i.e. superseded not true)
   $query = array('$and'=>
     array(
-      array('_resourceid'=>$id),
-      array('_superseded'=>array('$exists'=>false))
+      array('metadata._resourceid'=>$id),
+      array('metadata._superseded'=>array('$exists'=>false))
     )
   );
   $file = $grid->findOne($query);
@@ -956,9 +1074,9 @@ function updateResource($id) {
       'metadata' => $metadata));
     // set superseded to be true on the existing resource
     $grid->update(array('_id'=>new MongoId($existid)),
-      array('$set' => array('_superseded' => true)), array('safe' => true));
+      array('$set' => array('metadata._superseded' => true)), array('safe' => true));
     // set filename and resource id on new resource
-    $grid->update(array('_id'=>new MongoId($storedfile->{'$id'})), array('$set' => array('filename' => $existobj['filename'], '_resourceid'=>$id)), array('safe' => true));
+    $grid->update(array('_id'=>new MongoId($storedfile->{'$id'})), array('$set' => array('filename' => $existobj['filename'], 'metadata._resourceid'=>$id)), array('safe' => true));
 
     }
     drupal_add_http_header('Status', '204 No Content');
@@ -973,17 +1091,17 @@ function updateResource($id) {
  * 
  * Functions by adding a _deleted flag to the object (doesn't actually delete)
  * 
- * @param string $collection which type of object
+ * @param string $recordtype which type of object
  * @param string $id object identifier
  */
-function deleteRecord($collection,$id){
+function deleteRecord($recordtype,$id){
   // TODO: provide admin functions to completely remove deleted objects
   $config = repositoryapi_get_configuration();
   
   try {
     $m = new Mongo($config['dbhost'].':'.$config['dbport']);
     $db = $m->selectDB($config['dbname']);
-    $coll = $db->selectCollection($collection);
+    $coll = $db->selectCollection($recordtype);
     // lookup existing object to find revision number 
    $id = new MongoId($id);
     $query = array('_id'=>$id);
@@ -1034,8 +1152,8 @@ function deleteResource($id){
   $grid = $db->getGridFS();
   $query = array('$and'=>
     array(
-      array('_resourceid'=>$id),
-      array('_superseded'=>array('$exists'=>false))
+      array('metadata._resourceid'=>$id),
+      array('metadata._superseded'=>array('$exists'=>false))
     )
   );
   $file = $grid->findOne($query);
@@ -1052,7 +1170,7 @@ function deleteResource($id){
   
   
   
-  $grid->update($query, array('$set' => array('_deleted' => true)), array('safe' => true));
+  $grid->update($query, array('$set' => array('metadata._deleted' => true)), array('safe' => true));
   drupal_add_http_header('Status', '204 No Content');
 }
 
@@ -1061,11 +1179,11 @@ function deleteResource($id){
  */
 function getFeatureCodes() {
   $config = repositoryapi_get_configuration();
- $collection = 'featureCodes';
+ $recordtype = 'featureCodes';
  $labelField = 'description';
  $m = new Mongo($config['dbhost'].':'.$config['dbport']);
  $db = $m->selectDB($config['dbname']);
- $coll = $db->selectCollection($collection);
+ $coll = $db->selectCollection($recordtype);
  
  
   $pagesize = get_get_parameter('pageSize');
