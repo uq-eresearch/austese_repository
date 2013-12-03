@@ -7,7 +7,7 @@ Handlebars.registerHelper('gt', function(value, compare, options) {
     }
 });
 Handlebars.registerHelper('neq', function(value, compare, options) {
-    if (value != compare) {
+    if (value && value != compare) {
       return options.fn(this);
     } else {
       return options.inverse(this);
@@ -115,7 +115,7 @@ templates.mvdSummary =
             {{#each resources}}<li class="resource" data-resourceid="{{#if id}}{{id}}{{else}}{{.}}{{/if}}" data-template="summary"></li>{{/each}}\
           </ul>\
         {{/gt}}\
-        {{#if filter}}<p>({{filter}} Filter)</p>{{/if}}\
+        {{#if filter}}{{#neq filter undefined}}<p>({{filter}} Filter)</p>{{/neq}}{{/if}}\
         <p>\
         {{#if hasEditPermission}}\
         <a href="/{{modulePrefix}}/mvds/edit/{{id}}{{projParam}}" style="font-size:smaller">DELETE</a>&nbsp;&nbsp;\
