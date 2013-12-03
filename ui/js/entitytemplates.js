@@ -585,7 +585,7 @@ templates.resourceDetail =
     </table>\
     {{#match metadata.filetype "image"}}\
         <h3>Image Preview</h3>\
-        <div data-id="http://{{serverName}}/repository/resources/{{id}}/content"><a href="http://{{serverName}}/repository/resources/{{id}}/content{{projParam}}">\
+        <div data-id="http://{{serverName}}/repository/resources/{{id}}/content"><a title="Click on image to open in Resource View" href="http://{{serverName}}/repository/resources/{{id}}/content{{projParam}}">\
         <img class="thumbnail" src="{{uri}}?scale=true&height=480" alt="Image preview"/></a></div>\
     {{/match}}\
     {{#if locked}}<i class="fa fa-lock"></i> {{/if}}\

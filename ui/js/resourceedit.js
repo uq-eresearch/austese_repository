@@ -332,6 +332,12 @@ var editor = {
   * @return undefined
   */
  previewResource: function(){
+	 var multi = jQuery('#metadata').data('multi');
+	 var targetEl = "#single-editor-ui";
+	 if (multi) {
+	   targetEl = jQuery("#multieditor").parent();
+	 }
+	 
      if (editor.displayingXML()){
          var text = editor.cm.getValue();
          var result = "Preview unavailable: Your browser does not support XSLT";
@@ -351,13 +357,15 @@ var editor = {
                  result = error.message;
              }
          }
-         jQuery('#editorspan').removeClass('span12').addClass('span6');
          jQuery(".edit-preview").show().html(result);
      } else {
-         // no preview, expand editor to fill page width
-         jQuery('#editorspan').removeClass('span6').addClass('span12');
+         // no preview, remove preview and expand editor to fill page width
          jQuery(".edit-preview").hide();
+         jQuery('#preview').appendTo('body').removeClass().hide();
+         jQuery("#togglePreview").hide();
      }
+     
+     distribute(targetEl);
  },
  /**
   * Reloads the page with the 'diff' view enabled or disabled
