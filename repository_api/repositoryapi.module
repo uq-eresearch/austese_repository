@@ -489,7 +489,7 @@ function listRecords($recordtype, $labelFields) {
     if (in_array($recordtype, $config['esindexes']) && !$recurse) {
       $results = filterElasticSearchRecords($recordtype, $labelFields, $pagesize, $pagenum, $filterTerm, $project);
     } else {
-      $results = searchMongoRecords($recordtype, $labelFields, $pagesize, $pagenum, $recurse);
+      $results = searchMongoRecords($recordtype, $labelFields, $pagesize, $pagenum, $filterTerm, $recurse);
     }
     drupal_add_http_header('Content-Type', 'application/json');
     echo json_encode($results);
