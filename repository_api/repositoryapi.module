@@ -337,11 +337,11 @@ function listResources(){
   $filterTerm = get_get_parameter('query');
   $typeFilter = get_get_parameter('type');
   // allow param to filter results
-  if ($sort == null){
+  if (!ISSET($sort)){
     $sort = get_get_parameter('sort');
   }
    // sort by reverse id by default (newest objects should be listed first)
-  if (!ISSET($sort)) {
+  if (!ISSET($sort) || $sort == null) {
     $sort = "_id";
   }
   if ($sort == "_id" || $sort == "uploadDate"){
