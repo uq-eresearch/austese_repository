@@ -524,11 +524,11 @@ function filterElasticSearchRecords($recordtype, $labelFields, $pagesize=10, $pa
     }
     // get search fields from param
     $searchField = get_get_parameter('searchField');
-    if ($searchField) {
+    if (ISSET($searchField)) {
         $searchFields = array('metadata.'.$searchField);
     }
     // otherwise use label field(s)
-    if (!$searchFields) {
+    if (!ISSET($searchFields)) {
         $searchFields = $labelFields;
     }
 
@@ -716,10 +716,12 @@ function _loadRecord($recordtype, $id, $revision, $checkperms, $skip_deleted=fal
     $mongo_requests[] = number_format($time, 4) . " sec";
     $mongo_time += $time;
 
-    if ($dbobj == NULL){
+    if ($dbobj == NULL && !$recurse){
       drupal_add_http_header('Status', '404 Not found');
       echo 'The requested object does not exist';
       exit;
+    } else if ($dbobj == NULL){
+        return array("id"=>$id);
     }
     // lookup specified revision, or get latest
     $numrev = count($dbobj['_revisions']) - 1;
