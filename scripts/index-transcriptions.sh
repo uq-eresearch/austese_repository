@@ -1,12 +1,23 @@
 #!/bin/bash
 
-curl -X DELETE localhost:9200/_river/transcriptions
-curl -X DELETE localhost:9200/austese/transcriptions
+#curl -X DELETE localhost:9200/_river/transcriptions
+#curl -X DELETE localhost:9200/austese/transcriptions
 
+# Create the index
+curl -XPUT localhost:9200/austese/
 
+#                    "file": {
+#                        "term_vector": "with_positions_offsets",
+#                        "store": "yes"
+#                    },
+
+# Create a mapping that allows highlighting of content
 curl -XPUT "localhost:9200/austese/transcriptions/_mapping" -d'
 {
     "transcriptions": {
+        "_source": {
+            "excludes": ["content"]
+        },
         "properties": {
             "chunkSize": {
                 "type": "long"
@@ -15,39 +26,38 @@ curl -XPUT "localhost:9200/austese/transcriptions/_mapping" -d'
                 "type": "attachment",
                 "path": "full",
                 "fields": {
-                    "file" : {
-                        "term_vector": "with_positions_offsets",
+                    "title": {
                         "store": "yes"
                     },
                     "content": {
-                        "type": "string"
+                        "type": "string",
+                        "term_vector": "with_positions_offsets",
+                        "store": "yes"
                     },
                     "author": {
                         "type": "string"
                     },
-                    "title": {
+                    "keywords": {
                         "type": "string"
                     },
                     "name": {
                         "type": "string"
                     },
                     "date": {
-                        "type": "date",
-                        "format": "dateOptionalTime"
-                    },
-                    "keywords": {
-                        "type": "string"
+                        "format": "dateOptionalTime",
+                        "type": "date"
                     },
                     "content_type": {
                         "type": "string"
-                    },
-                    "content_length": {
-                        "type": "integer"
                     }
                 }
             },
             "contentType": {
                 "type": "string"
+            },
+            "damodamo": {
+                "type": "string",
+                "store": true
             },
             "filename": {
                 "type": "string"
@@ -104,8 +114,10 @@ curl -XPUT "localhost:9200/austese/transcriptions/_mapping" -d'
             }
         }
     }
-}'
+}
+'
 
+# Create the river itself and start indexing mongo content
 curl -XPUT "localhost:9200/_river/transcriptions/_meta" -d'
 {
   "type": "mongodb",
@@ -117,6 +129,8 @@ curl -XPUT "localhost:9200/_river/transcriptions/_meta" -d'
     "db": "test",
     "collection": "fs",
 
+
+    "script": "if (ctx.document._deleted || ctx.document._superseded) {ctx.deleted = true; }",
     "gridfs": "true"
   },
   "index": {
@@ -126,5 +140,3 @@ curl -XPUT "localhost:9200/_river/transcriptions/_meta" -d'
 }'
 
     # "filter": "{\"_superseded\": {$exists:false}}",
-
-    # "script": "if (ctx.document._deleted || ctx.document._superseded) {ctx.deleted = true; }"
