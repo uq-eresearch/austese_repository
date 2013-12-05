@@ -6,42 +6,54 @@ function repositoryprojectsearch_search_info(){
     'conditions_callback' => 'repository_callback_search_conditions',
   );
 }
-function repositoryprojectsearch_search_execute($keys = NULL, $conditions = NULL) {
-    $project = null;
-    if (ISSET($conditions['project'])){
-        $project = $conditions['project'];
+
+class AusteseElasticSearchQuery {
+    private $index = 'austese';
+    public $project = null;
+    public $per_page = 10;
+    public $type;
+
+    public function __construct() {
+    
     }
-    if (!$keys) {
-      return;
+
+
+    public function search($keys) {
+        $page = pager_find_page();
+        $offset = $this->per_page * $page;
+
+        $client = new Elasticsearch\Client();
+        $searchParams['index'] = $this->index;
+        $searchParams['from'] = $offset;
+        $searchParams['size'] = $this->per_page;
+        $searchParams['body']['query']['query_string']['query'] = $keys;
+        $searchParams['body']['filter']['and'][]['term']['metadata.project'] = $this->project;
+        $searchParams['body']['filter']['and'][]['missing']['field'] = "metadata._superseded";
+        $searchParams['body']['filter']['and'][]['missing']['field'] = "metadata._deleted";
+        $searchParams['body']['filter']['and'][]['missing']['field'] = "_deleted";
+        $searchParams['body']['highlight']['fields']['*'] = array("number_of_fragments" => 3);
+        if ($this->type) {
+            $searchParams['type'] = $this->type;
+        }
+
+        $queryResponse = $client->search($searchParams);
+
+        pager_default_initialize($queryResponse['hits']['total'], $this->per_page);
+
+        $results = array();
+        foreach($queryResponse['hits']['hits'] as $searchResult) {
+
+
+            $results[] = $this->_formatResult($searchResult);
+        }
+        return $results;
     }
 
-
-    $per_page = 10;
-    $page = pager_find_page();
-    $offset = $per_page * $page;
-
-
-    $client = new Elasticsearch\Client();
-    $searchParams['index'] = 'austese';
-    $searchParams['from'] = $offset;
-    $searchParams['size'] = $per_page;
-    $searchParams['body']['query']['query_string']['query'] = $keys;
-    $searchParams['body']['filter']['and'][]['term']['metadata.project'] = $project;
-    $searchParams['body']['filter']['and'][]['missing']['field'] = "metadata._superseded";
-    $searchParams['body']['filter']['and'][]['missing']['field'] = "metadata._deleted";
-    $searchParams['body']['filter']['and'][]['missing']['field'] = "_deleted";
-    $searchParams['body']['highlight']['fields']['*'] = array("number_of_fragments" => 3);
-    $queryResponse = $client->search($searchParams);
-
-
-    pager_default_initialize($queryResponse['hits']['total'], $per_page);
-
-    $results = array();
-    foreach($queryResponse['hits']['hits'] as $searchResult) {
+    function _formatResult($searchResult) {
         $obj = $searchResult['_source'];
         $id = $obj['_id'];
         $type = $searchResult['_type'];
-        $metadata = $obj['metadata'];      // generate uri
+        $metadata = $obj['metadata'];
         $snippet = "";
         if (ISSET($metadata['description'])){
             $snippet = text_summary($metadata['description']);
@@ -52,32 +64,60 @@ function repositoryprojectsearch_search_execute($keys = NULL, $conditions = NULL
           }
         }
 
-        if ($type == 'transcriptions') {
-            $uri = 'repository/resources/' . $searchResult['_source']['metadata']['_resourceid'];
-            $results [] = array(
-              'link' => url($uri, array('absolute' => TRUE, 'query' => array('project' => $project))),
-              'type' => $searchResult['_type'],
-              'title' => $obj['content']['title'],
-              'user' => "",
-              'date' => $obj['updateDate'],
-              'extra' => null,
-              'snippet' => $snippet,
-              'score' => $searchResult['_score']
-            );
-        } else {
+        $url = 'repository/'. $type . '/' . $id;
 
-            $uri = 'repository/'. $searchResult['_type'] . '/' . $id->{'$id'};
-            $results [] = array(
-              'link' => url($uri, array('absolute' => TRUE, 'query' => array('project' => $project))),
-              'type' => $searchResult['_type'],
-              'title' => '(' . $searchResult['_type'] . ')' . $searchResult['_source']['title'],
-              'user' => "",
-              'date' => "",
-              'extra' => null,
+        $result = array(
+              'link' => url($url, array('query' => array('project' => $this->project))),
+              'type' => $type,
+              'score' => $searchResult['_score'],
               'snippet' => $snippet,
-              'score' => $searchResult['_score']
-            );
+              'date' => $obj['updateDate']
+          );
+
+        switch ($type) {
+          case 'transcriptions':
+            $url = 'repository/resources/' . $metadata['_resourceid'];
+            $result['link'] = url($url, array('query' => array('project' => $this->project)));
+            $result['title'] = '(Transcription) ' . $obj['content']['title'];
+            break;
+
+          case 'events':
+            $result['title'] = '(Event) ' . $metadata['name'];
+            break;
+
+          case 'agents':
+            $result['title'] = '(Agent) ' . $metadata['lastName'] . ', ' . $metadata['firstName'];
+            break;
+
+          case 'artefacts':
+            $result['title'] = '(Artefact) ' . $metadata['source'];
+            break;
+
+          case 'works':
+            $result['title'] = '(Work) ' . $metadata['workTitle'];
+            break;
+
+          case 'versions':
+            $result['title'] = '(Version) ' . $metadata['versionTitle'] . ' - ' . $metadata['name'];
+            break;
         }
+        return $result;
     }
+}
+
+function repositoryprojectsearch_search_execute($keys = NULL, $conditions = NULL) {
+    if (ISSET($conditions['project'])){
+        $project = $conditions['project'];
+    }
+    if (!$keys) {
+      return;
+    }
+
+    $query = new AusteseElasticSearchQuery();
+    $query->project = $project;
+    // $query->type = 'events';
+
+    $results = $query->search($keys);
+
     return $results;
 }
