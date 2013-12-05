@@ -78,7 +78,7 @@ class AusteseElasticSearchQuery {
           case 'transcriptions':
             $url = 'repository/resources/' . $metadata['_resourceid'];
             $result['link'] = url($url, array('query' => array('project' => $this->project)));
-            $result['title'] = '(Transcription) ' . $obj['content']['title'];
+            $result['title'] = '(Transcription) ' . $obj['filename'];
             break;
 
           case 'events':
