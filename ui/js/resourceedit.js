@@ -228,6 +228,10 @@ var editor = {
          });
      }
      
+     jQuery(".CodeMirror-scroll").on("scroll", function() {
+    	 syncPreviewScroll();
+     });
+     
      editor.cm.on("update", editor.previewResource);
      editor.cm.on("change", function(){editor.isDirty = true;});
      jQuery(editor.cm.getWrapperElement()).on("paste", function(e){
@@ -509,6 +513,8 @@ var editor = {
       jQuery(this).html(html);
     }
     distribute(targetEl);
+        
+    syncPreviewScroll();
   }
 };
 
@@ -520,6 +526,46 @@ function distribute(element) {
   children.each(function() {jQuery(this).removeClass(spanClasses).addClass(spanWidth)});
 }
 
+var foundOffset = false;
+var headerOffset;
+
+function syncPreviewScroll() {
+	// If the document has a teiHeader that won't be rendered in the transcript 
+	// calculate the height of it and ignore it when calculating the percentage
+	// of the current page scroll
+	if (!foundOffset){
+	    var headerStartTag = jQuery(".CodeMirror-code").find("div:contains('<teiHeader')");
+	    var headerEndTag = jQuery(".CodeMirror-code").find("div:contains('</teiHeader>')");
+	    if (headerStartTag.length == 0) {
+	    	headerOffset = 0;
+	    	foundOffset = true;
+	    } else if (headerEndTag.length == 1) {
+		    headerOffset = headerEndTag[0].offsetTop;
+	    	foundOffset = true;
+	    }
+	}
+    var multi = jQuery('#metadata').data('multi');
+    var targetEl = "#single-editor-ui";
+    if (multi) {
+        targetEl = "#multi-editor-ui";
+    }
+	var preview = jQuery(targetEl + " .edit-preview");
+	var editor = jQuery(".CodeMirror-scroll");
+	
+	if (foundOffset) {
+		var scrollTop = editor[0].scrollTop;
+		var scrollHeight = editor[0].scrollHeight - headerOffset 
+			- jQuery(".CodeMirror-scroll")[0].clientHeight;
+		if (scrollTop < headerOffset) {
+			scrollTop = 0;
+		} else {
+			scrollTop -= headerOffset;
+		}
+		var ratio = scrollTop / scrollHeight;
+		
+		preview.scrollTop(ratio * (preview[0].scrollHeight - preview[0].parentNode.clientHeight));
+	}
+}
 
 function findFacsimiles(data) {
   var facs = [];
