@@ -494,7 +494,43 @@ function listRecords($recordtype, $labelFields) {
     drupal_add_http_header('Content-Type', 'application/json');
     echo json_encode($results);
 }
+function repositoryapi_advancedElasticSearch($recordtype, $searchdata, $pagesize, $pagenum,$project){
+    $config = repositoryapi_get_configuration();
+    $client = new Elasticsearch\Client();
+    $searchParams['index'] = $config['escollection'];
+    $searchParams['type']  = $recordtype;
+    $searchParams['size'] = $pagesize;
+    $searchParams['from']  = $pagenum;
+    
+    foreach($searchdata as $searchTerm => $searchValue){
+        $searchParams['body']['query']['bool']['must'][] = array('term'=>array($searchTerm => strtolower($searchValue)));
+    }
+    
+    if (ISSET($project) && $project != ""){
+      $searchParams['body']['query']['bool']['must'][] = array ('term'=>array('project'=>$project));
+    }
+    $searchParams['body']['filter']['and'][]['missing']['field'] = "metadata._superseded";
+    $searchParams['body']['filter']['and'][]['missing']['field'] = "metadata._deleted";
+    $searchParams['body']['filter']['and'][]['missing']['field'] = "_deleted";
 
+    $queryResponse = $client->search($searchParams);
+
+    $results = array();
+    $results['collection'] = $recordtype;
+    $results['count'] = $queryResponse['hits']['total'];
+    $results['pageSize'] = $pagesize;
+    $results['pageIndex'] = $pagenum;
+
+    foreach($queryResponse['hits']['hits'] as $searchResult) {
+      $id = $searchResult['_id'];
+      $returnobj = $searchResult['_source']['metadata'];
+      $returnobj['uri'] = $config['uriprefix'] . '/'. $recordtype . '/' . $id;
+      $returnobj['id'] = $id;
+
+      $results['results'][] = $returnobj;
+    }
+    return $results;
+}
 /**
  * Performs a query for records against the elasticsearch index
  *

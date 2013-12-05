@@ -74,36 +74,70 @@ function repositoryagentsearch_search_execute($keys = NULL, $conditions = NULL){
     $formFields = array('firstName','lastName','biography', 'agentType');
     $searchFields = array();
     foreach ($formFields as $f){
-      $searchFields[$f] = search_expression_extract($tempKeys, $f);
-      $tempKeys = search_expression_insert($tempKeys,$f);
+        $searchVal = search_expression_extract($tempKeys, $f);
+        if (ISSET($searchVal) && $searchVal != ""){
+          $searchFields[$f] = search_expression_extract($tempKeys, $f);
+          $tempKeys = search_expression_insert($tempKeys,$f);
+        }
     }
     $searchTerm = $tempKeys;
+
     $project = null;
     if (ISSET($conditions['project'])){
         $project = $conditions['project'];
     }
-    $searchResults = _findRecords("agents",array("lastName","firstName"),100, 0, 1, $searchTerm,null,$project);
     $results = array();
-    foreach ($searchResults as $obj){
-      $numrev = count($obj['_revisions']) - 1;
-
-      $id = $obj['_id'];
-      $metadata = $obj['_revisions'][$numrev];
-      // generate uri
-      $uri = 'repository/agents/' . $id->{'$id'};
-      $snippet = "";
-      if (ISSET($metadata['biography'])){
-          $snippet = text_summary($metadata['biography']);
-      }
-      $results [] = array(
-        'link' => url($uri, array('absolute' => TRUE)),
-          'type' => 'Agent',
-          'title' => $metadata['lastName'] . ", " . $metadata['firstName'],
-          'user' => "",
-          'date' => "",
-          'extra' => null,
-          'snippet' => $snippet
-        );
-     }
+    // check if search fields are not null
+    if (count($searchFields) > 0){
+        // advanced search
+        $searchResults = repositoryapi_advancedElasticSearch('agents', $searchFields, 20, 0, $project);
+        if (ISSET($searchResults['results'])){
+            foreach ($searchResults['results'] as $obj){
+              $id = $obj['id'];
+              $metadata = $obj;
+                // generate uri
+              $uri = 'repository/agents/' . $id;
+              $snippet = "";
+              if (ISSET($metadata['biography'])){
+                  $snippet = text_summary($metadata['biography']);
+              }
+              $results [] = array(
+                'link' => url($uri, array('absolute' => TRUE)),
+                  'type' => 'Agent',
+                  'title' => $metadata['lastName'] . ", " . $metadata['firstName'],
+                  'user' => "",
+                  'date' => "",
+                  'extra' => null,
+                  'snippet' => $snippet
+              );
+            }
+        }
+        
+    } else {
+        $searchResults = _findRecords("agents",array("lastName","firstName"),100, 0, 1, $searchTerm,null,$project);
+        foreach ($searchResults as $obj){
+          $numrev = count($obj['_revisions']) - 1;
+    
+          $id = $obj['_id'];
+          $metadata = $obj['_revisions'][$numrev];
+          // generate uri
+          $uri = 'repository/agents/' . $id->{'$id'};
+          $snippet = "";
+          if (ISSET($metadata['biography'])){
+              $snippet = text_summary($metadata['biography']);
+          }
+          $results [] = array(
+            'link' => url($uri, array('absolute' => TRUE)),
+              'type' => 'Agent',
+              'title' => $metadata['lastName'] . ", " . $metadata['firstName'],
+              'user' => "",
+              'date' => "",
+              'extra' => null,
+              'snippet' => $snippet
+          );
+        }
+    
+    }
+    
     return $results;
 }
