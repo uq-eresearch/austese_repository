@@ -5,6 +5,14 @@ jQuery(document).ready(function(){
     var project = jQuery('#metadata').data('project');
     var resURI = '/' + jQuery('#metadata').data('modulepath') + "/api/resources/" + existingId;
 
+    jQuery('#toggleFacsimile').click(toggleFacsimile);
+    jQuery('#nextFacsimile').click(nextFacsimile);
+    jQuery('#prevFacsimile').click(prevFacsimile);
+    jQuery('.pageNum').on('change', gotoFacsimile);
+
+    jQuery('#facsimile').appendTo('body').removeClass().hide();
+    loadFacsimiles();
+    
     function afterContentLoaded(){
         if (typeof wordCloud != 'undefined' && typeof wordCloud.drawWordCloud == "function"){
             wordCloud.drawWordCloud();
@@ -196,3 +204,134 @@ function getSelectionText() {
     return text;
 }
 
+var facsimiles = [];
+function loadFacsimiles () {
+   var searchUri = '/sites/all/modules/austese_repository/api/versions/';
+   var resourceId = jQuery('#metadata').data('existingid');
+   var project = jQuery('#metadata').data('project');
+
+   var possibleTypes = ['versions', 'artefacts'];
+   jQuery.each(possibleTypes, function(index, value) {
+     jQuery.ajax({
+         url: '/sites/all/modules/austese_repository/api/' + value + '/',
+         type: 'GET',
+         data: {
+           recurse: true,
+           searchField: 'transcriptions',
+           query: resourceId,
+           project: project
+         },
+         success: function(data, status, xhr){
+           mydata = data;
+           facsimiles = facsimiles.concat(findFacsimiles(data));
+           currFacsimile = 0;
+           if (facsimiles.length > 0) {
+             jQuery('#toggleFacsimile').parent().show();
+           } else {
+             jQuery('#toggleFacsimile').parent().hide();
+           }
+         },
+         error: function(jqXHR, textStatus, errorThrown){
+             jQuery('#facsimile').text(textStatus);
+         }
+     });
+   });
+}
+function toggleFacsimile () {
+  if (jQuery(this).text().match("Show facsimile")) {
+	jQuery('#facsimile').insertBefore('#resourceContent').addClass("span4").show();
+	if (jQuery('#resourceContent').hasClass("span12")) { 
+		jQuery('#resourceContent').removeClass("span12").addClass("span8");
+	} else if (jQuery('#resourceContent').hasClass("span11")) { 
+		jQuery('#resourceContent').removeClass("span11").addClass("span7");
+	} else if (jQuery('#resourceContent').hasClass("span10")) { 
+		jQuery('#resourceContent').removeClass("span10").addClass("span6");
+	} else if (jQuery('#resourceContent').hasClass("span9")) { 
+		jQuery('#resourceContent').removeClass("span9").addClass("span5");
+	} else if (jQuery('#resourceContent').hasClass("span8")) { 
+		jQuery('#resourceContent').removeClass("span8").addClass("span4");
+	}
+	
+    if (facsimiles.length > 0) {
+      displayFacsimile();
+    }
+    
+    var html = jQuery(this).html();
+    html = html.replace(/(\w+) facsimile/, 'Hide facsimile')
+    jQuery(this).html(html);
+  } else {
+	jQuery('#facsimile').appendTo('body').removeClass().hide();
+	if (jQuery('#resourceContent').hasClass("span8")) { 
+		jQuery('#resourceContent').removeClass("span8").addClass("span12");
+	} else if (jQuery('#resourceContent').hasClass("span7")) { 
+		jQuery('#resourceContent').removeClass("span7").addClass("span11");
+	} else if (jQuery('#resourceContent').hasClass("span6")) { 
+		jQuery('#resourceContent').removeClass("span6").addClass("span10");
+	} else if (jQuery('#resourceContent').hasClass("span5")) { 
+		jQuery('#resourceContent').removeClass("span5").addClass("span9");
+	} else if (jQuery('#resourceContent').hasClass("span4")) { 
+		jQuery('#resourceContent').removeClass("span4").addClass("span8");
+	}
+	
+    var html = jQuery(this).html();
+    html = html.replace(/(\w+) facsimile/, 'Show facsimile')
+    jQuery(this).html(html);
+  }
+
+  return false;
+}
+function displayFacsimile () {
+  jQuery('#facsimile .totalPages').text(facsimiles.length);
+  jQuery('#facsimile .pageNum').val(currFacsimile + 1);
+  jQuery('#facsimile .imageHolder').html("<img src='" + facsimiles[currFacsimile].uri + "'>");
+
+  jQuery('#facsimile .imageHolder').panzoom({
+    $zoomIn: jQuery('#facsimile .zoom-in'),
+    $zoomOut: jQuery('#facsimile .zoom-out'),
+    $zoomRange: jQuery('#facsimile .zoom-range'),
+    $reset: jQuery('#facsimile .reset'),
+  });
+}
+function gotoFacsimile () {
+    var newFacs = parseInt(jQuery('.pageNum').val());
+    if (newFacs){
+        currFacsimile = newFacs - 1;
+        displayFacsimile();
+    }
+}
+function nextFacsimile() {
+  currFacsimile = (currFacsimile + 1) % facsimiles.length;
+  displayFacsimile();
+}
+function prevFacsimile () {
+  if (currFacsimile == 0) {
+    currFacsimile = facsimiles.length - 1;
+  } else {
+    currFacsimile = currFacsimile - 1;
+  }
+  displayFacsimile();
+}
+function findFacsimiles(data) {
+  var facs = [];
+  if (data.results instanceof Array) {
+    jQuery.each(data.results, function(i, val) {
+      var returned = findFacsimiles(val);
+      if (returned) {
+        facs = facs.concat(returned);
+      }
+    });
+  }
+  if (data.artefacts instanceof Array) {
+    jQuery.each(data.artefacts, function(i, val) {
+      var returned = findFacsimiles(val);
+      if (returned) {
+        facs = facs.concat(returned);
+      }
+    });
+  }
+  if (data.facsimiles instanceof Array) {
+    facs = facs.concat(data.facsimiles);
+  }
+  
+  return facs;
+}

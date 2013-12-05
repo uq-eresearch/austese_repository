@@ -44,7 +44,31 @@ if (isset($_GET['cloud'])) {
   </div>
 </div>
 
+<div class="btn-toolbar">
+  <div class="buttons btn-group" style="display: none;">
+    <a id="toggleFacsimile" class="btn" href="#"><i class="fa fa-picture-o"></i> Show facsimile</a>
+  </div>
+</div>
+
 <div class="row-fluid">
+<div id="facsimile">
+  <b><a id="prevFacsimile" href="#">Prev</a></b>
+  <span class="count">Image <input style="width:20px" type="text" class="pageNum" value="--"/> of <span class="totalPages">--</span></span>
+  <b><a id="nextFacsimile" href="#">Next</a></b>
+  
+  <div class="parent">
+    <div class="imageHolder"></div>
+  </div>
+  <div class="btn-toolbar">
+    <div class="buttons btn-group">
+      <button class="zoom-in btn"><i class="fa fa-search-plus"></i></button>
+      <button class="zoom-out btn"><i class="fa fa-search-minus"></i></button>
+      <input type="range" class="zoom-range">
+      <button class="reset btn">Reset</button>
+    </div>
+  </div>
+</div>
+
 <div id="resourceContent" class="span<?php if ($cloud) print "9"; else print "12"; ?> well white-well" data-id="http://<?php print $_SERVER['SERVER_NAME']; ?>/repository/resources/<?php print $existingId; ?>/content">
 Rendering content...
 </div>
