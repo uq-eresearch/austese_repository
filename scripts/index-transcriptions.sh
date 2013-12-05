@@ -1,3 +1,5 @@
+#!/bin/bash
+
 curl -X DELETE localhost:9200/_river/transcriptions
 curl -X DELETE localhost:9200/austese/transcriptions
 
