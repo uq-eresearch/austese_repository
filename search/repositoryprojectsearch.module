@@ -11,14 +11,73 @@ function repositoryprojectsearch_search_execute($keys = NULL, $conditions = NULL
     if (ISSET($conditions['project'])){
         $project = $conditions['project'];
     }
-      $results [] = array(
-        'link' => url('/', array('absolute' => TRUE)),
-          'type' => 'Project',
-          'title' => 'Fake Title',
-          'user' => "",
-          'date' => "",
-          'extra' => null,
-          'snippet' => "A bit of a snippet eh"
-        );
+    if (!$keys) {
+      return;
+    }
+
+
+    $per_page = 10;
+    $page = pager_find_page();
+    $offset = $per_page * $page;
+
+
+    $client = new Elasticsearch\Client();
+    $searchParams['index'] = 'austese';
+    $searchParams['from'] = $offset;
+    $searchParams['size'] = $per_page;
+    $searchParams['body']['query']['query_string']['query'] = $keys;
+    $searchParams['body']['filter']['and'][]['term']['metadata.project'] = $project;
+    $searchParams['body']['filter']['and'][]['missing']['field'] = "metadata._superseded";
+    $searchParams['body']['filter']['and'][]['missing']['field'] = "metadata._deleted";
+    $searchParams['body']['filter']['and'][]['missing']['field'] = "_deleted";
+    $searchParams['body']['highlight']['fields']['*'] = array("number_of_fragments" => 3);
+    $queryResponse = $client->search($searchParams);
+
+
+    pager_default_initialize($queryResponse['hits']['total'], $per_page);
+
+    $results = array();
+    foreach($queryResponse['hits']['hits'] as $searchResult) {
+        $obj = $searchResult['_source'];
+        $id = $obj['_id'];
+        $type = $searchResult['_type'];
+        $metadata = $obj['metadata'];      // generate uri
+        $snippet = "";
+        if (ISSET($metadata['description'])){
+            $snippet = text_summary($metadata['description']);
+        }
+        foreach($searchResult['highlight'] as $highlight_field => $highlight_matches) {
+          foreach($highlight_matches as $match) {
+            $snippet .= $match . "</br>";
+          }
+        }
+
+        if ($type == 'transcriptions') {
+            $uri = 'repository/resources/' . $searchResult['_source']['metadata']['_resourceid'];
+            $results [] = array(
+              'link' => url($uri, array('absolute' => TRUE, 'query' => array('project' => $project))),
+              'type' => $searchResult['_type'],
+              'title' => $obj['content']['title'],
+              'user' => "",
+              'date' => $obj['updateDate'],
+              'extra' => null,
+              'snippet' => $snippet,
+              'score' => $searchResult['_score']
+            );
+        } else {
+
+            $uri = 'repository/'. $searchResult['_type'] . '/' . $id->{'$id'};
+            $results [] = array(
+              'link' => url($uri, array('absolute' => TRUE, 'query' => array('project' => $project))),
+              'type' => $searchResult['_type'],
+              'title' => '(' . $searchResult['_type'] . ')' . $searchResult['_source']['title'],
+              'user' => "",
+              'date' => "",
+              'extra' => null,
+              'snippet' => $snippet,
+              'score' => $searchResult['_score']
+            );
+        }
+    }
     return $results;
 }
