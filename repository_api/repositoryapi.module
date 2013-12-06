@@ -503,7 +503,7 @@ function repositoryapi_advancedElasticSearch($recordtype, $searchdata, $pagesize
     $searchParams['from']  = $pagenum;
     
     foreach($searchdata as $searchTerm => $searchValue){
-        $searchParams['body']['query']['bool']['must'][] = array('term'=>array($searchTerm => strtolower($searchValue)));
+        $searchParams['body']['query']['bool']['must'][] = array('wildcard'=>array($searchTerm => "*".strtolower($searchValue)."*"));
     }
     
     if (ISSET($project) && $project != ""){
