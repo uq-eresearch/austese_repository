@@ -1,6 +1,22 @@
 <?php
 
-
+/**
+ * Helps with running a search against ElasticSearch
+ *
+ * Runs queries against the 'austese' ES index
+ *
+ * Filters out any records that have been deleted or
+ * superceded, requests highlighting on all fields,
+ * and returns results in the right format for use in a
+ * drupal search_execute() method.
+ * 
+ * 
+ * Example:
+ *   $query = new AusteseElasticSearchQuery();
+ *   $query->project = $project;
+ *   $query->type = "artefacts";
+ *   $results = $query->search($keys);
+ */
 class AusteseElasticSearchQuery {
     private $index = 'austese';
     public $project = null;
