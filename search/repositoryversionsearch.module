@@ -1,14 +1,14 @@
 <?php
-function repositoryprojectsearch_search_info(){
+function repositoryversionsearch_search_info(){
     return array(
-    'title' => 'Everything',
-    'path' => 'everything',
+    'title' => 'Versions',
+    'path' => 'versions',
     'conditions_callback' => 'repository_callback_search_conditions',
   );
 }
 
 
-function repositoryprojectsearch_search_execute($keys = NULL, $conditions = NULL) {
+function repositoryversionsearch_search_execute($keys = NULL, $conditions = NULL) {
     if (ISSET($conditions['project'])){
         $project = $conditions['project'];
     }
@@ -18,6 +18,7 @@ function repositoryprojectsearch_search_execute($keys = NULL, $conditions = NULL
 
     $query = new AusteseElasticSearchQuery();
     $query->project = $project;
+    $query->type = 'versions';
 
     $results = $query->search($keys);
 
