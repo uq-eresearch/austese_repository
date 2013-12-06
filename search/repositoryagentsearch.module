@@ -90,7 +90,7 @@ function repositoryagentsearch_search_execute($keys = NULL, $conditions = NULL){
     // check if search fields are not null
     if (count($searchFields) > 0){
         // advanced search
-        $searchResults = repositoryapi_advancedElasticSearch('agents', $searchFields, 20, 0, $project);
+        $searchResults = repositoryapi_advancedElasticSearch('agents', $searchFields, 50, 0, $project);
         if (ISSET($searchResults['results'])){
             foreach ($searchResults['results'] as $obj){
               $id = $obj['id'];

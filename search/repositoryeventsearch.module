@@ -62,33 +62,65 @@ function repositoryeventsearch_search_execute($keys = NULL, $conditions = NULL){
     if (ISSET($conditions['project'])){
         $project = $conditions['project'];
     }
-    $searchResults = _findRecords("events",array('name','description'),100, 0, 1, $searchTerm, null,$project);
     $results = array();
-    foreach ($searchResults as $obj){
-      $numrev = count($obj['_revisions']) - 1;
-
-      $id = $obj['_id'];
-      $metadata = $obj['_revisions'][$numrev];
-      // generate uri
-      $uri = 'repository/events/' . $id->{'$id'};
-      if ($metadata['name']){
-          $name = $metadata['name'];
-      } else {
-          $name = "Untitled Event";
-      }
-      $snippet = "";
-      if (ISSET($metadata['description'])){
-          $snippet = text_summary($metadata['description']);
-      }
-      $results [] = array(
-        'link' => url($uri, array('absolute' => TRUE)),
-          'type' => 'Event',
-          'title' => $name,
-          'user' => "",
-          'date' => "",
-          'extra' => array($metadata['startDate'],$metadata['endDate']),
-          'snippet' => $snippet
-        );
-     }
+    // check if search fields are not null
+    if (count($searchFields) > 0){
+        // advanced search
+        $searchResults = repositoryapi_advancedElasticSearch('events', $searchFields, 50, 0, $project);
+        //var_dump($searchResults);
+        if ($searchResults['count'] > 0){
+            if (ISSET($searchResults['results'])){
+                foreach ($searchResults['results'] as $obj){
+                  $id = $obj['id'];
+                  $metadata = $obj;
+                    // generate uri
+                  $uri = 'repository/events/' . $id;
+                  $snippet = "";
+                  if (ISSET($metadata['description'])){
+                      $snippet = text_summary($metadata['description']);
+                  }
+                  $results [] = array(
+                    'link' => url($uri, array('absolute' => TRUE)),
+                      'type' => 'Event',
+                      'title' => $name,
+                      'user' => "",
+                      'date' => "",
+                      'extra' => array($metadata['startDate'],$metadata['endDate']),
+                      'snippet' => $snippet
+                 );
+                }
+            }
+        }
+        
+    } else {
+        $searchResults = _findRecords("events",array('name','description'),100, 0, 1, $searchTerm, null,$project);
+        
+        foreach ($searchResults as $obj){
+          $numrev = count($obj['_revisions']) - 1;
+    
+          $id = $obj['_id'];
+          $metadata = $obj['_revisions'][$numrev];
+          // generate uri
+          $uri = 'repository/events/' . $id->{'$id'};
+          if ($metadata['name']){
+              $name = $metadata['name'];
+          } else {
+              $name = "Untitled Event";
+          }
+          $snippet = "";
+          if (ISSET($metadata['description'])){
+              $snippet = text_summary($metadata['description']);
+          }
+          $results [] = array(
+            'link' => url($uri, array('absolute' => TRUE)),
+              'type' => 'Event',
+              'title' => $name,
+              'user' => "",
+              'date' => "",
+              'extra' => array($metadata['startDate'],$metadata['endDate']),
+              'snippet' => $snippet
+            );
+         }
+    }
     return $results;
 }
