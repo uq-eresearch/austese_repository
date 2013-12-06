@@ -915,16 +915,7 @@ function repository_menu_local_tasks_alter(&$data, $router_item, $root_path) {
     }
   }
 }
-/**
- * Setup a search handler for Versions
- */
-function repository_search_info(){
-    return array(
-    'title' => 'Versions',
-    'path' => 'versions',
-    'conditions_callback' => 'repository_callback_search_conditions',
-  );
-}
+
 /**
  * Add a project parameter to the list of conditions if in the context of a project.
  * @param type $keys
@@ -938,48 +929,7 @@ function repository_callback_search_conditions($keys) {
   }
   return $conditions;
 }
-/**
- * Execute a 'Version' type search
- * 
- * @param type $keys search terms
- * @param type $conditions extra conditions
- * @return array of results
- */
-function repository_search_execute($keys = NULL, $conditions = NULL){
-    $project = null;
-    if (ISSET($conditions['project'])){
-        $project = $conditions['project'];
-    }
-    $searchResults = _findRecords("versions",array("versionTitle","name"),100, 0, 1, $keys,null,$project);
-    $results = array();
-    foreach ($searchResults as $obj){
-      $numrev = count($obj['_revisions']) - 1;
 
-      $id = $obj['_id'];
-      $metadata = $obj['_revisions'][$numrev];
-      // generate uri
-      $uri = 'repository/versions/' . $id->{'$id'};
-      $snippet = "";
-      if (ISSET($metadata['description'])){
-          $snippet = text_summary($metadata['description']);
-      }
-      /*$proj = null;
-      if (ISSET($metadata['project'])){
-         $projData = node_load($metadata['project']);
-         $proj = l($projData->title,'/node/'.$metadata['project']);
-      }*/
-      $results [] = array(
-        'link' => url($uri, array('absolute' => TRUE)),
-          'type' => 'Version',
-          'title' => $metadata['versionTitle'] . ' ' . $metadata['name'],
-          'user' => "",
-          'date' => "",
-          'extra' => array($metadata['date']),
-          'snippet' => $snippet
-        );
-     }
-    return $results;
-}
 function repository_stream_pdf($id){
     try {
 
@@ -999,6 +949,7 @@ function repository_stream_pdf($id){
         echo $e->getMessage();
     }
 }
+
 function repository_stream_word($id){
     try {
 
