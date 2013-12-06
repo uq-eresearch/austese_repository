@@ -5,6 +5,10 @@ core = 7.x
 version = "7.x-1.x-dev"
 core = "7.x"
 project = "austese"
+
+
+files[] = austese_elastic_search_query.inc
+
 dependencies[] = restws
 dependencies[] = repository
 dependencies[] = og
