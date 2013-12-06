@@ -898,6 +898,7 @@ function repository_og_context_handler() {
  * Add a project parameter to the search form if we're in the context of a project.
  */
 function repository_form_search_form_alter(&$form, &$form_state) {
+  module_load_include('module', 'og_context');
   $form['#submit'][] = 'search_form_alter_submit';
   $context = og_context();
   if (isset($context['group_type']) && $context['group_type'] === 'node') {
@@ -923,8 +924,8 @@ function repository_form__austese_search_form_alter(&$form, &$form_state) {
  * context.
  * @see repository_form_search_form_alter
  */
-
 function search_form_alter_submit($form, &$form_state) {
+  module_load_include('module', 'og_context');
   $context = og_context();
   if (isset($context['group_type']) && $context['group_type'] === 'node') {
     $form_state['redirect'] = array($form_state['redirect'],

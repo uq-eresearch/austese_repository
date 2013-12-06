@@ -469,7 +469,7 @@ function listRecords($collection, $labelFields) {
     $recurse = isset($_GET['recurse']);
 
     // return metadata for results
-    $cursor = _findRecords($collection, $labelFields,$pagesize,$pagenum);
+    $cursor = _findRecords($collection, $labelFields, $pagesize, $pagenum);
     
     $results = array();
     $results['collection'] = $collection;
