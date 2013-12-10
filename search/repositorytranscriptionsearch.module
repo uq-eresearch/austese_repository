@@ -1,0 +1,26 @@
+<?php
+function repositorytranscriptionsearch_search_info(){
+    return array(
+    'title' => 'Transcriptions',
+    'path' => 'transcriptions',
+    'conditions_callback' => 'repository_callback_search_conditions',
+  );
+}
+
+
+function repositorytranscriptionsearch_search_execute($keys = NULL, $conditions = NULL) {
+    if (ISSET($conditions['project'])){
+        $project = $conditions['project'];
+    }
+    if (!$keys) {
+      return;
+    }
+
+    $query = new AusteseElasticSearchQuery();
+    $query->project = $project;
+    $query->type = 'transcriptions';
+
+    $results = $query->search($keys);
+
+    return $results;
+}
