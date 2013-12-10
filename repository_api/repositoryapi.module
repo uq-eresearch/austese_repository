@@ -291,7 +291,7 @@ function createResource() {
     $resid = gen_uuid();
     // return metadata
     $storedfile = $grid->storeUpload('data',
-            array('metadata' => array('filetype' => $filetype, 'project' => $project)));
+            array('contentType' => $filetype, 'metadata' => array('filetype' => $filetype, 'project' => $project)));
 
     $id = $storedfile->{'$id'};
     $url = $config['uriprefix'] . '/resources/' . $resid;
