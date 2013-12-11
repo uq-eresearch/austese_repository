@@ -7,7 +7,7 @@ Handlebars.registerHelper('gt', function(value, compare, options) {
     }
 });
 Handlebars.registerHelper('neq', function(value, compare, options) {
-    if (value != compare) {
+    if (value && value != compare) {
       return options.fn(this);
     } else {
       return options.inverse(this);
@@ -115,7 +115,7 @@ templates.mvdSummary =
             {{#each resources}}<li class="resource" data-resourceid="{{#if id}}{{id}}{{else}}{{.}}{{/if}}" data-template="summary"></li>{{/each}}\
           </ul>\
         {{/gt}}\
-        {{#if filter}}<p>({{filter}} Filter)</p>{{/if}}\
+        {{#if filter}}{{#neq filter undefined}}<p>({{filter}} Filter)</p>{{/neq}}{{/if}}\
         <p>\
         {{#if hasEditPermission}}\
         <a href="/{{modulePrefix}}/mvds/edit/{{id}}{{projParam}}" style="font-size:smaller">DELETE</a>&nbsp;&nbsp;\
@@ -134,9 +134,10 @@ templates.versionSummary =
         {{#if date}}{{date}} {{/if}}{{publisher}}{{#if date}}<br/>{{else}}{{#if publisher}}<br/>{{/if}}{{/if}}\
         {{#if description}}{{{ellipsis description 80}}}<br/>{{/if}}\
         {{#if firstLine}}<em>{{firstLine}}</em><br/>{{/if}}\
+        {{#gt transcriptions.length 0}}<i class="fa fa-file-text-o"></i> {{transcriptions.length}} version transcription{{#neq transcriptions.length 1}}s{{/neq}}{{/gt}}\
+        {{#unless transcriptions}}{{#unless versions}}No version transcription available<br/>{{/unless}}{{/unless}}\
         {{#gt artefacts.length 0}}<i class="fa fa-asterisk"></i> {{artefacts.length}} associated artefact{{#neq artefacts.length 1}}s{{/neq}}<br/>{{/gt}}\
         {{#gt versions.length 0}}<i class="fa fa-asterisk"></i> {{versions.length}} associated part{{#neq versions.length 1}}s{{/neq}}<br/>{{/gt}}\
-        {{#gt transcriptions.length 0}}<i class="fa fa-file-text-o"></i> {{transcriptions.length}} version transcription{{#neq transcriptions.length 1}}s{{/neq}}{{/gt}}\
         {{#if hasEditPermission}}<p>{{#if locked}}<i class="fa fa-lock"></i> {{/if}}<a href="/{{modulePrefix}}/versions/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT METADATA</a></p>{{/if}}\
     </div>'
 ;
@@ -401,8 +402,10 @@ templates.artefactSummary =
     {{#if date}}{{date}}<br/>{{/if}}{{#if bibDetails}}{{ellipsis bibDetails 80}}<br/>{{/if}}\
     {{#if description}}{{{ellipsis description 80}}}<br/>{{/if}}\
     {{#gt artefacts.length 0}}<i class="sidebaricon fa fa-asterisk"></i> {{artefacts.length}} associated part{{#neq artefacts.length 1}}s{{/neq}}<br/>{{/gt}}\
+    {{#gt transcriptions.length 0}}<i class="sidebaricon fa fa-file-text-o"></i> {{transcriptions.length}} diplomatic transcription{{#neq transcriptions.length 1}}s{{/neq}}<br/>{{/gt}}\
+    {{#unless transcriptions}}{{#unless artefacts}}No diplomatic transcription available<br/>{{/unless}}{{/unless}}\
     {{#gt facsimiles.length 0}}<i class="sidebaricon fa fa-camera"></i> {{facsimiles.length}} facsimile{{#neq facsimiles.length 1}}s{{/neq}}<br/>{{/gt}}\
-    {{#gt transcriptions.length 0}}<i class="sidebaricon fa fa-file-text-o"></i> {{transcriptions.length}} diplomatic transcription{{#neq transcriptions.length 1}}s{{/neq}}{{/gt}}\
+    {{#unless facsimiles}}{{#unless artefacts}}No facsimile available<br/>{{/unless}}{{/unless}}\
     {{#if coverImage}}\
         <div class="resource facsimilePreview" data-resourceid="{{coverImage}}" data-template="facsimilePreview"></div>\
     {{else}}\
@@ -585,7 +588,7 @@ templates.resourceDetail =
     </table>\
     {{#match metadata.filetype "image"}}\
         <h3>Image Preview</h3>\
-        <div data-id="http://{{serverName}}/repository/resources/{{id}}/content"><a href="http://{{serverName}}/repository/resources/{{id}}/content{{projParam}}">\
+        <div data-id="http://{{serverName}}/repository/resources/{{id}}/content"><a title="Click on image to open in Resource View" href="http://{{serverName}}/repository/resources/{{id}}/content{{projParam}}">\
         <img class="thumbnail" src="{{uri}}?scale=true&height=480" alt="Image preview"/></a></div>\
     {{/match}}\
     {{#if locked}}<i class="fa fa-lock"></i> {{/if}}\

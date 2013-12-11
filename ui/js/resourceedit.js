@@ -228,6 +228,10 @@ var editor = {
          });
      }
      
+     jQuery(".CodeMirror-scroll").on("scroll", function() {
+    	 syncPreviewScroll();
+     });
+     
      editor.cm.on("update", editor.previewResource);
      editor.cm.on("change", function(){editor.isDirty = true;});
      jQuery(editor.cm.getWrapperElement()).on("paste", function(e){
@@ -332,6 +336,12 @@ var editor = {
   * @return undefined
   */
  previewResource: function(){
+	 var multi = jQuery('#metadata').data('multi');
+	 var targetEl = "#single-editor-ui";
+	 if (multi) {
+	   targetEl = jQuery("#multieditor").parent();
+	 }
+	 
      if (editor.displayingXML()){
          var text = editor.cm.getValue();
          var result = "Preview unavailable: Your browser does not support XSLT";
@@ -351,13 +361,15 @@ var editor = {
                  result = error.message;
              }
          }
-         jQuery('#editorspan').removeClass('span12').addClass('span6');
          jQuery(".edit-preview").show().html(result);
      } else {
-         // no preview, expand editor to fill page width
-         jQuery('#editorspan').removeClass('span6').addClass('span12');
+         // no preview, remove preview and expand editor to fill page width
          jQuery(".edit-preview").hide();
+         jQuery('#preview').appendTo('body').removeClass().hide();
+         jQuery("#togglePreview").hide();
      }
+     
+     distribute(targetEl);
  },
  /**
   * Reloads the page with the 'diff' view enabled or disabled
@@ -501,6 +513,8 @@ var editor = {
       jQuery(this).html(html);
     }
     distribute(targetEl);
+        
+    syncPreviewScroll();
   }
 };
 
@@ -512,6 +526,46 @@ function distribute(element) {
   children.each(function() {jQuery(this).removeClass(spanClasses).addClass(spanWidth)});
 }
 
+var foundOffset = false;
+var headerOffset;
+
+function syncPreviewScroll() {
+	// If the document has a teiHeader that won't be rendered in the transcript 
+	// calculate the height of it and ignore it when calculating the percentage
+	// of the current page scroll
+	if (!foundOffset){
+	    var headerStartTag = jQuery(".CodeMirror-code").find("div:contains('<teiHeader')");
+	    var headerEndTag = jQuery(".CodeMirror-code").find("div:contains('</teiHeader>')");
+	    if (headerStartTag.length == 0) {
+	    	headerOffset = 0;
+	    	foundOffset = true;
+	    } else if (headerEndTag.length == 1) {
+		    headerOffset = headerEndTag[0].offsetTop;
+	    	foundOffset = true;
+	    }
+	}
+    var multi = jQuery('#metadata').data('multi');
+    var targetEl = "#single-editor-ui";
+    if (multi) {
+        targetEl = "#multi-editor-ui";
+    }
+	var preview = jQuery(targetEl + " .edit-preview");
+	var editor = jQuery(".CodeMirror-scroll");
+	
+	if (foundOffset) {
+		var scrollTop = editor[0].scrollTop;
+		var scrollHeight = editor[0].scrollHeight - headerOffset 
+			- jQuery(".CodeMirror-scroll")[0].clientHeight;
+		if (scrollTop < headerOffset) {
+			scrollTop = 0;
+		} else {
+			scrollTop -= headerOffset;
+		}
+		var ratio = scrollTop / scrollHeight;
+		
+		preview.scrollTop(ratio * (preview[0].scrollHeight - preview[0].parentNode.clientHeight));
+	}
+}
 
 function findFacsimiles(data) {
   var facs = [];
