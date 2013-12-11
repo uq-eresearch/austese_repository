@@ -74,7 +74,11 @@ License: GPL 3.0
 
 * Update MongoDB GridFS document structure, so that it can be accessed by the Java driver. Using the mongo shell:
 
-        db.fs.files.update({}, {$rename: {'_resourceid': 'metadata._resourceid', '_superseded': 'metadata._superseded'}}, false, true) 
+        db.fs.files.update({}, {$rename: {'_resourceid': 'metadata._resourceid', '_superseded': 'metadata._superseded'}}, false, true)
+
+        db.fs.files.find().forEach(function(doc) {
+            db.fs.files.update({_id:doc._id}, {$set: {"contentType":doc.metadata.filetype}});
+        });
 
 
 * Enable the elasticsearch mongo river to start indexing:
