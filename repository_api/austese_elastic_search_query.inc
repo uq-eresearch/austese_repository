@@ -15,12 +15,13 @@
  *   $query = new AusteseElasticSearchQuery();
  *   $query->project = $project;
  *   $query->type = "artefacts";
- *   $results = $query->search($keys);
+ *   $results = $query->search($searchTerm);
  */
 class AusteseElasticSearchQuery {
     private $index = 'austese';
     public $project = null;
     public $per_page = 10;
+    public $searchFields = array();
     public $type;
 
     public function __construct() {
@@ -28,7 +29,14 @@ class AusteseElasticSearchQuery {
     }
 
 
-    public function search($keys) {
+    /**
+     * Perform the search, calling out to elastic search and returning results
+     * reading for processing and displaying by drupal.
+     * 
+     * @param  [type] $searchTerm [description]
+     * @return [type]             [description]
+     */
+    public function search($searchTerm) {
         $page = pager_find_page();
         $offset = $this->per_page * $page;
 
@@ -36,7 +44,6 @@ class AusteseElasticSearchQuery {
         $searchParams['index'] = $this->index;
         $searchParams['from'] = $offset;
         $searchParams['size'] = $this->per_page;
-        $searchParams['body']['query']['query_string']['query'] = $keys;
         $searchParams['body']['filter']['and'][]['term']['metadata.project'] = $this->project;
         $searchParams['body']['filter']['and'][]['missing']['field'] = "metadata._superseded";
         $searchParams['body']['filter']['and'][]['missing']['field'] = "metadata._deleted";
@@ -45,8 +52,25 @@ class AusteseElasticSearchQuery {
         if ($this->type) {
             $searchParams['type'] = $this->type;
         }
+        if ($searchTerm) {
+            $searchParams['body']['query']['bool']['must'][] = array('query_string' => array('query' => $searchTerm));
+        }
+
+        foreach($this->searchFields as $searchTerm => $searchValue){
+            if ($searchTerm) {
+                $searchParams['body']['query']['bool']['must'][] = array(
+                    'match'=>array($searchTerm => strtolower($searchValue)));
+            }
+        }
+        print json_encode($searchParams, JSON_PRETTY_PRINT);
 
         $queryResponse = $client->search($searchParams);
+
+        if (isset($queryResponse['error'])) {
+            watchdog('repositoryapi', $queryResponse['error'], NULL, WATCHDOG_ERROR);
+            drupal_set_message($queryResponse['error'], 'error');
+        }
+
 
         pager_default_initialize($queryResponse['hits']['total'], $this->per_page);
 
@@ -59,6 +83,12 @@ class AusteseElasticSearchQuery {
         return $results;
     }
 
+    /**
+     * Format an individual search result, depending on it's metadata type.
+     * 
+     * @param  [type] $searchResult [description]
+     * @return [type]               [description]
+     */
     function _formatResult($searchResult) {
         $obj = $searchResult['_source'];
         $id = $obj['_id'];
@@ -80,8 +110,8 @@ class AusteseElasticSearchQuery {
               'link' => url($url, array('query' => array('project' => $this->project))),
               'type' => $type,
               'score' => $searchResult['_score'],
-              'snippet' => $snippet,
-              'date' => $obj['updateDate']
+              'snippet' => $snippet
+              // 'date' => $obj['updateDate']
           );
 
         switch ($type) {
@@ -114,4 +144,33 @@ class AusteseElasticSearchQuery {
         }
         return $result;
     }
+}
+
+
+/**
+ * Takes a list of field names and a list of combined search terms, and splits them apart
+ * for submission to a search service.
+ * 
+ * eg. ["first", "eventType:1899"]
+ * returns: $searchTerm = "first"
+ *          $searchFields = array("eventType" => "1899")
+ * 
+ * @param  array $formFields list of possible form fields
+ * @param  array $keys       [description]
+ * @return array             array($searchTerm, $searchFields)
+ */
+function _repoapi_process_search_fields($formFields, $keys) {
+    $tempKeys = $keys;
+
+    $searchFields = array();
+    foreach ($formFields as $f){
+        $searchVal = search_expression_extract($tempKeys, $f);
+        if (ISSET($searchVal) && $searchVal != "") {
+          $searchFields[$f] = search_expression_extract($tempKeys, $f);
+          $tempKeys = search_expression_insert($tempKeys,$f);
+       }
+    }
+    $searchTerm = $tempKeys;
+
+    return array($searchTerm, $searchFields);
 }
