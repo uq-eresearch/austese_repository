@@ -6,19 +6,86 @@ function repositoryeventsearch_search_info(){
     'conditions_callback' => 'repository_callback_search_conditions',
   );
 }
+/**
+ * Add advance search options to the event search form
+ * 
+ * @param  [type] $form       [description]
+ * @param  [type] $form_state [description]
+ * @return [type]             [description]
+ */
+function repositoryeventsearch_form_search_form_alter(&$form, &$form_state) {
+  $formFields = array('name','description','references','eventType','startDate','endDate','eventTags');
+  $fieldLabels = array('Name', 'Description','References','Type','Began','Ended','Tags');
+   
+  if (isset($form['module']) && $form['module']['#value'] == 'repositoryeventsearch' && user_access('use advanced search')) {
+    $form['advanced'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Advanced search'),
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+      '#attributes' => array('class' => array('search-advanced')),
+    );
+   foreach ($formFields as $i => $f){
+      $form['advanced'][$f] = array(
+      '#type' => 'textfield',
+      '#title' => t($fieldLabels[$i])
+      );
+    }
+    $form['advanced']['submit'] = array(
+      '#type' => 'submit',
+      '#value' => t('Advanced search'),
+      '#weight' => 100,
+      '#prefix' => '<div class="action">',
+      '#suffix' => '</div>'
+    );
+    // avoid using default validator because it does not allow empty basic search keywords
+    $form['#validate'] = array('repositoryeventsearch_search_form_validate');
+  }
+}
+
+/**
+ * Validate an event search form and set the valid search terms into the form.
+ * 
+ * @param  [type] $form       [description]
+ * @param  [type] $form_state [description]
+ * @return [type]             [description]
+ */
+function repositoryeventsearch_search_form_validate($form, &$form_state) {
+  $formFields = array('name','description','references','eventType','startDate','endDate','eventTags');
+  // Initialize using any existing basic search keywords.
+  $keys = $form_state['values']['keys'];
+  // Insert extra restrictions into the search keywords string.
+  foreach ($formFields as $f){
+    if (isset($form_state['values'][$f]) && strlen($form_state['values'][$f]) > 0) {
+      $keys = search_expression_insert($keys, $f, $form_state['values'][$f]);
+    }
+  }
+  if (!empty($keys)) {
+    form_set_value($form['basic']['processed_keys'], trim($keys), $form_state);
+  }
+}
+
+/**
+ * Execute a search for events
+ * @param  [type] $keys       [description]
+ * @param  [type] $conditions [description]
+ * @return [type]             [description]
+ */
 function repositoryeventsearch_search_execute($keys = NULL, $conditions = NULL){
+    $formFields = array('name','description','references','eventType','startDate','endDate','eventTags');
+    list($searchTerm, $searchFields) = _repoapi_process_search_fields($formFields, $keys);
+
+    $project = null;
     if (ISSET($conditions['project'])){
         $project = $conditions['project'];
-    }
-    if (!$keys) {
-      return;
     }
 
     $query = new AusteseElasticSearchQuery();
     $query->project = $project;
     $query->type = "events";
+    $query->searchFields = $searchFields;
 
-    $results = $query->search($keys);
+    $results = $query->search($searchTerm);
 
     return $results;
 }
