@@ -6,19 +6,84 @@ function repositoryagentsearch_search_info(){
     'conditions_callback' => 'repository_callback_search_conditions',
   );
 }
-function repositoryagentsearch_search_execute($keys = NULL, $conditions = NULL){
-    if (ISSET($conditions['project'])){
-        $project = $conditions['project'];
+function repositoryagentsearch_form_search_form_alter(&$form, &$form_state) {
+     $formFields = array('firstName','lastName','biography');
+     $fieldLabels = array('First Name', 'Last Name', 'Biography');
+   
+  if (isset($form['module']) && $form['module']['#value'] == 'repositoryagentsearch' && user_access('use advanced search')) {
+    $form['advanced'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Advanced search'),
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+      '#attributes' => array('class' => array('search-advanced')),
+    );
+    foreach ($formFields as $i => $f){
+      $form['advanced'][$f] = array(
+      '#type' => 'textfield',
+      '#title' => t($fieldLabels[$i])
+      );
     }
-    if (!$keys) {
-      return;
+    $form['advanced']['agentType'] = array(
+      '#type' => 'checkboxes',
+      '#prefix' => '<div class="criterion">',
+      '#suffix' => '</div>',
+      '#title' => t('Only of type(s)'),
+      '#options' => drupal_map_assoc(array("Person","Organisation","Group"))
+    );
+    $form['advanced']['submit'] = array(
+      '#type' => 'submit',
+      '#value' => t('Advanced search'),
+      '#weight' => 100,
+      '#prefix' => '<div class="action">',
+      '#suffix' => '</div>'
+    );
+    // avoid using default validator because it does not allow empty basic search keywords
+    $form['#validate'] = array('repositoryagentsearch_search_form_validate');
+  }
+}/**
+ * Form validation handler for repositoryagentsearch_form_search_form_alter().
+ */
+function repositoryagentsearch_search_form_validate($form, &$form_state) {
+  $formFields = array('firstName','lastName','biography');
+ 
+  // Initialize using any existing basic search keywords.
+  $keys = $form_state['values']['keys'];
+  // Insert extra restrictions into the search keywords string.
+  foreach ($formFields as $f){
+    if (isset($form_state['values'][$f]) && strlen($form_state['values'][$f]) > 0) {
+      $keys = search_expression_insert($keys, $f, $form_state['values'][$f]);
     }
+  }
+  if (isset($form_state['values']['agentType']) && is_array($form_state['values']['agentType'])) {
+    // Retrieve selected types - Form API sets the value of unselected
+    // checkboxes to 0.
+    $form_state['values']['agentType'] = array_filter($form_state['values']['agentType']);
+    if (count($form_state['values']['agentType'])) {
+      $keys = search_expression_insert($keys, 'agentType', implode(',', array_keys($form_state['values']['agentType'])));
+    }
+  }
 
-    $query = new AusteseElasticSearchQuery();
-    $query->project = $project;
-    $query->type = "agents";
+  if (!empty($keys)) {
+    form_set_value($form['basic']['processed_keys'], trim($keys), $form_state);
+  }
+}
 
-    $results = $query->search($keys);
+function repositoryagentsearch_search_execute($keys = NULL, $conditions = NULL) {
+  $formFields = array('firstName','lastName','biography', 'agentType');
+  list($searchTerm, $searchFields) = _repoapi_process_search_fields($formFields, $keys);
 
-    return $results;
+  $project = null;
+  if (ISSET($conditions['project'])){
+    $project = $conditions['project'];
+  }
+
+  $query = new AusteseElasticSearchQuery();
+  $query->project = $project;
+  $query->type = "agents";
+  $query->searchFields = $searchFields;
+
+  $results = $query->search($keys);
+
+  return $results;
 }
