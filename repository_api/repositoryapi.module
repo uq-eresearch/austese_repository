@@ -661,7 +661,6 @@ function _findRecords($recordtype, $labelFields, $pagesize=null, $pagenum=null, 
     _check_project_exists($project);
     _check_permission_on_project('view metadata', $project);
 
-
     $findopts = array('_deleted'=>array('$exists'=>false));
     if ($filterTerm != null){
       $regex = new MongoRegex("/".$filterTerm."/i");
@@ -682,7 +681,6 @@ function _findRecords($recordtype, $labelFields, $pagesize=null, $pagenum=null, 
     if ($project != null && $project != '') {
       $findopts = array('$and'=>array($findopts, array('metadata.project'=>$project)));
     }
-    //var_dump($findopts);
     //($findopts);
     // sort by reverse id (newest objects should be listed first)
     return $coll->find($findopts)->sort(array($sort=>$sortDirection))->limit($pagesize)->skip($pagenum * $pagesize);
