@@ -62,7 +62,6 @@ class AusteseElasticSearchQuery {
                     'match'=>array($searchTerm => strtolower($searchValue)));
             }
         }
-        print json_encode($searchParams, JSON_PRETTY_PRINT);
 
         $queryResponse = $client->search($searchParams);
 
@@ -131,7 +130,6 @@ class AusteseElasticSearchQuery {
 
           case 'artefacts':
             $result['title'] = '(Artefact) ' . $metadata['source'];
-            $result['extra'] = array($metadata['startDate'],$metadata['endDate']);
             break;
 
           case 'works':
@@ -144,33 +142,4 @@ class AusteseElasticSearchQuery {
         }
         return $result;
     }
-}
-
-
-/**
- * Takes a list of field names and a list of combined search terms, and splits them apart
- * for submission to a search service.
- * 
- * eg. ["first", "eventType:1899"]
- * returns: $searchTerm = "first"
- *          $searchFields = array("eventType" => "1899")
- * 
- * @param  array $formFields list of possible form fields
- * @param  array $keys       [description]
- * @return array             array($searchTerm, $searchFields)
- */
-function _repoapi_process_search_fields($formFields, $keys) {
-    $tempKeys = $keys;
-
-    $searchFields = array();
-    foreach ($formFields as $f){
-        $searchVal = search_expression_extract($tempKeys, $f);
-        if (ISSET($searchVal) && $searchVal != "") {
-          $searchFields[$f] = search_expression_extract($tempKeys, $f);
-          $tempKeys = search_expression_insert($tempKeys,$f);
-       }
-    }
-    $searchTerm = $tempKeys;
-
-    return array($searchTerm, $searchFields);
 }
