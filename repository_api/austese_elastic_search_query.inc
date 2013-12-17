@@ -49,6 +49,7 @@ class AusteseElasticSearchQuery {
         $searchParams['body']['filter']['and'][]['missing']['field'] = "metadata._deleted";
         $searchParams['body']['filter']['and'][]['missing']['field'] = "_deleted";
         $searchParams['body']['highlight']['fields']['*'] = array("number_of_fragments" => 3);
+        $searchParams['body']['highlight']['encoder'] = 'html';
         if ($this->type) {
             $searchParams['type'] = $this->type;
         }
@@ -69,7 +70,6 @@ class AusteseElasticSearchQuery {
             watchdog('repositoryapi', $queryResponse['error'], NULL, WATCHDOG_ERROR);
             drupal_set_message($queryResponse['error'], 'error');
         }
-
 
         pager_default_initialize($queryResponse['hits']['total'], $this->per_page);
 
