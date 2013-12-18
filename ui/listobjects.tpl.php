@@ -37,36 +37,40 @@ if (isset($_GET['project'])) {
  data-apitype="<?php print $apiType;?>">
 </div>
 <div class="row-fluid">
-    <div class="span8" id="newobject">
-     <?php if (austese_access('edit metadata', $project) && $apiType != 'mvd' && $apiType != 'place'): ?>
-       <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/edit<?php if ($project) print '?project='.$project; ?>"><button type="button" class="btn"><i class="fa fa-plus"></i> New <?php print $apiType; ?></button></a>
-     <?php endif; ?>
-     <?php if ($apiType=='event'):?>
-       &nbsp;<a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/map/<?php if ($project): print "?project=".$project; endif; ?>"><button type="button" class="btn"><i class="fa fa-globe"></i> View Map</button></a>
-       &nbsp;<a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/timeline/<?php if ($project): print "?project=".$project; endif; ?>"><button type="button" class="btn"><i class="fa fa-clock-o"></i> View Timeline</button></a>
-       <?php if ($displaytemplate == 'ChronologyDetail'): ?>
+  <div class="span8" id="newobject">
+   <?php if (austese_access('edit metadata', $project) && $apiType != 'mvd' && $apiType != 'place'): ?>
+     <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/edit<?php if ($project) print '?project='.$project; ?>"><button type="button" class="btn"><i class="fa fa-plus"></i> New <?php print $apiType; ?></button></a>
+   <?php endif; ?>
+   <?php if ($apiType=='event'):?>
+     &nbsp;<a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/map/<?php if ($project): print "?project=".$project; endif; ?>"><button type="button" class="btn"><i class="fa fa-globe"></i> View Map</button></a>
+     &nbsp;<a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/timeline/<?php if ($project): print "?project=".$project; endif; ?>"><button type="button" class="btn"><i class="fa fa-clock-o"></i> View Timeline</button></a>
+     <?php if ($displaytemplate == 'ChronologyDetail'): ?>
        &nbsp;<a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/<?php if ($project): print "?project=".$project; endif; ?>"><button type="button" class="btn"><i class="fa fa-list"></i> View Details</button></a>
-       <?php else: ?>
+     <?php else: ?>
        &nbsp;<a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/chronology/<?php if ($project): print "?project=".$project; endif; ?>"><button type="button" class="btn"><i class="fa fa-clock-o"></i> View Chronology</button></a>
-       <?php endif; ?>
-     <?php endif;?>
-     </div>
-    
-    <div class="span2">Sort by: <select  name="sort" id="sort">
-       <option value="_id">created</option>
-       <option value="label"><?php print $filterField; ?></option>
-       <?php if ($apiType == 'event'):?>
+     <?php endif; ?>
+   <?php endif;?>
+ </div>
+
+ <div class="span4">
+  <div class="form-inline">
+    <label for="sort">Sort by:</label>
+    <select  name="sort" id="sort" class="input-small">
+      <option value="_id">created</option>
+      <option value="label"><?php print $filterField; ?></option>
+      <?php if ($apiType == 'event'):?>
         <option <?php if ($displaytemplate == 'ChronologyDetail'):?>
          selected="true" 
-         <?php endif; ?> 
-         value="metadata.startDate">start date</option>
-       <?php endif;?>
-        <?php if ($apiType == 'artefact' || $apiType == 'version'):?>
-        <option value="metadata.date">date</option>
-       <?php endif;?>
-    </select>
-    </div>
-    <input title="Type filter terms and then hit enter" type="text" placeholder="Filter on <?php print $filterField; ?>" class="span2" id="filter"/>
+       <?php endif; ?> 
+       value="metadata.startDate">start date</option>
+     <?php endif;?>
+     <?php if ($apiType == 'artefact' || $apiType == 'version'):?>
+      <option value="metadata.date">date</option>
+    <?php endif;?>
+  </select>
+  <input class="input-medium" title="Type filter terms and then hit enter" type="text" placeholder="Filter on <?php print $filterField; ?>" class="span2" id="filter"/>
+</div>
+</div>
 
 </div>
 <div id="resultsummary"></div>
