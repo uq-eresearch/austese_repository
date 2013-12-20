@@ -1,0 +1,12 @@
+<div class="obj">
+    <h4><a href="/{{modulePrefix}}/works/{{id}}{{projParam}}">{{workTitle}}{{#if name}} ({{name}}){{/if}}</a></h4>
+    {{#if description}}{{{ellipsis description 80}}}<br/>{{/if}}
+    {{#gt versions.length 0}}<i class="fa fa-asterisk"></i> {{versions.length}} associated version{{#neq versions.length 1}}s{{/neq}}{{/gt}}
+    <p>
+    {{#if hasEditPermission}}
+    {{#if locked}}<i class="fa fa-lock"></i> {{/if}}
+    <a href="/{{modulePrefix}}/works/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT METADATA</a>&nbsp;&nbsp;
+    {{/if}}
+    <a href="/reading/{{id}}{{projParam}}" style="font-size:smaller">READ</a>
+    </p>
+    </div>

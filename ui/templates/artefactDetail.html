@@ -1,0 +1,35 @@
+<div>
+    <h1>{{#if source}}{{upper source 80}}{{else}}UNTITLED ARTEFACT{{/if}}</h1>
+    <table class="table">
+    {{#if source}}<tr><td class="metadatalabel muted">Title</td><td>{{source}}</td></tr>{{/if}}
+    {{#if pageNumbers}}<tr><td class="metadatalabel muted">Page Number(s)</td><td>{{pageNumbers}}</td></tr>{{/if}}
+    {{#if date}}<tr><td class="metadatalabel muted">Date</td><td>{{date}}</td></tr>{{/if}}
+    {{#if description}}<tr><td class="metadatalabel muted">Description</td><td>{{{description}}}</td></tr>{{/if}}
+    {{#if bibDetails}}<tr><td class="metadatalabel muted">Bibliographic Details</td><td>{{bibDetails}}</td></tr>{{/if}}
+    {{#if series}}<tr><td class="metadatalabel muted">Series</td><td>{{series}}</td></tr>{{/if}}
+    {{#if publisher}}<tr><td class="metadatalabel muted">Publisher</td><td>{{publisher}}</td></tr>{{/if}}
+    {{#if printer}}<tr><td class="metadatalabel muted">Printer</td><td>{{printer}}</td></tr>{{/if}}
+    {{#if format}}<tr><td class="metadatalabel muted">Format</td><td>{{format}}</td></tr>{{/if}}
+    {{#if paperType}}<tr><td class="metadatalabel muted">Paper Type</td><td>{{paperType}}</td></tr>{{/if}}
+    {{#if artefactSize}}<tr><td class="metadatalabel muted">Size</td><td>{{artefactSize}}</td></tr>{{/if}}
+    </table>
+    {{#gt artefacts.length 0}}
+        <h3 class="muted">Parts</h3><p>{{artefacts.length}} part{{#neq artefacts.length 1}}s{{/neq}} associated with this artefact:</p>
+        <ul>
+        {{#each artefacts}}<li><div class="artefact" data-artefactid="{{.}}" data-template="summary"></div></li>{{/each}}
+        </ul>
+    {{/gt}}
+    {{#gt transcriptions.length 0}}
+        <h3 class="muted"><i class="fa fa-file-text-o"></i> Diplomatic Transcriptions</h3><p>{{transcriptions.length}} transcription{{#neq transcriptions.length 1}}s{{/neq}} associated with this artefact:</p>
+        <ul>
+        {{#each transcriptions}}<li class="resource" data-resourceid="{{.}}" data-template="summary"></li>{{/each}}
+        </ul>
+    {{/gt}}
+    {{#gt facsimiles.length 0}}
+        <h3 class="muted"><i class="fa fa-camera"></i>  Facsimiles</h3><p>{{facsimiles.length}} facsimile{{#neq facsimiles.length 1}}s{{/neq}} associated with this artefact:</p>
+        <div class="row-fluid">
+        {{#each facsimiles}}<div class="span2 resource facsimilePreview" data-resourceid="{{.}}" data-template="facsimilePreview"></div>{{/each}}
+        </div>
+    {{/gt}}
+    {{#if locked}}<i class="fa fa-lock"></i> {{/if}}
+    </div>

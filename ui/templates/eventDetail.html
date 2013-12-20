@@ -1,0 +1,109 @@
+<div class="obj">
+    <h1>{{#if name}}{{upper name 80}}{{else}}UNTITLED EVENT{{/if}}</h4>
+    <table class="table">
+    {{#if name}}<tr><td class="metadatalabel muted">Name</td><td>{{name}}</td></tr>{{/if}}
+    {{#if eventType}}<tr><td class="metadatalabel muted">Event Type</td><td>{{eventType}}</td></tr>{{/if}}
+    {{#if startDate}}<tr><td class="metadatalabel muted">Start Date</td><td>{{startDate}}</td></tr>{{/if}}
+    {{#if endDate}}<tr><td class="metadatalabel muted">End Date</td><td>{{endDate}}</td></tr>{{/if}}
+    {{#if description}}<tr><td class="metadatalabel muted">Description</td><td>{{{description}}}</td></tr>{{/if}}
+    {{#if references}}<tr><td class="metadatalabel muted">References</td><td>{{{references}}}</td></tr>{{/if}}
+    </table>
+    {{#if artefacts}}{{#gt artefacts.length 0}}
+    <h3 class="muted">Artefacts</h3><p>{{artefacts.length}} artefact{{#neq artefacts.length 1}}s{{/neq}} produced by this event:</p>
+    <ul>
+    {{#each artefacts}}<li><div class="artefact" data-artefactid="{{.}}" data-template="summary"></div></li>{{/each}}
+    </ul>
+    {{/gt}}{{/if}}
+    {{#if places}}{{#gt places.length 0}}
+    <h3 class="muted">Places</h3><p>{{places.length}} place{{#neq places.length 1}}s{{/neq}} associated with this event:</p>
+    <ul>
+    {{#each places}}<li class="place" data-placeid="{{.}}" data-template="compact"></li>{{/each}}
+    </ul>
+    {{/gt}}{{/if}}
+    <h3 class="muted">Agent Roles</h3>
+    {{#if authors}}{{#gt authors.length 0}}
+    <p class="eventAgentLabel">Author{{#neq authors.length 1}}s{{/neq}}:</p>
+    <ul>
+    {{#each authors}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}
+    </ul>
+    {{/gt}}{{/if}}
+    {{#if amanuenses}}{{#gt amanuenses.length 0}}
+    <p class="eventAgentLabel">Amanuens{{#eq amanuenses.length 1}}i{{/eq}}{{#neq amanuenses.length 1}}e{{/neq}}s:</p>
+    <ul>
+    {{#each amanuenses}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}
+    </ul>
+    {{/gt}}{{/if}}
+    {{#if influencers}}{{#gt influencers.length 0}}
+    <p class="eventAgentLabel">Influencer{{#neq influencers.length 1}}s{{/neq}}:</p>
+    <ul>
+    {{#each influencers}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}
+    </ul>
+    {{/gt}}{{/if}}
+    {{#if editors}}{{#gt editors.length 0}}
+    <p class="eventAgentLabel">Editor{{#neq editors.length 1}}s{{/neq}}:</p>
+    <ul>
+    {{#each editors}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}
+    </ul>
+    {{/gt}}{{/if}}
+    {{#if publishers}}{{#gt publishers.length 0}}
+    <p class="eventAgentLabel">Publisher{{#neq publishers.length 1}}s{{/neq}}:</p>
+    <ul>
+    {{#each publishers}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}
+    </ul>
+    {{/gt}}{{/if}}
+    {{#if printers}}{{#gt printers.length 0}}
+    <p class="eventAgentLabel">Printer{{#neq printers.length 1}}s{{/neq}}:</p>
+    <ul>
+    {{#each printers}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}
+    </ul>
+    {{/gt}}{{/if}}
+    {{#if compositors}}{{#gt compositors.length 0}}
+    <p class="eventAgentLabel">Compositor{{#neq compositors.length 1}}s{{/neq}}:</p>
+    <ul>
+    {{#each compositors}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}
+    </ul>
+    {{/gt}}{{/if}}
+    {{#if illustrators}}{{#gt illustrators.length 0}}
+    <p class="eventAgentLabel">Illustrator{{#neq illustrators.length 1}}s{{/neq}}:</p>
+    <ul>
+    {{#each illustrators}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}
+    </ul>
+    {{/gt}}{{/if}}
+    {{#if binders}}{{#gt binders.length 0}}
+    <p class="eventAgentLabel">Binder{{#neq binders.length 1}}s{{/neq}}:</p>
+    <ul>
+    {{#each binders}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}
+    </ul>
+    {{/gt}}{{/if}}
+    {{#if readers}}{{#gt readers.length 0}}
+    <p class="eventAgentLabel">Reader{{#neq readers.length 1}}s{{/neq}}:</p>
+    <ul>
+    {{#each readers}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}
+    </ul>
+    {{/gt}}{{/if}}
+    {{#if translators}}{{#gt translators.length 0}}
+    <p class="eventAgentLabel">Translator{{#neq translators.length 1}}s{{/neq}}:</p>
+    <ul>
+    {{#each translators}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}
+    </ul>
+    {{/gt}}{{/if}}
+    {{#if booksellers}}{{#gt booksellers.length 0}}
+    <p class="eventAgentLabel">Bookseller{{#neq booksellers.length 1}}s{{/neq}}:</p>
+    <ul>
+    {{#each booksellers}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}
+    </ul>
+    {{/gt}}{{/if}}
+    {{#if agents}}{{#gt agents.length 0}}
+    <p class="eventAgentLabel">Agent{{#neq agents.length 1}}s{{/neq}} (no role specified):</p>
+    <ul>
+    {{#each agents}}<li><div class="agent" data-agentid="{{.}}" data-template="summary"></div></li>{{/each}}
+    </ul>
+    {{/gt}}{{/if}}
+    {{#if events}}{{#gt events.length 0}}
+        <h3 class="muted">Sub-Events</h3><p>{{events.length}} sub-event{{#neq events.length 1}}s{{/neq}} associated with this event:</p>
+        <ul>
+        {{#each events}}<li><div class="event" data-eventid="{{.}}" data-template="summary"></div></li>{{/each}}
+        </ul>
+    {{/gt}}{{/if}}
+    {{#if locked}}<i class="fa fa-lock"></i> {{/if}}
+    </div>

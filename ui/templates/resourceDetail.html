@@ -1,0 +1,28 @@
+<div>
+    <h1>{{#if metadata.title}}{{upper metadata.title 80}}{{else}}{{upper filename 100}}{{/if}}</h1>
+    <h3>Metadata</h3>
+    <table class="table">
+        {{#if metadata.title}}<tr><td class="metadatalabel muted">Title</td><td>{{metadata.title}}</td></tr>{{/if}}
+        {{#if metadata.description}}<tr><td class="muted">Description</td><td>{{{metadata.description}}}</td></tr>{{/if}}
+        {{#if metadata.coverage}}<tr><td class="muted">Coverage</td><td>{{metadata.coverage}}</td></tr>{{/if}}
+        {{#if metadata.format}}<tr><td class="muted">Format</td><td>{{metadata.format}}</td></tr>{{/if}}
+        {{#if metadata.language}}<tr><td class="muted">Language</td><td>{{metadata.language}}</td></tr>{{/if}}
+        {{#if metadata.license}}<tr><td class="muted">License</td><td>{{metadata.license}}</td></tr>{{/if}}
+        {{#if metadata.publisher}}<tr><td class="muted">Publisher</td><td>{{metadata.publisher}}</td></tr>{{/if}}
+        {{#if metadata.rights}}<tr><td class="muted">Rights</td><td>{{metadata.rights}}</td></tr>{{/if}}
+        {{#if metadata.source}}<tr><td class="muted">Source</td><td>{{metadata.source}}</td></tr>{{/if}}
+    </table>
+    <h3>File information</h3>
+    <table class="table">
+    <tr><td class="metadatalabel muted">File name</td><td>{{filename}} </td></td></td></tr>
+    <tr><td class="muted">File type</td><td>{{metadata.filetype}}</td></tr>
+    <tr><td class="muted">File size</td><td>{{filesize length}}</td></tr>
+    <tr><td class="muted">MD5 checksum</td><td>{{md5}}</td></tr>
+    </table>
+    {{#match metadata.filetype "image"}}
+        <h3>Image Preview</h3>
+        <div data-id="http://{{serverName}}/repository/resources/{{id}}/content"><a title="Click on image to open in Resource View" href="http://{{serverName}}/repository/resources/{{id}}/content{{projParam}}">
+        <img class="thumbnail" src="{{uri}}?scale=true&height=480" alt="Image preview"/></a></div>
+    {{/match}}
+    {{#if locked}}<i class="fa fa-lock"></i> {{/if}}
+    </div>

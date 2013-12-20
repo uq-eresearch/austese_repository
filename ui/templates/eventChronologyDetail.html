@@ -1,0 +1,12 @@
+<div class="obj chronologyItem">
+    <div class="row-fluid"><div class="span3">
+    <a href="/{{modulePrefix}}/events/{{id}}{{projParam}}">{{#if startDate}}{{startDate}} &ndash; {{else}}Unspecified Date &ndash; {{/if}}
+    {{#if endDate}}{{endDate}}{{/if}}
+    </a></div><div class="span9">
+    {{#if name}}<b>{{name}}</b><br/>{{/if}}
+    {{{description}}}
+    {{#if hasEditPermission}}
+    {{#if locked}}<i class="fa fa-lock"></i> {{/if}}
+     <a target="_blank" href="/{{modulePrefix}}/events/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT METADATA</a>
+    {{/if}}
+    </div></div>

@@ -1,0 +1,6 @@
+
+    <div class="obj">
+        <h4><a href="/{{modulePrefix}}/collections/{{id}}{{projParam}}">{{name}}</a></h4>
+        {{#gt resources.length 0}}<i class="fa fa-asterisk"></i> {{resources.length}} associated resource{{#neq resources.length 1}}s{{/neq}}{{/gt}}
+        {{#if hasEditPermission}}<p><a href="/{{modulePrefix}}/collections/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT METADATA</a></p>{{/if}}
+    </div>

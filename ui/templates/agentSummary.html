@@ -1,0 +1,10 @@
+<div class="obj">
+    <h4>{{#eq agentType "Person"}}<i class="fa fa-user"></i> {{/eq}}{{#eq agentType "Organisation"}}<i class="fa fa-building-o"></i> {{/eq}}{{#eq agentType "Group"}}<i class="fa fa-users"></i> {{/eq}}<a title="{{lastName}}{{#if firstName}}, {{firstName}}{{/if}}"
+    data-content="{{biography}}" href="/{{modulePrefix}}/agents/{{id}}{{projParam}}">{{lastName}}{{#if firstName}}, {{firstName}}{{/if}}</a></h4>
+    {{#if birthDate}} b. {{birthDate}}, {{/if}}
+    {{#if deathDate}} d. {{deathDate}}, {{/if}}
+    {{{ellipsis biography 80}}}
+    {{#if hasEditPermission}}
+        <p>{{#if locked}}<i class="fa fa-lock"></i> {{/if}}<a href="/{{modulePrefix}}/agents/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT METADATA</a></p>
+    {{/if}}
+    </div>

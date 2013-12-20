@@ -1,0 +1,12 @@
+<div class="obj">
+    <h4><a href="/{{modulePrefix}}/events/{{id}}{{projParam}}">
+      {{#if name}}{{name}}{{else}}Untitled Event{{/if}}{{#if eventType}} ({{eventType}}){{/if}}</a></h4>
+        {{#if startDate}}{{startDate}} &ndash; {{/if}}
+        {{#if endDate}}{{endDate}}{{/if}}
+        {{#if description}}<br/>{{ellipsis description 80}}{{/if}}
+        {{#gt artefacts.length 0}}<br/>Produced {{artefacts.length}} artefact{{#neq artefacts.length 1}}s{{/neq}}{{/gt}}
+        {{#gt events.length 0}}<br/>{{events.length}} sub-event{{#neq events.length 1}}s{{/neq}}{{/gt}}
+        {{#if hasEditPermission}}
+        <p>{{#if locked}}<i class="fa fa-lock"></i> {{/if}}<a href="/{{modulePrefix}}/events/edit/{{id}}{{projParam}}" style="font-size:smaller">EDIT METADATA</a></p>
+        {{/if}}
+    </div>

@@ -1,0 +1,11 @@
+<div class="span6">
+    <h1>{{#if name}}{{upper name 80}}{{else}}UNNAMED PLACE{{/if}}{{#if state}}, {{state}}{{/if}}</h1>
+        <table class="table">
+        <tr><td class="metadatalabel muted">Name</td><td>{{name}}</td></tr>
+        <tr><td class="muted">State</td><td>{{state}}</td></tr>
+        <tr><td class="muted">Longitude</td><td>{{longitude}}</td></tr>
+        <tr><td class="muted">Latitude</td><td>{{latitude}}</td></tr>
+        <tr><td class="muted">Feature Type</td><td><span class="featureCode">{{featureCode }}</span></td></tr>
+        </table>
+    </div>
+    <div class="span6 minimap" data-lat="{{latitude}}" data-long="{{longitude}}"></div>

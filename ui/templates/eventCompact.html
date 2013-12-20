@@ -1,0 +1,5 @@
+<div class="obj">
+    <h5><a {{#if newTab}}target="_blank"{{/if}} data-content="{{#if startDate}}{{startDate}} &ndash; {{/if}}
+    {{#if endDate}}{{endDate}}{{/if}}<br/>{{{description}}}" href="/{{modulePrefix}}/events/{{id}}{{projParam}}">
+    {{#if name}}{{name}}{{else}}Untitled Event{{/if}}{{#if eventType}} ({{eventType}}){{/if}}</a></h5>
+    </div>
