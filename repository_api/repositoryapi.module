@@ -536,7 +536,7 @@ function filterElasticSearchRecords($recordtype, $labelFields, $pagesize=10, $pa
     $searchParams['index'] = $config['escollection'];
     $searchParams['type']  = $recordtype;
     $searchParams['size'] = $pagesize;
-    $searchParams['from']  = $pagenum;
+    $searchParams['from']  = $pagenum * $pagesize;
     $searchParams['body']['sort'][] = array($sort => array("order" => $sortDirection));
     if ($filterTerm) {
       $searchParams['body']['query']['multi_match']['query'] = $filterTerm;
