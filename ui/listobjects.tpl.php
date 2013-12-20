@@ -56,8 +56,8 @@ if (isset($_GET['project'])) {
   <div class="form-inline">
     <label for="sort">Sort by:</label>
     <select  name="sort" id="sort" class="input-small">
-      <option value="_id">created</option>
       <option value="label"><?php print $filterField; ?></option>
+      <option value="_id">created</option>
       <?php if ($apiType == 'version'):?>
         <option value="metadata.firstLine">first line</option>
       <?php endif; ?>
