@@ -58,6 +58,9 @@ if (isset($_GET['project'])) {
     <select  name="sort" id="sort" class="input-small">
       <option value="_id">created</option>
       <option value="label"><?php print $filterField; ?></option>
+      <?php if ($apiType == 'version'):?>
+        <option value="metadata.firstLine">first line</option>
+      <?php endif; ?>
       <?php if ($apiType == 'event'):?>
         <option <?php if ($displaytemplate == 'ChronologyDetail'):?>
          selected="true" 
