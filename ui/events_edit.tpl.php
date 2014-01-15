@@ -106,10 +106,11 @@ if (isset($_GET['project'])) {
       </div>
     </div>
     <hr class="muted"/>
+    <h4><i class="fa formSectionCollapser fa-chevron-down"></i> Agent Roles</h4>
+    <div style="display:none" class="formCollapsingSection">
+    
     <div class="control-group">
     <div class="controls">
-    <h4>Agent Roles</h4>
-    
     <a target="_blank" href="/repository/agents/edit<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
         <button type="button" title="Describe new agent in new tab" class="btn"><i class="fa fa-plus"></i> Create new agent</button>
     </a>
@@ -206,7 +207,7 @@ if (isset($_GET['project'])) {
         <p class="help-block">Agents participating in this event as booksellers</p>
       </div>
     </div>
-    
+    </div><!--  agentRolesCollapse -->
     </fieldset>
     </div>
     <div class="well white-well">

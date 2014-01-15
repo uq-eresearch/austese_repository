@@ -44,7 +44,19 @@ jQuery.fn.serializeObject = function() {
               }
             });
         } else if (apiOperation == "edit"){
-            jQuery('#save-btn, .save-btn').on('click',onSave);
+            jQuery('#save-btn, .save-btn').click(onSave);
+            jQuery('.formSectionCollapser').click(function(){
+                // warning: this will collapse all sections in form. at present no forms have more than one collapsing section so this is ok.
+                var collapsing = jQuery('.formCollapsingSection');
+                collapsing.toggle();
+                
+                if (collapsing.is(":visible")){
+                    jQuery(this).addClass('fa-chevron-up').removeClass('fa-chevron-down');
+                } else {
+                    jQuery(this).addClass('fa-chevron-down').removeClass('fa-chevron-up');
+                }
+                
+            });
             if (existingId) {
                  loadObjectIntoEditor(existingId);
                  jQuery('#dupe-btn, .dupe-btn').css('display','inline').on('click',onDuplicate);
