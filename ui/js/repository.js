@@ -103,12 +103,12 @@ jQuery.fn.serializeObject = function() {
                                     matching--;
                                 }
                             });
-                            if (matching){
+                            /*if (matching){
                                 jQuery('#existingOutput').html("Records with similar " + fieldName + ": " 
                                         + display + (result.count > 10? " and " + (result.count - 10) + " more": ""));
                             } else {
                                 jQuery('#existingOutput').empty();
-                            }
+                            }*/
                         }
                     });
                } else {
