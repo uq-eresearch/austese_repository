@@ -90,7 +90,6 @@ class AusteseElasticSearchQuery {
      */
     function _formatResult($searchResult) {
         $obj = $searchResult['_source'];
-        $id = $obj['_id'];
         $type = $searchResult['_type'];
         $metadata = $obj['metadata'];
         $snippet = "";
@@ -103,15 +102,19 @@ class AusteseElasticSearchQuery {
           }
         }
 
-        $url = 'repository/'. $type . '/' . $id;
 
         $result = array(
-              'link' => url($url, array('query' => array('project' => $this->project))),
               'type' => $type,
               'score' => $searchResult['_score'],
               'snippet' => $snippet
               // 'date' => $obj['updateDate']
           );
+
+        // Prepare default URL
+        if (ISSET($obj['_id'])) {
+          $url = 'repository/'. $type . '/' . $obj['_id'];
+          $result['link'] = url($url, array('query' => array('project' => $this->project)));
+        }
 
         switch ($type) {
           case 'transcriptions':
