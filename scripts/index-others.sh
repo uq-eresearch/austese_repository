@@ -33,9 +33,19 @@ curl -XPUT "localhost:9200/austese/_settings" -d'
               "type":"pattern_replace",
               "pattern": "(^a\/the |^a |^an |^the )",
               "replacement":" "
+            },
+            "ngram_filter": {
+              "max_gram": 10,
+              "min_gram": 1,
+              "type": "nGram"
             }
         },
         "analyzer": { 
+            "ngram_analyzer": {
+                 "type": "custom",
+                 "filter": ["standard","lowercase","asciifolding","ngram_filter"],
+                 "tokenizer": "standard"
+            },
             "sort_analyser": { 
                 "type": "custom", 
                 "tokenizer": "keyword", 
@@ -95,7 +105,7 @@ curl -XPUT "localhost:9200/austese/works/_mapping" -d'
                          "fields": {
                                 "workTitle": {
                                     "type": "string",
-                                    "analyzer": "standard",
+                                    "analyzer": "ngram_analyzer",
                                     "index": "analyzed"
                                 },
                                 "_sort_workTitle": {
