@@ -13,7 +13,7 @@ if ($apiType == "artefact"){
 } else if ($apiType == "place" || $apiType == "agent" || $apiType == "collection" || $apiType == "mvd") {
     $filterField = "name";
 } else if ($apiType == "event" || $apiType == "action") {
-    $filterField = "description";
+    $filterField = "name";
 } else {
     $filterField = "title";
 }
@@ -57,19 +57,21 @@ if (isset($_GET['project'])) {
     <label for="sort">Sort by:</label>
     <select  name="sort" id="sort" class="input-small">
       <option value="label"><?php print $filterField; ?></option>
-      <option value="_id">created</option>
+
       <?php if ($apiType == 'version'):?>
-        <option value="metadata.firstLine">first line</option>
+        <option value="firstLine">first line</option>
+        <option value="name">version name</option>
       <?php endif; ?>
       <?php if ($apiType == 'event'):?>
         <option <?php if ($displaytemplate == 'ChronologyDetail'):?>
          selected="true" 
        <?php endif; ?> 
-       value="metadata.startDate">start date</option>
+       value="startDate">start date</option>
      <?php endif;?>
      <?php if ($apiType == 'artefact' || $apiType == 'version'):?>
-      <option value="metadata.date">date</option>
+      <option value="date">date</option>
     <?php endif;?>
+    <option value="_id">record added</option>
   </select>
   <input class="input-medium" title="Type filter terms and then hit enter" type="text" placeholder="Filter on <?php print $filterField; ?>" class="span2" id="filter"/>
 </div>

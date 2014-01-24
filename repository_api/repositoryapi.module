@@ -509,9 +509,6 @@ function listRecords($recordtype, $labelFields) {
  */
 function filterElasticSearchRecords($recordtype, $labelFields, $pagesize=10, $pagenum=0, $filterTerm="", $project) {
     $config = repositoryapi_get_configuration();
-    foreach ($labelFields as &$value) {
-      $value = 'metadata.'.$value;
-    }
     
     // allow param to filter results
     $sort = get_get_parameter('sort');
@@ -519,8 +516,10 @@ function filterElasticSearchRecords($recordtype, $labelFields, $pagesize=10, $pa
         $sort = $labelFields[0];
     }
     $sortDirection = "asc";
-    if (!$sort) {
+    if (!$sort || $sort == "_id") {
         $sort = "_id";
+    } else {
+        $sort = "_sort_" . $sort;
     }
     if ($sort == "_id"){
         $sortDirection = "desc";
@@ -528,7 +527,7 @@ function filterElasticSearchRecords($recordtype, $labelFields, $pagesize=10, $pa
     // get search fields from param
     $searchField = get_get_parameter('searchField');
     if ($searchField) {
-        $searchFields = array('metadata.'.$searchField);
+        $searchFields = array($searchField);
     }
     // otherwise use label field(s)
     if (!$searchFields) {
@@ -540,24 +539,27 @@ function filterElasticSearchRecords($recordtype, $labelFields, $pagesize=10, $pa
     $searchParams['type']  = $recordtype;
     $searchParams['size'] = $pagesize;
     $searchParams['from']  = $pagenum * $pagesize;
-    $searchParams['body']['sort'][] = array($sort => array("order" => $sortDirection));
+    // multi-field sort for agent names
+    if ($sort == '_sort_lastName') {
+        $searchParams['body']['sort'][] = array('_sort_lastName' => array("order" => $sortDirection), '_sort_firstName'=> array("order"=>$sortDirection));
+    } else {
+        $searchParams['body']['sort'][] = array($sort => array("order" => $sortDirection));
+    }
     if ($filterTerm) {
       $searchParams['body']['query']['multi_match']['query'] = $filterTerm;
       $searchParams['body']['query']['multi_match']['fields'] = $searchFields;
     }
-    $searchParams['body']['filter']['and'][]['term']['metadata.project'] = $project;
-    $searchParams['body']['filter']['and'][]['missing']['field'] = "metadata._superseded";
-    $searchParams['body']['filter']['and'][]['missing']['field'] = "metadata._deleted";
+    $searchParams['body']['filter']['and'][]['term']['project'] = $project;
+    $searchParams['body']['filter']['and'][]['missing']['field'] = "_superseded";
     $searchParams['body']['filter']['and'][]['missing']['field'] = "_deleted";
     // $searchParams['body']['highlight']['fields']['*'] = array("number_of_fragments" => 3);
     $queryResponse = $client->search($searchParams);
-
     $results = array();
     $results['collection'] = $recordtype;
     $results['count'] = $queryResponse['hits']['total'];
     $results['pageSize'] = $pagesize;
     $results['pageIndex'] = $pagenum;
-
+    $results['query'] = $searchParams;
     foreach($queryResponse['hits']['hits'] as $searchResult) {
       $id = $searchResult['_id'];
       $returnobj = $searchResult['_source']['metadata'];
