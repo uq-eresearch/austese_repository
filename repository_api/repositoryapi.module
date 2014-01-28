@@ -479,11 +479,10 @@ function listRecords($recordtype, $labelFields) {
     $pagenum = get_get_paramter_int('pageIndex');
     $recurse = isset($_GET['recurse']);
     $filterTerm = get_get_parameter('query');
-
+    $project = get_get_parameter('project');
     if ($_SERVER['SERVER_ADDR'] == $_SERVER['REMOTE_ADDR']) {
       // Allow access from local server for api calls
     } else {
-      $project = get_get_parameter('project');
       _check_project_exists($project);
       _check_permission_on_project('view metadata', $project);
     }
@@ -552,7 +551,9 @@ function filterElasticSearchRecords($recordtype, $labelFields, $pagesize=10, $pa
       }
       $searchParams['body']['query']['bool']['minimum_should_match'] = 1;
     }
-    $searchParams['body']['filter']['and'][]['term']['project'] = $project;
+    if ($project != null){
+       $searchParams['body']['filter']['and'][]['term']['project'] = $project;
+    }
     $searchParams['body']['filter']['and'][]['missing']['field'] = "_superseded";
     $searchParams['body']['filter']['and'][]['missing']['field'] = "_deleted";
     // $searchParams['body']['highlight']['fields']['*'] = array("number_of_fragments" => 3);
