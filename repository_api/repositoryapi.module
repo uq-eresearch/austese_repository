@@ -546,8 +546,11 @@ function filterElasticSearchRecords($recordtype, $labelFields, $pagesize=10, $pa
         $searchParams['body']['sort'][] = array($sort => array("order" => $sortDirection));
     }
     if ($filterTerm) {
-      $searchParams['body']['query']['multi_match']['query'] = $filterTerm;
-      $searchParams['body']['query']['multi_match']['fields'] = $searchFields;
+      $filterTerm = strtolower($filterTerm);
+      foreach ($searchFields as &$field){
+       $searchParams['body']['query']['bool']['should'][]['term'][$field] = $filterTerm;
+      }
+      $searchParams['body']['query']['bool']['minimum_should_match'] = 1;
     }
     $searchParams['body']['filter']['and'][]['term']['project'] = $project;
     $searchParams['body']['filter']['and'][]['missing']['field'] = "_superseded";
