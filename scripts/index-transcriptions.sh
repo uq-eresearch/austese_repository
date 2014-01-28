@@ -4,7 +4,13 @@
 #curl -X DELETE localhost:9200/austese/transcriptions
 
 # Create the index
-curl -XPUT localhost:9200/austese/
+read -p "Do you wish to create ElasticSearch 'austese' index? " yn
+case $yn in
+    [Yy]* ) curl -XPUT localhost:9200/austese/;;
+    [Nn]* ) ;;
+    * ) ;;
+esac
+
 
 #                    "file": {
 #                        "term_vector": "with_positions_offsets",

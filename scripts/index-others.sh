@@ -8,13 +8,13 @@
 
 read -p "Do you wish to delete your ElasticSearch 'austese' index? " yn
 case $yn in
-    [Yy]* ) curl -X DELETE localhost:9200/austese;;
+    [Yy]* ) curl -X DELETE localhost:9200/austese;curl -XPUT localhost:9200/austese/;;
     [Nn]* ) ;;
     * ) ;;
 esac
 
 
-curl -XPUT localhost:9200/austese/
+
 
 for collection in artefacts agents versions events works
 do
