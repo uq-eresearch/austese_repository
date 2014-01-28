@@ -215,7 +215,7 @@ curl -XPUT "localhost:9200/austese/artefacts/_mapping" -d'
              "fields": {
                     "source": {
                         "type": "string",
-                        "analyzer": "standard",
+                        "analyzer": "ngram_analyzer",
                         "index": "analyzed"
                     },
                     "_sort_source": {
@@ -270,7 +270,7 @@ curl -XPUT "localhost:9200/austese/versions/_mapping" -d'
              "fields": {
                     "firstLine": {
                         "type": "string",
-                        "analyzer": "standard",
+                        "analyzer": "ngram_analyzer",
                         "index": "analyzed"
                     },
                     "_sort_firstLine": {
@@ -295,7 +295,7 @@ curl -XPUT "localhost:9200/austese/versions/_mapping" -d'
              "fields": {
                     "name": {
                         "type": "string",
-                        "analyzer": "standard",
+                        "analyzer": "ngram_analyzer",
                         "index": "analyzed"
                     },
                     "_sort_name": {
@@ -322,7 +322,7 @@ curl -XPUT "localhost:9200/austese/versions/_mapping" -d'
              "fields": {
                     "versionTitle": {
                         "type": "string",
-                        "analyzer": "standard",
+                        "analyzer": "ngram_analyzer",
                         "index": "analyzed"
                     },
                     "_sort_versionTitle": {
@@ -359,7 +359,7 @@ curl -XPUT "localhost:9200/austese/agents/_mapping" -d'
              "fields": {
                     "firstName": {
                         "type": "string",
-                        "analyzer": "standard",
+                        "analyzer": "ngram_analyzer",
                         "index": "analyzed"
                     },
                     "_sort_firstName": {
@@ -374,7 +374,7 @@ curl -XPUT "localhost:9200/austese/agents/_mapping" -d'
              "fields": {
                     "lastName": {
                         "type": "string",
-                        "analyzer": "standard",
+                        "analyzer": "ngram_analyzer",
                         "index": "analyzed"
                     },
                     "_sort_lastName": {
@@ -420,7 +420,7 @@ curl -XPUT "localhost:9200/austese/events/_mapping" -d'
              "fields": {
                     "description": {
                         "type": "string",
-                        "analyzer": "standard",
+                        "analyzer": "ngram_analyzer",
                         "index": "analyzed"
                     },
                     "_sort_description": {
@@ -453,7 +453,7 @@ curl -XPUT "localhost:9200/austese/events/_mapping" -d'
              "fields": {
                     "name": {
                         "type": "string",
-                        "analyzer": "standard",
+                        "analyzer": "ngram_analyzer",
                         "index": "analyzed"
                     },
                     "_sort_name": {
