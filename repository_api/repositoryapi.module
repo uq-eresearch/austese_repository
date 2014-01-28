@@ -480,10 +480,13 @@ function listRecords($recordtype, $labelFields) {
     $recurse = isset($_GET['recurse']);
     $filterTerm = get_get_parameter('query');
 
-
-    $project = get_get_parameter('project');
-    _check_project_exists($project);
-    _check_permission_on_project('view metadata', $project);
+    if ($_SERVER['SERVER_ADDR'] == $_SERVER['REMOTE_ADDR']) {
+      // Allow access from local server for api calls
+    } else {
+      $project = get_get_parameter('project');
+      _check_project_exists($project);
+      _check_permission_on_project('view metadata', $project);
+    }
 
     
     if (in_array($recordtype, $config['esindexes']) && !$recurse) {
@@ -660,8 +663,12 @@ function _findRecords($recordtype, $labelFields, $pagesize=null, $pagenum=null, 
     if ($project == null){
         $project = get_get_parameter('project');
     }
-    _check_project_exists($project);
-    _check_permission_on_project('view metadata', $project);
+    if ($_SERVER['SERVER_ADDR'] == $_SERVER['REMOTE_ADDR'] || $checkperms == false) {
+        // Allow access from local server for api calls
+    } else {
+      _check_project_exists($project);
+      _check_permission_on_project('view metadata', $project);
+    }
 
     $findopts = array('_deleted'=>array('$exists'=>false));
     if ($filterTerm != null){
@@ -732,7 +739,9 @@ function _loadRecord($recordtype, $id, $revision, $checkperms, $skip_deleted=fal
     $returnobj['id'] = $id->{'$id'};
 
     // check project and permissions
-    if ($checkperms) {
+    if ($_SERVER['SERVER_ADDR'] == $_SERVER['REMOTE_ADDR'] || $checkperms == false) {
+        // Allow access from local server for api calls
+    } else {
       $project = $dbobj['metadata']['project'];
       _check_project_exists($project);
       _check_permission_on_project('view metadata', $project);
