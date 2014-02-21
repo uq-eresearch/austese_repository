@@ -36,18 +36,22 @@ jQuery(document).ready(function() {
             return dateString;
         }
     };
-    var searchArgs = (project? "?project=" + project : "");
-    if (tag) {
-        if (searchArgs) {
-            searchArgs += "&";
-        } else {
-            searchArgs += "?"
-        }
-        searchArgs += "searchField=eventtags&query=" + tag
+    var searchArgs = {};
+    if (project){
+        searchArgs.project = project;
     }
+    if (tag){
+        searchArgs.searchField="eventtags";
+        searchArgs.query = tag;
+    }
+    // arbitrary limit to number of events to display on timeline
+    searchArgs.pageSize = 5000;
+    searchArgs.pageIndex = 0;
+    
     jQuery.ajax({
         type: 'GET',
-        url: '/' + modulePath + '/api/events/' + searchArgs,
+        url: '/' + modulePath + '/api/events/',
+        data: searchArgs,
         dataType: "json",
         headers: {
             'Accept': 'application/json'
