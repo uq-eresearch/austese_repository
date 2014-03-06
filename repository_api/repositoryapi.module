@@ -321,11 +321,13 @@ function get_get_parameter($name) {
         return $_GET[$name];
     return null;
 }
+
 function get_get_paramter_int($name) {
     if (isset($_GET[$name]))
         return $_GET[$name];
     return 0;
 }
+
 function listResources(){
   $config = repositoryapi_get_configuration();
   
@@ -414,6 +416,7 @@ function _check_project_exists($project) {
     exit;
   }
 }
+
 function _check_permission_on_project($permission, $project=False) {
   if (!$project) {
     $project = get_get_parameter('project');
@@ -853,11 +856,6 @@ function getResource($id){
       }
   }
 }
-
-function getResourceContent($id) {
-
-}
-
 
 function _loadResource($id, $skip_perm_check=false, $skip_deleted=false) {
   global $mongo_requests, $mongo_time;
