@@ -28,6 +28,25 @@ class AusteseElasticSearchQuery {
     
     }
 
+    /**
+     * All searches must be within a project. This function redirects the current
+     * search to a users default project.
+     *
+     * Never returns, redirects to either a project search, or a login form.
+     */
+    private function redirectToProject() {
+      $groups = og_get_groups_by_user();
+      if (!empty($groups)) {
+        $groups = $groups['node'];
+        reset($groups);
+        $default_project = key($groups);
+
+        drupal_goto(current_path(), array('query' => array('project' => $default_project)));
+      } else {
+        drupal_set_message(t('You must be signed in and a member of a project to search.'));
+        drupal_goto('user/login');
+      }
+    }
 
     /**
      * Perform the search, calling out to elastic search and returning results
@@ -39,6 +58,9 @@ class AusteseElasticSearchQuery {
     public function search($searchTerm) {
         $page = pager_find_page();
         $offset = $this->per_page * $page;
+        if (empty($this->project)) {
+          $this->redirectToProject();
+        }
 
         $client = new Elasticsearch\Client();
         $searchParams['index'] = $this->index;
@@ -90,7 +112,6 @@ class AusteseElasticSearchQuery {
      */
     function _formatResult($searchResult) {
         $obj = $searchResult['_source'];
-        $id = $obj['_id'];
         $type = $searchResult['_type'];
         $metadata = $obj['metadata'];
         $snippet = "";
@@ -103,15 +124,19 @@ class AusteseElasticSearchQuery {
           }
         }
 
-        $url = 'repository/'. $type . '/' . $id;
 
         $result = array(
-              'link' => url($url, array('query' => array('project' => $this->project))),
               'type' => $type,
               'score' => $searchResult['_score'],
               'snippet' => $snippet
               // 'date' => $obj['updateDate']
           );
+
+        // Prepare default URL
+        if (ISSET($obj['_id'])) {
+          $url = 'repository/'. $type . '/' . $obj['_id'];
+          $result['link'] = url($url, array('query' => array('project' => $this->project)));
+        }
 
         switch ($type) {
           case 'transcriptions':

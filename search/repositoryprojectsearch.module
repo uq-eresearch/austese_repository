@@ -9,6 +9,7 @@ function repositoryprojectsearch_search_info(){
 
 
 function repositoryprojectsearch_search_execute($keys = NULL, $conditions = NULL) {
+    $project = NULL;
     if (ISSET($conditions['project'])){
         $project = $conditions['project'];
     }

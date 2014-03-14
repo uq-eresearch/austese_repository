@@ -14,6 +14,24 @@ How to use this module
 License: GPL 3.0
 
 
+### MongoDB Setup (add indexes)
+
+The following index must be added to MongoDB.
+
+    db.fs.files.ensureIndex({'metadata._resourceid': 1, 'metadata._superseded': 1})
+
+
+### Apache Setup
+
+Some of the JSON responses returned by the API in the module can be quite large. It's important
+to tell Apache to compress these before sending them to the client.
+
+This is done by adding the following line to `/etc/apache2/mods-available/deflate.conf` and
+then restarting or reloading Apache.
+
+    AddOutputFilterByType DEFLATE application/json
+
+
 ## Setting up ElasticSearch Indexing
 
 | MongoDB River Plugin     | ElasticSearch    | MongoDB |

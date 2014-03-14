@@ -163,6 +163,13 @@ if (isset($_GET['project'])) {
           </label>
         </div>
     </div>
+    <div class="control-group">
+      <label class="control-label" for="status">Status</label>
+      <div class="controls">
+        <textarea rows="1" name="status" type="text" class="input-xxlarge" id="status"></textarea>
+        <p class="help-block">Notes indicating status e.g. raw transcription only, edited etc</p>
+      </div>
+    </div>
   <div class="control-group">
      <div class="controls">
        <input type="button" class="save-btn btn btn-primary" value="Save">
