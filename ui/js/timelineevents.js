@@ -82,11 +82,7 @@ jQuery(document).ready(function() {
                     eventData.endDate=formatDate(e.endDate);
                 }
                 if (e.artefacts && e.artefacts.length > 0){
-<<<<<<< HEAD
-                    //event.classname = "artefact-event"
-=======
                     eventData.classname = "artefact-event"
->>>>>>> 2e7e9920b3caa6b04d311c30c046249b82634d56
                 } 
                 timelineData.timeline.date.push(eventData);
             });
