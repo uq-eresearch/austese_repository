@@ -39,15 +39,20 @@ if (isset($_GET['project'])) {
 <div class="row-fluid">
   <div class="span8" id="newobject">
    <?php if (austese_access('edit metadata', $project) && $apiType != 'mvd' && $apiType != 'place'): ?>
-     <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/edit<?php if ($project) print '?project='.$project; ?>"><button type="button" class="btn"><i class="fa fa-plus"></i> New <?php print $apiType; ?></button></a>
+     <a href="<?php print base_path().$modulePrefix; ?>/<?php print $apiType; ?>s/edit<?php if ($project) print '?project='
+     .$project; ?>"><button type="button" class="btn"><i class="fa fa-plus"></i> New <?php print $apiType; ?></button></a>
    <?php endif; ?>
    <?php if ($apiType=='event'):?>
-     &nbsp;<a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/map/<?php if ($project): print "?project=".$project; endif; ?>"><button type="button" class="btn"><i class="fa fa-globe"></i> View Map</button></a>
-     &nbsp;<a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/timeline/<?php if ($project): print "?project=".$project; endif; ?>"><button type="button" class="btn"><i class="fa fa-clock-o"></i> View Timeline</button></a>
+     &nbsp;<a href="<?php print base_path().$modulePrefix; ?>/<?php print $apiType; ?>s/map/<?php if ($project): print "?project="
+     .$project; endif; ?>"><button type="button" class="btn"><i class="fa fa-globe"></i> View Map</button></a>
+     &nbsp;<a href="<?php print base_path().$modulePrefix; ?>/<?php print $apiType; ?>s/timeline/<?php if ($project): print "?project="
+     .$project; endif; ?>"><button type="button" class="btn"><i class="fa fa-clock-o"></i> View Timeline</button></a>
      <?php if ($displaytemplate == 'ChronologyDetail'): ?>
-       &nbsp;<a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/<?php if ($project): print "?project=".$project; endif; ?>"><button type="button" class="btn"><i class="fa fa-list"></i> View Details</button></a>
+       &nbsp;<a href="<?php print base_path().$modulePrefix; ?>/<?php print $apiType; ?>s/<?php if ($project): print "?project="
+       .$project; endif; ?>"><button type="button" class="btn"><i class="fa fa-list"></i> View Details</button></a>
      <?php else: ?>
-       &nbsp;<a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/chronology/<?php if ($project): print "?project=".$project; endif; ?>"><button type="button" class="btn"><i class="fa fa-clock-o"></i> View Chronology</button></a>
+       &nbsp;<a href="<?php print base_path().$modulePrefix; ?>/<?php print $apiType; ?>s/chronology/<?php if ($project): print "?project="
+       .$project; endif; ?>"><button type="button" class="btn"><i class="fa fa-clock-o"></i> View Chronology</button></a>
      <?php endif; ?>
    <?php endif;?>
  </div>
