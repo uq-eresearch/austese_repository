@@ -364,23 +364,23 @@ function listResources(){
       _check_permission_on_project('view metadata', $project);
   }
     
-  $not_superseded = array('metadata._superseded'=>array('$exists'=>false));
-  
-  $findopts = array('$and'=>array($not_superseded,
-      array('_deleted'=>array('$exists'=>false))));
+// this section rewritten by desmond 24/3/2014
+  $findopts = ['$and'=>
+    [
+      ['metadata.project'=>strval($project)],
+      ['metadata._superseded'=>['$exists'=>FALSE]],
+      ['metadata._deleted'=>['$exists'=>FALSE]]
+    ]
+  ];
   if ($filterTerm != null){
       $regex = new MongoRegex("/".$filterTerm."/i");
-      $findopts = array('$and'=>array($findopts,
-          array('$or'=>array(array('filename'=>$regex),array('metadata.title'=>$regex)))));
+      $findopts['$and'][] = ['$or'=>[['filename'=>$regex],['metadata.title'=>$regex]]];
   }
   if ($typeFilter != null){
       $regex = new MongoRegex("/".$typeFilter."/i");
-      $findopts = array('$and'=>array($findopts, array('metadata.filetype'=>$regex)));
+      $findopts['$and'][] = ['metadata.filetype'=>$regex];
   }
-  if ($project != null && $project != ''){
-      $findopts = array('$and'=>array($findopts, array('metadata.project'=>$project)));
-  }
- 
+// end desmond rewritten
   $cursor = $grid->find($findopts)->sort(array($sort=>$sortDirection))->limit($pagesize)->skip($pagenum * $pagesize);
 
 

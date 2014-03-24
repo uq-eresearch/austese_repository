@@ -42,6 +42,7 @@ if (isset($_GET['project'])) {
  data-project="<?php print $project; ?>"
  data-projectshortname="<?= $projectshortname ?>"
  <?php endif; ?>
+ data-basepath="<?php print base_path();?>"
  data-moduleprefix="<?php print $modulePrefix; ?>"
  data-modulepath="<?php print drupal_get_path('module', 'repository'); ?>"
  data-enablecollation="<?php print module_exists('collationtools');?>"

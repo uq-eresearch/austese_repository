@@ -24,6 +24,7 @@ if (isset($_GET['project'])) {
  <?php if ($existingId):?>
    data-existingid="<?php print $existingId; ?>"
  <?php endif; ?>
+ data-basepath="<?php print base_path();?>"
  data-moduleprefix="<?php print $modulePrefix; ?>"
  data-modulepath="<?php print drupal_get_path('module', 'repository'); ?>"
  data-apioperation="<?php print $apiOperation;?>"
@@ -33,7 +34,7 @@ if (isset($_GET['project'])) {
   <div class="sticky-bottom well">
     <div class="pull-right">
        <input type="button" class="save-btn btn btn-primary" value="Save">
-       <a href="/<?php print $modulePrefix; ?>/events/<?php if ($existingId): print $existingId; endif; ?><?php if ($project): print "?project=".$project; endif; ?>">
+       <a href="<?php print base_path().$modulePrefix; ?>/events/<?php if ($existingId): print $existingId; endif; ?><?php if ($project): print "?project=".$project; endif; ?>">
        <input type="button" class="btn" value="Cancel"></a>
        <input style="display:none" type="button" class="dupe-btn btn" value="Duplicate">
      </div>
@@ -93,7 +94,7 @@ if (isset($_GET['project'])) {
       <div class="controls">
         <textarea rows="2" name="artefacts" type="text" class="input-xxlarge" id="artefacts"></textarea>
         <p class="help-block">Artefacts produced by or impacted on by this event</p>
-        <a target="_blank" href="/repository/artefacts/edit<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
+        <a target="_blank" href="<?php print base_path();?>repository/artefacts/edit<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
         <button type="button" title="Describe new artefact in new tab" class="btn"><i class="fa fa-plus"></i> Create new artefact</button>
         </a>
       </div>
@@ -111,7 +112,7 @@ if (isset($_GET['project'])) {
     
     <div class="control-group">
     <div class="controls">
-    <a target="_blank" href="/repository/agents/edit<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
+    <a target="_blank" href="<?php print base_path();?>repository/agents/edit<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
         <button type="button" title="Describe new agent in new tab" class="btn"><i class="fa fa-plus"></i> Create new agent</button>
     </a>
     </div>
@@ -218,7 +219,7 @@ if (isset($_GET['project'])) {
       <div class="controls">
         <textarea rows="2" name="events" type="text" class="input-xxlarge" id="events"></textarea>
         <p class="help-block">Sub-events associated with this event</p>
-        <a target="_blank" href="/repository/events/edit<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
+        <a target="_blank" href="<?php print base_path();?>repository/events/edit<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
         <button type="button" title="Describe new event in new tab" class="btn"><i class="fa fa-plus"></i> Create new event</button>
         </a>
       </div>
@@ -250,7 +251,7 @@ if (isset($_GET['project'])) {
     <div class="control-group">
       <div class="controls">
          <input type="button" class="btn btn-primary save-btn" value="Save">
-         <a href="/<?php print $modulePrefix; ?>/events/<?php if ($existingId): print $existingId; endif; ?><?php if ($project): print "?project=".$project; endif; ?>">
+         <a href="<?php print base_path().$modulePrefix; ?>/events/<?php if ($existingId): print $existingId; endif; ?><?php if ($project): print "?project=".$project; endif; ?>">
          <input type="button" class="btn" value="Cancel"></a>
          <input style="display:none" type="button" class="btn dupe-btn" value="Duplicate">
          <input style="display:none" type="button" class="btn btn-danger del-btn" value="Delete">

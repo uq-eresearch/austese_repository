@@ -5,7 +5,7 @@ jQuery(document).ready(function(){
     var loadEvents = function(){
         jQuery.ajax({
             type: 'GET',
-            url: '/' + modulePath + '/api/events/' + (id? id : "") + (project? "?project=" + project : ""),
+            url: basePath + modulePath + '/api/events/' + (id? id : "") + (project? "?project=" + project : ""),
             dataType: "json",
             headers: {
                 'Accept': 'application/json'
@@ -52,6 +52,7 @@ jQuery(document).ready(function(){
     };
    
     var metadata = jQuery('#metadata');
+    var basePath = metadata.data('basepath');
     var modulePath =  metadata.data('modulepath');
     var project = metadata.data('project');
     var apiType =  metadata.data('apitype');

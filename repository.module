@@ -277,7 +277,7 @@ function repository_display($record_type, $template='Summary') {
             drupal_access_denied();
             return;
         }
-        drupal_add_js('/sites/all/libraries/ext-4.1.1a/ext-all.js');
+        drupal_add_js(base_path().'sites/all/libraries/ext-4.1.1a/ext-all.js');
         drupal_add_css(base_path().'sites/all/libraries/ext-4.1.1a/resources/css/ext-all.css', array('type'=>'external','every_page' => FALSE));
         drupal_add_css(base_path().'sites/all/libraries/ext-4.1.1a/resources/css/ext-all-gray.css',array('type'=>'external','every_page' => FALSE));
         drupal_add_css($modulePath . '/ui/css/uploader.css');
@@ -721,9 +721,9 @@ function repository_block_view($delta = '') {
         case 'project_links':
             $block['subject'] = t('Project Admin');
             $block['content'] = "
-                <a href='/project/$project_id/projectstatus?project=$project_id'>Project Status</a><br>
-                <a href='/project/$project_id/workflow?project=$project_id'>Workflow</a><br>
-                <a href='/node/add/page?og_group_ref=$project_id'>Add Page</a>
+                <a href=base_url().'project/$project_id/projectstatus?project=$project_id'>Project Status</a><br>
+                <a href=base_url().'project/$project_id/workflow?project=$project_id'>Workflow</a><br>
+                <a href=base_url().'node/add/page?og_group_ref=$project_id'>Add Page</a>
                     ";
             break;
     }

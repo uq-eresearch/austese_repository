@@ -25,6 +25,7 @@ jQuery.fn.serializeObject = function() {
     jQuery(document).ready(function(){
         var metadata = jQuery('#metadata');
         // read parameters from data attributes set in the template
+        basePath = metadata.data('basepath');
         apiType = metadata.data('apitype');
         apiOperation = metadata.data('apioperation');
         modulePath = metadata.data('modulepath');
@@ -77,7 +78,7 @@ jQuery.fn.serializeObject = function() {
                if (searchTerm && searchTerm.length >= 3){
                    jQuery.ajax({
                         type: 'GET',
-                        url: '/' + modulePath + '/api/' + apiType + 's/',
+                        url: basePath + modulePath + '/api/' + apiType + 's/',
                         dataType: "json",
                         headers: {
                             'Accept': 'application/json'
@@ -135,7 +136,7 @@ jQuery.fn.serializeObject = function() {
                 multiple: (single ? false : true),
                 ajax: {
                     dataType: 'json',
-                    url: '/' + modulePath + '/api/' + apiType + 's/',
+                    url: basePath + modulePath + '/api/' + apiType + 's/',
                     data: function(term,page){
                         var searchParams = {
                             query: term,
@@ -208,7 +209,7 @@ jQuery.fn.serializeObject = function() {
                 multiple: false,
                 ajax: {
                     dataType: 'json',
-                    url: "/sites/all/modules/austese_repository/api/projects",
+                    url: basePath+"sites/all/modules/austese_repository/api/projects",
                     results: function (data) {
                         return {results: data.list};
                     },
@@ -233,7 +234,7 @@ jQuery.fn.serializeObject = function() {
         
         jQuery.ajax({
             type: 'GET',
-            url: '/' + modulePath + '/api/' + apiType + 's/' + id,
+            url: basePath + modulePath + '/api/' + apiType + 's/' + id,
             dataType: "json",
             headers: {
                 'Accept': 'application/json'
@@ -284,7 +285,7 @@ jQuery.fn.serializeObject = function() {
             }
             jQuery.ajax({
                 type: 'GET',
-                url: '/' + modulePath + '/api/' + queryApiType + 's/',
+                url: basePath + modulePath + '/api/' + queryApiType + 's/',
                 data: queryData,
                 dataType: "json",
                 headers: {
@@ -398,7 +399,7 @@ jQuery.fn.serializeObject = function() {
         console.log("sort by " + sort);
         jQuery.ajax({
            type: 'GET',
-           url: '/' + modulePath + '/api/' + apiType + 's/',
+           url: basePath + modulePath + '/api/' + apiType + 's/',
            dataType: "json",
            data: {
                pageSize: pageSize,
@@ -452,7 +453,7 @@ jQuery.fn.serializeObject = function() {
                   headers: {
                        'Accept': 'application/json'
                   },
-                  url: '/' + modulePath + '/api/' + fieldType + '/' + field[index],
+                  url: basePath + modulePath + '/api/' + fieldType + '/' + field[index],
                   success: function(v){
                       var elem = jQuery('#' + fieldName);
                       
@@ -480,7 +481,7 @@ jQuery.fn.serializeObject = function() {
         var project = jQuery('#metadata').data('project');
         
         if (project) {
-            jQuery.ajax("/node/" + project + ".json").done(function(data) {
+            jQuery.ajax(basePath+ "node/" + project + ".json").done(function(data) {
                 elem.select2("data", data);
                 elem.select2("readonly", true);
             });
@@ -490,14 +491,14 @@ jQuery.fn.serializeObject = function() {
         var elem = jQuery('#project');
         var id = elem.val();
         if (id) {
-            jQuery.ajax("/node/" + id + ".json").done(function(data) {
+            jQuery.ajax(basePath + "node/" + id + ".json").done(function(data) {
                 elem.select2("data", data);
             });
         }
     }
     function loadObjectIntoEditor(id){
         jQuery.ajax({
-           url: '/' + modulePath + '/api/' + apiType + 's/'+ id,
+           url: basePath + modulePath + '/api/' + apiType + 's/'+ id,
            dataType: 'json',
            headers: {
                'Accept': 'application/json'
@@ -553,7 +554,7 @@ jQuery.fn.serializeObject = function() {
     function onDelete(){
        jQuery.ajax({
           type: 'DELETE',
-          url: '/' + modulePath + '/api/' + apiType + 's/' + existingId,
+          url: basePath + modulePath + '/api/' + apiType + 's/' + existingId,
           success: function(d){
             var project = jQuery('#metadata').data('project');
             jQuery('#alerts').append(
@@ -574,7 +575,7 @@ jQuery.fn.serializeObject = function() {
     function onSave(){
         var existingId = jQuery('#metadata').data('existingid');
         var type = 'POST';
-        var url = '/' + modulePath + '/api/' + apiType + 's/';
+        var url = basePath + modulePath + '/api/' + apiType + 's/';
         if (existingId) {
            type = 'PUT';
            url += existingId;
@@ -612,7 +613,7 @@ jQuery.fn.serializeObject = function() {
             jQuery('#alerts').html(
                 jQuery('<div class="alert alert-block"><button type="button" class="close" data-dismiss="alert">x</button>'
                     + '<h4>Successfully saved ' + apiType + '</h4>'
-                    + '<p><a href="/' + modulePrefix + '/' + apiType + 's/' + existingId + (project? '?project='+project : '') +'">View ' + apiType + '</a></p></div>').alert());
+                    + '<p><a href="' + basePath + modulePrefix + '/' + apiType + 's/' + existingId + (project? '?project='+project : '') +'">View ' + apiType + '</a></p></div>').alert());
                 if (d){
                     existingId = d.id;
                     jQuery('#metadata').data('existingid',d.id);
@@ -621,7 +622,7 @@ jQuery.fn.serializeObject = function() {
                 updateUILocked(locked);
                 // load new page URI (because we have an id for the new object)
                 if (newObject){
-                   document.location.href= '/' + modulePrefix + "/" + apiType + 's/edit/'  + existingId + (project? '?project='+project : '');
+                   document.location.href= basePath + modulePrefix + "/" + apiType + 's/edit/'  + existingId + (project? '?project='+project : '');
                 }
                 
           },
@@ -656,7 +657,7 @@ jQuery.fn.serializeObject = function() {
     }
     function loadRelatedMVDs(id){
         jQuery.ajax({
-            url: '/' + modulePath + '/api/mvds/?query=' + id,
+            url: basePath + modulePath + '/api/mvds/?query=' + id,
             success: function(d){
                 if (d.results.length > 0) {
                     var result = "<h4 class='muted'>VIEW MVD:</h4><form onsubmit='return false;'><select id='mvdselect'>";
@@ -699,7 +700,7 @@ jQuery.fn.serializeObject = function() {
         var projParam = (project? '?project=' + project : '');
         if (docpath) {
             // TODO actually select this resource
-            document.location.href = "/collationtools/compare" + projParam + "#" + encodeURIComponent(docpath);
+            document.location.href = basePath+ "collationtools/compare" + projParam + "#" + encodeURIComponent(docpath);
         }
     }
     function viewTable(){
@@ -708,7 +709,7 @@ jQuery.fn.serializeObject = function() {
         var projParam = (project? '?project=' + project : '');
         if (docpath) {
             // TODO actually select this resource
-            document.location.href = "/collationtools/apparatus" + projParam + "#" + encodeURIComponent(docpath);
+            document.location.href = basePath + "collationtools/apparatus" + projParam + "#" + encodeURIComponent(docpath);
         }
     }
     function refreshMVD(){
@@ -727,7 +728,7 @@ jQuery.fn.serializeObject = function() {
             var template = elem.data('template');
             jQuery.ajax({
               type: 'GET',
-              url: '/' + modulePath + '/api/places/' + elem.data('placeid'),
+              url: basePath + modulePath + '/api/places/' + elem.data('placeid'),
               success: function(d){
                 var project = jQuery('#metadata').data('project');
                 d.modulePrefix = modulePrefix;
@@ -743,7 +744,7 @@ jQuery.fn.serializeObject = function() {
             var template = elem.data('template');
             jQuery.ajax({
               type: 'GET',
-              url: '/' + modulePath + '/api/resources/' + elem.data('resourceid'),
+              url: basePath + modulePath + '/api/resources/' + elem.data('resourceid'),
               dataType: "json",
               headers: {
                   'Accept': 'application/json'
@@ -787,7 +788,7 @@ jQuery.fn.serializeObject = function() {
             var template = elem.data('template');
             jQuery.ajax({
               type: 'GET',
-              url: '/' + modulePath + '/api/artefacts/' + elem.data('artefactid'),
+              url: basePath + modulePath + '/api/artefacts/' + elem.data('artefactid'),
               success: function(d){
                   var project = jQuery('#metadata').data('project');
                   d.projParam = (project? '?project=' + project : '');
@@ -806,7 +807,7 @@ jQuery.fn.serializeObject = function() {
             var template = elem.data('template');
             jQuery.ajax({
               type: 'GET',
-              url: '/' + modulePath + '/api/versions/' + elem.data('versionid'),
+              url: basePath + modulePath + '/api/versions/' + elem.data('versionid'),
               success: function(d){
                 var project = jQuery('#metadata').data('project');
                 d.projParam = (project? '?project=' + project : '');
@@ -823,7 +824,7 @@ jQuery.fn.serializeObject = function() {
             var template = elem.data('template');
             jQuery.ajax({
               type: 'GET',
-              url: '/' + modulePath + '/api/agents/' + elem.data('agentid'),
+              url: basePath + modulePath + '/api/agents/' + elem.data('agentid'),
               success: function(d){
                 var project = jQuery('#metadata').data('project');
                 d.projParam = (project? '?project=' + project : '');
@@ -841,7 +842,7 @@ jQuery.fn.serializeObject = function() {
             var template = elem.data('template');
             jQuery.ajax({
               type: 'GET',
-              url: '/' + modulePath + '/api/events/' + elem.data('eventid'),
+              url: basePath + modulePath + '/api/events/' + elem.data('eventid'),
               success: function(d){
                 var project = jQuery('#metadata').data('project');
                 d.projParam = (project? '?project=' + project : '');
@@ -875,7 +876,7 @@ jQuery.fn.serializeObject = function() {
     function displayFeatureCodes(){
         jQuery.ajax({
             type: 'GET',
-            url: '/' + modulePath + '/api/featurecodes/',
+            url: basePath + modulePath + '/api/featurecodes/',
             success: function(d){
                 var codes = d.results;
                 if (codes){
@@ -902,7 +903,7 @@ jQuery.fn.serializeObject = function() {
           type: 'POST',
           enctype: 'multipart/form-data',
           data: formData,
-          url: '/' + modulePath + '/api/resources/',
+          url: basePath + modulePath + '/api/resources/',
           success: function(d){
             jQuery('#alerts').append(jQuery('<div class="alert alert-block"><button type="button" class="close" data-dismiss="alert">x</button><h4>Resource uploaded</h4></div>').alert());
             window.scrollTo(0,0);

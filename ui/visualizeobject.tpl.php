@@ -30,6 +30,7 @@ if (isset($_GET['tag'])) {
  <?php if ($existingId):?>
    data-existingid="<?php print $existingId; ?>"
  <?php endif; ?>
+ data-basepath="<?php print base_path();?>"
  data-moduleprefix="<?php print $modulePrefix; ?>"
  data-modulepath="<?php print drupal_get_path('module', 'repository'); ?>"
  data-servername="<?php print $_SERVER['SERVER_NAME']; ?>"

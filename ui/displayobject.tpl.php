@@ -24,6 +24,7 @@ $modulePath =  drupal_get_path('module', 'repository');
  <?php if ($existingId):?>
    data-existingid="<?php print $existingId; ?>"
  <?php endif; ?>
+ data-basepath="<?php print base_path();?>"
  data-moduleprefix="<?php print $modulePrefix; ?>"
  data-modulepath="<?php print $modulePath; ?>"
  data-servername="<?php print $_SERVER['SERVER_NAME']; ?>"
@@ -40,26 +41,26 @@ $modulePath =  drupal_get_path('module', 'repository');
 <div>
 <ul class="actionLinks">
    <?php if (austese_access('edit metadata', $project)): ?>
-      <li id="editlink" ><i class="sidebaricon fa fa-pencil-square-o"></i> <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/edit/<?php print $existingId; ?><?php if ($project): print "?project=".$project; endif; ?>">EDIT
+      <li id="editlink" ><i class="sidebaricon fa fa-pencil-square-o"></i> <a href="<?php print base_path().$modulePrefix; ?>/<?php print $apiType; ?>s/edit/<?php print $existingId; ?><?php if ($project): print "?project=".$project; endif; ?>">EDIT
       <?php if ($apiType=='resource'):?> CONTENT<?php else:?> METADATA<?php endif; ?>
       </a></li>
    <?php endif; ?>
    <?php if ($apiType=='resource'):?>
-   <li><i class="sidebaricon fa fa-eye"></i> <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/<?php print $existingId; ?>/content<?php if ($project): print '?project='.$project; endif; ?>">VIEW CONTENT</a></li>
-   <li><i class="sidebaricon fa fa-download"></i> <a href="/<?php print $modulePath; ?>/api/<?php print $apiType; ?>s/<?php print $existingId; ?>">DOWNLOAD</a></li>
+   <li><i class="sidebaricon fa fa-eye"></i> <a href="<?php print base_path().$modulePrefix; ?>/<?php print $apiType; ?>s/<?php print $existingId; ?>/content<?php if ($project): print '?project='.$project; endif; ?>">VIEW CONTENT</a></li>
+   <li><i class="sidebaricon fa fa-download"></i> <a href="<?php print base_path().$modulePath; ?>/api/<?php print $apiType; ?>s/<?php print $existingId; ?>">DOWNLOAD</a></li>
    <?php if (austese_access('edit metadata', $project)): ?>
-        <!--  li><i class="sidebaricon fa fa-th"></i> <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s<?php if ($project): print '?project='.$project; endif; ?>#<?php print $existingId; ?>">SHOW IN ORGANISER</a></li-->
+        <!--  li><i class="sidebaricon fa fa-th"></i> <a href="<?php print base_path().$modulePrefix; ?>/<?php print $apiType; ?>s<?php if ($project): print '?project='.$project; endif; ?>#<?php print $existingId; ?>">SHOW IN ORGANISER</a></li-->
    <?php endif; ?>
-   <li style="display:none" id="wordcloudlink"><i class="sidebaricon fa fa-cloud"></i> <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/<?php print $existingId; ?>/content?cloud=true<?php if ($project): print '&project='.$project; endif; ?>">VIEW WORD CLOUD</a></li>
-   <li style="display:none" id="lightboxlink"><i class="sidebaricon fa fa-lightbulb-o"></i> <a  href="/lightbox<?php if ($project): print '?project='.$project; endif; ?>#<?php print $existingId; ?>">VIEW IN LIGHTBOX</a></li>
-   <li id="pdflink"><i class="sidebaricon fa icomoon-file-pdf"></i> <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/<?php print $existingId; ?>/content/pdf">EXPORT PDF</a></li>
-   <li id="mswordlink"><i class="sidebaricon fa icomoon-file-word"></i> <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/<?php print $existingId; ?>/content/word">EXPORT WORD DOC</a></li>
+   <li style="display:none" id="wordcloudlink"><i class="sidebaricon fa fa-cloud"></i> <a href="<?php print base_path().$modulePrefix; ?>/<?php print $apiType; ?>s/<?php print $existingId; ?>/content?cloud=true<?php if ($project): print '&project='.$project; endif; ?>">VIEW WORD CLOUD</a></li>
+   <li style="display:none" id="lightboxlink"><i class="sidebaricon fa fa-lightbulb-o"></i> <a  href="<?php print base_path();?>lightbox<?php if ($project): print '?project='.$project; endif; ?>#<?php print $existingId; ?>">VIEW IN LIGHTBOX</a></li>
+   <li id="pdflink"><i class="sidebaricon fa icomoon-file-pdf"></i> <a href="<?php print base_path().$modulePrefix; ?>/<?php print $apiType; ?>s/<?php print $existingId; ?>/content/pdf">EXPORT PDF</a></li>
+   <li id="mswordlink"><i class="sidebaricon fa icomoon-file-word"></i> <a href="<?php print base_path().$modulePrefix; ?>/<?php print $apiType; ?>s/<?php print $existingId; ?>/content/word">EXPORT WORD DOC</a></li>
    <?php endif; ?>
   
 
    
-   <?php if ($apiType=='work'):?><li><i class="sidebaricon fa fa-book"></i> <a href="/reading/<?php print $existingId; ?><?php if ($project): print "?project=".$project; endif; ?>">READ</a></li><?php endif; ?>
- <li><i class="sidebaricon fa fa-asterisk"></i> <a href="/<?php print $modulePrefix; ?>/<?php print $apiType; ?>s/visualize/<?php print $existingId; ?><?php if ($project): print "?project=".$project; endif; ?>">VISUALIZE CONNECTIONS</a></li>
+   <?php if ($apiType=='work'):?><li><i class="sidebaricon fa fa-book"></i> <a href="<?php base_path();?>reading/<?php print $existingId; ?><?php if ($project): print "?project=".$project; endif; ?>">READ</a></li><?php endif; ?>
+ <li><i class="sidebaricon fa fa-asterisk"></i> <a href="<?php print base_path().$modulePrefix; ?>/<?php print $apiType; ?>s/visualize/<?php print $existingId; ?><?php if ($project): print "?project=".$project; endif; ?>">VISUALIZE CONNECTIONS</a></li>
  </ul>
  <?php if ($apiType=='resource'):?>
  <div style="margin-top:1em" id="viewmvd"></div>

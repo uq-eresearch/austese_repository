@@ -1,6 +1,7 @@
 jQuery(document).ready(function() {
     
     var metadata = jQuery('#metadata');
+    var basePAth = metadata.data('basepath');
     var modulePath =  metadata.data('modulepath');
     var project = metadata.data('project');
     var tag = metadata.data('tag');
@@ -50,7 +51,7 @@ jQuery(document).ready(function() {
     
     jQuery.ajax({
         type: 'GET',
-        url: '/' + modulePath + '/api/events/',
+        url: basePath + modulePath + '/api/events/',
         data: searchArgs,
         dataType: "json",
         headers: {

@@ -27,6 +27,7 @@ if (isset($project)) {
  <?php if ($existingId):?>
    data-existingid="<?php print $existingId; ?>"
  <?php endif; ?>
+ data-basepath="<?php print base_path();?>"
  data-multi="<?php print $multi; ?>"
  data-moduleprefix="<?php print $modulePrefix; ?>"
  data-modulepath="<?php print drupal_get_path('module', 'repository'); ?>"
@@ -34,7 +35,7 @@ if (isset($project)) {
 </div>
 <div id="successMessage" style="display:none" class="alert alert-success">
   <a href="#" data-dismiss="alert"class="close">x</a>
-  <span class="label label-success">Success</span> Resource has been updated. Return to <a href="/repository/resources/<?php print arg(3) . $projectparam; ?>">View Resource</a> page.
+  <span class="label label-success">Success</span> Resource has been updated. Return to <a href="<?php print base_path();?>repository/resources/<?php print arg(3) . $projectparam; ?>">View Resource</a> page.
 </div>
 <div id="failureMessage" style="display:none" class="alert alert-error">
   <a href="#" data-dismiss="alert" class="close">x</a>
@@ -52,7 +53,7 @@ if (isset($project)) {
   <div class="sticky-bottom well">
     <div class="pull-right">
        <button data-resource="/<?php print drupal_get_path('module', 'repository');?>/api/resources/<?php print arg(3); ?>" class="btn btn-primary savebtn" title="Save as new version">Save</button>
-       <a href="/<?php print $modulePrefix; ?>/resources/<?php if ($existingId): print $existingId; endif; ?><?php if ($project): print "?project=".$project; endif; ?>">
+       <a href="<?php print base_path().$modulePrefix; ?>/resources/<?php if ($existingId): print $existingId; endif; ?><?php if ($project): print "?project=".$project; endif; ?>">
        <input type="button" class="btn" value="Cancel"></a>
     </div>
   </div>

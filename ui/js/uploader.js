@@ -3,7 +3,7 @@ jQuery(document).ready(function() {
         enabled: true
     });
     
-    var modulePath = '/' + jQuery('#metadata').data('modulepath');
+    var modulePath = jQuery('#metadata').data('basepath') + jQuery('#metadata').data('modulepath');
     var project = jQuery('#metadata').data('project');
     // necessary to map paths because we are running in a drupal module
     Ext.Loader.setPath('austese_uploader.store', modulePath + '/ui/js/uploader/store');
@@ -11,7 +11,7 @@ jQuery(document).ready(function() {
     Ext.Loader.setPath('austese_uploader.controller', modulePath + '/ui/js/uploader/controller');
     Ext.Loader.setPath('austese_uploader.view', modulePath + '/ui/js/uploader/view');
     Ext.Loader.setPath('austese_uploader.form', modulePath + '/ui/js/uploader/form');
-    Ext.Loader.setPath('Ext.ux', '/sites/all/libraries/ext-4.1.1a/examples/ux');
+    Ext.Loader.setPath('Ext.ux', jQuery('#metadata').data('basepath')+'sites/all/libraries/ext-4.1.1a/examples/ux');
     //keep z-index seed low to avoid interfering with drupal admin overlay
     Ext.WindowMgr.zseed = 1040;
     Ext.application({

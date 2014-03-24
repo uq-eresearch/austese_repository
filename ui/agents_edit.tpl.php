@@ -24,6 +24,7 @@ if (isset($_GET['project'])) {
  <?php if ($existingId):?>
    data-existingid="<?php print $existingId; ?>"
  <?php endif; ?>
+ data-basepath="<?php print base_path();?>"
  data-moduleprefix="<?php print $modulePrefix; ?>"
  data-modulepath="<?php print drupal_get_path('module', 'repository'); ?>"
  data-apioperation="<?php print $apiOperation;?>"
@@ -33,7 +34,7 @@ if (isset($_GET['project'])) {
   <div class="sticky-bottom well">
     <div class="pull-right">
        <input type="button" class="save-btn btn btn-primary" value="Save">
-       <a href="/<?php print $modulePrefix; ?>/agents/<?php if ($existingId): print $existingId; endif; ?><?php if ($project): print "?project=".$project; endif; ?>">
+       <a href="<?php print base_path().$modulePrefix; ?>/agents/<?php if ($existingId): print $existingId; endif; ?><?php if ($project): print "?project=".$project; endif; ?>">
        <input type="button" class="btn" value="Cancel"></a>
        <input style="display:none" type="button" class="dupe-btn btn" value="Duplicate">
      </div>
@@ -82,7 +83,7 @@ if (isset($_GET['project'])) {
       <div class="controls">
         <textarea rows="2" name="images" type="text" class="input-xxlarge" id="images"></textarea>
         <p class="help-block">Images of this agent</p>
-        <a target="_blank" href="/repository/resources<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
+        <a target="_blank" href=<?php print base_path()."repository/resources"; if ($project) print "?project=$project";?>>
         <button type="button" title="Upload new image resource in new tab" class="btn"><i class="fa fa-plus"></i> Create new image</button>
         </a>
       </div>
@@ -112,7 +113,7 @@ if (isset($_GET['project'])) {
       <div class="control-group">
         <div class="controls">
            <input type="button" class="btn btn-primary save-btn" value="Save">
-           <a href="/<?php print $modulePrefix; ?>/agents/<?php if ($existingId): print $existingId; endif; ?><?php if ($project): print "?project=".$project; endif; ?>">
+           <a href="<?php print base_path().$modulePrefix; ?>/agents/<?php if ($existingId): print $existingId; endif; ?><?php if ($project): print "?project=".$project; endif; ?>">
            <input type="button" class="btn" value="Cancel"></a>
            <input style="display:none" type="button" class="btn dupe-btn" value="Duplicate">
            <input style="display:none" type="button" class="btn btn-danger del-btn" value="Delete">

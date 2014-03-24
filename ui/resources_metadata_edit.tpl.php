@@ -24,6 +24,7 @@ if (isset($_GET['project'])) {
  <?php if ($existingId):?>
    data-existingid="<?php print $existingId; ?>"
  <?php endif; ?>
+ data-basepath="<?php print base_path();?>"
  data-moduleprefix="<?php print $modulePrefix; ?>"
  data-modulepath="<?php print drupal_get_path('module', 'repository'); ?>"
  data-apioperation="<?php print $apiOperation;?>"
@@ -34,7 +35,7 @@ if (isset($_GET['project'])) {
   <div class="sticky-bottom well">
     <div class="pull-right">
        <input type="button" class="save-btn btn btn-primary" value="Save">
-       <a href="/<?php print $modulePrefix; ?>/resources/<?php if ($existingId): print $existingId; endif; ?><?php if ($project): print "?project=".$project; endif; ?>">
+       <a href="<?php print base_path().$modulePrefix; ?>/resources/<?php if ($existingId): print $existingId; endif; ?><?php if ($project): print "?project=".$project; endif; ?>">
        <input type="button" class="btn" value="Cancel"></a>
        <input style="display:none" type="button" class="dupe-btn btn" value="Duplicate">
      </div>
@@ -129,7 +130,7 @@ if (isset($_GET['project'])) {
         <div class="controls">
         <!--  FIXME: save saves json as content not metadata -->
            <input type="button" class="btn btn-primary save-btn" value="Save">
-           <a href="/<?php print $modulePrefix; ?>/resources/<?php if ($existingId): print $existingId; endif; ?><?php if ($project): print "?project=".$project; endif; ?>">
+           <a href="<?php print base_path().$modulePrefix; ?>/resources/<?php if ($existingId): print $existingId; endif; ?><?php if ($project): print "?project=".$project; endif; ?>">
            <input type="button" class="btn" value="Cancel"></a>
            <!--  input style="display:none" type="button" class="btn dupe-btn" value="Duplicate"-->
            <input style="display:none" type="button" class="btn btn-danger del-btn" value="Delete">

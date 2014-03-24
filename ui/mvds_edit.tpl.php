@@ -24,6 +24,7 @@ if (isset($_GET['project'])) {
  <?php if ($existingId):?>
    data-existingid="<?php print $existingId; ?>"
  <?php endif; ?>
+ data-basepath="<?php print base_path();?>"
  data-moduleprefix="<?php print $modulePrefix; ?>"
  data-modulepath="<?php print drupal_get_path('module', 'repository'); ?>"
  data-apioperation="<?php print $apiOperation;?>"
@@ -40,7 +41,7 @@ if (isset($_GET['project'])) {
     </div>
     <div class="control-group">
       <div class="controls">
-         <a href="/<?php print $modulePrefix; ?>/mvds/<?php if ($project): print "?project=".$project; endif; ?>">
+         <a href="<?php print base_path().$modulePrefix; ?>/mvds/<?php if ($project): print "?project=".$project; endif; ?>">
          <input type="button" class="btn" value="Cancel"></a>
          <input style="display:none" type="button" class="btn btn-danger del-btn" value="Delete">
       </div>

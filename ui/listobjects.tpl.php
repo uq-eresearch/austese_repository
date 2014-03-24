@@ -30,6 +30,7 @@ if (isset($_GET['project'])) {
  <?php if ($project):?>
  data-project="<?php print $project; ?>"
  <?php endif; ?>
+ data-basepath="<?php print base_path();?>"
  data-template="<?= $displaytemplate ?>"
  data-modulepath="<?php print $modulePath; ?>"
  data-moduleprefix="<?php print $modulePrefix; ?>"

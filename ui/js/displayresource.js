@@ -3,7 +3,7 @@ jQuery(document).ready(function(){
     var existingId = jQuery('#metadata').data('existingid');
     var modulePrefix = jQuery('#metadata').data('moduleprefix');
     var project = jQuery('#metadata').data('project');
-    var resURI = '/' + jQuery('#metadata').data('modulepath') + "/api/resources/" + existingId;
+    var resURI = jQuery('#metadata').data('basepath') + jQuery('#metadata').data('modulepath') + "/api/resources/" + existingId;
 
     jQuery('#toggleFacsimile').click(toggleFacsimile);
     jQuery('#nextFacsimile').click(nextFacsimile);
@@ -111,7 +111,7 @@ jQuery(document).ready(function(){
                 // if resource is plain text insert text content directly
                 // if resource is xml get content via /content/raw link
                 if (mimeType.match("xml")){
-                    resURL = '/' + jQuery('#metadata').data('moduleprefix') + "/resources/" + existingId + "/content/raw";
+                    resURL = jQuery('#metadata').data('basepath') + jQuery('#metadata').data('moduleprefix') + "/resources/" + existingId + "/content/raw";
                 } else {
                     resURL = resURI;
                 }
@@ -147,7 +147,7 @@ jQuery(document).ready(function(){
                                 jQuery('#alerts').append(
                                     jQuery('<div class="alert alert-block"><button type="button" class="close" data-dismiss="alert">x</button>' 
                                         + '<h4>Resource does not contain valid XML</h4>'
-                                        + '<p><a href="/' + modulePrefix + '/resources/edit/' + existingId + (project? '?project=' + project : '') +'">Edit content</a> in transcription editor to view and correct errors</p>'
+                                        + '<p><a href="' +jQuery('#metadata').data('basepath') + modulePrefix + '/resources/edit/' + existingId + (project? '?project=' + project : '') +'">Edit content</a> in transcription editor to view and correct errors</p>'
                                         + '</div>').alert());
                             }
                             result = "<pre style='white-space:pre-wrap'>" + content + "</pre>";
@@ -206,14 +206,14 @@ function getSelectionText() {
 
 var facsimiles = [];
 function loadFacsimiles () {
-   var searchUri = '/sites/all/modules/austese_repository/api/versions/';
+   var searchUri = jQuery('#metadata').data('basepath')+'sites/all/modules/austese_repository/api/versions/';
    var resourceId = jQuery('#metadata').data('existingid');
    var project = jQuery('#metadata').data('project');
 
    var possibleTypes = ['versions', 'artefacts'];
    jQuery.each(possibleTypes, function(index, value) {
      jQuery.ajax({
-         url: '/sites/all/modules/austese_repository/api/' + value + '/',
+         url: jQuery('#metadata').data('basepath')+'sites/all/modules/austese_repository/api/' + value + '/',
          type: 'GET',
          data: {
            recurse: true,

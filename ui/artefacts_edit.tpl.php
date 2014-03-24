@@ -24,6 +24,7 @@ if (isset($_GET['project'])) {
  <?php if ($existingId):?>
  data-existingid="<?php print $existingId; ?>"
  <?php endif; ?>
+ data-basepath="<?php print base_path();?>"
  data-moduleprefix="<?php print $modulePrefix; ?>"
  data-modulepath="<?php print drupal_get_path('module', 'repository'); ?>"
  data-apioperation="<?php print $apiOperation;?>"
@@ -33,7 +34,7 @@ if (isset($_GET['project'])) {
   <div class="sticky-bottom well">
     <div class="pull-right">
        <input type="button" class="save-btn btn btn-primary" value="Save">
-       <a href="/<?php print $modulePrefix; ?>/artefacts/<?php if ($existingId): print $existingId; endif; ?><?php if ($project): print "?project=".$project; endif; ?>">
+       <a href="<?php print base_path().$modulePrefix; ?>/artefacts/<?php if ($existingId): print $existingId; endif; ?><?php if ($project): print "?project=".$project; endif; ?>">
        <input type="button" class="btn" value="Cancel"></a>
        <input style="display:none" type="button" class="dupe-btn btn" value="Duplicate">
      </div>
@@ -111,7 +112,7 @@ if (isset($_GET['project'])) {
         
         <input name="artefacts" type="text" id="artefacts" class="input-xxlarge" />
         <p class="help-block">ArtefactParts associated with this artefact</p>
-        <a target="_blank" href="/repository/artefacts/edit<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
+        <a target="_blank" href="<?php print base_path();?>repository/artefacts/edit<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
         <button type="button" title="Describe new artefact part in new tab" class="btn"><i class="fa fa-plus"></i> Create new artefact part</button>
         </a>
       </div>
@@ -121,7 +122,7 @@ if (isset($_GET['project'])) {
       <div class="controls">
         <textarea rows="2" name="facsimiles" type="text" class="input-xxlarge" id="facsimiles"></textarea>
         <p class="help-block">Facsimiles associated with this artefact</p>
-        <a target="_blank" href="/repository/resources<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
+        <a target="_blank" href="<?php print base_path();?>repository/resources<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
         <button type="button" title="Upload new facsimile resource in new tab" class="btn"><i class="fa fa-plus"></i> Create new facsimile</button>
         </a>
       </div>
@@ -131,7 +132,7 @@ if (isset($_GET['project'])) {
       <div class="controls">
         <textarea rows="2" name="coverImage" type="text" class="input-xxlarge" id="coverImage"></textarea>
         <p class="help-block">Image to display as cover for this artefact (if not specified, first image in facsimiles field will be used by default)</p>
-        <a target="_blank" href="/repository/resources<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
+        <a target="_blank" href="<?php print base_path();?>repository/resources<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
         <button type="button" title="Upload new image resource in new tab" class="btn"><i class="fa fa-plus"></i> Create new image</button>
         </a>
       </div>
@@ -141,7 +142,7 @@ if (isset($_GET['project'])) {
       <div class="controls">
         <textarea rows="2" name="transcriptions" type="text" class="input-xxlarge" id="transcriptions"></textarea>
         <p class="help-block">This field is only used to link DIPLOMATIC Transcriptions to Artefacts. Version Transcriptions should be linked to Versions only</p>
-        <a target="_blank" href="/repository/resources<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
+        <a target="_blank" href="<?php print base_path();?>repository/resources<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
         <button type="button" title="Upload new transcription resource in new tab" class="btn"><i class="fa fa-plus"></i> Create new transcription</button>
         </a>
       </div>
@@ -173,7 +174,7 @@ if (isset($_GET['project'])) {
   <div class="control-group">
      <div class="controls">
        <input type="button" class="save-btn btn btn-primary" value="Save">
-       <a href="/<?php print $modulePrefix; ?>/artefacts/<?php if ($existingId): print $existingId; endif; ?><?php if ($project): print "?project=".$project; endif; ?>">
+       <a href="<?php print base_path().$modulePrefix; ?>/artefacts/<?php if ($existingId): print $existingId; endif; ?><?php if ($project): print "?project=".$project; endif; ?>">
        <input type="button" class="btn" value="Cancel"></a>
        <input style="display:none" type="button" class="dupe-btn btn" value="Duplicate">
        <input style="display:none" type="button" class="del-btn btn btn-danger" value="Delete">

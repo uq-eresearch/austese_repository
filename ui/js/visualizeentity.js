@@ -25,7 +25,7 @@ jQuery(document).ready(function(){
         });
         text.click(function(){
             var nodeData = this.data("nodeData");
-            document.location.href = '/repository/' + nodeData.nodeType + 's/' + nodeData.id + 
+            document.location.href = jQuery('#metadata').data('basepath') + 'repository/' + nodeData.nodeType + 's/' + nodeData.id + 
                 (project? "?project=" + project : ""); 
         });
         var set = r.set()
@@ -83,7 +83,7 @@ jQuery(document).ready(function(){
     var loadObject = function(apiType, id, depth, hilite){
         jQuery.ajax({
             type: 'GET',
-            url: '/' + modulePath + '/api/' + apiType + 's/' + id,
+            url: basePath + modulePath + '/api/' + apiType + 's/' + id,
             dataType: "json",
             headers: {
                 'Accept': 'application/json'
@@ -200,7 +200,7 @@ jQuery(document).ready(function(){
         function processInverseRelationships(depth,queryApiType, queryField, queryId, label) {
             jQuery.ajax({
                 type: 'GET',
-                url: '/' + modulePath + '/api/' + queryApiType + 's/',
+                url: basePath + modulePath + '/api/' + queryApiType + 's/',
                 data: {
                     query: queryId,
                     searchField: queryField
@@ -273,6 +273,7 @@ jQuery(document).ready(function(){
     }
     var g = new Graph();
     var metadata = jQuery('#metadata');
+    var basePath = metadata.data('basepath');
     var modulePath =  metadata.data('modulepath');
     var project = metadata.data('project');
     var apiType =  metadata.data('apitype');

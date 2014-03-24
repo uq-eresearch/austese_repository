@@ -25,6 +25,7 @@ if (isset($_GET['project'])) {
  data-existingid="<?php print $existingId; ?>"
  <?php endif; ?>
  data-moduleprefix="<?php print $modulePrefix; ?>"
+ data-basepath="<?php print base_path();?>"
  data-modulepath="<?php print drupal_get_path('module', 'repository'); ?>"
  data-apioperation="<?php print $apiOperation;?>"
  data-apitype="<?php print $apiType;?>">
@@ -33,7 +34,7 @@ if (isset($_GET['project'])) {
   <div class="sticky-bottom well">
     <div class="pull-right">
        <input type="button" class="save-btn btn btn-primary" value="Save">
-       <a href="/<?php print $modulePrefix; ?>/versions/<?php if ($existingId): print $existingId; endif; ?><?php if ($project): print "?project=".$project; endif; ?>">
+       <a href="<?php print base_path().$modulePrefix; ?>/versions/<?php if ($existingId): print $existingId; endif; ?><?php if ($project): print "?project=".$project; endif; ?>">
        <input type="button" class="btn" value="Cancel"></a>
        <input style="display:none" type="button" class="dupe-btn btn" value="Duplicate">
      </div>
@@ -107,7 +108,7 @@ if (isset($_GET['project'])) {
       <div class="controls">
         <textarea rows="2" name="versions" type="text" class="input-xxlarge" id="versions"></textarea>
         <p class="help-block">VersionParts that are part of this version</p>
-        <a target="_blank" href="/repository/versions/edit<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
+        <a target="_blank" href="<?php print base_path();?>repository/versions/edit<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
         <button type="button" title="Describe new version part in new tab" class="btn"><i class="fa fa-plus"></i> Create new version part</button>
         </a>
       </div>
@@ -118,7 +119,7 @@ if (isset($_GET['project'])) {
         <!--  textarea rows="2" name="artefacts" type="text" class="input-xxlarge" id="artefacts"></textarea-->
         <input type="hidden" class="input-xxlarge" id="artefacts" name="artefacts"/>
         <p class="help-block">Artefacts associated with this version</p>
-        <a target="_blank" href="/repository/artefacts/edit<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
+        <a target="_blank" href="<?php print base_path();?>repository/artefacts/edit<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
         <button type="button" title="Describe new artefact in new tab" class="btn"><i class="fa fa-plus"></i> Create new artefact</button>
         </a>
       </div>
@@ -128,7 +129,7 @@ if (isset($_GET['project'])) {
       <div class="controls">
         <textarea rows="2" name="transcriptions" type="text" class="input-xxlarge" id="transcriptions"></textarea>
         <p class="help-block">Version transcriptions associated with this version</p>
-        <a target="_blank" href="/repository/resources<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
+        <a target="_blank" href="<?php print base_path();?>repository/resources<?php if ($project):?>?project=<?php print $project;?><?php endif;?>">
         <button type="button" title="Upload new transcription resource in new tab" class="btn"><i class="fa fa-plus"></i> Create new transcription</button>
         </a>
       </div>
@@ -161,7 +162,7 @@ if (isset($_GET['project'])) {
 <div class="control-group">
 <div class="controls">
     <input type="button" class="btn btn-primary save-btn" value="Save">
-    <a href="/<?php print $modulePrefix; ?>/versions/<?php if ($existingId): print $existingId; endif; ?><?php if ($project): print "?project=".$project; endif; ?>">
+    <a href="<?php print base_path().$modulePrefix; ?>/versions/<?php if ($existingId): print $existingId; endif; ?><?php if ($project): print "?project=".$project; endif; ?>">
     <input type="button" class="btn" value="Cancel"></a>
     <input style="display:none" type="button" class="btn dupe-btn" value="Duplicate">
     <input style="display:none" type="button" class="btn btn-danger del-btn" value="Delete">

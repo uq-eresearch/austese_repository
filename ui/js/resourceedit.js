@@ -23,7 +23,7 @@ jQuery(document).ready(function(){
          jQuery('#toggleFacsimile').click();
      }
      jQuery.ajax({
-         url:'/sites/all/modules/austese_repository/ui/xslt/formats.xsl',
+         url:jQuery('#metadata').data('basepath')+'sites/all/modules/austese_repository/ui/xslt/formats.xsl',
          success: function(xsl){
              editor.xsl = xsl;
          }
@@ -175,13 +175,14 @@ var editor = {
          editor.left = editor.mergeView.left;
          editor.right = editor.mergeView.right;
          var modulePath = jQuery('#metadata').data('modulepath');
+         var basePath = jQuery('#metadata').data('basepath');
          var project = jQuery('#metadata').data('project');
          jQuery("#lhs-select, #rhs-select").select2({
              placeholder: 'Search transcriptions by title or filename',
              minimumInputLength: 0,
              ajax: {
                  dataType: 'json',
-                 url: '/' + modulePath + '/api/resources/',
+                 url: basePath + modulePath + '/api/resources/',
                  data: function(term,page){
                      var searchParams = {
                          query: term,
@@ -391,14 +392,14 @@ var editor = {
      document.location.href = jQuery('#metadata').data('editurl') + '?' + params;
  },
  loadFacsimiles: function() {
-    var searchUri = '/sites/all/modules/austese_repository/api/versions/';
+    var searchUri = jQuery('#metadata').data('basepath')+'sites/all/modules/austese_repository/api/versions/';
     var resourceId = jQuery('#metadata').data('existingid');
     var project = jQuery('#metadata').data('project');
 
     var possibleTypes = ['versions', 'artefacts'];
     jQuery.each(possibleTypes, function(index, value) {
       jQuery.ajax({
-          url: '/sites/all/modules/austese_repository/api/' + value + '/',
+          url: jQuery('#metadata').data('basepath')+'sites/all/modules/austese_repository/api/' + value + '/',
           type: 'GET',
           data: {
             recurse: true,
