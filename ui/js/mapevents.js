@@ -57,9 +57,12 @@ jQuery(document).ready(function(){
     var apiType =  metadata.data('apitype');
     var id = metadata.data('existingid');
     var editable = metadata.data('editable');
+    var mapLat = metadata.data('maplat');
+    var mapLong = metadata.data('maplong');
+    var mapZoom = metadata.data('mapzoom');
     
     // center map on Australia
-    var map = L.map('canvas').setView([-24.994167,134.866944],3);
+    var map = L.map('canvas').setView([mapLat, mapLong],mapZoom);
     var oms = new OverlappingMarkerSpiderfier(map);
     var popup = new L.Popup();
     oms.addListener('click', function(marker) {

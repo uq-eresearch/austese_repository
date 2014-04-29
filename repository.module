@@ -428,8 +428,30 @@ function repository_map_events($id=null){
     drupal_add_js($modulePath . '/ui/lib/oms.min.js');
     drupal_add_js($modulePath . '/ui/lib/handlebars.js');
     drupal_add_js($modulePath . '/ui/js/entitytemplates.js');
+    if (isset($project)) {
+        // these fields should be defined on the project content type to provide overridable map config per project
+        $projnode = node_load($project);
+        $mlong = $projnode->field_map_base_long;
+        if ($mlong && sizeof($mlong) > 0) {
+            $mapLong = floatval($mlong["und"][0]["value"]);
+        } else {
+            $mapLong = NULL;
+        }
+        $mlat = $projnode->field_map_base_lat;
+        if ($mlat && sizeof($mlat) > 0) {
+            $mapLat = floatval($mlat["und"][0]["value"]);
+        } else {
+            $mapLat = NULL;
+        }
+        $mzoom = $projnode->field_map_base_zoom;
+        if ($mzoom && sizeof($mzoom) > 0) {
+            $mapZoom = intval($mzoom["und"][0]["value"]);
+        } else {
+            $mapZoom = NULL;
+        }
+    }
     drupal_add_js($modulePath . '/ui/js/mapevents.js');
-    return theme('repository_visualize',array());
+    return theme('repository_visualize',array('mapZoom'=>$mapZoom, 'mapLat'=>$mapLat,'mapLong'=>$mapLong));
 }
 
 function repository_visualize($template, $id=null){

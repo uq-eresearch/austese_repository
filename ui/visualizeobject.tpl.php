@@ -15,6 +15,15 @@ $tag = null;
 if (isset($_GET['tag'])) {
  $tag = $_GET['tag'];
 }
+if (!isset($mapLat)){
+ $mapLat = -24.994167;
+}
+if (!isset($mapLong)) {
+ $mapLong = 134.866944;
+}
+if (!isset($mapZoom)) {
+ $mapZoom = 4;
+}
 ?>
 <div id="alerts"></div>
 <div id="metadata"
@@ -31,6 +40,9 @@ if (isset($_GET['tag'])) {
    data-existingid="<?php print $existingId; ?>"
  <?php endif; ?>
  data-moduleprefix="<?php print $modulePrefix; ?>"
+ data-maplat="<?php print $mapLat; ?>"
+ data-maplong="<?php print $mapLong; ?>"
+ data-mapzoom="<?php print $mapZoom; ?>"
  data-modulepath="<?php print drupal_get_path('module', 'repository'); ?>"
  data-servername="<?php print $_SERVER['SERVER_NAME']; ?>"
  data-apitype="<?php print $apiType;?>">
