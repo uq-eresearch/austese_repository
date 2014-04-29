@@ -1,14 +1,14 @@
 <div>
         <h1>{{#if versionTitle}}{{upper versionTitle 80}}{{else}}UNTITLED VERSION{{/if}}</h1>
         <table class="table">
-        {{#if versionTitle}}<tr><td class="metadatalabel muted">Title</td><td>{{versionTitle}}</td></tr>{{/if}}
+        {{#if versionTitle}}<tr><td class="metadatalabel muted">Title</td><td>{{{versionTitle}}}</td></tr>{{/if}}
         {{#if name}}<tr><td class="metadatalabel muted">Name</td><td>{{name}}</td></tr>{{/if}}
         {{#if date}}<tr><td class="metadatalabel muted">Date</td><td>{{date}}</td></tr>{{/if}}
         {{#if publisher}}<tr><td class="metadatalabel muted">Publisher</td><td>{{publisher}}</td></tr>{{/if}}
         {{#if lines}}<tr><td class="metadatalabel muted">Lines</td><td>{{lines}}</td></tr>{{/if}}
         {{#if description}}<tr><td class="metadatalabel muted">Description</td><td>{{{description}}}</td></tr>{{/if}}
         {{#if illust}}<tr><td class="metadatalabel muted">Illustrations</td><td>{{illust}}</td></tr>{{/if}}
-        {{#if firstLine}}<tr><td class="metadatalabel muted">First Line</td><td>{{firstLine}}</td></tr>{{/if}}
+        {{#if firstLine}}<tr><td class="metadatalabel muted">First Line</td><td>{{{firstLine}}}</td></tr>{{/if}}
         </table>
         {{#gt artefacts.length 0}}
             <h3 class="muted">Artefacts</h3><p>{{artefacts.length}} artefact{{#neq artefacts.length 1}}s{{/neq}} associated with this version:</p>

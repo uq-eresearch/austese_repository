@@ -1,5 +1,5 @@
 <div class="obj">
-    <h4><a href="/{{modulePrefix}}/works/{{id}}{{projParam}}">{{workTitle}}{{#if name}} ({{name}}){{/if}}</a></h4>
+    <h4><a href="/{{modulePrefix}}/works/{{id}}{{projParam}}">{{{workTitle}}}{{#if name}} ({{name}}){{/if}}</a></h4>
     {{#if description}}{{{ellipsis description 80}}}<br/>{{/if}}
     {{#gt versions.length 0}}<i class="fa fa-asterisk"></i> {{versions.length}} associated version{{#neq versions.length 1}}s{{/neq}}{{/gt}}
     <p>

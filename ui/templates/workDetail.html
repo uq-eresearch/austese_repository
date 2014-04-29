@@ -1,7 +1,7 @@
 <div>
     <h1>{{#if workTitle}}{{upper workTitle 80}}{{else}}UNTITLED WORK{{/if}}</h1>
     <table class="table">
-    {{#if workTitle}}<tr><td class="metadatalabel muted">Title</td><td>{{workTitle}}</td></tr>{{/if}}
+    {{#if workTitle}}<tr><td class="metadatalabel muted">Title</td><td>{{{workTitle}}}</td></tr>{{/if}}
     {{#if name}}<tr><td class="metadatalabel muted">Name</td><td>{{name}}</td></tr>{{/if}}
     {{#if description}}<tr><td class="metadatalabel muted">Description</td><td>{{{description}}}</td></tr>{{/if}}
     </table>

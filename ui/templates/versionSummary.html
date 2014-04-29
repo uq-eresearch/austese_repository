@@ -1,5 +1,5 @@
 <div class="obj">
-    <h4><a href="/{{modulePrefix}}/versions/{{id}}{{projParam}}">{{versionTitle}} {{#if name}}({{name}}){{/if}}</a></h4>
+    <h4><a href="/{{modulePrefix}}/versions/{{id}}{{projParam}}">{{{versionTitle}}} {{#if name}}({{name}}){{/if}}</a></h4>
     {{#if date}}
         {{date}}
     {{/if}}{{publisher}}
@@ -9,7 +9,7 @@
         {{#if publisher}}<br/>{{/if}}
     {{/if}}
     {{#if description}}{{{ellipsis description 80}}}<br/>{{/if}}
-    {{#if firstLine}}<em>{{firstLine}}</em><br/>{{/if}}
+    {{#if firstLine}}<em>{{{firstLine}}}</em><br/>{{/if}}
     {{#gt transcriptions.length 0}}
         <i class="fa fa-file-text-o"></i> {{transcriptions.length}} version transcription{{#neq transcriptions.length 1}}s{{/neq}}
     {{/gt}}
