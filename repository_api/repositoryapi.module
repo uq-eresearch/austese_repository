@@ -1064,6 +1064,7 @@ function updateResource($id) {
      $revindex = 0;
     }
 
+    $obj['_resourceid'] = $id;
     $obj['updated'] = date("Y-m-d H:i:s");
     $inserted = $grid->update($query,
       array(
