@@ -6,7 +6,7 @@ Ext.define('austese_uploader.view.PropertiesPanel', {
     height: 'auto',
     layout: 'card',
     title: 'No resources selected',
-    
+
     initComponent: function() {
         var me = this;
 
@@ -466,7 +466,6 @@ Ext.define('austese_uploader.view.PropertiesPanel', {
                                       xtype: 'toolbar',
                                       dock: 'top',
                                       items: [
-                                          
                                           {xtype:'tbfill'},
                                           {
                                               xtype: 'button',

@@ -299,9 +299,9 @@ var editor = {
  },
  /**
   * Saves a new version of a resource. Displays a message on success/failure.
-  * 
+  *
   * Called when the save button is pressed.
-  * 
+  *
   * @return undefined
   */
  newResourceVersion : function(){

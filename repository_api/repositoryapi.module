@@ -49,7 +49,7 @@ function repositoryapi_og_permission() {
 /**
  * Implements hook_menu()
  */
-function repositoryapi_menu() {    
+function repositoryapi_menu() {
     // cannot include leading or trailing slashes
     $items['sites/all/modules/austese_repository/api'] = array(
         'page callback' => 'resource_page_callback',
@@ -57,14 +57,14 @@ function repositoryapi_menu() {
         'access arguments' => array('access content'),
         'type' => MENU_CALLBACK, // hidden, used for API
     );
-    
+
     $items['sites/all/modules/austese_repository/api/projects'] = array(
         'page callback' => 'projects_list_callback',
         'access callback' => 'user_access',
         'access arguments' => array('access content'),
         'type' => MENU_CALLBACK, // hidden, used for API
     );
-    
+
     return $items;
 }
 function node_load_by_type($type, $limit = 15, $offset = 0) {
@@ -80,7 +80,7 @@ function node_load_by_type($type, $limit = 15, $offset = 0) {
 function projects_list_callback() {
     $node_ids = og_get_groups_by_user();
     $nodes = node_load_multiple(array_keys($node_ids['node']));
-    
+
     $projects = array('list' => array(), 'count' => count($nodes));
     foreach ($nodes as $node) {
         $projects['list'][] = array(
@@ -89,9 +89,9 @@ function projects_list_callback() {
         );
     }
     drupal_add_http_header('Content-Type', 'application/json');
-    
+
     echo json_encode($projects);
-    
+
 }
 
 /**
@@ -112,7 +112,7 @@ function resource_page_callback($resourcetype, $id=null, $revision=null) {
 //      drupal_page_footer();
 //      exit;
 //    }
-    
+
     if ($resourcetype == 'resources') {
         if (!isset($revision))
             $revision = null;
@@ -123,14 +123,14 @@ function resource_page_callback($resourcetype, $id=null, $revision=null) {
         getFeatureCodes();
         exit;
     }
-    
+
     // Only allow defined record types
     if (!in_array($resourcetype, $config['recordtypes'])) {
       echo '404 Not found: No such resource type';
       drupal_add_http_header('Status', '404 Not found');
       exit;
     }
-        
+
     switch ($_SERVER['REQUEST_METHOD']) {
         case 'POST':
             createRecord($resourcetype);
@@ -330,7 +330,7 @@ function get_get_paramter_int($name) {
 
 function listResources(){
   $config = repositoryapi_get_configuration();
-  
+
   $m = new Mongo($config['dbhost'].':'.$config['dbport']);
   $db = $m->selectDB($config['dbname']);
   $grid = $db->getGridFS();
@@ -352,7 +352,7 @@ function listResources(){
   }
   // provide a default for page Index. Default for pagesize is null (all results will be returned)
   $pagenum = get_get_paramter_int('pageIndex');
-  
+
   // check project and permissions
   $project = get_get_parameter('project');
   if ($_SERVER['SERVER_ADDR'] == $_SERVER['REMOTE_ADDR']) {
@@ -362,9 +362,9 @@ function listResources(){
       _check_project_exists($project);
       _check_permission_on_project('view metadata', $project);
   }
-    
+
   $not_superseded = array('metadata._superseded'=>array('$exists'=>false));
-  
+
   $findopts = array('$and'=>array($not_superseded,
       array('_deleted'=>array('$exists'=>false))));
   if ($filterTerm != null){
@@ -379,7 +379,7 @@ function listResources(){
   if ($project != null && $project != ''){
       $findopts = array('$and'=>array($findopts, array('metadata.project'=>$project)));
   }
- 
+
   $cursor = $grid->find($findopts)->sort(array($sort=>$sortDirection))->limit($pagesize)->skip($pagenum * $pagesize);
 
   $results = array(
@@ -929,7 +929,7 @@ function _processResource($file) {
 
 /**
  * Requires permission on both the 'from' and 'to' projects, if project is changing
- * 
+ *
  * @global type $config
  * @param type $recordtype
  * @param MongoId $id
@@ -953,7 +953,7 @@ function updateRecord($recordtype,$id){
     $to_project = $obj['project'];
     _check_project_exists($to_project);
     _check_permission_on_project('edit metadata', $to_project);
-    
+
     // remove uri field as we generate this
     if (array_key_exists('uri', $obj)){
       unset($obj['uri']);
@@ -980,9 +980,7 @@ function updateRecord($recordtype,$id){
     $orig_project = $existobj['metadata']['project'];
     _check_project_exists($orig_project);
     _check_permission_on_project('edit metadata', $orig_project);
-    
-    
-    
+
     $revindex = count($existobj['_revisions']);
     // add revision, and if object was flagged as deleted, remove flag (this allows undeletion)
     $inserted = $coll->update(array('_id'=>$id), array('$set' => array('_revisions.'.$revindex => $obj, 'metadata'=>$obj), '$unset'=> array('_deleted'=>1)), array('safe' => true));
@@ -1002,7 +1000,7 @@ function updateRecord($recordtype,$id){
 
 /**
  * Upload a new file resource to the mongo db
- * 
+ *
  * @param string $id the resource identifier
  */
 function updateResource($id) {
@@ -1011,9 +1009,9 @@ function updateResource($id) {
  $m = new Mongo($config['dbhost'].':'.$config['dbport']);
  $db = $m->selectDB($config['dbname']);
  $grid = $db->getGridFS();
- 
+
  $input = @file_get_contents('php://input');
- 
+
  $contenttype = $_SERVER['CONTENT_TYPE'];
  try {
   // only update the most recent version of this resource (i.e. superseded not true)
@@ -1030,13 +1028,13 @@ function updateResource($id) {
       exit;
   }
   $existobj = $file->file;
-  
+
   // Check permissions on existing resource
   $orig_project = $file->file['metadata']['project'];
   _check_project_exists($orig_project);
   _check_permission_on_project('edit metadata', $orig_project);
-  
-  
+
+
   $existid = $existobj['_id'];
   // if content type is json update metadata, if something else, create new resource version
   if ($contenttype == 'application/json'){
@@ -1047,12 +1045,12 @@ function updateResource($id) {
       echo 'Missing or invalid JSON data';
       exit;
     }
-    
+
     // Check permissions on updated resource
     $project = $obj['project'];
     _check_project_exists($project);
     _check_permission_on_project('edit metadata', $project);
-    
+
     // remove uri field as we generate this
     if (array_key_exists('uri', $obj)){
      unset($obj['uri']);
@@ -1065,10 +1063,13 @@ function updateResource($id) {
     } else {
      $revindex = 0;
     }
+
     $obj['updated'] = date("Y-m-d H:i:s");
     $inserted = $grid->update($query,
-      array('$set' => array('_revisions.'.$revindex => $obj, 'metadata'=>$obj), 
-      '$unset'=> array('_deleted'=>1)), array('safe' => true));
+      array(
+        '$set'  => array('_revisions.'.$revindex => $obj, 'metadata'=>$obj),
+        '$unset'=> array('_deleted'=>1)),
+      array('safe' => true));
     if ($inserted['ok'] != 1 || $inserted['err'] != NULL) {
      drupal_add_http_header('Status', '500 Internal server error');
      echo $inserted['err'];

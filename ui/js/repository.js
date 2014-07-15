@@ -49,13 +49,13 @@ jQuery.fn.serializeObject = function() {
                 // warning: this will collapse all sections in form. at present no forms have more than one collapsing section so this is ok.
                 var collapsing = jQuery('.formCollapsingSection');
                 collapsing.toggle();
-                
+
                 if (collapsing.is(":visible")){
                     jQuery(this).addClass('fa-chevron-up').removeClass('fa-chevron-down');
                 } else {
                     jQuery(this).addClass('fa-chevron-down').removeClass('fa-chevron-up');
                 }
-                
+
             });
             if (existingId) {
                  loadObjectIntoEditor(existingId);
@@ -83,8 +83,8 @@ jQuery.fn.serializeObject = function() {
                             'Accept': 'application/json'
                         },
                         data: {
-                            searchField: fieldName, 
-                            query: searchTerm, 
+                            searchField: fieldName,
+                            query: searchTerm,
                             pageSize: 10,
                             project: project
                         },
