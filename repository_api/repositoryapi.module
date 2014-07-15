@@ -382,10 +382,14 @@ function listResources(){
  
   $cursor = $grid->find($findopts)->sort(array($sort=>$sortDirection))->limit($pagesize)->skip($pagenum * $pagesize);
 
+  $results = array(
+    'count' => $cursor->count(0),
+    'pageSize' => $pagesize,
+    'pageIndex' => $pagenum,
+    'results' => array()
+  );
 
-  echo "{\"count\":" . $cursor->count(0) . ", \"pageSize\": \"". $pagesize . "\", \"pageIndex\": \"". $pagenum . "\", \"results\": [";
   foreach ($cursor as $obj){
-    try {
       $returnobj = $obj->file;
       $id = $returnobj['metadata']['_resourceid'];
       unset($returnobj['_id']);
@@ -395,15 +399,12 @@ function listResources(){
       // generate uri
       $returnobj['uri'] = $config['uriprefix']  . '/resources/' . $id;
       $returnobj['id'] = $id;
-      echo json_encode($returnobj);
-      if ($cursor->hasNext()){
-         echo ",\n";
-      }
-    } catch (Exception $e){
-    }
+
+      $results['results'][] = $returnobj;
+
   }
-  
-  echo "]}";
+
+  echo json_encode($results);
   drupal_add_http_header('Content-Type', 'application/json');
 }
 
