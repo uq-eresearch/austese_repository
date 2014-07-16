@@ -1,5 +1,5 @@
 jQuery(document).ready(function() {
-    
+
     var metadata = jQuery('#metadata');
     var modulePath =  metadata.data('modulepath');
     var project = metadata.data('project');
@@ -47,7 +47,7 @@ jQuery(document).ready(function() {
     // arbitrary limit to number of events to display on timeline
     searchArgs.pageSize = 5000;
     searchArgs.pageIndex = 0;
-    
+
     jQuery.ajax({
         type: 'GET',
         url: '/' + modulePath + '/api/events/',
@@ -74,7 +74,7 @@ jQuery(document).ready(function() {
                     tag: e.eventType,
                     text: eventSummary(e)
                 };
-                
+
                 if (e.startDate){
                     eventData.startDate=formatDate(e.startDate);
                 }
@@ -83,7 +83,7 @@ jQuery(document).ready(function() {
                 }
                 if (e.artefacts && e.artefacts.length > 0){
                     eventData.classname = "artefact-event"
-                } 
+                }
                 timelineData.timeline.date.push(eventData);
             });
             createStoryJS({
