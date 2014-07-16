@@ -50,13 +50,13 @@ if (isset($_GET['project'])) {
     <div class="control-group">
       <label class="control-label" for="description">Description</label>
       <div class="controls">
-        <input name="description" type="text" class="input-xxlarge" id="description">
+        <textarea name="description" class="input-xxlarge" id="description"></textarea>
       </div>
     </div>
     <div class="control-group">
       <label class="control-label" for="references">References</label>
       <div class="controls">
-        <input name="references" type="text" class="input-xxlarge" id="references">
+        <textarea name="references" class="input-xxlarge" id="references"></textarea>
       </div>
     </div>
     <div class="control-group">
