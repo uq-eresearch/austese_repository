@@ -366,7 +366,7 @@ function listResources(){
   $not_superseded = array('metadata._superseded'=>array('$exists'=>false));
 
   $findopts = array('$and'=>array($not_superseded,
-      array('_deleted'=>array('$exists'=>false))));
+      array('metadata._deleted'=>array('$exists'=>false))));
   if ($filterTerm != null){
       $regex = new MongoRegex("/".$filterTerm."/i");
       $findopts = array('$and'=>array($findopts,
