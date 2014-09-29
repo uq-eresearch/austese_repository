@@ -62,8 +62,10 @@ if (isset($project)) {
 <!--  ui for multi/merge editor -->
 <div id="multi-editor-ui">
   <div class="row-fluid">
+    <div class="span12 editInfo"></div>
+  </div>
+  <div class="row-fluid">
     <div class="span12">
-      <div class="editInfo"></div>
       <div id="multieditor"></div>
     </div>
   </div>
