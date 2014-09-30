@@ -26,6 +26,9 @@ span.deleted {
    color:#B02528;
    border-radius: 3px;
 }
+.transcript {
+    display:inline-block;
+}
 .founddeleted-default, .overstrike {
     text-decoration: line-through;
 }
