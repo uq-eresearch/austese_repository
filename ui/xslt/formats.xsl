@@ -119,7 +119,7 @@
 
 
 <xsl:template match="//head">
-<h3 id="{generate-id()}" style="text-align: center"><xsl:apply-templates/></h3>
+<span id="{generate-id()}" style="text-align: center"><xsl:apply-templates/></span>
 </xsl:template>
 
 <xsl:template match="//head[@type='dedication']">
@@ -249,9 +249,9 @@
 </xsl:template>
 
 <xsl:template match="div[@type='columnhead']">
-    <div class="columnhead" style="text-align: center">
+    <h3 class="columnhead" style="text-align: center">
     <xsl:apply-templates/>
-    </div>
+    </h3>
 </xsl:template>
 
 <xsl:template match="//head[@type='title']">

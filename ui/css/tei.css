@@ -12,6 +12,9 @@ p.stage {
 span.speaker {
     font-weight: bold
 }
+.series {
+    font-size:18px;
+}
 br.l {}
 span.italics {
     font-style: italic
