@@ -55,15 +55,15 @@
 <span class="stageitalic"><xsl:apply-templates/></span>
 </xsl:template>
 
-<xsl:template match="//sp/speaker">
+<xsl:template match="sp/speaker">
 <span class="speaker"><xsl:apply-templates/> </span>
 </xsl:template>
 
-<xsl:template match="//sp">
-<p class="sp"><xsl:apply-templates/></p>
+<xsl:template match="sp">
+<div class="sp"><xsl:apply-templates/></div>
 </xsl:template>
 
-<xsl:template match="//l">
+<xsl:template match="l">
 <xsl:if test="not(@type = 'half')">
 	<span style="color:grey;" class="l" annotator_ignore="true" unselectable="on">
     	<xsl:value-of select="count(preceding::l[not(@type='half')])+1" />
@@ -224,85 +224,61 @@
 </xsl:template>
 
 <xsl:template match="//div[@type='Hversion']">
-<span>
+    <!-- bibliographic data -->
+<div>
 <xsl:if test=".//head[@type='title']">
-	<h3 id="{generate-id()}" class="title" style="text-align: center">
+	<div id="{generate-id()}" class="title" style="text-align: center">
 	<xsl:value-of select="translate(.//head[@type='title'], 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')" />
-	</h3>
+	</div>
 </xsl:if>
 <xsl:if test=".//head[@type='subtitle']">
-	<h4 id="{generate-id()}" class="title" style="text-align: center">
+	<div id="{generate-id()}" class="title" style="text-align: center">
 	<xsl:value-of select="translate(.//head[@type='subtitle'], 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')" />
-	</h4>
+	</div>
 </xsl:if>
 <xsl:if test="./div[@type='source']">
 	<div class="source" style="text-align: center">
 	<xsl:apply-templates select="div[@type='source']/*"/>
 	</div>
 </xsl:if>
-<xsl:if test="./div[@type='columnhead']">
-	<div class="columnhead" style="text-align: center">
-	<xsl:apply-templates select="div[@type='columnhead']/*"/>
-	</div>
-</xsl:if>
-<xsl:if test="./div[@type='series']">
-	<div class="series" style="text-align: center">
-	<xsl:apply-templates select="div[@type='series']/*"/>
-	</div>
-</xsl:if>
-<xsl:for-each select="./note">
-    <!--span>
-		<xsl:attribute name="class">
-		<xsl:text>note</xsl:text>
-		<xsl:if test="@type">
-	          <xsl:text> </xsl:text><xsl:value-of select="@type"/>
-		</xsl:if>
-		</xsl:attribute>
-		<xsl:if test="contains(@target,'#match(xpath1(id')">
-		  <xsl:attribute name="data-target">
-		      <xsl:value-of select='translate(substring-before(substring-after(@target,"id("),")"),&quot;&apos;&quot;,"")'/>
-		  </xsl:attribute>
-		  <xsl:attribute name="data-match">
-		      <xsl:value-of select='translate(substring-before(substring-after(@target,"),"),")"),&quot;&apos;&quot;,"")'/>
-		  </xsl:attribute>
-		</xsl:if>
-        <span class="note-content">
-	<xsl:apply-templates/>
-        </span>
-	<xsl:if test="@resp">
-                <xsl:variable name="author" select="substring-after(@resp,'#')"/>
-        	<span class="note-author">
-		<xsl:value-of select="key('respKey',$author)/name"/>
-        	</span>
-	</xsl:if>
-    </span-->
-</xsl:for-each>
-<xsl:if test="./div[@type='sequence']">
-	<div class="sequence">
-	<xsl:apply-templates select="div[@type='sequence']/*"/>
-	</div>
-</xsl:if>
-<div id="{generate-id()}" class="title" style="text-align: center"><xsl:value-of select="@xml:id"/></div>
+<div id="{generate-id()}" style="text-align: center"><xsl:value-of select="@xml:id"/></div>
+<hr/>
+
 <xsl:apply-templates/>
-</span>
+</div>
+</xsl:template>
+
+<xsl:template match="div[@type='columnhead']">
+    <div class="columnhead" style="text-align: center">
+    <xsl:apply-templates/>
+    </div>
 </xsl:template>
 
 <xsl:template match="//head[@type='title']">
+    <h3 id="{generate-id()}" class="title" style="text-align: center">
+    <xsl:value-of select="translate(., 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')" />
+    </h3>
 </xsl:template>
 
 <xsl:template match="//head[@type='subtitle']">
+    <h4 id="{generate-id()}" class="title" style="text-align: center">
+    <xsl:value-of select="translate(., 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')" />
+    </h4>
 </xsl:template>
 
 <xsl:template match="//div[@type='source']">
 </xsl:template>
 
-<xsl:template match="//div[@type='columnhead']">
+<xsl:template match="div[@type='series']">
+    <div class="series" style="text-align: center">
+    <xsl:apply-templates />
+    </div>
 </xsl:template>
 
-<xsl:template match="//div[@type='series']">
-</xsl:template>
-
-<xsl:template match="//div[@type='sequence']">
+<xsl:template match="div[@type='sequence']">
+    <div class="sequence">
+    <xsl:apply-templates/>
+    </div>
 </xsl:template>
 
 <xsl:template match="//div[@type='letter']">
@@ -442,8 +418,8 @@
 	</span>
 </xsl:template>
 
-<xsl:template match="//lg">
-<p class="lg"><xsl:apply-templates/></p>
+<xsl:template match="lg">
+<div class="lg"><xsl:apply-templates/></div>
 </xsl:template>
 
 <xsl:template match="//emph">
@@ -475,7 +451,7 @@
 </xsl:template>
 
 <xsl:template match="//hi[@rend='bl']">
-<span style="font-family: Old English Text MT;"><xsl:apply-templates/></span>
+<span style="font-family: Old English Text MT, Lucida Blackletter, sans-serif;"><xsl:apply-templates/></span>
 </xsl:template>
 
 <xsl:template match="//hi[@rend='dul']">
@@ -568,7 +544,13 @@
 </xsl:template>
 
 <xsl:template match="p | epigraph">
-    <p>
+    <xsl:variable name="tag">
+        <xsl:choose>
+            <xsl:when test="local-name()='p'">p</xsl:when>
+            <xsl:otherwise>div</xsl:otherwise>
+        </xsl:choose>
+    </xsl:variable>
+    <xsl:element name="{$tag}">
 	    <xsl:attribute name="id">
 		    <xsl:choose>
 		        <xsl:when test="@id">
@@ -579,6 +561,9 @@
 		        </xsl:otherwise>
 		    </xsl:choose>
 	    </xsl:attribute>
+        <xsl:if test="local-name()='epigraph'">
+            <xsl:attribute name="class">epigraph</xsl:attribute>
+        </xsl:if>
 	    <xsl:if test="contains(@rend,'text-indent')">
 	       <xsl:attribute name="style">
 	           <xsl:value-of select="@rend"/>
@@ -588,7 +573,7 @@
 			<xsl:text>&#xA0;&#xA0;&#xA0;</xsl:text>
 		</xsl:if>
         <xsl:apply-templates/>
-    </p>
+    </xsl:element>
 </xsl:template>
 
 <xsl:template match="note">

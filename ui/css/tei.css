@@ -13,9 +13,6 @@ span.speaker {
     font-weight: bold
 }
 br.l {}
-p.sp {
-    line-height:2em;
-}
 span.italics {
     font-style: italic
 }
@@ -61,6 +58,9 @@ span.deleted {
 }
 .pb {
     color: #bbbbbb;
+}
+.epigraph {
+    font-style:italic
 }
 span.added, span.inserted {
     color:#000AEE;
