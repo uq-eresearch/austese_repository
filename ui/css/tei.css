@@ -1,10 +1,10 @@
-p.stage-italic { 
+p.stage-italic {
     color: #51666b;
     font-style: italic;
     margin-top:1em;
     margin-bottom:1em;
 }
-p.stage { 
+p.stage {
     color: #51666b;
     margin-top:1em;
     margin-bottom:1em;
@@ -23,7 +23,7 @@ span.bold {
     font-weight: bold;
 }
 span.deleted {
-   color:#B02528;
+   color:#565656;
    border-radius: 3px;
 }
 .founddeleted-default, .overstrike {
@@ -63,11 +63,11 @@ span.deleted {
     color: #bbbbbb;
 }
 span.added, span.inserted {
-    color:#000AEE;
+    color:#565656;
     border-radius: 3px;
     position: relative;
 }
-span.base { 
+span.base {
    border-bottom: 1px dotted #ba0000;
 }
 span.left {
@@ -91,11 +91,11 @@ span.inserted-right {
     border-radius: 3px;
 }
 
-a.parent { 
+a.parent {
     color:black;
-    border-bottom: 1px dashed purple; 
+    border-bottom: 1px dashed purple;
 }
-a.child { 
+a.child {
     color:black;
     border-bottom: 1px dashed purple; }
 .resourceContent {

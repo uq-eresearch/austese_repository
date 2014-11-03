@@ -31,7 +31,7 @@ Ext.define('austese_uploader.controller.Controller', {
                     document.location.href='/';
                 }
             },
-            // thumbnailpanel filter and sort handler are implemented in ThumbnailPanel 
+            // thumbnailpanel filter and sort handler are implemented in ThumbnailPanel
             'thumbnailview': {
                 selectionchange: this.displayResourceMetadata,
                 itemdblclick: this.displayResource
@@ -74,7 +74,7 @@ Ext.define('austese_uploader.controller.Controller', {
             },
             'sendtomvdwindow button[text="Cancel"]': {
                 click: this.cancelWindow
-            }, 
+            },
             'sendtomvdwindow button[text="OK"]':{
                 click: this.createMVD
             },
@@ -162,7 +162,7 @@ Ext.define('austese_uploader.controller.Controller', {
         var headers = {};
         if (data.fake){
             headers=  {'Content-type': "multipart/form-data; boundary="+ data.boundary};
-        } 
+        }
         var modulePath = this.application.modulePath;
         jQuery.ajax({
             url:  modulePath + '/api/resources/',
@@ -185,7 +185,7 @@ Ext.define('austese_uploader.controller.Controller', {
         });
     },
     createResource: function(button){
-        
+
         var extwindow = button.up("window");
         var windowId = extwindow.getItemId();
         var filename = extwindow.down('form').getForm().findField("filename").getValue() || "transcription";
@@ -213,12 +213,12 @@ Ext.define('austese_uploader.controller.Controller', {
                 success: function(rescontent){
                     controller.postResource(rescontent, rescontent.length, filetype, filename);
                     // TODO: duplicate resource metadata as well as content
-                }, 
+                },
                 scope: this
             })
         }
         extwindow.close();
-        
+
     },
     addResources: function(button, filelist){
         button.up('mainpanel').down('statusbar').showBusy();
@@ -234,7 +234,7 @@ Ext.define('austese_uploader.controller.Controller', {
             var headers;
             if (data.fake){
                 headers=  {'Content-type': "multipart/form-data; boundary="+ data.boundary};
-            } 
+            }
             jQuery.ajax({
                 url:  modulePath + '/api/resources/',
                 data: data,
@@ -257,7 +257,7 @@ Ext.define('austese_uploader.controller.Controller', {
         if (numResources > 0){
             Ext.Msg.show({
                 title: 'Confirm deletion',
-                msg: 'Are you sure you wish to delete ' 
+                msg: 'Are you sure you wish to delete '
                     + numResources + ' selected resource' + (numResources != 1? 's': '') + '?',
                 buttons: Ext.Msg.OKCANCEL,
                 fn: function(buttonId){
@@ -269,7 +269,7 @@ Ext.define('austese_uploader.controller.Controller', {
         } else {
             button.up('mainpanel').down('statusbar').setStatus({
                 text: 'No resources selected to delete',
-                clear: true 
+                clear: true
             });
         }
     },
@@ -310,7 +310,7 @@ Ext.define('austese_uploader.controller.Controller', {
             f.up("fieldcontainer").down("checkboxfield").setValue(0);
         }
     },
-    
+
     editResourceMetadata: function(button){
         var pp = button.up('propertiespanel');
         var records = pp.loadedRecords;
@@ -328,7 +328,7 @@ Ext.define('austese_uploader.controller.Controller', {
             layout.setActiveItem(pp.EDITSINGLE);
             layout.getActiveItem().getForm().loadRecord(records[0]);
         } else if (l > 0) {
-            layout.setActiveItem(pp.EDITMULTI); 
+            layout.setActiveItem(pp.EDITMULTI);
             layout.getActiveItem().getForm().setValues(aggregatedValues);
         }
     },
@@ -366,12 +366,12 @@ Ext.define('austese_uploader.controller.Controller', {
             // show metadata
             layout.getActiveItem().down('fieldset[title="Metadata"]').show();
             layout.getActiveItem().down('displayfield[name="filename"]').show();
-            
+
         } else if (l > 0) {
             //  display values for upload date, size and type are aggregated
             aggregatedValues = {filetype:''};
             var aggregatedTypes = {};
-            var minDate = records[0].get('uploaddate'), 
+            var minDate = records[0].get('uploaddate'),
                 maxDate = minDate;
             var totalFileLength = 0;
             for (var i = 0; i < l; i++){
@@ -415,13 +415,13 @@ Ext.define('austese_uploader.controller.Controller', {
             // hide metadata
             layout.getActiveItem().down('fieldset[title="Metadata]').hide();
             layout.getActiveItem().down('displayfield[name="filename"]').hide();
-            
+
         } else {
             // show no resources card
             layout.setActiveItem(pp.NONESELECTED);
         }
         pp.aggregatedValues = aggregatedValues;
-        
+
     },
     displayResource: function(dataview, record, item, index, e, eOpts){
         var uri = record.get('uri');
@@ -483,7 +483,7 @@ Ext.define('austese_uploader.controller.Controller', {
                     // copy metadata fields only into newValues to send to database
                     var nonMetadataFields = {'filename':1,'dateString':1,
                             'filelength':1,'id':1,'sizeString':1,
-                            'thumbnailUri':1,'uploaddate':1,'uri':1, 
+                            'thumbnailUri':1,'uploaddate':1,'uri':1,
                             'shortName':1};
                     Ext.Object.each(rec.data,function(key, val, obj){
                         if (!nonMetadataFields[key]){
@@ -514,7 +514,7 @@ Ext.define('austese_uploader.controller.Controller', {
             success: function(response, options){
                 Ext.ComponentQuery.query('statusbar')[0].setStatus({
                     text: 'Metadata saved',
-                    clear: true 
+                    clear: true
                 });
             },
             failure: function(response, options){
@@ -549,7 +549,7 @@ Ext.define('austese_uploader.controller.Controller', {
                     continueDeleting = false;
                     Ext.ComponentQuery.query('statusbar')[0].setStatus({
                         iconCls: 'x-status-error',
-                        text: (deletedCount > 0? "Deleted " + deletedCount + " resources. ":"") 
+                        text: (deletedCount > 0? "Deleted " + deletedCount + " resources. ":"")
                             + "Unable to delete resource: " + response.responseText,
                         clear: true
                     });
@@ -562,7 +562,7 @@ Ext.define('austese_uploader.controller.Controller', {
         var pp = button.up('propertiespanel');
         var records = pp.loadedRecords;
         var aggregatedValues = pp.aggregatedValues;
-        
+
         button.menu.removeAll();
         var filetype = (aggregatedValues && aggregatedValues.filetype) || records[0].get('filetype');
         if (filetype && filetype.match('image') && this.application.enableLightBox==1){
@@ -623,8 +623,8 @@ Ext.define('austese_uploader.controller.Controller', {
             });*/
         }
 
-        
-        
+
+
 
         // any number of generic resources selected
        /* button.menu.add({
@@ -633,7 +633,7 @@ Ext.define('austese_uploader.controller.Controller', {
             scope: this,
             handler: this.createArtefactRecords
         });*/
-        
+
         // generic single resource selected
         if (records.length == 1){
             var record = records[0];
@@ -658,13 +658,13 @@ Ext.define('austese_uploader.controller.Controller', {
         }
         button.menu.add({
             text: 'Create Collection',
-            
+
             tooltip: 'Create collection to group records',
             scope: this,
             handler: this.sendToCreateCollection
         });
         // if a transcription and an image are selected, add align tool as an option
-         if (this.application.enableAlignment==1 && records.length == 2 
+         if (this.application.enableAlignment==1 && records.length == 2
                 && filetype && filetype.match('image') && (filetype.match('text')|| filetype.match('xml'))) {
             button.menu.add({
                 text: 'Alignment tool',
@@ -712,7 +712,7 @@ Ext.define('austese_uploader.controller.Controller', {
         } else {
             sendToMVDWindow.show();
         }
-        
+
     },
     createMVD: function(button){
       var mvdWin = button.up('window');
@@ -788,7 +788,7 @@ Ext.define('austese_uploader.controller.Controller', {
           url: modulePath + "/api/collections/",
           success: function(d){
               window.location.href = "/repository/collections/" + d.id + this._getProjectParam({isFirstParam: true});
-          }, 
+          },
           failure: function(response){
               Ext.ComponentQuery.query('statusbar')[0].setStatus({
                   iconCls: 'x-status-error',
@@ -814,11 +814,11 @@ Ext.define('austese_uploader.controller.Controller', {
     createArtefactRecords: function(button){
         // pop up a dialog box to configure whether to create an artefact part for each, a single artefact to group (or both - will group artefact parts in this case)
         // display info : selected x facsimiles, y diplomatic transcriptions
-        
-    }, 
+
+    },
     createVersionRecords: function(button){
         // pop up dialog box to configure whether to create version part for each, single version with multiple transcriptions, or both (single version with multiple parts)
         // display info: selected x transcriptions
-        
+
     }
 });
