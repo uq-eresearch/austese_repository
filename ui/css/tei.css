@@ -101,3 +101,9 @@ a.child {
 .resourceContent {
     font-family: Arial, Helvetica, sans-serif;
 }
+.merged {
+  color:#600000;
+}
+.variant {
+  color:#B00000 ;
+}
